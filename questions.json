@@ -1,0 +1,14 @@
+{
+    "question_1":[{
+    "object" : "What color is the lemon?",
+    
+    "answer":{
+        "wrong_answers" :[ 
+            "blue",
+            "pink",
+            "red"
+        ],
+        "correct_answer":"yellow"    
+        }
+    }]
+}
