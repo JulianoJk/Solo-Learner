@@ -1,6 +1,6 @@
 {
     "question_1":[{
-    "object" : "Choose the correct form of the verb:\nWe _____ some ice cream yesterday.",
+    "object" : "1)Choose the correct form of the verb:\nWe ____ on a trip this Friday.",
     
     "answer":{
         "wrong_answers" :[ 
@@ -9,5 +9,18 @@
         ],
         "correct_answer":"are going"    
         }
-    }]
+    }],
+
+    "question_2":[{
+        "object" : "1)Choose the correct form of the verb:\nWe _____ some ice cream yesterday.",
+        
+        "answer":{
+            "wrong_answers" :[ 
+                "ate",
+                "are eating"
+            ],
+            "correct_answer":"ate"
+            }
+        }]
 }
+

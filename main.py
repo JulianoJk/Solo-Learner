@@ -1,4 +1,5 @@
 import json
+import random
 
 
 
@@ -14,25 +15,26 @@ right =  data["question_1"][0]["answer"]["correct_answer"]
 #Save the question to a variable
 question = data["question_1"][0]["object"]
 
-#Create and initialize a counter to display in front of each answer the number( e.g. 1. {answer1}, 2. {answer2})
-count = 1
 
 #Append each element from the json object to the list
 for i in data["question_1"][0]["answer"]["wrong_answers"]:
     #Append the number with the wrong answer to the list
     allAnswers.append(i)
-    #Increase the counter
-    count+=1
+
 
 #Append the correct answer to the allAnswers list 
 allAnswers.append(right)
 
-out = '\n'.join(allAnswers)
 
-
+#Create and initialize a counter to display in front of each answer the number( e.g. 1. {answer1}, 2. {answer2})
+count = 1
 print(question)
-print(out)
+for times in allAnswers:
+    print(f"{count}. {times}")
+    #Increase the counter
+    count+=1
 
+#Create and initilize it to nothing the user's input
 userAnswer = int()
 
 while(True):
@@ -50,12 +52,10 @@ while(True):
         print("\nPlease type only the number from the displayed numbers, not anything else!")
         continue
 
+#Check user's input if it is correct 
+# if the index of the list, of the user's input, is the right answer, display the message
+if allAnswers[userAnswer] == right:
+    print("Correct!")
+else:
+    print("Incorrect..The correct answer was: " + right)
 
-try:
-    # if the index of the list, of the user's input, is the right answer, display the message
-    if allAnswers[userAnswer] == right:
-        print("It is right, you picked: " + allAnswers[userAnswer])
-    else:
-        print("Not Worked cuz you picked " + allAnswers[userAnswer])
-except IndexError:
-    print("Wrong")
