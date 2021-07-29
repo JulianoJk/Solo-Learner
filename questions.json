@@ -1,39 +1,42 @@
 {
-    "question_1":[{
-    "type": "multiple choice",
-    "level":"A senior",
-    "object" : "1)Choose the correct form of the verb:\nWe ____ on a trip this Friday.",
-    
-    "answer":{
-        "choices":[
-            "are having",
-            "are taking",
-            "are going"
-        ],
-        "wrong_answers" :[ 
-            "are having",
-            "are taking"
-        ],
-        "correct_answer":"are going"    
-        }
-    }],
-
-    "question_2":[{
+    "questions":[{
         "type": "multiple choice",
         "level":"A senior",
-        "object" : "1)Choose the correct form of the verb:\nWe _____ some ice cream yesterday.",
-        "answer":{
-            "choices":[
-                "ate",
-                "are eating",
-                "have eaten"
-            ],
-            "wrong_answers" :[ 
-                "have eaten",
-                "are eating"
-            ],
-            "correct_answer":"ate"
+       
+        "tasks" :{
+           
+            "1": "1)Choose the correct form of the verb:\nWe ____ on a trip this Friday.",
+            "2":"2)Choose the correct form of the verb:\nWe _____ some ice cream yesterday."
+        },
+
+        "answers":{
+            "1":{
+                "choices":[ 
+                    "are having",
+                    "are taking",
+                    "are going"
+                ],
+                "wrong_answers" :[ 
+                    "are having",
+                    "are taking"
+                ],
+                "correct_answer":"are going"    
+            },
+            "2":{
+                "choices":[
+                    "ate",
+                    "are eating",
+                    "have eaten"
+                ],
+                "wrong_answers" :[ 
+                    "have eaten",
+                    "are eating"
+                ],
+                "correct_answer":"ate"
+                }
             }
-        }]
+        }
+    ]
 }
+    
 
