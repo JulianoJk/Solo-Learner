@@ -1,14 +1,13 @@
 {
     "question_1":[{
-    "object" : "What color is the lemon?",
+    "object" : "Choose the correct form of the verb:\nWe _____ some ice cream yesterday.",
     
     "answer":{
         "wrong_answers" :[ 
-            "blue",
-            "pink",
-            "red"
+            "are having",
+            "are taking"
         ],
-        "correct_answer":"yellow"    
+        "correct_answer":"are going"    
         }
     }]
 }
