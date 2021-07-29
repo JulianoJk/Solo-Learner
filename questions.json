@@ -1,8 +1,15 @@
 {
     "question_1":[{
+    "type": "multiple choice",
+    "level":"A senior",
     "object" : "1)Choose the correct form of the verb:\nWe ____ on a trip this Friday.",
     
     "answer":{
+        "choices":[
+            "are having",
+            "are taking",
+            "are going"
+        ],
         "wrong_answers" :[ 
             "are having",
             "are taking"
@@ -12,11 +19,17 @@
     }],
 
     "question_2":[{
+        "type": "multiple choice",
+        "level":"A senior",
         "object" : "1)Choose the correct form of the verb:\nWe _____ some ice cream yesterday.",
-        
         "answer":{
-            "wrong_answers" :[ 
+            "choices":[
                 "ate",
+                "are eating",
+                "have eaten"
+            ],
+            "wrong_answers" :[ 
+                "have eaten",
                 "are eating"
             ],
             "correct_answer":"ate"
