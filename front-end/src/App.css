@@ -1,0 +1,11 @@
+body{
+  /* background-color: rgba(42, 39, 49, 0.85); */
+  background: linear-gradient(#2CF6B3, #C1AAC0 );
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6, .text{
+  color: rgba(255, 255, 255, 0.795);
+}
+
