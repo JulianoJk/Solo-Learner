@@ -5,14 +5,14 @@ import Register from './components/Auth/Register/Register';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import Navigation from './components/Navigation/Navigation';
-import  {TaskContextProvider}  from './context/TaskContext';
+import  {UserContextProvider}  from './context/UserContext';
 import './App.css';
 
 const App = ()=> {
 	return (
 		<div>
 			<BrowserRouter>
-				<TaskContextProvider>
+				<UserContextProvider>
 					<Navigation />
 					<Routes>
 						<Route path="/" element={<Index />} />
@@ -21,7 +21,7 @@ const App = ()=> {
 						<Route path="/register" element={<Register />} />
 						<Route path="/profile" element={<Profile />} />
 					</Routes>
-				</TaskContextProvider>
+				</UserContextProvider>
 			</BrowserRouter>
 		</div>
 	);

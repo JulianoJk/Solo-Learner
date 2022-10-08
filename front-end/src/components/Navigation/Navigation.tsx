@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Menu from '../../components/Header/Menu/Menu';
 import { useNavigate } from 'react-router-dom';
-import { useTaskDispatch, useTaskState } from '../../context/TaskContext';
+import { useTaskDispatch, useTaskState } from '../../context/UserContext';
 import { Button } from '../button/Button.component';
 
 const Navigation: React.FC = () => {

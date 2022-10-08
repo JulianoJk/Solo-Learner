@@ -1,94 +1,116 @@
-import { useState } from 'react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
-import {  useTaskDispatch } from '../../../context/TaskContext';
-import { dispatchContext, IUserContext } from '../../../Model/models';
-import { Button } from '../../button/Button.component';
-import auth from "../../../images/auth.jpg";
-import '../Auth.css';
+import { useState } from "react";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
-const Login:React.FC = ()=> {
+import "../Auth.css";
+import Logo from "../../../images/Logo.png"
+import { Link } from "react-router-dom";
+import { useUserDispatch } from "../../../context/UserContext";
+import {
+  PasswordInput,
+  Group,
+  Button,
+  Box,
+  TextInput,
+  Center,
+  Image,
+  Anchor,
+} from "@mantine/core";
+import { AlertComponent } from "../../AlertComponent/AlertComponent";
+import { loginAPI } from "../../api/api";
+import ErrorHandler from "../../ErrorHandler/ErrorHandler";
+
+
+const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
-  
-	const [email, setEmail] = useState<string>("");
-	const [password, setPassword] = useState<string>("");
-	const taskDispatch: dispatchContext = useTaskDispatch();
 
-  // Email handler	
-  const onEmailChange = (e: React.BaseSyntheticEvent):void => {
-		setEmail(e.target.value);
-	};
+  const [errorMessage, setErrorMessage] = useState<any>();
+
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const userDispatch: usersDispatchContext = useUserDispatch();
+
+  // Email handler
+  const onEmailChange = (e: React.BaseSyntheticEvent): void => {
+    setEmail(e.target.value);
+  };
   // Password handler
-	const onPasswordChange = (e: React.BaseSyntheticEvent):void => {
-		setPassword(e.target.value);
-	};
-	
-	const handleInputs = async (e: React.BaseSyntheticEvent) =>{
-		e.preventDefault();
+  const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
+    setPassword(e.target.value);
+  };
 
-		const response = await fetch('http://localhost:3001/users/login', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				email: email,
-				password: password,
-			}),
-		});
-  		const data: IUserContext = await response.json();
-		// If response is true(200) continue
-		if(response.ok){
-			const user: IUserContext = {
-				id: data['id'],
-				username: data['username'],
-				token: data['token'],
-			};
-			taskDispatch({ type: 'SET_USER', user: user });
-			taskDispatch({ type: 'SET_IS_LOGGED_IN', isLoggedIn: true });
-			navigate('/home');
-		}else{
-			alert("Please try again!")
-		}
-	}
+  const handleInputs = async (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const data: string | IUserInfoContext | null | undefined = await loginAPI(
+        email,
+        password
+      );
+
+      // Check the type of the data is returned, if is string, it contains a message which means error and display error
+      // If data is not string, it contains user's information (token, id, email) and the login was successful
+      if (typeof data === "string" || data instanceof String) {
+        setErrorMessage(data);
+      } else if (data) {
+        const user: IUserInfoContext = {
+          id: data["id"],
+          username: data["username"],
+          token: data["token"],
+        };
+        userDispatch({ type: "SET_USER", user: user });
+        navigate("/home");
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+  };
 
   return (
-	<div className="container flex-column input-container w-50 p-3 border border_style">
-		<div>
-			<img src={auth} alt="Logo" className="rounded mx-auto d-block " />
-			<h1 className="title">Login</h1>
-		</div>
-    	<form onSubmit={handleInputs}>
-			<label htmlFor="email" className="control-label text">
-				<strong>Email:</strong>
-			</label>
-			<input
-				type="email"
-				className="form-control email-icon"
-				value={email}
-				id="email"
-				placeholder="name@example.com"
-				onChange={onEmailChange}
-				autoComplete="on"
-			/>
-			<br />
+    <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
+      <Center>
+        <Image radius="md" src={logo} alt="Logo" />
+      </Center>
+      <h1 className="title">Log-In</h1>
+      <form
+        // values: current form values
+        onSubmit={handleInputs}
+      >
+        <TextInput
+          required
+          label="Email"
+          placeholder="name@example.com"
+          value={email}
+          onChange={onEmailChange}
+          autoComplete="on"
+        />
 
-			<label htmlFor="password" className="control-label text">
-				<strong>Password:</strong>
-			</label>
-			
-			<input
-				type="password"
-				value={password}
-				className="form-control password-icon"
-				id="password"
-				onChange={onPasswordChange}
-				placeholder="Password"
-				autoComplete="on"
-			/>
-			<br />
-				<div className="d-grid gap-2">
-					<Button text={'Submit'} />
-				</div>
-		</form>
-    </div>
-  )
-}
+        <PasswordInput
+          required
+          label="Password"
+          placeholder="Password"
+          value={password}
+          onChange={onPasswordChange}
+          autoComplete="on"
+        />
+        <Group position="right" mt="md">
+          <Button color="green" type="submit">
+            Submit
+          </Button>
+        </Group>
+
+        {/*Display error message if any*/}
+        <AlertComponent
+          className={ErrorHandler(errorMessage)}
+          message={errorMessage}
+        />
+      </form>
+      <Anchor component={Link} to="/register">
+        <em>
+          <u> Not a member?</u>
+        </em>
+      </Anchor>
+    </Box>
+  );
+};
 export default Login;

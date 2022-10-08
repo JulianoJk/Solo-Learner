@@ -1,7 +1,7 @@
 import { useReducer } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { dispatchContext, EActionTypes,IAuthCredentials, IUserContext } from '../../../Model/models';
-import { useTaskDispatch } from '../../../context/TaskContext';
+import { useTaskDispatch } from '../../../context/UserContext';
 import { Button } from '../../button/Button.component';
 import auth from "../../../images/auth.jpg";
 import '../Auth.css';
