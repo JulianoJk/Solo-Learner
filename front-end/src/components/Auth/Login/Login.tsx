@@ -18,6 +18,7 @@ import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
 import { useStyles } from "../Auth.style";
+import { Lock, Mail } from "tabler-icons-react";
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -75,6 +76,7 @@ const Login: React.FC = () => {
         onSubmit={handleInputs}
       >
         <TextInput
+          icon={<Mail />}
           required
           label="Email"
           placeholder="name@example.com"
@@ -90,6 +92,7 @@ const Login: React.FC = () => {
           value={password}
           onChange={onPasswordChange}
           autoComplete="on"
+          icon={<Lock />}
         />
         <Button color="cyan" type="submit" className={classes.submitButton}>
           Submit

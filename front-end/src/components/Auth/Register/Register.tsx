@@ -10,7 +10,7 @@ import { useUserDispatch } from "../../../context/UserContext";
 import { Box, Button, Center, PasswordInput, TextInput } from "@mantine/core";
 import { useStyles } from "../Auth.style";
 import AuthImage from "../../../images/Auth";
-
+import { Lock, Mail, UserCircle } from "tabler-icons-react";
 // Initial state for the user credentials
 const initState: IAuthCredentials = {
   email: undefined,
@@ -98,6 +98,7 @@ const Register: React.FC = () => {
       <h1 className="title">Register</h1>
       <form onSubmit={handleInputs}>
         <TextInput
+          icon={<Mail />}
           type="email"
           value={initState.email}
           className={classes.emailIcon}
@@ -109,11 +110,12 @@ const Register: React.FC = () => {
           autoComplete="on"
           label="Email"
         />
+
         <TextInput
           type="text"
+          icon={<UserCircle />}
           label="Username"
           value={initState.username}
-          // className="form-control user-icon"
           className={classes.userIcon}
           id="Username"
           placeholder="John Smith"
@@ -122,6 +124,7 @@ const Register: React.FC = () => {
         />
 
         <PasswordInput
+          icon={<Lock />}
           type="password"
           value={initState.password}
           className={classes.passwordIcon}
@@ -134,6 +137,7 @@ const Register: React.FC = () => {
           label="Password"
         />
         <PasswordInput
+          icon={<Lock />}
           type="password"
           value={initState.passwordRepeat}
           className={classes.passwordIcon}
@@ -145,13 +149,11 @@ const Register: React.FC = () => {
           autoComplete="on"
           label="Confirm Password"
         />
-        <Button type="submit" color="cyan" className={classes.submitButton}>
+        <Button type="submit" color="cyan" className={classes.submitButton} >
           Submit
         </Button>
       </form>
-      <Link to="/login" className="text flex-wrap link-light">
-        Already a member?
-      </Link>
+      <Link to="/login">Already a member?</Link>
     </Box>
   );
 };
