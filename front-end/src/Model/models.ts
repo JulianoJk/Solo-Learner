@@ -23,7 +23,6 @@ export type TUserAction =
     }
   | ResetAction;
 
-
 // Type for the dispatch reducer user
 export type usersDispatchContext = (action: TUserAction) => void;
 
@@ -45,4 +44,11 @@ export interface IAuthCredentials {
 // Interface for the ContextProvider children
 export interface IChildrenProvider {
   children: React.ReactNode;
+}
+
+export interface ISvgImages {
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+  radius?: number | string;
 }

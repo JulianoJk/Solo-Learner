@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-
+import { CLOUDY_CYAN } from "../../Theme/Theme";
 export const useStyles = createStyles(() => ({
   border_style: {
     borderWidth: "2px !important",
@@ -34,6 +34,11 @@ export const useStyles = createStyles(() => ({
   },
 
   submitButton: {
-    color: "red",
+    display: "inline-block",
+    width: "98%",
+    margin: 5,
+    "&:hover": {
+      backgroundColor: CLOUDY_CYAN,
+    },
   },
 }));

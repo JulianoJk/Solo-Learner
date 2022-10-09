@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
-import SvgComponent from "../../../images/Auth";
+import AuthImage from "../../../images/Auth";
 
 import { Link } from "react-router-dom";
 import { useUserDispatch } from "../../../context/UserContext";
@@ -12,7 +12,6 @@ import {
   Box,
   TextInput,
   Anchor,
-  Image,
   Center,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
@@ -68,7 +67,7 @@ const Login: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 540 }} mx="auto" className={classes.border_style}>
       <Center>
-        <SvgComponent />
+        <AuthImage />
       </Center>
       <h1 className="title">Log-In</h1>
       <form
@@ -92,7 +91,7 @@ const Login: React.FC = () => {
           onChange={onPasswordChange}
           autoComplete="on"
         />
-        <Button color="green" type="submit" className={classes.submitButton}>
+        <Button color="cyan" type="submit" className={classes.submitButton}>
           Submit
         </Button>
 

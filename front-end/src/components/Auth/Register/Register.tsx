@@ -7,17 +7,9 @@ import {
   IUserInfoContext,
 } from "../../../Model/models";
 import { useUserDispatch } from "../../../context/UserContext";
-import auth from "../../../images/auth.jpg";
-import {
-  Box,
-  Button,
-  Center,
-  Image,
-  PasswordInput,
-  TextInput,
-} from "@mantine/core";
+import { Box, Button, Center, PasswordInput, TextInput } from "@mantine/core";
 import { useStyles } from "../Auth.style";
-import SvgComponent from "../../../images/Auth";
+import AuthImage from "../../../images/Auth";
 
 // Initial state for the user credentials
 const initState: IAuthCredentials = {
@@ -101,7 +93,7 @@ const Register: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
       <Center>
-        <SvgComponent />
+        <AuthImage />
       </Center>
       <h1 className="title">Register</h1>
       <form onSubmit={handleInputs}>
@@ -153,7 +145,9 @@ const Register: React.FC = () => {
           autoComplete="on"
           label="Confirm Password"
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" color="cyan" className={classes.submitButton}>
+          Submit
+        </Button>
       </form>
       <Link to="/login" className="text flex-wrap link-light">
         Already a member?
