@@ -4,7 +4,7 @@ import Login from './components/Auth/Login/Login';
 import Register from './components/Auth/Register/Register';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import Navigation from './components/Navigation/Navigation';
+import Navigation from './components/Header/Navigation/Navigation';
 import  {UserContextProvider}  from './context/UserContext';
 import './App.css';
 

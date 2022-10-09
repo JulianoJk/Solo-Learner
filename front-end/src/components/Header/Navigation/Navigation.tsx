@@ -1,16 +1,14 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useUserDispatch, useUserState } from "../../context/UserContext";
-// import styles from "./Navigation.module.css";
+import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import { useEffect } from "react";
 import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
 import { Button, Group, Header } from "@mantine/core";
-
+import { useStyles } from "./Navigation.style";
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   let userIsLoggedInLocal = localStorage.getItem("user");
-
-  // Dispatch for the user
+  const { classes } = useStyles();
   const userDispatch = useUserDispatch();
 
   const { user } = useUserState();
@@ -32,14 +30,8 @@ const Navigation: React.FC = () => {
   // Check if is user is logged or not
   if (userIsLoggedInLocal) {
     return (
-      <Header
-        height={70}
-        p="md"
-        // classNames={{
-        //   root: `${styles.bg}`,
-        // }}
-      >
-        <Group position="right">
+      <Header height={70} p="md" className={classes.root}>
+        <Group position="right" classNames={classes.root}>
           <Button
             component={Link}
             to="/home"
@@ -81,14 +73,8 @@ const Navigation: React.FC = () => {
     );
   } else {
     return (
-      <Header
-        height={70}
-        p="md"
-        // classNames={{
-        //   root: `${styles.bg}`,
-        // }}
-      >
-        <Group position="right">
+      <Header height={70} p="md" className={classes.root}>
+        <Group position="right" classNames={classes.root}>
           <Button component={Link} to="/" radius="md" size="md" uppercase>
             Index
           </Button>
