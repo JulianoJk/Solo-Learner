@@ -17,6 +17,7 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useStyles } from "../Auth.style";
+import SvgComponent from "../../../images/Auth";
 
 // Initial state for the user credentials
 const initState: IAuthCredentials = {
@@ -100,7 +101,7 @@ const Register: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
       <Center>
-        <Image radius="md" src={auth} alt="Logo" />
+        <SvgComponent />
       </Center>
       <h1 className="title">Register</h1>
       <form onSubmit={handleInputs}>
@@ -114,6 +115,7 @@ const Register: React.FC = () => {
           required={true}
           minLength={5}
           autoComplete="on"
+          label="Email"
         />
         <TextInput
           type="text"
@@ -126,10 +128,7 @@ const Register: React.FC = () => {
           onChange={onNameChange}
           autoComplete="on"
         />
-        <br />
-        <label htmlFor="password">
-          <strong>Password:</strong>
-        </label>{" "}
+
         <PasswordInput
           type="password"
           value={initState.password}

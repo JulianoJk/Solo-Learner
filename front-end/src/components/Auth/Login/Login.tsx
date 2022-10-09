@@ -2,7 +2,8 @@ import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
-import auth from "../../../images/auth.jpg";
+import SvgComponent from "../../../images/Auth";
+
 import { Link } from "react-router-dom";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
@@ -65,9 +66,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
+    <Box sx={{ maxWidth: 540 }} mx="auto" className={classes.border_style}>
       <Center>
-        <Image radius="md" src={auth} alt="authantication image" />
+        <SvgComponent />
       </Center>
       <h1 className="title">Log-In</h1>
       <form
