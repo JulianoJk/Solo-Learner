@@ -1,21 +1,26 @@
-import { useTaskState } from '../../../context/UserContext';
+import { useUserState } from "../../../context/UserContext";
+import PageNotFound from "../pageNotFound/PageNotFound";
 
-const Profile:React.FC = ()=> {
-	const taskState = useTaskState();
-	const isLoggedIn = taskState.isLoggedIn;
+const Profile: React.FC = () => {
+  const { user } = useUserState();
+  let userIsLoggedInLocal = localStorage.getItem("user");
 
-	if (isLoggedIn) {
-		return (
-			<div>
-				<h1> Welcome Back {taskState.user.username}! </h1>
-			</div>
-		);
-	} else {
-		return (
-			<div>
-				<h1> No Account found! Log-In/Register to proceed!</h1>
-			</div>
-		);
-	}
+  if (userIsLoggedInLocal) {
+    return (
+      <div>
+        <h1> Welcome Back {user.username}! </h1>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <PageNotFound
+          navText="No Account found. To proceed, you must be logged-in!"
+          navigationPath="/login"
+          btnText="Login"
+        />
+      </div>
+    );
+  }
 };
 export default Profile;

@@ -8,8 +8,9 @@ import {
 } from "../../../Model/models";
 import { useUserDispatch } from "../../../context/UserContext";
 import { Button } from "../../button/Button.component";
-// import auth from "../../../images/auth.jpg";
+import auth from "../../../images/auth.jpg";
 import "../Auth.css";
+import { Center, Image } from "@mantine/core";
 
 // Initial state for the user credentials
 const initState: IAuthCredentials = {
@@ -90,10 +91,9 @@ const Register: React.FC = () => {
 
   return (
     <div className="container flex-column input-container w-50 p-3 border border_style">
-      {/* <div>
-		<img src={auth} alt="Logo" className="rounded mx-auto d-block " />
-	</div> */}
-
+      <Center>
+        <Image radius="md" src={auth} alt="Logo" />
+      </Center>
       <h1 className="title">Register</h1>
       <form onSubmit={handleInputs}>
         <label htmlFor="email" className="control-label text">

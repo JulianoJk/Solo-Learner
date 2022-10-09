@@ -1,22 +1,27 @@
-import React from 'react';
-import { useTaskState } from '../../../context/UserContext';
+import React from "react";
 
-const Home:React.FC = () => {
-	const {isLoggedIn} = useTaskState();
+import PageNotFound from "../pageNotFound/PageNotFound";
 
-	if (isLoggedIn) {
-		return (
-			<div>
-				<h1>Welcome back</h1>
-			</div>
-		);
-	} else {
-		return (
-			<div>
-				<h1> No Account found! Log-In/Register to proceed!</h1>
-			</div>
-		);
-	}
+const Home: React.FC = () => {
+  let userIsLoggedInLocal = localStorage.getItem("user");
+
+  if (userIsLoggedInLocal) {
+    return (
+      <div>
+        <h1>Welcome Back!</h1>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <PageNotFound
+          navText="No Account found. To proceed, you must be logged-in!"
+          navigationPath="/login"
+          btnText="Login"
+        />
+      </div>
+    );
+  }
 };
 
 export default Home;

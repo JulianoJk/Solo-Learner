@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
 import "../Auth.css";
-// import Logo from "../../../images/Logo.png"
+import Logo from "../../../images/logo.png";
 import { Link } from "react-router-dom";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
@@ -12,12 +12,13 @@ import {
   Button,
   Box,
   TextInput,
-  Anchor
+  Anchor,
+  Image,
+  Center,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
-
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -66,9 +67,9 @@ const Login: React.FC = () => {
 
   return (
     <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
-      {/* <Center>
-        <Image radius="md" src={logo} alt="Logo" />
-      </Center> */}
+      <Center>
+        <Image radius="md" src={Logo} alt="Logo" />
+      </Center>
       <h1 className="title">Log-In</h1>
       <form
         // values: current form values
