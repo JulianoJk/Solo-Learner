@@ -1,4 +1,5 @@
 import React from "react";
+import LearningUnits from "../../Learning-Units/LearningUnits";
 
 import PageNotFound from "../pageNotFound/PageNotFound";
 
@@ -8,7 +9,7 @@ const Home: React.FC = () => {
   if (userIsLoggedInLocal) {
     return (
       <div>
-        <h1>Welcome Back!</h1>
+        <LearningUnits></LearningUnits>
       </div>
     );
   } else {

@@ -1,7 +1,10 @@
-import React from 'react'
+import { Button } from "@mantine/core";
+import React from "react";
 
 export default function Theory() {
   return (
-    <div>Theory</div>
-  )
+    <>
+      <Button>Theory</Button>
+    </>
+  );
 }

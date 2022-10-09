@@ -2,13 +2,11 @@ import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
-import "../Auth.css";
-import Logo from "../../../images/logo.png";
+import auth from "../../../images/auth.jpg";
 import { Link } from "react-router-dom";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
   PasswordInput,
-  Group,
   Button,
   Box,
   TextInput,
@@ -19,10 +17,11 @@ import {
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
+import { useStyles } from "../Auth.style";
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
-
+  const { classes } = useStyles();
   const [errorMessage, setErrorMessage] = useState<any>();
 
   const [email, setEmail] = useState<string>("");
@@ -68,7 +67,7 @@ const Login: React.FC = () => {
   return (
     <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
       <Center>
-        <Image radius="md" src={Logo} alt="Logo" />
+        <Image radius="md" src={auth} alt="authantication image" />
       </Center>
       <h1 className="title">Log-In</h1>
       <form
@@ -92,11 +91,9 @@ const Login: React.FC = () => {
           onChange={onPasswordChange}
           autoComplete="on"
         />
-        <Group position="right" mt="md">
-          <Button color="green" type="submit">
-            Submit
-          </Button>
-        </Group>
+        <Button color="green" type="submit" className={classes.submitButton}>
+          Submit
+        </Button>
 
         {/*Display error message if any*/}
         <AlertComponent

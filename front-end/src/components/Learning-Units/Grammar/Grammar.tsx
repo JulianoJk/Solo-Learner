@@ -1,7 +1,10 @@
-import React from 'react'
+import { Button } from "@mantine/core";
+import React from "react";
 
 export default function Grammar() {
   return (
-    <div>Grammar</div>
-  )
+    <>
+      <Button>Theory</Button>
+    </>
+  );
 }
