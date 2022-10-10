@@ -13,11 +13,10 @@ import {
   TextInput,
   Anchor,
   Center,
-  Divider,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
-import ErrorHandler from "../../ErrorHandler/ErrorHandler";
+
 import { useStyles } from "../Auth.style";
 import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock } from "tabler-icons-react";
@@ -29,7 +28,6 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [hasError, setHasError] = useState<boolean>(false);
   const userDispatch: usersDispatchContext = useUserDispatch();
 
   const { mutate: login, isLoading } = useMutation(loginAPI, {
@@ -105,10 +103,7 @@ const Login: React.FC = () => {
         </Button>
 
         {/*Display error message if any*/}
-        <AlertComponent
-          className={ErrorHandler(errorMessage)}
-          message={errorMessage}
-        />
+        <AlertComponent message={errorMessage} />
       </form>
       <span className={classes.switchAuthLinks}>
         New to Solo Learner?

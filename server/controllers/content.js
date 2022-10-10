@@ -26,12 +26,12 @@ router.post("/practice", async (req, res) => {
 
         const user = await User.findOne({email: email})
         if(!user) {
-            return res.status(400).json({message: "User not found"})
+            return res.status(400).json({message: "Invalid username or password"})
         }
         const passwordsMatch = await bcrypt.compare(password, user.password) 
 
         if(!passwordsMatch) {
-            return res.status(400).json({message: "Wrong password"})
+            return res.status(400).json({message: "Invalid username or password"})
         }
 
         //Assign the token to the user
