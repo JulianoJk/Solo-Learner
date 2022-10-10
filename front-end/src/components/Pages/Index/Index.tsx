@@ -5,16 +5,11 @@ const Index: React.FC = () => {
   return (
     <div>
       {/* container for the logo */}
-      <div>
-        <LogoImage
-          width="50%"
-          height="100%"
-          radius={30}
-          className={classes.logo}
-        />
+      <div className={classes.logoContainer}>
+        <LogoImage width="50%" height="100%"  />
       </div>
       <div className={classes.quote}>
-        <h2 className="lead">We learn!</h2>
+        <h2 className="lead">Solo Learner!</h2>
       </div>
       <div>
         <h2>

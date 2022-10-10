@@ -149,7 +149,7 @@ const Register: React.FC = () => {
           autoComplete="on"
           label="Confirm Password"
         />
-        <Button type="submit" color="cyan" className={classes.submitButton} >
+        <Button type="submit" color="cyan" className={classes.submitButton}>
           Submit
         </Button>
       </form>

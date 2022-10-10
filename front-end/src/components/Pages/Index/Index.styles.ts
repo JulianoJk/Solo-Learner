@@ -1,11 +1,12 @@
 import { createStyles } from "@mantine/core";
+import { TRANSPARENT_CHART_COLORS } from "../../../Theme/Theme";
 
 export const useStyles = createStyles(() => ({
   quote: {
     margin: 7,
   },
-  logo: {
-    border: "10px solid red",
-    borderRadius: 30,
+  logoContainer: {
+    backgroundColor: '#011d145a',
+    width: "fit-content",
   },
 }));

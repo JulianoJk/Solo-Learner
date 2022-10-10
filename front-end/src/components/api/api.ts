@@ -1,10 +1,9 @@
 import { IUserInfoContext } from "../../Model/models";
 
-// API call to use when user wants to login
-export const loginAPI = async (
-  email: string,
-  password: string
-): Promise<IUserInfoContext | string | undefined> => {
+export const loginAPI = async ({
+  email,
+  password,
+}: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch("http://localhost:3001/users/login", {
       method: "POST",
@@ -15,11 +14,8 @@ export const loginAPI = async (
       }),
     });
     const data: IUserInfoContext = await response.json();
-    if (response.ok) {
-      return data;
-    } else {
-      return data.message;
-    }
+
+    return data;
   } catch (error) {
     return;
   }

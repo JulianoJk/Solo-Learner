@@ -13,12 +13,15 @@ import {
   TextInput,
   Anchor,
   Center,
+  Alert,
+  Loader,
+  Text,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
 import { useStyles } from "../Auth.style";
-import { Lock, Mail } from "tabler-icons-react";
+import { useMutation } from "@tanstack/react-query";
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -27,8 +30,19 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-
+  const [response, setResponse] = useState<IUserInfoContext>();
   const userDispatch: usersDispatchContext = useUserDispatch();
+
+  const {
+    mutate: login,
+    isLoading,
+    isSuccess,
+  } = useMutation(loginAPI, {
+    onSuccess: (data) => {
+      setResponse(data);
+    },
+    onError: () => {},
+  });
 
   // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
@@ -42,20 +56,17 @@ const Login: React.FC = () => {
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
     try {
-      const data: string | IUserInfoContext | null | undefined = await loginAPI(
-        email,
-        password
-      );
+      login({ email, password });
 
       // Check the type of the data is returned, if is string, it contains a message which means error and display error
       // If data is not string, it contains user's information (token, id, email) and the login was successful
-      if (typeof data === "string" || data instanceof String) {
-        setErrorMessage(data);
-      } else if (data) {
+      if (typeof response === "string" || response instanceof String) {
+        setErrorMessage(response.message);
+      } else if (isSuccess) {
         const user: IUserInfoContext = {
-          id: data["id"],
-          username: data["username"],
-          token: data["token"],
+          id: response?.id,
+          username: response?.username,
+          token: response?.token,
         };
         userDispatch({ type: "SET_USER", user: user });
         navigate("/home");
@@ -76,8 +87,8 @@ const Login: React.FC = () => {
         onSubmit={handleInputs}
       >
         <TextInput
-          icon={<Mail />}
           required
+          type="email"
           label="Email"
           placeholder="name@example.com"
           value={email}
@@ -92,9 +103,13 @@ const Login: React.FC = () => {
           value={password}
           onChange={onPasswordChange}
           autoComplete="on"
-          icon={<Lock />}
         />
-        <Button color="cyan" type="submit" className={classes.submitButton}>
+        <Button
+          color="cyan"
+          type="submit"
+          className={classes.submitButton}
+          loading={isLoading}
+        >
           Submit
         </Button>
 
