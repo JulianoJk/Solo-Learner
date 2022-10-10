@@ -13,6 +13,7 @@ import {
   TextInput,
   Anchor,
   Center,
+  Divider,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
@@ -77,7 +78,7 @@ const Login: React.FC = () => {
           icon={<Mail />}
           required
           type="email"
-          label="Email"
+          label={<span className={classes.inputLabels}>Email:</span>}
           placeholder="name@example.com"
           value={email}
           onChange={onEmailChange}
@@ -87,7 +88,7 @@ const Login: React.FC = () => {
         <PasswordInput
           icon={<Lock />}
           required
-          label="Password"
+          label={<span className={classes.inputLabels}>Password:</span>}
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
@@ -109,11 +110,16 @@ const Login: React.FC = () => {
           message={errorMessage}
         />
       </form>
-      <Anchor component={Link} to="/register">
-        <em>
-          <u> Not a member?</u>
-        </em>
-      </Anchor>
+      <span className={classes.switchAuthLinks}>
+        New to Solo Learner?
+        <Anchor
+          component={Link}
+          to="/register"
+          className={classes.switchAuthLinkAnchor}
+        >
+          Create an account
+        </Anchor>
+      </span>
     </Box>
   );
 };

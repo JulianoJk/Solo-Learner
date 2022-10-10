@@ -8,7 +8,6 @@ import Navigation from "./components/Header/Navigation/Navigation";
 import { UserContextProvider } from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -27,7 +26,6 @@ const App = () => {
           </Routes>
         </UserContextProvider>
       </BrowserRouter>
-      <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   );
 };

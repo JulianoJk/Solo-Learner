@@ -95,7 +95,7 @@ const Register: React.FC = () => {
       <Center>
         <AuthImage />
       </Center>
-      <h1 className="title">Register</h1>
+      <h1 className={classes.title}>Register</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
           icon={<Mail />}
@@ -107,13 +107,15 @@ const Register: React.FC = () => {
           required={true}
           minLength={5}
           autoComplete="on"
-          label="Email"
+          label={<span className={classes.inputLabels}>Email:</span>}
         />
 
         <TextInput
           type="text"
           icon={<UserCircle />}
-          label="Username"
+          label={
+            <span className={classes.inputLabels}>Username (optional):</span>
+          }
           value={initState.username}
           id="Username"
           placeholder="John Smith"
@@ -131,7 +133,7 @@ const Register: React.FC = () => {
           required={true}
           minLength={6}
           autoComplete="on"
-          label="Password"
+          label={<span className={classes.inputLabels}>Password:</span>}
         />
         <PasswordInput
           icon={<Lock />}
@@ -143,7 +145,7 @@ const Register: React.FC = () => {
           required={true}
           minLength={6}
           autoComplete="on"
-          label="Confirm Password"
+          label={<span className={classes.inputLabels}>Confirm Password:</span>}
         />
         <Button
           type="submit"
