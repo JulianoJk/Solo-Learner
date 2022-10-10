@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
@@ -30,7 +30,6 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [response, setResponse] = useState<IUserInfoContext>();
   const userDispatch: usersDispatchContext = useUserDispatch();
 
   const {
@@ -39,7 +38,17 @@ const Login: React.FC = () => {
     isSuccess,
   } = useMutation(loginAPI, {
     onSuccess: (data) => {
-      setResponse(data);
+      if (typeof data === "string" || data instanceof String) {
+        setErrorMessage(data.message);
+      } else {
+        const user: IUserInfoContext = {
+          id: data?.id,
+          username: data?.username,
+          token: data?.token,
+        };
+        userDispatch({ type: "SET_USER", user: user });
+        navigate("/home");
+      }
     },
     onError: () => {},
   });
@@ -57,20 +66,6 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       login({ email, password });
-
-      // Check the type of the data is returned, if is string, it contains a message which means error and display error
-      // If data is not string, it contains user's information (token, id, email) and the login was successful
-      if (typeof response === "string" || response instanceof String) {
-        setErrorMessage(response.message);
-      } else if (isSuccess) {
-        const user: IUserInfoContext = {
-          id: response?.id,
-          username: response?.username,
-          token: response?.token,
-        };
-        userDispatch({ type: "SET_USER", user: user });
-        navigate("/home");
-      }
     } catch (error) {
       console.warn(error);
     }
