@@ -91,17 +91,16 @@ const Register: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 540 }} mx="auto" className="border">
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
       <Center>
         <AuthImage />
       </Center>
       <h1 className="title">Register</h1>
-      <form onSubmit={handleInputs}>
+      <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
           icon={<Mail />}
           type="email"
           value={initState.email}
-          className={classes.emailIcon}
           id="email"
           placeholder="name@example.com"
           onChange={onEmailChange}
@@ -116,7 +115,6 @@ const Register: React.FC = () => {
           icon={<UserCircle />}
           label="Username"
           value={initState.username}
-          className={classes.userIcon}
           id="Username"
           placeholder="John Smith"
           onChange={onNameChange}
@@ -127,7 +125,6 @@ const Register: React.FC = () => {
           icon={<Lock />}
           type="password"
           value={initState.password}
-          className={classes.passwordIcon}
           id="password"
           placeholder="Password"
           onChange={handlePassword}
@@ -140,7 +137,6 @@ const Register: React.FC = () => {
           icon={<Lock />}
           type="password"
           value={initState.passwordRepeat}
-          className={classes.passwordIcon}
           id="confirmPassword"
           placeholder="Confirm Password"
           onChange={handleConfirmPassword}
@@ -149,8 +145,13 @@ const Register: React.FC = () => {
           autoComplete="on"
           label="Confirm Password"
         />
-        <Button type="submit" color="cyan" className={classes.submitButton}>
-          Submit
+        <Button
+          type="submit"
+          color="cyan"
+          className={classes.submitButton}
+          uppercase
+        >
+          register
         </Button>
       </form>
       <Link to="/login">Already a member?</Link>

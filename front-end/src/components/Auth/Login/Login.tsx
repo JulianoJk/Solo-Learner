@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
 
@@ -13,15 +13,13 @@ import {
   TextInput,
   Anchor,
   Center,
-  Alert,
-  Loader,
-  Text,
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import ErrorHandler from "../../ErrorHandler/ErrorHandler";
 import { useStyles } from "../Auth.style";
 import { useMutation } from "@tanstack/react-query";
+import { Mail, Lock } from "tabler-icons-react";
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -30,15 +28,12 @@ const Login: React.FC = () => {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [hasError, setHasError] = useState<boolean>(false);
   const userDispatch: usersDispatchContext = useUserDispatch();
 
-  const {
-    mutate: login,
-    isLoading,
-    isSuccess,
-  } = useMutation(loginAPI, {
+  const { mutate: login, isLoading } = useMutation(loginAPI, {
     onSuccess: (data) => {
-      if (typeof data === "string" || data instanceof String) {
+      if (typeof data?.message === "string" || data instanceof String) {
         setErrorMessage(data.message);
       } else {
         const user: IUserInfoContext = {
@@ -72,16 +67,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 540 }} mx="auto" className={classes.border_style}>
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
       <Center>
         <AuthImage />
       </Center>
-      <h1 className="title">Log-In</h1>
-      <form
-        // values: current form values
-        onSubmit={handleInputs}
-      >
+      <h1 className={classes.title}>Log-In</h1>
+      <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
+          icon={<Mail />}
           required
           type="email"
           label="Email"
@@ -92,6 +85,7 @@ const Login: React.FC = () => {
         />
 
         <PasswordInput
+          icon={<Lock />}
           required
           label="Password"
           placeholder="Password"
@@ -104,8 +98,9 @@ const Login: React.FC = () => {
           type="submit"
           className={classes.submitButton}
           loading={isLoading}
+          uppercase
         >
-          Submit
+          Login
         </Button>
 
         {/*Display error message if any*/}

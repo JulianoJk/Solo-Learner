@@ -32,6 +32,9 @@ export const TRANSPARENT_CHART_COLORS = [
   "#bfbfef",
   "#f9d2c4",
   "#d3efd4",
+  "##2cf6b38f",
+  "#c1aac086",
+  "#de6c8397",
 ];
 
 export const CLOUDY_CYAN = "#83c5be";
@@ -61,3 +64,4 @@ export const PERRY_WINKLE = "#8782d9";
 export const PURPLE_DARK = "#493396";
 export const DEEP_BLUE = "#0981c0";
 export const LIGHT_VIOLET = "#bfbfef";
+export const LIGHT_MENT = "#3ED2B0";
