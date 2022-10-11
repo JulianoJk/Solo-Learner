@@ -27,7 +27,7 @@ export const registerAPI = async (
   username: string,
   password: string,
   passwordRepeat: string
-): Promise<IUserInfoContext | string | null | undefined> => {
+): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch("http://localhost:3001/users/register", {
       method: "POST",
@@ -42,10 +42,8 @@ export const registerAPI = async (
     const data: IUserInfoContext = await response.json();
     if (response.ok) {
       return data;
-    } else {
-      return data.message;
     }
   } catch (error) {
-    return null;
+    return;
   }
 };

@@ -1,93 +1,73 @@
-import { useReducer } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   usersDispatchContext,
-  EActionTypes,
-  IAuthCredentials,
   IUserInfoContext,
 } from "../../../Model/models";
 import { useUserDispatch } from "../../../context/UserContext";
-import { Box, Button, Center, PasswordInput, TextInput } from "@mantine/core";
-import { useStyles } from "../Auth.style";
+import {
+  PasswordInput,
+  Button,
+  Box,
+  TextInput,
+  Anchor,
+  Center,
+} from "@mantine/core";
+import { useStyles } from "../Auth.styles";
 import AuthImage from "../../../images/Auth";
 import { Lock, Mail, UserCircle } from "tabler-icons-react";
-// Initial state for the user credentials
-const initState: IAuthCredentials = {
-  email: undefined,
-  username: undefined,
-  password: undefined,
-  passwordRepeat: undefined,
-};
-
-// Reducer to set credentials for the user
-const reducer = (state: IAuthCredentials, action: IAuthCredentials) => {
-  switch (action.type) {
-    case EActionTypes.SET_EMAIL:
-      return { ...state, email: action.email };
-    case EActionTypes.SET_NAME:
-      return { ...state, username: action.username };
-    case EActionTypes.SET_PASSWORD:
-      return { ...state, password: action.password };
-    case EActionTypes.SET_CONFIRM_PASSWORD:
-      return { ...state, passwordRepeat: action.passwordRepeat };
-    default:
-      return { ...state };
-  }
-};
+import { registerAPI } from "../../api/api";
+import { AlertComponent } from "../../AlertComponent/AlertComponent";
+import { useMutation } from "@tanstack/react-query";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const [internalState, formDispatch] = useReducer(reducer, initState);
   const userDispatch: usersDispatchContext = useUserDispatch();
-
   const { classes } = useStyles();
+
+  const [errorMessage, setErrorMessage] = useState<any>();
+  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+  const { mutate: register, isLoading } = useMutation(registerAPI, {
+    onSuccess: (data) => {
+      if (typeof data?.message === "string" || data instanceof String) {
+        setErrorMessage(data.message);
+      } else {
+        const user: IUserInfoContext = {
+          id: data?.id,
+          username: data?.username,
+          token: data?.token,
+        };
+        userDispatch({ type: "SET_USER", user: user });
+        navigate("/home");
+      }
+    },
+    onError: () => {},
+  });
 
   // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    formDispatch({ type: EActionTypes.SET_EMAIL, email: e.target.value });
+    setEmail(e.target.value);
   };
 
   const onNameChange = (e: React.BaseSyntheticEvent): void => {
-    formDispatch({ type: EActionTypes.SET_NAME, username: e.target.value });
+    setUsername(e.target.value);
   };
 
   const handlePassword = (e: React.BaseSyntheticEvent): void => {
-    formDispatch({ type: EActionTypes.SET_PASSWORD, password: e.target.value });
+    setPassword(e.target.value);
   };
 
   const handleConfirmPassword = (e: React.BaseSyntheticEvent): void => {
-    formDispatch({
-      type: EActionTypes.SET_CONFIRM_PASSWORD,
-      passwordRepeat: e.target.value,
-    });
+    setConfirmPassword(e.target.value);
   };
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    // Pass the values to the API call
-    const response = await fetch("http://localhost:3001/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: internalState.email,
-        username: internalState.username,
-        password: internalState.password,
-        passwordRepeat: internalState.passwordRepeat,
-      }),
-    });
-    const data: IUserInfoContext = await response.json();
-    // If response is true(200) continue
-    if (response.ok) {
-      const user: IUserInfoContext = {
-        id: data["id"],
-        username: data["username"],
-        token: data["token"],
-      };
-      userDispatch({ type: "SET_USER", user: user });
-      navigate("/home");
-    } else {
-      alert("Please try again!");
-    }
+    register(email, username, password, confirmPassword);
   };
 
   return (
@@ -155,8 +135,18 @@ const Register: React.FC = () => {
         >
           register
         </Button>
+        <AlertComponent message={errorMessage} />
       </form>
-      <Link to="/login">Already a member?</Link>
+      <span className={classes.switchAuthLinks}>
+        New to Solo Learner?
+        <Anchor
+          component={Link}
+          to="/register"
+          className={classes.switchAuthLinkAnchor}
+        >
+          Create an account
+        </Anchor>
+      </span>
     </Box>
   );
 };

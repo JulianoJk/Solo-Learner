@@ -4,7 +4,7 @@ import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import { useEffect } from "react";
 import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
 import { Button, Group, Header } from "@mantine/core";
-import { useStyles } from "./Navigation.style";
+import { useStyles } from "./Navigation.styles";
 const Navigation: React.FC = () => {
   const navigate = useNavigate();
   let userIsLoggedInLocal = localStorage.getItem("user");

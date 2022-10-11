@@ -1,7 +1,7 @@
 import React from "react";
 import { Alert, Center, Text, Title } from "@mantine/core";
 import { AlertCircle } from "tabler-icons-react";
-import { useStyles } from "./Alert.style";
+import { useStyles } from "./Alert.styles";
 import { isUndefinedOrNullString } from "../../lib/dist";
 
 interface IProps {

@@ -17,7 +17,7 @@ import {
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 
-import { useStyles } from "../Auth.style";
+import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock } from "tabler-icons-react";
 
@@ -47,11 +47,9 @@ const Login: React.FC = () => {
     onError: () => {},
   });
 
-  // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
     setEmail(e.target.value);
   };
-  // Password handler
   const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
     setPassword(e.target.value);
   };

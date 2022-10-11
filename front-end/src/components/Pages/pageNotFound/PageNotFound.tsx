@@ -8,7 +8,7 @@ interface IPops {
   navText?: string;
   statusNumber?: number;
   btnText?: string;
-  navigationPath?: string;
+  navigationPath?: JSX.Element;
 }
 
 const PageNotFound: React.FC<IPops> = ({

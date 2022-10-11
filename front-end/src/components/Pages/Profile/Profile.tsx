@@ -1,4 +1,5 @@
 import { useUserState } from "../../../context/UserContext";
+import Login from "../../Auth/Login/Login";
 import PageNotFound from "../pageNotFound/PageNotFound";
 
 const Profile: React.FC = () => {
@@ -16,7 +17,7 @@ const Profile: React.FC = () => {
       <div>
         <PageNotFound
           navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath="/login"
+          navigationPath={<Login />}
           btnText="Login"
         />
       </div>

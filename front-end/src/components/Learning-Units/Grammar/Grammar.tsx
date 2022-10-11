@@ -1,19 +1,19 @@
-import { Card, Image, Text } from "@mantine/core";
+import { Card, Text } from "@mantine/core";
+import React from "react";
+import VocabularyImage from "../../../images/Vocabulary";
+import { useStyles } from "./Grammar.styles";
 
-export default function Grammar() {
+export default function Vocabulary() {
+  const { classes } = useStyles();
   return (
     <>
-      <Card shadow="sm" p="xl" component="a" href="#">
+      <Card shadow="sm" p="xl" component="a" href="#" className={classes.root}>
         <Card.Section>
-          <Image
-            src="https://images.unsplash.com/photo-1579227114347-15d08fc37cae?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2550&q=80"
-            height={160}
-            alt="No way!"
-          />
+          <VocabularyImage width={250} height={299}></VocabularyImage>
         </Card.Section>
 
         <Text weight={500} size="lg" mt="md">
-          Grammar
+          Vocabulary
         </Text>
       </Card>
     </>
