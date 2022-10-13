@@ -35,8 +35,9 @@ export const useStyles = createStyles(() => ({
   },
   switchAuthLinks: {
     alignItems: "center",
+    padding: 10,
   },
   switchAuthLinkAnchor: {
-    marginLeft: "8px",
+    marginLeft: 8,
   },
 }));

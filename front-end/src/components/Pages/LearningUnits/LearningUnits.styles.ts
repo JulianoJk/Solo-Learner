@@ -1,8 +1,8 @@
 import { createStyles } from "@mantine/core";
 export const useStyles = createStyles(() => ({
   sectionContainer: {
-    width: 300,
-    borderRadius: "50%",
-    display: "inline-block",
+    width: 500,
+    border: "10px solid red",
+    borderRadius: "70%",
   },
 }));

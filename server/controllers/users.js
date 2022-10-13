@@ -51,6 +51,9 @@ router.post("/register", async (req, res) => {
   try {
     let { email, password, passwordRepeat, username } = req.body;
     // Validations
+    if (password !== passwordRepeat) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
     if (!email || !password || !passwordRepeat) {
       return res.status(400).json({ message: "Mandatory fields are missing" });
     }
@@ -75,6 +78,7 @@ router.post("/register", async (req, res) => {
 
     const salt = await bcrypt.genSalt();
     const passwordHashed = await bcrypt.hash(password, salt);
+    const dateJointed = new Date();
 
     const newUser = new User({
       email: email,
@@ -101,3 +105,4 @@ router.post("/register", async (req, res) => {
   }
 });
 module.exports = router;
+

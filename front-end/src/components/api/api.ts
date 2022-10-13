@@ -14,20 +14,18 @@ export const loginAPI = async ({
       }),
     });
     const data: IUserInfoContext = await response.json();
-
     return data;
   } catch (error) {
     return;
   }
 };
 
-// API call to use when user wants to register
-export const registerAPI = async (
-  email: string,
-  username: string,
-  password: string,
-  passwordRepeat: string
-): Promise<IUserInfoContext | undefined> => {
+export const registerAPI = async ({
+  email,
+  username,
+  password,
+  passwordRepeat,
+}: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch("http://localhost:3001/users/register", {
       method: "POST",
@@ -40,9 +38,7 @@ export const registerAPI = async (
       }),
     });
     const data: IUserInfoContext = await response.json();
-    if (response.ok) {
-      return data;
-    }
+    return data;
   } catch (error) {
     return;
   }

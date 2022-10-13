@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  usersDispatchContext,
-  IUserInfoContext,
-} from "../../../Model/models";
+import { usersDispatchContext, IUserInfoContext } from "../../../Model/models";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
   PasswordInput,
@@ -29,10 +26,12 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
   const { mutate: register, isLoading } = useMutation(registerAPI, {
     onSuccess: (data) => {
+      console.log(data);
+
       if (typeof data?.message === "string" || data instanceof String) {
         setErrorMessage(data.message);
       } else {
@@ -62,12 +61,12 @@ const Register: React.FC = () => {
   };
 
   const handleConfirmPassword = (e: React.BaseSyntheticEvent): void => {
-    setConfirmPassword(e.target.value);
+    setPasswordRepeat(e.target.value);
   };
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    register(email, username, password, confirmPassword);
+    register({ email, username, password, passwordRepeat });
   };
 
   return (
@@ -80,7 +79,7 @@ const Register: React.FC = () => {
         <TextInput
           icon={<Mail />}
           type="email"
-          value={initState.email}
+          value={email}
           id="email"
           placeholder="name@example.com"
           onChange={onEmailChange}
@@ -96,7 +95,7 @@ const Register: React.FC = () => {
           label={
             <span className={classes.inputLabels}>Username (optional):</span>
           }
-          value={initState.username}
+          value={username}
           id="Username"
           placeholder="John Smith"
           onChange={onNameChange}
@@ -106,7 +105,7 @@ const Register: React.FC = () => {
         <PasswordInput
           icon={<Lock />}
           type="password"
-          value={initState.password}
+          value={password}
           id="password"
           placeholder="Password"
           onChange={handlePassword}
@@ -118,7 +117,7 @@ const Register: React.FC = () => {
         <PasswordInput
           icon={<Lock />}
           type="password"
-          value={initState.passwordRepeat}
+          value={passwordRepeat}
           id="confirmPassword"
           placeholder="Confirm Password"
           onChange={handleConfirmPassword}
@@ -128,23 +127,24 @@ const Register: React.FC = () => {
           label={<span className={classes.inputLabels}>Confirm Password:</span>}
         />
         <Button
-          type="submit"
           color="cyan"
+          type="submit"
           className={classes.submitButton}
+          loading={isLoading}
           uppercase
         >
-          register
+          Register
         </Button>
         <AlertComponent message={errorMessage} />
       </form>
       <span className={classes.switchAuthLinks}>
-        New to Solo Learner?
+        Already a member?
         <Anchor
           component={Link}
-          to="/register"
+          to="/login"
           className={classes.switchAuthLinkAnchor}
         >
-          Create an account
+          Log-In
         </Anchor>
       </span>
     </Box>
