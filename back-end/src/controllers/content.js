@@ -1,5 +1,5 @@
 const router = require("express").Router()
-const bcrypt = require("bcryptjs")
+import bcrypt from 'bcryptjs'
 const jwt = require("jsonwebtoken")
 const User = require("../models/user.model")
 //route for the learning material (vocabulary, grammar, things to know etc)

@@ -32,6 +32,8 @@ const Login: React.FC = () => {
 
   const { mutate: login, isLoading } = useMutation(loginAPI, {
     onSuccess: (data) => {
+      console.log(data);
+      
       if (typeof data?.message === "string" || data instanceof String) {
         setErrorMessage(data.message);
       } else {

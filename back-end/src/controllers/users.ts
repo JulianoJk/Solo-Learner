@@ -1,9 +1,10 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
+import { Request, Response } from "express";
+import bcrypt from "bcryptjs";
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 
-router.get("/profile", async (req, res) => {
+router.get("/profile", async (req: Request, res: Response) => {
   const token = req.headers["x-access-token"];
   if (!token) {
     return res.status(400).send("Not authenticated");
@@ -16,7 +17,7 @@ router.get("/profile", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -34,20 +35,24 @@ router.post("/login", async (req, res) => {
     }
 
     //Assign the token to the user
-    jwt.sign({ id: user._id }, process.env.JWT_KEY, (err, token) => {
-      if (err) throw err;
-      res.json({
-        token,
-        username: user.username,
-        id: user._id,
-      });
-    });
-  } catch (err) {
+    jwt.sign(
+      { id: user._id },
+      process.env.JWT_KEY,
+      (err: string, token: string) => {
+        if (err) throw err;
+        res.json({
+          token,
+          username: user.username,
+          id: user._id,
+        });
+      }
+    );
+  } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
 });
 
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     let { email, password, passwordRepeat, username } = req.body;
     // Validations
@@ -79,6 +84,7 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const passwordHashed = await bcrypt.hash(password, salt);
     const dateJointed = new Date();
+    console.log(dateJointed);
 
     const newUser = new User({
       email: email,
@@ -100,9 +106,8 @@ router.post("/register", async (req, res) => {
       username: userSignup.username,
       id: userSignup._id,
     });
-  } catch (err) {
+  } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
 });
 module.exports = router;
-
