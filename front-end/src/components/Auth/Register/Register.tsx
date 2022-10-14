@@ -15,7 +15,7 @@ import AuthImage from "../../../images/Auth";
 import { Lock, Mail, UserCircle } from "tabler-icons-react";
 import { registerAPI } from "../../api/api";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -28,24 +28,49 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
-  const { mutate: register, isLoading } = useMutation(registerAPI, {
-    onSuccess: (data) => {
-      console.log(data);
+  // const { mutate: register, isLoading } = useMutation(registerAPI, {
+  //   onSuccess: (data) => {
+  //     if (typeof data?.message === "string" || data instanceof String) {
+  //       setErrorMessage(data.message);
+  //     } else {
+  //       const user: IUserInfoContext = {
+  //         id: data?.id,
+  //         username: data?.username,
+  //         token: data?.token,
+  //         dateJoined: data?.dateJoined,
+  //       };
+  //       console.log(data);
 
-      if (typeof data?.message === "string" || data instanceof String) {
-        setErrorMessage(data.message);
-      } else {
-        const user: IUserInfoContext = {
-          id: data?.id,
-          username: data?.username,
-          token: data?.token,
-        };
-        userDispatch({ type: "SET_USER", user: user });
-        navigate("/home");
-      }
+  //       userDispatch({ type: "SET_USER", user: user });
+  //       navigate("/home");
+  //     }
+  //   },
+  //   onError: () => {},
+  // });
+
+  const {
+    error,
+    isLoading,
+    status,
+    refetch,
+    data: userProfileData,
+  } = useQuery(
+    ["getProfileItems", { email, username, password, passwordRepeat }],
+    async () => {
+      const data: IUserInfoContext | undefined = await registerAPI({
+        email,
+        username,
+        password,
+        passwordRepeat,
+      });
+      console.log(data);
+      return data;
     },
-    onError: () => {},
-  });
+    {
+      refetchOnWindowFocus: false,
+      enabled: false,
+    }
+  );
 
   // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
@@ -66,7 +91,6 @@ const Register: React.FC = () => {
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    register({ email, username, password, passwordRepeat });
   };
 
   return (

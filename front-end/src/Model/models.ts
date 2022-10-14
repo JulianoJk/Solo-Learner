@@ -1,10 +1,11 @@
 // Interface for the user Context
 // Type message for the auth response(if there is an error to display to user, E.G.: "Wrong Password")
 export interface IUserInfoContext {
-  message?: string | undefined ;
+  message?: string | undefined;
   username: string | undefined;
   token: string | undefined;
   id: string | undefined;
+  dateJoined?: Date | string;
 }
 
 //interface for the context's default state

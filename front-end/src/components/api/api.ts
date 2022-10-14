@@ -43,3 +43,20 @@ export const registerAPI = async ({
     return;
   }
 };
+export const profileAPI = async ({
+  AccessToken,
+}: any): Promise<IUserInfoContext | undefined> => {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/users/profile/${AccessToken}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data: IUserInfoContext = await response.json();
+    return data;
+  } catch (error) {
+    return;
+  }
+};

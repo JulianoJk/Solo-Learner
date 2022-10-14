@@ -9,6 +9,7 @@ import { UserContextProvider } from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => {
           </Routes>
         </UserContextProvider>
       </BrowserRouter>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };
