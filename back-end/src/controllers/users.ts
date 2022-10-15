@@ -1,25 +1,41 @@
 const router = require("express").Router();
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
+import jwt_decode from "jwt-decode";
+interface DecodeToken {
+  email: string;
+  id?: string;
+  password: string;
+  username: string;
+  dateJoined: Date;
+  __v?: number | string;
+}
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
+const auth = require("../middleware/auth");
 
-router.get("/profile", async (req: Request, res: Response) => {
-  const token = req.headers["x-access-token"];
-  if (!token) {
-    return res.status(400).send("Not authenticated");
-  }
-  try {
-    const tokenData = jwt.verify(token, process.env.JWT_KEY);
-    return res.status(200).send(tokenData);
-  } catch (ex) {
-    return res.status(400).send("Invalid token");
-  }
+router.get("/profile/:AccessToken", async (req: Request, res: Response) => {
+  const { AccessToken } = req.params;
+  const decoded: DecodeToken = jwt_decode(AccessToken);
+  const currentUser = await User.findById(decoded?.id);
+  res.json(currentUser);
+
+  // if (AccessToken !== "" || AccessToken !== null || AccessToken !== undefined) {
+  //   // const user = await User.find({ AccessToken: AccessToken });
+  //   // res.json({ dateJoined: user.dateJoined });
+  //   const tokenData = jwt.verify(AccessToken, process.env.JWT_KEY);
+  //   console.log(tokenData);
+
+  //   return res.json("Hi");
+  // } else {
+  //   res.status(203).json("null");
+  // }
 });
 
 router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.status(400).json({ message: "Mandatory fields are missing" });
     }
@@ -83,16 +99,16 @@ router.post("/register", async (req: Request, res: Response) => {
 
     const salt = await bcrypt.genSalt();
     const passwordHashed = await bcrypt.hash(password, salt);
-    const dateJointed = new Date();
-    console.log(dateJointed);
-
+    const dateJointed = new Date().toDateString();
     const newUser = new User({
       email: email,
       password: passwordHashed,
       username: username,
+      dateJointed: dateJointed,
     });
 
     const userSignup = await newUser.save();
+
     const payload = {
       user: {
         id: userSignup._id,
@@ -105,9 +121,32 @@ router.post("/register", async (req: Request, res: Response) => {
       token,
       username: userSignup.username,
       id: userSignup._id,
+      dateJointed: dateJointed,
     });
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
   }
 });
 module.exports = router;
+
+router.delete("/deleteAccount", async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      const errorEmail = "User not found";
+      res.status(404).json({ errorEmail });
+      // stop further execution in this callback
+      return;
+    } else {
+      const foundEmail = "User found!";
+
+      await User.findOneAndDelete({ email: email }, function (err: any) {
+        res.status(200).json({ foundEmail });
+      });
+    }
+  } catch (e) {
+    return res.status(400).json({ error: e.message });
+  }
+});

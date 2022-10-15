@@ -5,7 +5,7 @@ require("dotenv").config();
 
 // Verify the token of the user, is is it okay, then continue to the next function
 const auth = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers["x-access-token"];
+  const token = req.headers["AccessToken"];
   if (!token) {
     return res.status(400).json("Not authenticated");
   }
