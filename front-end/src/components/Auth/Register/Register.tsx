@@ -15,7 +15,8 @@ import AuthImage from "../../../images/Auth";
 import { Lock, Mail, UserCircle } from "tabler-icons-react";
 import { registerAPI } from "../../api/api";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { isUndefinedOrNullString } from "../../../lib/dist";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -28,49 +29,25 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
-  // const { mutate: register, isLoading } = useMutation(registerAPI, {
-  //   onSuccess: (data) => {
-  //     if (typeof data?.message === "string" || data instanceof String) {
-  //       setErrorMessage(data.message);
-  //     } else {
-  //       const user: IUserInfoContext = {
-  //         id: data?.id,
-  //         username: data?.username,
-  //         token: data?.token,
-  //         dateJoined: data?.dateJoined,
-  //       };
-  //       console.log(data);
+  const { mutate: register, isLoading } = useMutation(registerAPI, {
+    onSuccess: (data) => {
+      const hasToken = isUndefinedOrNullString(data?.token);
 
-  //       userDispatch({ type: "SET_USER", user: user });
-  //       navigate("/home");
-  //     }
-  //   },
-  //   onError: () => {},
-  // });
-
-  const {
-    error,
-    isLoading,
-    status,
-    refetch,
-    data: userProfileData,
-  } = useQuery(
-    ["getProfileItems", { email, username, password, passwordRepeat }],
-    async () => {
-      const data: IUserInfoContext | undefined = await registerAPI({
-        email,
-        username,
-        password,
-        passwordRepeat,
-      });
-      console.log(data);
-      return data;
+      if (typeof data?.message === "string" || data instanceof String) {
+        setErrorMessage(data?.message);
+      } else if (hasToken) {
+        setErrorMessage("Something went wrong...");
+      } else if (!hasToken) {
+        const user: IUserInfoContext = {
+          id: data?.id,
+          username: data?.username,
+          token: data?.token,
+        };
+        userDispatch({ type: "SET_USER", user: user });
+        navigate("/home");
+      }
     },
-    {
-      refetchOnWindowFocus: false,
-      enabled: false,
-    }
-  );
+  });
 
   // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
@@ -91,11 +68,12 @@ const Register: React.FC = () => {
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
+    register({ email, username, password, passwordRepeat });
   };
 
   return (
     <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
-      <Center>
+      <Center className={classes.imageContainer}>
         <AuthImage />
       </Center>
       <h1 className={classes.title}>Register</h1>

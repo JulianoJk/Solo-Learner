@@ -1,7 +1,9 @@
-import { Card, Text } from "@mantine/core";
+import { Card, Image, Text } from "@mantine/core";
 import React from "react";
-import Grammar from "../../../../images/Grammar";
-import { useStyles } from "../Categories.styles";
+import GrammarIcon from "../../../../images/GrammarIcon";
+
+// import { GrammarIcon } from "../../../../images/GrammarIcon/";
+import { useStyles } from "../LearningUnits.styles";
 
 export default function Vocabulary() {
   const { classes } = useStyles();
@@ -9,11 +11,14 @@ export default function Vocabulary() {
     <>
       <Card shadow="sm" p="xl" component="a" href="#" className={classes.root}>
         <Card.Section>
-          <Grammar width={250} height={299} />
+          {/* <Grammar width={550} /> */}
+          <span>
+            <GrammarIcon></GrammarIcon>
+          </span>
         </Card.Section>
 
         <Text weight={500} size="lg" mt="md">
-          Vocabulary
+          Grammar
         </Text>
       </Card>
     </>

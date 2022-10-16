@@ -28,17 +28,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
-            <Route
-              path="/*"
-              element={
-                <PageNotFound
-                  statusNumber={404}
-                  navText="Sorry, the page you are looking for could not be found."
-                  btnText="Go back!"
-                  navigationPath={<Index />}
-                />
-              }
-            />
+            <Route path="/*" element={isLoggedIn ? <Home /> : <Index />} />
           </Routes>
         </UserContextProvider>
       </BrowserRouter>

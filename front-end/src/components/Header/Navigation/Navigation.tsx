@@ -13,12 +13,6 @@ const Navigation: React.FC = () => {
 
   const { user } = useUserState();
 
-  useEffect(() => {
-    // After refresh, restore user's data to be logged
-    if (user.token === undefined && userIsLoggedInLocal !== null) {
-      userDispatch({ type: "SET_USER", user: JSON.parse(userIsLoggedInLocal) });
-    }
-  }, [user]);
 
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {

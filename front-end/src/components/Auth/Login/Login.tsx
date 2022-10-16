@@ -20,6 +20,7 @@ import { loginAPI } from "../../api/api";
 import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock } from "tabler-icons-react";
+import { isUndefinedOrNullString } from "../../../lib/dist";
 
 const Login: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -30,13 +31,19 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const userDispatch: usersDispatchContext = useUserDispatch();
 
-  const { mutate: login, isLoading } = useMutation(loginAPI, {
+  const {
+    mutate: login,
+    isLoading,
+    status,
+  } = useMutation(loginAPI, {
     onSuccess: (data) => {
-      console.log(data);
-      
+      const hasToken = !isUndefinedOrNullString(data?.token);
+
       if (typeof data?.message === "string" || data instanceof String) {
-        setErrorMessage(data.message);
-      } else {
+        setErrorMessage(data?.message);
+      } else if (!hasToken) {
+        setErrorMessage("Something went wrong...");
+      } else if (hasToken) {
         const user: IUserInfoContext = {
           id: data?.id,
           username: data?.username,
@@ -46,9 +53,7 @@ const Login: React.FC = () => {
         navigate("/home");
       }
     },
-    onError: () => {},
   });
-
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
     setEmail(e.target.value);
   };

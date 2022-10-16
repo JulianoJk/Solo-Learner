@@ -40,4 +40,7 @@ export const useStyles = createStyles(() => ({
   switchAuthLinkAnchor: {
     marginLeft: 8,
   },
+  imageContainer: {
+    borderRadius: "50%",
+  },
 }));

@@ -2,34 +2,18 @@ const router = require("express").Router();
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt_decode from "jwt-decode";
-interface DecodeToken {
-  email: string;
-  id?: string;
-  password: string;
-  username: string;
-  dateJoined: Date;
-  __v?: number | string;
-}
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
 
-router.get("/profile/:AccessToken", async (req: Request, res: Response) => {
-  const { AccessToken } = req.params;
-  const decoded: DecodeToken = jwt_decode(AccessToken);
-  const currentUser = await User.findById(decoded?.id);
-  res.json(currentUser);
-
-  // if (AccessToken !== "" || AccessToken !== null || AccessToken !== undefined) {
-  //   // const user = await User.find({ AccessToken: AccessToken });
-  //   // res.json({ dateJoined: user.dateJoined });
-  //   const tokenData = jwt.verify(AccessToken, process.env.JWT_KEY);
-  //   console.log(tokenData);
-
-  //   return res.json("Hi");
-  // } else {
-  //   res.status(203).json("null");
-  // }
+router.get("/profile/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const currentUser = await User.findById(id);
+    res.json(currentUser.dateJoined.toDateString());
+  } catch (error) {
+    res.status(404).json("No user found...");
+  }
 });
 
 router.post("/login", async (req: Request, res: Response) => {
@@ -39,7 +23,6 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!email || !password) {
       return res.status(400).json({ message: "Mandatory fields are missing" });
     }
-
     const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(400).json({ message: "Invalid username or password." });
@@ -50,6 +33,22 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid username or password." });
     }
 
+    if (email === "niovits@gmail.com") {
+      //Assign the token to the user
+      jwt.sign(
+        { id: user._id },
+        process.env.JWT_KEY,
+        (err: string, token: string) => {
+          if (err) throw err;
+          res.json({
+            token,
+            username: user.username,
+            id: user._id,
+            isTeacher: true,
+          });
+        }
+      );
+    }
     //Assign the token to the user
     jwt.sign(
       { id: user._id },
@@ -64,7 +63,7 @@ router.post("/login", async (req: Request, res: Response) => {
       }
     );
   } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -105,6 +104,7 @@ router.post("/register", async (req: Request, res: Response) => {
       password: passwordHashed,
       username: username,
       dateJointed: dateJointed,
+      isTeacher: false,
     });
 
     const userSignup = await newUser.save();
@@ -122,9 +122,10 @@ router.post("/register", async (req: Request, res: Response) => {
       username: userSignup.username,
       id: userSignup._id,
       dateJointed: dateJointed,
+      isTeacher: false,
     });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
 module.exports = router;
@@ -133,20 +134,24 @@ router.delete("/deleteAccount", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email: email });
+    const user = await User.find({ email: email });
     if (!user) {
       const errorEmail = "User not found";
       res.status(404).json({ errorEmail });
       // stop further execution in this callback
       return;
     } else {
-      const foundEmail = "User found!";
+      const foundEmail = "User found and deleted!";
 
-      await User.findOneAndDelete({ email: email }, function (err: any) {
-        res.status(200).json({ foundEmail });
-      });
+      await User.deleteOne(
+        { email: email },
+        await function (err: any) {
+          res.status(200).json({ foundEmail });
+          return;
+        }
+      );
     }
   } catch (e) {
-    return res.status(400).json({ error: e.message });
+    res.status(400).json({ error: e.message });
   }
 });

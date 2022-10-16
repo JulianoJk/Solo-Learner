@@ -6,39 +6,29 @@ import Login from "../../Auth/Login/Login";
 import PageNotFound from "../pageNotFound/PageNotFound";
 import { Loader } from "@mantine/core";
 import { useStyles } from "./Profile.styles";
+import { isUndefinedOrNullString } from "../../../lib/dist";
 const Profile: React.FC = () => {
   const { user } = useUserState();
   let userIsLoggedInLocal = localStorage.getItem("user");
   const { classes } = useStyles();
-  const {
-    error,
-    isLoading,
-    status,
-    data: userProfileData,
-  } = useQuery(
-    ["getProfileItems", user.token],
+  const hasID = !isUndefinedOrNullString(user.id) ? user.id : undefined;
+  const { isLoading, data: userProfileData } = useQuery(
+    ["getProfileItems", hasID],
     async () => {
-      const data: IUserInfoContext | undefined = await profileAPI(user.token);
-      console.log(data);
-      return data;
+      if (hasID) {
+        const data: IUserInfoContext | undefined = await profileAPI(hasID);
+        return data;
+      }
     },
     {
       // Fetch when token available
-      enabled: !!user.token,
+      enabled: !!user.id,
       staleTime: Infinity,
     }
   );
+  // const b: any = userProfileData;
+  // console.log(b.split(0, 3));
 
-  if (status === "success") {
-    console.log("success!");
-    console.log(userProfileData);
-  }
-  if (isLoading) {
-    console.log("loading");
-  }
-  if (error) {
-    console.log(error);
-  }
   if (userIsLoggedInLocal) {
     return (
       <>
@@ -48,21 +38,22 @@ const Profile: React.FC = () => {
           </div>
         ) : (
           <div>
-            <h1> Welcome Back {user.username}! </h1>
-            <h2> Date joined: {userProfileData?.dateJoined}! </h2>
+            <h1> Welcome Back: {user.username}! </h1>
+            <h2> Date joined: {userProfileData}! </h2>
           </div>
         )}
       </>
     );
   } else {
     return (
-      <div>
-        <PageNotFound
-          navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={<Login />}
-          btnText="Login"
-        />
-      </div>
+      // <div>
+      //   <PageNotFound
+      //     navText="No Account found. To proceed, you must be logged-in!"
+      //     navigationPath={<Login />}
+      //     btnText="Login"
+      //   />
+      // </div>
+      <h1>{userProfileData}</h1>
     );
   }
 };

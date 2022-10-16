@@ -4,6 +4,7 @@ const userModel = new mongoose.Schema({
   password: { type: String, required: true, minlength: 5 },
   username: { type: String },
   dateJoined: { type: Date, default: Date.now() },
+  isTeacher: { type: Boolean },
 });
 let User = mongoose.model("users", userModel);
 module.exports = User;

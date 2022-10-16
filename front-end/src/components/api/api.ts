@@ -43,9 +43,9 @@ export const registerAPI = async ({
     return;
   }
 };
-export const profileAPI = async ({
-  AccessToken,
-}: any): Promise<IUserInfoContext | undefined> => {
+export const profileAPI = async (
+  AccessToken: string
+): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch(
       `http://localhost:3001/users/profile/${AccessToken}`,
