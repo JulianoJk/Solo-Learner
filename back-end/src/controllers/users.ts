@@ -5,6 +5,15 @@ import jwt_decode from "jwt-decode";
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
+interface IUser {
+  _id: string;
+  email: string;
+  password: string;
+  username?: string;
+  dateJoined?: Date;
+  isTeacher?: boolean;
+  __v?: number;
+}
 
 router.get("/profile/:id", async (req: Request, res: Response) => {
   try {
@@ -25,7 +34,7 @@ router.post("/login", async (req: Request, res: Response) => {
     }
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid username or password." });
+      return res.status(400).json({ message: "Account not found." });
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
 
@@ -130,27 +139,44 @@ router.post("/register", async (req: Request, res: Response) => {
 });
 module.exports = router;
 
-router.delete("/deleteAccount", async (req: Request, res: Response) => {
+router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
   try {
+    // Get the email and password for auth
     const { email, password } = req.body;
+    // get id from url to delete account
+    const { id } = req.params;
+    // const currentUser = await User.findById(id);
 
-    const user = await User.find({ email: email });
-    if (!user) {
-      const errorEmail = "User not found";
-      res.status(404).json({ errorEmail });
-      // stop further execution in this callback
-      return;
-    } else {
-      const foundEmail = "User found and deleted!";
+    // const deleted = await User.deleteOne(
+    //   { _id: "634c8d9010c98097108c6a0e" },
+    //   function (err: any) {
+    //     res.status(200).json({ message: "Done!" });
+    //   }
+    // );
+    // const currentUser = await User.findById(id);
 
-      await User.deleteOne(
-        { email: email },
-        await function (err: any) {
-          res.status(200).json({ foundEmail });
-          return;
-        }
-      );
-    }
+    User.findByIdAndDelete({ _id: id }, function (err: any) {
+      if (err) {
+        return console.error(err);
+      } else if (!id) {
+        return res.status(404).json({ message: "No user detected." });
+      } else {
+        return res.status(202).json("Deleted!");
+      }
+    });
+
+    //   Task.findByIdAndDelete({ _id: id }, function (err) {
+    //     if (err) {
+    //       return handleError(err);
+    //     } else if (!id) {
+    //       return res.status(404).json({ message: "No Task id detected." });
+    //     } else {
+    //       return res.status(202).json("Deleted!");
+    //     }
+    //   });
+    // } catch (e) {
+    //   return res.status(400).json({ error: e.message });
+    // }
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
