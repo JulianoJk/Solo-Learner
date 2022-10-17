@@ -44,16 +44,13 @@ export const registerAPI = async ({
   }
 };
 export const profileAPI = async (
-  AccessToken: string
+  id: string
 ): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(
-      `http://localhost:3001/users/profile/${AccessToken}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const response = await fetch(`http://localhost:3001/users/profile/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
     const data: IUserInfoContext = await response.json();
     return data;
   } catch (error) {
@@ -61,13 +58,13 @@ export const profileAPI = async (
   }
 };
 export const deleteAccountAPI = async ({
-  AccessToken,
+  id,
   email,
   password,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch(
-      `http://localhost:3001/users/profile/${AccessToken}`,
+      `http://localhost:3001/users/deleteAccount/${id}`,
       {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

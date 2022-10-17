@@ -17,7 +17,6 @@ const Navigation: React.FC = () => {
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
     userDispatch({ type: "RESET_STATE" });
-    userDispatch({ type: "RESET_STATE" });
     navigate("/");
   };
 

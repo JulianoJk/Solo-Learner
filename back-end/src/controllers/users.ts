@@ -5,15 +5,6 @@ import jwt_decode from "jwt-decode";
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
-interface IUser {
-  _id: string;
-  email: string;
-  password: string;
-  username?: string;
-  dateJoined?: Date;
-  isTeacher?: boolean;
-  __v?: number;
-}
 
 router.get("/profile/:id", async (req: Request, res: Response) => {
   try {
@@ -30,7 +21,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Mandatory fields are missing" });
+      return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     const user = await User.findOne({ email: email });
     if (!user) {
@@ -83,24 +74,24 @@ router.post("/register", async (req: Request, res: Response) => {
     let { email, password, passwordRepeat, username } = req.body;
     // Validations
     if (password !== passwordRepeat) {
-      return res.status(400).json({ message: "Passwords do not match" });
+      return res.status(400).json({ message: "Passwords do not match." });
     }
     if (!email || !password || !passwordRepeat) {
-      return res.status(400).json({ message: "Mandatory fields are missing" });
+      return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     if (password.length < 5) {
       return res
         .status(400)
-        .json({ message: "Password needs at least 5 characters" });
+        .json({ message: "Password needs at least 5 characters." });
     }
     if (password !== passwordRepeat) {
-      return res.status(400).json({ message: "Passwords do not match" });
+      return res.status(400).json({ message: "Passwords do not match." });
     }
     // Check if email already exists
     const emailExists = await User.findOne({ email: email });
 
     if (emailExists) {
-      return res.status(400).json({ message: "Email already in use" });
+      return res.status(400).json({ message: "Email already in use." });
     }
 
     if (!username) {
@@ -149,7 +140,7 @@ router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Mandatory fields are missing" });
+      return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     const user = await User.findOne({ email: email });
 
@@ -167,7 +158,7 @@ router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
         console.log(err);
       } else {
         console.log("Deleted : ", docs);
-        res.status(202).json("We're sorry to see you go :( ");
+        res.status(202).json("We're sorry to see you go :(. ");
       }
     });
   } catch (e) {

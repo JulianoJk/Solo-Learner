@@ -12,7 +12,7 @@ const defaultState: StateInterface = {
     username: undefined,
     token: undefined,
     id: undefined,
-  }
+  },
 };
 
 const UserStateContext = React.createContext<StateInterface | undefined>(
@@ -29,6 +29,7 @@ const appReducer = (state: StateInterface, action: TUserAction) => {
     case "SET_USER":
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem("user", JSON.stringify(action.user));
+
       return { ...state, user: action.user };
     case "RESET_STATE":
       // Clear user from localStorage

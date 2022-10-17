@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-import { LIGHT_MENT, NAVY } from "../../../../Theme/Theme";
+import { LIGHT_MENT, NAVY, LIGHT_NAVY } from "../../../../Theme/Theme";
 export const useStyles = createStyles(() => ({
   modal: {
     ":root": {
@@ -27,20 +27,10 @@ export const useStyles = createStyles(() => ({
   inputLabels: {
     fontWeight: 700,
   },
-  dividerLabel: {
-    color: NAVY,
-  },
-  switchAuthLinks: {
-    alignItems: "center",
-    padding: 10,
-  },
-  switchAuthLinkAnchor: {
-    marginLeft: 8,
-  },
-  imageContainer: {
-    borderRadius: "50%",
+  notification: {
+    ":root": {
+      backgroundColor: LIGHT_NAVY,
+      border: "1px solid black",
+    },
   },
 }));
-export const root = () => {
-  return 'backgroundColor: "black"';
-};

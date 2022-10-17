@@ -7,19 +7,27 @@ import {
   TextInput,
   Center,
 } from "@mantine/core";
-import { Mail, Lock, Trash } from "tabler-icons-react";
+import { Mail, Lock, Trash, MoodSad } from "tabler-icons-react";
 import { AlertComponent } from "../../../AlertComponent/AlertComponent";
 import { deleteAccountAPI } from "../../../api/api";
 import { useMutation } from "@tanstack/react-query";
 import { isUndefinedOrNullString } from "../../../../lib/dist";
-import { root, useStyles } from "./DeleteAccount.styles";
+import { useStyles } from "./DeleteAccount.styles";
 import { LIGHT_NAVY } from "../../../../Theme/Theme";
+import { useUserDispatch, useUserState } from "../../../../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { showNotification, hideNotification } from "@mantine/notifications";
 
 const DeleteAccount = () => {
   const { classes } = useStyles();
   const [opened, setOpened] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { user } = useUserState();
+  const navigate = useNavigate();
+  const userDispatch = useUserDispatch();
+
+  const id = !isUndefinedOrNullString(user.id) ? user.id : undefined;
 
   const {
     mutate: deleteAccount,
@@ -27,10 +35,17 @@ const DeleteAccount = () => {
     status,
   } = useMutation(deleteAccountAPI, {
     onSuccess: (data) => {
-      const hasToken = !isUndefinedOrNullString(data?.token);
+      showNotification({
+        id: "deletedAccount",
+        message: data,
+        autoClose: 6000,
+        // style: { backgroundColor: LIGHT_NAVY, border: "1px solid black" },
+        className: classes.notification,
+        icon: <MoodSad />,
+      });
 
-      // userDispatch({ type: "RESET", user: user });
-      // navigate("/index");
+      userDispatch({ type: "RESET_STATE" });
+      navigate("/");
     },
   });
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
@@ -43,7 +58,7 @@ const DeleteAccount = () => {
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
     try {
-      deleteAccount({ email, password });
+      deleteAccount({ id, email, password });
     } catch (error) {
       console.warn(error);
     }

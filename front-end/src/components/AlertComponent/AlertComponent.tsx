@@ -14,17 +14,32 @@ export const AlertComponent: React.FC<IProps> = ({ message }) => {
   return (
     <Center>
       {!hasError ? (
-        <Alert
-          icon={<AlertCircle strokeWidth={3} />}
-          title={<Title order={4}>Error!</Title>}
-          color="dark"
-          radius="lg"
-          className={classes.alertBox}
-        >
-          <Text weight={700} size="lg">
-            {message}
-          </Text>
-        </Alert>
+        <>
+          <Alert
+            icon={<AlertCircle strokeWidth={3} />}
+            title={<Title order={4}>Oh no!</Title>}
+            color="red"
+            radius="lg"
+            variant="filled"
+            className={classes.alertBox}
+          >
+            <Text weight={700} size="lg" >
+              {message}
+            </Text>
+          </Alert>
+
+          {/* <Alert
+            icon={<AlertCircle strokeWidth={3} />}
+            title={<Title order={4}>Oh no!</Title>}
+            color="red"
+            radius="lg"
+            className={classes.alertBox}
+          >
+            <Text weight={700} size="lg">
+              {message}
+            </Text>
+          </Alert> */}
+        </>
       ) : (
         ""
       )}

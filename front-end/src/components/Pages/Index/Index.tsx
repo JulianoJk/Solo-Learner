@@ -1,8 +1,11 @@
-import { Center, Stack } from "@mantine/core";
+import { Center, Stack, Notification } from "@mantine/core";
 import LogoImage from "../../../images/Logo";
 import { useStyles } from "./Index.styles";
+import { showNotification, hideNotification } from "@mantine/notifications";
+
 const Index: React.FC = () => {
   const { classes } = useStyles();
+
   return (
     <Center>
       <Stack>
