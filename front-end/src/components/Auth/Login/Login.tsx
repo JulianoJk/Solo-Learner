@@ -19,7 +19,7 @@ import { loginAPI } from "../../api/api";
 
 import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
-import { Mail, Lock } from "tabler-icons-react";
+import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 
 const Login: React.FC = () => {
@@ -91,6 +91,10 @@ const Login: React.FC = () => {
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
+          defaultValue="secret"
+          visibilityToggleIcon={({ reveal }) =>
+            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+          }
           autoComplete="on"
         />
         <Button

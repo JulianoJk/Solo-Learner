@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useStyles } from "../Auth.styles";
 import AuthImage from "../../../images/Auth";
-import { Lock, Mail, UserCircle } from "tabler-icons-react";
+import { Eye, EyeOff, Lock, Mail, UserCircle } from "tabler-icons-react";
 import { registerAPI } from "../../api/api";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { useMutation } from "@tanstack/react-query";
@@ -106,28 +106,32 @@ const Register: React.FC = () => {
 
         <PasswordInput
           icon={<Lock />}
-          type="password"
           value={password}
-          id="password"
           placeholder="Password"
           onChange={handlePassword}
           required={true}
           minLength={6}
           autoComplete="on"
           label={<span className={classes.inputLabels}>Password:</span>}
+          visibilityToggleIcon={({ reveal }) =>
+            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+          }
         />
         <PasswordInput
           icon={<Lock />}
-          type="password"
+          required
           value={passwordRepeat}
-          id="confirmPassword"
           placeholder="Confirm Password"
           onChange={handleConfirmPassword}
-          required={true}
           minLength={6}
           autoComplete="on"
           label={<span className={classes.inputLabels}>Confirm Password:</span>}
+          defaultValue="secret"
+          visibilityToggleIcon={({ reveal }) =>
+            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+          }
         />
+
         <Button
           color="cyan"
           type="submit"
