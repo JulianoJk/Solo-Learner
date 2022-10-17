@@ -13,8 +13,9 @@ export const useStyles = createStyles(() => ({
     left: 0,
   },
   menuDropDown: {
-    ":hover": {
-      color: "yellowgreen",
+    ":dropdown": {
+      color: "ref",
     },
+    color: "red",
   },
 }));
