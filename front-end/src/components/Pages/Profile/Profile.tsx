@@ -7,6 +7,7 @@ import PageNotFound from "../pageNotFound/PageNotFound";
 import { Button, Loader } from "@mantine/core";
 import { useStyles } from "./Profile.styles";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+import DeleteAccount from "../Settings/DeleteAccount/DeleteAccount";
 const Profile: React.FC = () => {
   const { user } = useUserState();
   let userIsLoggedInLocal = localStorage.getItem("user");
@@ -27,11 +28,10 @@ const Profile: React.FC = () => {
     }
   );
 
-  const deleteAccount = () => {};
   if (userIsLoggedInLocal) {
     return (
       <>
-        {isLoading ? (
+        {/* {isLoading ? (
           <div className={classes.loader}>
             <Loader size={400} />
           </div>
@@ -39,9 +39,17 @@ const Profile: React.FC = () => {
           <div>
             <h1> Welcome Back: {user.username}! </h1>
             <h2> Date joined: {userProfileData}! </h2>
-            <Button onClick={deleteAccount}></Button>
+            <DeleteAccount></DeleteAccount>
           </div>
-        )}
+        )} */}
+        <div>
+          <h1> Welcome Back: {user.username}! </h1>
+          <h2>
+            Date joined:{" "}
+            {isLoading ? <Loader variant="dots"  /> : userProfileData}
+          </h2>
+          <DeleteAccount></DeleteAccount>
+        </div>
       </>
     );
   } else {
