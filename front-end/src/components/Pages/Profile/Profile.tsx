@@ -4,7 +4,7 @@ import { IUserInfoContext } from "../../../Model/models";
 import { profileAPI } from "../../api/api";
 import Login from "../../Auth/Login/Login";
 import PageNotFound from "../pageNotFound/PageNotFound";
-import { Loader } from "@mantine/core";
+import { Button, Loader } from "@mantine/core";
 import { useStyles } from "./Profile.styles";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 const Profile: React.FC = () => {
@@ -26,9 +26,8 @@ const Profile: React.FC = () => {
       staleTime: Infinity,
     }
   );
-  // const b: any = userProfileData;
-  // console.log(b.split(0, 3));
 
+  const deleteAccount = () => {};
   if (userIsLoggedInLocal) {
     return (
       <>
@@ -40,6 +39,7 @@ const Profile: React.FC = () => {
           <div>
             <h1> Welcome Back: {user.username}! </h1>
             <h2> Date joined: {userProfileData}! </h2>
+            <Button onClick={deleteAccount}></Button>
           </div>
         )}
       </>

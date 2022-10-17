@@ -60,3 +60,26 @@ export const profileAPI = async (
     return;
   }
 };
+export const deleteAccountAPI = async (
+  AccessToken: string,
+  email: string,
+  password: string
+): Promise<IUserInfoContext | undefined> => {
+  try {
+    const response = await fetch(
+      `http://localhost:3001/users/profile/${AccessToken}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }
+    );
+    const data: IUserInfoContext = await response.json();
+    return data;
+  } catch (error) {
+    return;
+  }
+};

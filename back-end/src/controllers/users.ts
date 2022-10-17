@@ -34,7 +34,9 @@ router.post("/login", async (req: Request, res: Response) => {
     }
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(400).json({ message: "Account not found." });
+      return res
+        .status(400)
+        .json({ message: "Invalid username or password.." });
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
 
@@ -145,38 +147,29 @@ router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
     const { email, password } = req.body;
     // get id from url to delete account
     const { id } = req.params;
-    // const currentUser = await User.findById(id);
 
-    // const deleted = await User.deleteOne(
-    //   { _id: "634c8d9010c98097108c6a0e" },
-    //   function (err: any) {
-    //     res.status(200).json({ message: "Done!" });
-    //   }
-    // );
-    // const currentUser = await User.findById(id);
+    if (!email || !password) {
+      return res.status(400).json({ message: "Mandatory fields are missing" });
+    }
+    const user = await User.findOne({ email: email });
 
-    User.findByIdAndDelete({ _id: id }, function (err: any) {
+    if (!user) {
+      return res.status(400).json({ message: "Account not found." });
+    }
+    const passwordsMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordsMatch) {
+      return res.status(400).json({ message: "Invalid username or password." });
+    }
+
+    User.deleteOne({ _id: id }, function (err: any, docs: any) {
       if (err) {
-        return console.error(err);
-      } else if (!id) {
-        return res.status(404).json({ message: "No user detected." });
+        console.log(err);
       } else {
-        return res.status(202).json("Deleted!");
+        console.log("Deleted : ", docs);
+        res.status(202).json("We're sorry to see you go :( ");
       }
     });
-
-    //   Task.findByIdAndDelete({ _id: id }, function (err) {
-    //     if (err) {
-    //       return handleError(err);
-    //     } else if (!id) {
-    //       return res.status(404).json({ message: "No Task id detected." });
-    //     } else {
-    //       return res.status(202).json("Deleted!");
-    //     }
-    //   });
-    // } catch (e) {
-    //   return res.status(400).json({ error: e.message });
-    // }
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
