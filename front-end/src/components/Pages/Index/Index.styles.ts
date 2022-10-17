@@ -6,7 +6,6 @@ export const useStyles = createStyles(() => ({
     margin: 7,
   },
   logoContainer: {
-    backgroundColor: '#011d145a',
-    width: "fit-content",
+    margin: 10,
   },
 }));

@@ -4,7 +4,7 @@ import Login from "./components/Auth/Login/Login";
 import Register from "./components/Auth/Register/Register";
 import Profile from "./components/Pages/Profile/Profile";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
-import Navigation from "./components/Header/Navigation/Navigation";
+import NavigationNormal from "./components/Header/Navigation/NavigationNormal";
 import { UserContextProvider } from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
@@ -13,12 +13,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { MantineProvider } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
+import { useMediaQuery } from "@mantine/hooks";
+import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
 
 const App = () => {
   const queryClient = new QueryClient();
 
   const isLoggedIn = !!localStorage.getItem("user");
-  console.log(isLoggedIn);
+  const isSmallWindow = useMediaQuery("(min-width: 650px)");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -27,7 +29,7 @@ const App = () => {
           <NotificationsProvider>
             <BrowserRouter>
               <UserContextProvider>
-                <Navigation />
+                {isSmallWindow ? <NavigationNormal /> : <SmallNavigation />}
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/login" element={<Login />} />

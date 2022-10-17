@@ -31,11 +31,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const userDispatch: usersDispatchContext = useUserDispatch();
 
-  const {
-    mutate: login,
-    isLoading,
-    status,
-  } = useMutation(loginAPI, {
+  const { mutate: login, isLoading } = useMutation(loginAPI, {
     onSuccess: (data) => {
       const hasToken = !isUndefinedOrNullString(data?.token);
 

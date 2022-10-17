@@ -1,23 +1,24 @@
-import { Center, Stack, Notification } from "@mantine/core";
+import { Center, Stack } from "@mantine/core";
 import LogoImage from "../../../images/Logo";
 import { useStyles } from "./Index.styles";
-import { showNotification, hideNotification } from "@mantine/notifications";
+// import { showNotification, hideNotification } from "@mantine/notifications";
 
 const Index: React.FC = () => {
   const { classes } = useStyles();
 
   return (
-    <Center>
-      <Stack>
-        {/* container for the logo */}
-        <div className={classes.logoContainer}>
-          <LogoImage width="50%" height="100%" />
-          <h2>
-            <em>Learn foreign languages with fun!</em>
-          </h2>
-        </div>
-      </Stack>
-    </Center>
+    <></>
+    // <Center>
+    //   <Stack>
+    //     {/* container for the logo */}
+    //     <div className={classes.logoContainer}>
+    //       <LogoImage height="100%" width="100%" />
+    //     </div>
+    //     <div>
+    //       <em>Learn foreign languages with fun!</em>
+    //     </div>
+    //   </Stack>
+    // </Center>
   );
 };
 
