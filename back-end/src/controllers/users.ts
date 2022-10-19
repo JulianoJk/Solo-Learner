@@ -5,11 +5,35 @@ import jwt_decode from "jwt-decode";
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
+// const checkIfTokenExpired = require("../utils/utils");
+const checkIfTokenExpired = require("../utils/utils");
+export interface IUser {
+  token?: string;
+  email?: string;
+  password?: string;
+  username?: string;
+  id?: string;
+  dateJoined?: Date;
+  isTeacher?: boolean;
+  exp?: number;
+  iat?: number;
+}
 
-router.get("/profile/:id", async (req: Request, res: Response) => {
+router.get("/profile/:token", async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const currentUser = await User.findById(id);
+    const parameters = req.params;
+    var decoded: IUser = jwt_decode(parameters.token);
+
+    const currentUser: IUser = await User.findById(decoded.id);
+    console.log(currentUser);
+
+    // let isExpiredToken: boolean = false;
+
+    // var dateNow = new Date();
+    // if (decoded.exp < dateNow.getTime()) {
+    //   isExpiredToken = true;
+    // }
+
     res.json(currentUser.dateJoined.toDateString());
   } catch (error) {
     res.status(404).json("No user found...");
@@ -24,6 +48,7 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     const user = await User.findOne({ email: email });
+    // cehck
     if (!user) {
       return res
         .status(400)
@@ -34,12 +59,16 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!passwordsMatch) {
       return res.status(400).json({ message: "Invalid username or password." });
     }
-
-    if (email === "niovits@gmail.com") {
-      //Assign the token to the user
+    const checkIfTeacher = process.env.TEACHER_EMAIL.includes(
+      "niovits22@gmail.com"
+    );
+    if (checkIfTeacher) {
       jwt.sign(
         { id: user._id },
         process.env.JWT_KEY,
+        {
+          expiresIn: "120s"
+        },
         (err: string, token: string) => {
           if (err) throw err;
           res.json({
@@ -118,14 +147,16 @@ router.post("/register", async (req: Request, res: Response) => {
     };
 
     //Assign the token to the user
-    const token = jwt.sign(payload, process.env.JWT_KEY);
-    res.json({
-      token,
-      username: userSignup.username,
-      id: userSignup._id,
-      dateJointed: dateJointed,
-      isTeacher: false,
-    });
+    // const token = jwt.sign(
+    //   { id: user._id },
+    //   process.env.JWT_KEY
+    // res.json({
+    //   token,
+    //   username: userSignup.username,
+    //   id: userSignup._id,
+    //   dateJointed: dateJointed,
+    //   isTeacher: false,
+    // });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
