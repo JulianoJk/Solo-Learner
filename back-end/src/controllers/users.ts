@@ -26,12 +26,7 @@ router.get("/profile/:token", async (req: Request, res: Response) => {
 
     const currentUser: IUser = await User.findById(decoded.id);
 
-    let isExpiredToken: boolean = false;
-
-    if (Date.now() >= decoded.exp * 1000) {
-      isExpiredToken = true;
-    }
-    console.log("is the token expired: " + isExpiredToken);
+    // console.log(checkIfTokenExpired(decoded.exp));
 
     res.json(currentUser.dateJoined.toDateString());
   } catch (error) {
@@ -47,7 +42,7 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     const user = await User.findOne({ email: email });
-    // cehck
+    // if there is no user, inform client
     if (!user) {
       return res
         .status(400)
