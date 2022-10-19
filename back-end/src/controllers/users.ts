@@ -22,17 +22,16 @@ export interface IUser {
 router.get("/profile/:token", async (req: Request, res: Response) => {
   try {
     const parameters = req.params;
-    var decoded: IUser = jwt_decode(parameters.token);
+    let decoded: IUser = jwt_decode(parameters.token);
 
     const currentUser: IUser = await User.findById(decoded.id);
-    console.log(currentUser);
 
-    // let isExpiredToken: boolean = false;
+    let isExpiredToken: boolean = false;
 
-    // var dateNow = new Date();
-    // if (decoded.exp < dateNow.getTime()) {
-    //   isExpiredToken = true;
-    // }
+    if (Date.now() >= decoded.exp * 1000) {
+      isExpiredToken = true;
+    }
+    console.log("is the token expired: " + isExpiredToken);
 
     res.json(currentUser.dateJoined.toDateString());
   } catch (error) {
@@ -62,34 +61,20 @@ router.post("/login", async (req: Request, res: Response) => {
     const checkIfTeacher = process.env.TEACHER_EMAIL.includes(
       "niovits22@gmail.com"
     );
-    if (checkIfTeacher) {
-      jwt.sign(
-        { id: user._id },
-        process.env.JWT_KEY,
-        {
-          expiresIn: "120s"
-        },
-        (err: string, token: string) => {
-          if (err) throw err;
-          res.json({
-            token,
-            username: user.username,
-            id: user._id,
-            isTeacher: true,
-          });
-        }
-      );
-    }
     //Assign the token to the user
     jwt.sign(
       { id: user._id },
       process.env.JWT_KEY,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      },
       (err: string, token: string) => {
         if (err) throw err;
         res.json({
           token,
           username: user.username,
           id: user._id,
+          isTeacher: checkIfTeacher ? true : false,
         });
       }
     );
@@ -140,51 +125,52 @@ router.post("/register", async (req: Request, res: Response) => {
 
     const userSignup = await newUser.save();
 
-    const payload = {
-      user: {
-        id: userSignup._id,
+    jwt.sign(
+      { id: userSignup._id },
+      process.env.JWT_KEY,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN,
       },
-    };
-
+      (err: string, token: string) => {
+        if (err) throw err;
+        res.json({
+          token,
+          username: userSignup.username,
+          id: userSignup._id,
+          dateJointed: dateJointed,
+          isTeacher: false,
+        });
+      }
+    );
     //Assign the token to the user
-    // const token = jwt.sign(
-    //   { id: user._id },
-    //   process.env.JWT_KEY
-    // res.json({
-    //   token,
-    //   username: userSignup.username,
-    //   id: userSignup._id,
-    //   dateJointed: dateJointed,
-    //   isTeacher: false,
-    // });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }
 });
 module.exports = router;
 
-router.delete("/deleteAccount/:id", async (req: Request, res: Response) => {
+router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
   try {
-    // Get the email and password for auth
+    const parameters = req.params;
+
+    let decoded: IUser = jwt_decode(parameters.token);
+
+    const currentUser: IUser = await User.findById(decoded.id);
+
     const { email, password } = req.body;
-    // get id from url to delete account
-    const { id } = req.params;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Mandatory fields are missing." });
     }
     const user = await User.findOne({ email: email });
-
     if (!user) {
       return res.status(400).json({ message: "Account not found." });
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
-
     if (!passwordsMatch) {
       return res.status(400).json({ message: "Invalid username or password." });
     }
-
-    User.deleteOne({ _id: id }, function (err: any, docs: any) {
+    User.deleteOne({ _id: currentUser.id }, function (err: any, docs: any) {
       if (err) {
         console.log(err);
       } else {

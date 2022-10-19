@@ -7,18 +7,17 @@ const Index: React.FC = () => {
   const { classes } = useStyles();
 
   return (
-    <></>
-    // <Center>
-    //   <Stack>
-    //     {/* container for the logo */}
-    //     <div className={classes.logoContainer}>
-    //       <LogoImage height="100%" width="100%" />
-    //     </div>
-    //     <div>
-    //       <em>Learn foreign languages with fun!</em>
-    //     </div>
-    //   </Stack>
-    // </Center>
+    <Center>
+      <Stack>
+        {/* container for the logo */}
+        <div className={classes.logoContainer}>
+          <LogoImage height="100%" width="100%" />
+        </div>
+        <div>
+          <em>Learn foreign languages with fun!</em>
+        </div>
+      </Stack>
+    </Center>
   );
 };
 

@@ -91,7 +91,6 @@ const Login: React.FC = () => {
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
-          defaultValue="secret"
           visibilityToggleIcon={({ reveal }) =>
             reveal ? <EyeOff size={16} /> : <Eye size={16} />
           }

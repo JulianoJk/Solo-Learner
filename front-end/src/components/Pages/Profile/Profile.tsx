@@ -7,6 +7,7 @@ import PageNotFound from "../pageNotFound/PageNotFound";
 import { Button, Loader } from "@mantine/core";
 import { useStyles } from "./Profile.styles";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+import Demo from "../Settings/DeleteAccount/Demo";
 import DeleteAccount from "../Settings/DeleteAccount/DeleteAccount";
 const Profile: React.FC = () => {
   const { user } = useUserState();
@@ -39,14 +40,14 @@ const Profile: React.FC = () => {
           <div>
             <h1> Welcome Back: {user.username}! </h1>
             <h2> Date joined: {userProfileData}! </h2>
-            <DeleteAccount></DeleteAccount>
+            // <DeleteAccount></DeleteAccount>
           </div>
         )} */}
         <div>
           <h1> Welcome Back: {user.username}! </h1>
           <h2>
-            Date joined:{" "}
-            {isLoading ? <Loader variant="dots"  /> : userProfileData}
+            Date joined:
+            {isLoading ? <Loader variant="dots" /> : userProfileData}
           </h2>
           <DeleteAccount></DeleteAccount>
         </div>

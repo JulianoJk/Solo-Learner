@@ -5,9 +5,11 @@ export const useStyles = createStyles(() => ({
     // borderRadius: 530,
     backgroundColor: "#E5D8D0",
     textAlign: "center",
+    height: 300,
   },
   sectionContainer: {
     width: 500,
+    height: 400,
   },
   imageContainer: {
     borderRadius: "70%",

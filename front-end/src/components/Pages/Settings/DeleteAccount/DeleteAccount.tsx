@@ -6,6 +6,7 @@ import {
   PasswordInput,
   TextInput,
   Center,
+  Text,
 } from "@mantine/core";
 import { Mail, Lock, Trash, MoodSad } from "tabler-icons-react";
 import { AlertComponent } from "../../../AlertComponent/AlertComponent";
@@ -17,6 +18,7 @@ import { LIGHT_NAVY } from "../../../../Theme/Theme";
 import { useUserDispatch, useUserState } from "../../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { showNotification, hideNotification } from "@mantine/notifications";
+import { openConfirmModal, closeAllModals } from "@mantine/modals";
 
 const DeleteAccount = () => {
   const { classes } = useStyles();
@@ -117,6 +119,71 @@ const DeleteAccount = () => {
           leftIcon={<Trash />}
         >
           Open Modal
+        </Button>
+        <Button
+          onClick={() =>
+            openConfirmModal({
+              title: "Are you sure?",
+              closeOnConfirm: false,
+              labels: { confirm: "Yes, proceed", cancel: "Cancel" },
+              color: "red",
+
+              children: (
+                <Text size="md">
+                  Are you sure you want to delete your account? This action is
+                  invertible!
+                </Text>
+              ),
+              onConfirm: () =>
+                openConfirmModal({
+                  title: "Delete Account",
+                  labels: {
+                    confirm: "Delete Account",
+                    cancel: "No, don't delete it",
+                  },
+                  closeOnConfirm: true,
+                  confirmProps: { color: "red" },
+                  children: (
+                    <>
+                      <TextInput
+                        icon={<Mail />}
+                        required
+                        type="email"
+                        label={
+                          <span className={classes.inputLabels}>Email:</span>
+                        }
+                        placeholder="name@example.com"
+                        value={email}
+                        onChange={onEmailChange}
+                        autoComplete="on"
+                      />
+
+                      <PasswordInput
+                        icon={<Lock />}
+                        required
+                        label={
+                          <span className={classes.inputLabels}>Password:</span>
+                        }
+                        placeholder="Password"
+                        value={password}
+                        onChange={onPasswordChange}
+                        autoComplete="on"
+                      />
+
+                      <Text size="sm">
+                        Are you sure you want to delete your profile? This
+                        action is destructive!
+                      </Text>
+                    </>
+                  ),
+                  onConfirm: closeAllModals,
+                  onCancel: closeAllModals,
+                }),
+            })
+          }
+          color={"red"}
+        >
+          Delete Account
         </Button>
       </Group>
     </>

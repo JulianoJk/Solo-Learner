@@ -1,7 +1,7 @@
 import { createStyles } from "@mantine/core";
-import { MAIN_CHART_COLORS } from "../../../Theme/Theme";
+import { MAIN_CHART_COLORS, NAVY } from "../../../Theme/Theme";
 
-export const useStyles = createStyles(() => ({
+export const useStyles = createStyles((props) => ({
   headerRoot: {
     backgroundColor: "transparent",
     borderBottom: `2px solid ${MAIN_CHART_COLORS[2]}`,
@@ -13,9 +13,12 @@ export const useStyles = createStyles(() => ({
     left: 0,
   },
   menuDropDown: {
-    ":dropdown": {
-      color: "ref",
+    backgroundColor: "#d3efd4",
+  },
+  menuItems: {
+    fontWeight: 600,
+    ":hover": {
+      color: NAVY,
     },
-    color: "red",
   },
 }));

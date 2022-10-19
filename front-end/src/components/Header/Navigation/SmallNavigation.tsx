@@ -1,36 +1,35 @@
-import { Link } from "react-router-dom";
-import { useUserDispatch, useUserState } from "../../../context/UserContext";
-import { useEffect } from "react";
-import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
-import { Menu, Group, Header, Burger, Anchor } from "@mantine/core";
+import { useUserDispatch } from "../../../context/UserContext";
+import { Menu, Group, Header, Burger, Center } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
-import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import LogoImage from "../../../images/Logo";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useClickOutside } from "@mantine/hooks";
+import { useEffect } from "react";
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
+
   let userIsLoggedInLocal = localStorage.getItem("user");
+
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
 
-  const { user } = useUserState();
-
-  // After logout, clear the context for the user and tasks, then navigate to index
-  const logOut = () => {
-    userDispatch({ type: "RESET_STATE" });
-    navigate("/");
-  };
-
   const [opened, setOpened] = useState(false);
-  const [menuOpened, setMenuOpened] = useState(false);
+
+  const ref = useClickOutside(() => setOpened(false));
+
   const title = opened ? "Close navigation" : "Open navigation";
 
   const handleClick = () => {
     setOpened((openedBurger) => !openedBurger);
-    setMenuOpened((openedMenu) => !openedMenu);
   };
+
+  const logOut = () => {
+    userDispatch({ type: "RESET_STATE" });
+    navigate("/index");
+  };
+  useEffect(() => {}, []);
 
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
@@ -42,48 +41,88 @@ const SmallNavigation: React.FC = () => {
             width={200}
             opened={opened}
             withArrow
-            closeOnClickOutside
+            closeOnClickOutside={true}
+            closeOnEscape={true}
+            closeOnItemClick={true}
           >
             <Menu.Target>
-              <Burger opened={opened} onClick={handleClick} title={title} />
+              <Burger
+                opened={opened}
+                onClick={handleClick}
+                title={title}
+                ref={ref}
+              />
             </Menu.Target>
 
             <Menu.Dropdown className={classes.menuDropDown}>
-              <Menu.Item>Settings</Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  navigate("/home");
+                }}
+                className={classes.menuItems}
+              >
+                <Center>HOME</Center>
+              </Menu.Item>
               <Menu.Divider />
-              <Menu.Item>Transfer my data</Menu.Item>,
-              <Menu.Item color="red">Delete my account</Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  navigate("/profile");
+                }}
+                className={classes.menuItems}
+              >
+                <Center>PROFILE</Center>
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item onClick={logOut} className={classes.menuItems}>
+                <Center>LOG OUT</Center>
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
         ) : (
-          <Menu shadow="md" width={200} opened={opened} withArrow>
+          <Menu
+            shadow="md"
+            width={200}
+            opened={opened}
+            withArrow
+            closeOnClickOutside={true}
+            closeOnEscape={true}
+            closeOnItemClick={true}
+          >
             <Menu.Target>
-              <Burger opened={opened} onClick={handleClick} title={title} />
+              <Burger
+                opened={opened}
+                onClick={handleClick}
+                title={title}
+                ref={ref}
+              />
             </Menu.Target>
 
-            <Menu.Dropdown>
+            <Menu.Dropdown className={classes.menuDropDown}>
               <Menu.Item
                 onClick={() => {
                   navigate("/index");
                 }}
+                className={classes.menuItems}
               >
-                INDEX
+                <Center>INDEX</Center>
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item
                 onClick={() => {
                   navigate("/login");
                 }}
+                className={classes.menuItems}
               >
-                LOGIN
+                <Center>LOGIN</Center>
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item
                 onClick={() => {
                   navigate("/register");
                 }}
+                className={classes.menuItems}
               >
-                REGISTER
+                <Center>REGISTER</Center>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

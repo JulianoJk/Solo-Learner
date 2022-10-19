@@ -126,7 +126,6 @@ const Register: React.FC = () => {
           minLength={6}
           autoComplete="on"
           label={<span className={classes.inputLabels}>Confirm Password:</span>}
-          defaultValue="secret"
           visibilityToggleIcon={({ reveal }) =>
             reveal ? <EyeOff size={16} /> : <Eye size={16} />
           }
