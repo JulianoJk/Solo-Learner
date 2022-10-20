@@ -9,16 +9,23 @@ import { useStyles } from "./Profile.styles";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 import Demo from "../Settings/DeleteAccount/Demo";
 import DeleteAccount from "../Settings/DeleteAccount/DeleteAccount";
+interface IUserLocalStorage {
+  
+}
 const Profile: React.FC = () => {
   const { user } = useUserState();
-  let userIsLoggedInLocal = localStorage.getItem("user");
+  let userIsLoggedInLocal: any = localStorage.getItem("user");
+  console.log(userIsLoggedInLocal);
+
   const { classes } = useStyles();
-  const hasID = !isUndefinedOrNullString(user.id) ? user.id : undefined;
+  const hasToken = !isUndefinedOrNullString(userIsLoggedInLocal.id)
+    ? user.token
+    : undefined;
   const { isLoading, data: userProfileData } = useQuery(
-    ["getProfileItems", hasID],
+    ["getProfileItems", hasToken],
     async () => {
-      if (hasID) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasID);
+      if (hasToken) {
+        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
         return data;
       }
     },
