@@ -5,7 +5,6 @@ import jwt_decode from "jwt-decode";
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
-// const checkIfTokenExpired = require("../utils/utils");
 const checkIfTokenExpired = require("../utils/utils");
 export interface IUser {
   token?: string;
@@ -19,16 +18,22 @@ export interface IUser {
   iat?: number;
 }
 
+let currentUser: IUser;
+
 router.get("/profile/:token", async (req: Request, res: Response) => {
   try {
     const parameters = req.params;
+    console.log(parameters);
+    
     let decoded: IUser = jwt_decode(parameters.token);
 
-    const currentUser: IUser = await User.findById(decoded.id);
+    currentUser = await User.findById(decoded.id);
 
-    // console.log(checkIfTokenExpired(decoded.exp));
-
-    res.json(currentUser.dateJoined.toDateString());
+    if (checkIfTokenExpired(decoded.exp)) {
+      res.json("Expired session, please login again!");
+    } else {
+      res.json(currentUser.dateJoined.toDateString());
+    }
   } catch (error) {
     res.status(404).json("No user found...");
   }
@@ -150,7 +155,7 @@ router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
 
     let decoded: IUser = jwt_decode(parameters.token);
 
-    const currentUser: IUser = await User.findById(decoded.id);
+    currentUser = await User.findById(decoded.id);
 
     const { email, password } = req.body;
 
@@ -165,14 +170,19 @@ router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
     if (!passwordsMatch) {
       return res.status(400).json({ message: "Invalid username or password." });
     }
-    User.deleteOne({ _id: currentUser.id }, function (err: any, docs: any) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Deleted : ", docs);
-        res.status(202).json("We're sorry to see you go :(. ");
-      }
-    });
+
+    if (checkIfTokenExpired(decoded.exp)) {
+      res.json("Expired session, please login again!");
+    } else {
+      User.deleteOne({ _id: currentUser.id }, function (err: any, docs: any) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Deleted : ", docs);
+          res.status(202).json("We're sorry to see you go :(. ");
+        }
+      });
+    }
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
