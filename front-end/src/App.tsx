@@ -15,12 +15,18 @@ import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useMediaQuery } from "@mantine/hooks";
 import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
+import { useEffect } from "react";
 
 const App = () => {
   const queryClient = new QueryClient();
 
   const isLoggedIn = !!localStorage.getItem("user");
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
+  // Check user reloads page
+  // const reloaded = window.performance.getEntries()[0].toJSON().type;
+  // useEffect(() => {
+  //   console.log("reloaded!");
+  // }, [reloaded]);
 
   return (
     <QueryClientProvider client={queryClient}>
