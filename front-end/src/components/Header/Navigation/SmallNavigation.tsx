@@ -6,6 +6,7 @@ import LogoImage from "../../../images/Logo";
 import { useNavigate } from "react-router-dom";
 import { useClickOutside } from "@mantine/hooks";
 import { useEffect } from "react";
+import { Home } from "tabler-icons-react";
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +62,9 @@ const SmallNavigation: React.FC = () => {
                 }}
                 className={classes.menuItems}
               >
-                <Center>HOME</Center>
+                <Center>
+                  <Home size={16} /> HOME
+                </Center>
               </Menu.Item>
               <Menu.Divider />
               <Menu.Item

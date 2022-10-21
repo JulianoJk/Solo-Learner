@@ -113,14 +113,6 @@ const DeleteAccount = () => {
 
       <Group position="center">
         <Button
-          onClick={() => setOpened(true)}
-          variant="outline"
-          color="pink"
-          leftIcon={<Trash />}
-        >
-          Open Modal
-        </Button>
-        <Button
           onClick={() =>
             openConfirmModal({
               title: "Are you sure?",
