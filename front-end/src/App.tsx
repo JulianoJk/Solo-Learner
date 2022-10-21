@@ -15,7 +15,7 @@ import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useMediaQuery } from "@mantine/hooks";
 import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
-import { useEffect } from "react";
+import DeleteAccount from "./components/Pages/Settings/DeleteAccount/DeleteAccount";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -42,6 +42,7 @@ const App = () => {
                   <Route path="/register" element={<Register />} />
                   <Route path="/home" element={<Home />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/delete-account" element={<DeleteAccount />} />
                   <Route
                     path="/*"
                     element={isLoggedIn ? <Home /> : <Index />}

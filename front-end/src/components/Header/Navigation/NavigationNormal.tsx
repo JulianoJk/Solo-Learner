@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
-import { Button, Group, Header } from "@mantine/core";
+import { Button, Group, Header, Avatar } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
+import { checkIfUserReloads } from "../../../lib/dist";
+import { useEffect } from "react";
 
 const NavigationNormal: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +15,10 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
 
   const { user } = useUserState();
+
+  useEffect(() => {
+    checkIfUserReloads(userDispatch);
+  }, []);
 
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
@@ -36,7 +42,6 @@ const NavigationNormal: React.FC = () => {
             >
               Home
             </Button>
-
             <Button
               leftIcon={<User size={16} />}
               radius="md"
@@ -49,6 +54,14 @@ const NavigationNormal: React.FC = () => {
             >
               Profile
             </Button>
+            {/* <Avatar
+              variant="outline"
+              radius="md"
+              size="xl"
+              color="dark"
+              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
+            /> */}
+
             <Button
               leftIcon={<Logout size={16} />}
               radius="md"
