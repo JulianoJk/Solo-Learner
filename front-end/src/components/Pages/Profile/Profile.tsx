@@ -13,8 +13,6 @@ interface IUserLocalStorage {}
 const Profile: React.FC = () => {
   const { user } = useUserState();
   let userIsLoggedInLocal: any = localStorage.getItem("user");
-  // console.log(userIsLoggedInLocal);
-  console.log(user.token);
 
   const { classes } = useStyles();
   const hasToken = !isUndefinedOrNullString(user.token)

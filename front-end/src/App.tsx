@@ -22,11 +22,6 @@ const App = () => {
 
   const isLoggedIn = !!localStorage.getItem("user");
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
-  // Check user reloads page
-  // const reloaded = window.performance.getEntries()[0].toJSON().type;
-  // useEffect(() => {
-  //   console.log("reloaded!");
-  // }, [reloaded]);
 
   return (
     <QueryClientProvider client={queryClient}>

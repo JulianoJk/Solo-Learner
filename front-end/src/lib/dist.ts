@@ -15,7 +15,7 @@ export const checkIfUserReloads = (props: usersDispatchContext) => {
     const userInfo = localStorage.getItem("user");
     if (userInfo !== null) {
       const userInfos = JSON.parse(userInfo);
-      console.log(userInfos);
+
       props({ type: "SET_USER", user: userInfos });
     }
   };

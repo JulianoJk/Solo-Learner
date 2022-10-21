@@ -23,8 +23,7 @@ let currentUser: IUser;
 router.get("/profile/:token", async (req: Request, res: Response) => {
   try {
     const parameters = req.params;
-    console.log(parameters);
-    
+
     let decoded: IUser = jwt_decode(parameters.token);
 
     currentUser = await User.findById(decoded.id);
@@ -75,6 +74,7 @@ router.post("/login", async (req: Request, res: Response) => {
           username: user.username,
           id: user._id,
           isTeacher: checkIfTeacher ? true : false,
+          password: user.password,
         });
       }
     );
@@ -178,7 +178,6 @@ router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
         if (err) {
           console.log(err);
         } else {
-          console.log("Deleted : ", docs);
           res.status(202).json("We're sorry to see you go :(. ");
         }
       });
