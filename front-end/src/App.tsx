@@ -15,7 +15,6 @@ import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
 import { useMediaQuery } from "@mantine/hooks";
 import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
-import { useEffect } from "react";
 
 const App = () => {
   const queryClient = new QueryClient();

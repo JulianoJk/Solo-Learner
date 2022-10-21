@@ -5,7 +5,7 @@ import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
 import { Button, Group, Header } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
-
+import { checkIfUserReloads } from "../../../lib/dist";
 const NavigationNormal: React.FC = () => {
   const navigate = useNavigate();
   let userIsLoggedInLocal = localStorage.getItem("user");
@@ -13,6 +13,8 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
 
   const { user } = useUserState();
+
+  console.log(checkIfUserReloads(userDispatch));
 
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
@@ -36,7 +38,6 @@ const NavigationNormal: React.FC = () => {
             >
               Home
             </Button>
-
             <Button
               leftIcon={<User size={16} />}
               radius="md"
