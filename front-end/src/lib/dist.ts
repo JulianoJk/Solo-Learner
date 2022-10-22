@@ -24,6 +24,11 @@ export const isUserLoggedIn = () => {
   return !isUndefinedOrNullString(userInfo);
 };
 
+export const isUndefinedOrNullArray = <T>(object: T[] | undefined | null) => {
+  return object === undefined || object === null || object.length === 0
+    ? true
+    : false;
+};
 // export const RandomColorGenerator = () => {
 //   let arrayColors: string[] = [];
 //   for (let i = 0; i < 5; i++) {

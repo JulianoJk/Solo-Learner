@@ -8,6 +8,7 @@ export const INFO_MAIN_COLOR = "#d6ecff";
 export const LIME_GREEN = "#2cf67d92";
 
 
+
 export const DEFAULT_AUDIENCE_CHART_COLOR = "#ced9eb";
 export const MAIN_CHART_COLORS = [
   "#007cb6",
@@ -70,3 +71,5 @@ export const LIGHT_VIOLET = "#bfbfef";
 export const LIGHT_MENT = "#3ED2B0";
 export const NAVY = "#112A46";
 export const LIGHT_NAVY = "#373B58";
+export const LIGaHT_NAVY = "#25262B";
+
