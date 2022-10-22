@@ -5,6 +5,8 @@ export const ERROR_DARK_COLOR = "#892937";
 export const ERROR_LIGHT_COLOR = "#ff6659";
 export const ERROR_VERY_LIGHT_COLOR = "#EEA0A7";
 export const INFO_MAIN_COLOR = "#d6ecff";
+export const LIME_GREEN = "#2cf67d92";
+
 
 export const DEFAULT_AUDIENCE_CHART_COLOR = "#ced9eb";
 export const MAIN_CHART_COLORS = [

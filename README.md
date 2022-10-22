@@ -73,4 +73,3 @@ An example is "https://randomkeygen.com/" or "https://keygen.io/"
 - [Mantine UI](https://mantine.dev/)
 - [Use Query ](https://react-query.tanstack.com/)
 - [Tabler Icons for React](https://tabler-icons-react.vercel.app/)
-- [Boring-avatars](https://github.com/boringdesigners/boring-avatars)

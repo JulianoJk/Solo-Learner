@@ -20,3 +20,11 @@ export const checkIfUserReloads = (props: usersDispatchContext) => {
     }
   };
 };
+// export const RandomColorGenerator = () => {
+//   let arrayColors: string[] = [];
+//   for (let i = 0; i < 5; i++) {
+//     var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+//     arrayColors.push(randomColor);
+//   }
+//   return arrayColors;
+// };

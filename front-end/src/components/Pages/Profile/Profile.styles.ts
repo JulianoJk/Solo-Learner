@@ -6,4 +6,7 @@ export const useStyles = createStyles(() => ({
     alignItems: "center",
     marginTop: "5%",
   },
+  profileImage: {
+    margin: 30,
+  },
 }));
