@@ -10,7 +10,6 @@ export const isUndefinedOrNullString = (object: string | undefined | null) => {
     : false;
 };
 export const checkIfUserReloads = (props: usersDispatchContext) => {
-  const useUserDispatch = props;
   window.onload = () => {
     const userInfo = localStorage.getItem("user");
     if (userInfo !== null) {
@@ -20,6 +19,11 @@ export const checkIfUserReloads = (props: usersDispatchContext) => {
     }
   };
 };
+export const isUserLoggedIn = () => {
+  const userInfo = localStorage.getItem("user");
+  return !isUndefinedOrNullString(userInfo);
+};
+
 // export const RandomColorGenerator = () => {
 //   let arrayColors: string[] = [];
 //   for (let i = 0; i < 5; i++) {

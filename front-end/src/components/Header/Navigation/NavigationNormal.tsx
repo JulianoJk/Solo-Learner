@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
-import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
+import {
+  Logout,
+  Home,
+  User,
+  Login,
+  Pencil,
+  Settings,
+} from "tabler-icons-react";
 import { Button, Group, Header, Avatar, Anchor } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
-import { checkIfUserReloads } from "../../../lib/dist";
+import { checkIfUserReloads, isUserLoggedIn } from "../../../lib/dist";
 import { useEffect } from "react";
 
 const NavigationNormal: React.FC = () => {
@@ -26,12 +33,13 @@ const NavigationNormal: React.FC = () => {
     navigate("/");
   };
 
+  const logoNavigation = isUserLoggedIn() ? "/home" : "/index";
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
         <Anchor
           onClick={() => {
-            navigate("/home");
+            navigate(logoNavigation);
           }}
         >
           <LogoImage width={170} height={160} className={classes.logo} />
@@ -61,13 +69,17 @@ const NavigationNormal: React.FC = () => {
             >
               Profile
             </Button>
-            <Avatar
-              variant="outline"
-              radius="md"
-              size="sm"
-              color="dark"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
-            />
+            <>
+              <Avatar
+                variant="outline"
+                radius="md"
+                size="sm"
+                color="dark"
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
+                onClick={() => navigate("/account/settings")}
+              />
+            </>
+
             <Button
               leftIcon={<Logout size={16} />}
               radius="md"

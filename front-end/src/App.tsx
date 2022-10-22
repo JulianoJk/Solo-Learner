@@ -16,6 +16,7 @@ import { NotificationsProvider } from "@mantine/notifications";
 import { useMediaQuery } from "@mantine/hooks";
 import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
 import DeleteAccount from "./components/Pages/Settings/DeleteAccount/DeleteAccount";
+import SettingsComponent from "./components/Pages/Settings/Settings.component";
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -38,7 +39,10 @@ const App = () => {
                   <Route path="/home" element={<Home />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/delete-account" element={<DeleteAccount />} />
-                  <Route path="/delete-account" element={<DeleteAccount />} />
+                  <Route
+                    path="/account/settings"
+                    element={<SettingsComponent />}
+                  />
 
                   <Route
                     path="/*"
