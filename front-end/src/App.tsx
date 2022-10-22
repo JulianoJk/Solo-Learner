@@ -38,6 +38,8 @@ const App = () => {
                   <Route path="/home" element={<Home />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/delete-account" element={<DeleteAccount />} />
+                  <Route path="/delete-account" element={<DeleteAccount />} />
+
                   <Route
                     path="/*"
                     element={isLoggedIn ? <Home /> : <Index />}

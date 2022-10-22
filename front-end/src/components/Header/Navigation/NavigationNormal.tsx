@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
-import { Button, Group, Header, Avatar } from "@mantine/core";
+import { Button, Group, Header, Avatar, Anchor } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
 import { checkIfUserReloads } from "../../../lib/dist";
@@ -29,7 +29,14 @@ const NavigationNormal: React.FC = () => {
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
-        <LogoImage width={170} height={160} className={classes.logo} />
+        <Anchor
+          onClick={() => {
+            navigate("/home");
+          }}
+        >
+          <LogoImage width={170} height={160} className={classes.logo} />
+        </Anchor>
+
         {userIsLoggedInLocal ? (
           <>
             <Button

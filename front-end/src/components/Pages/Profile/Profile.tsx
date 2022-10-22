@@ -9,7 +9,7 @@ import { useStyles } from "./Profile.styles";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 import Demo from "../Settings/DeleteAccount/Demo";
 import DeleteAccount from "../Settings/DeleteAccount/DeleteAccount";
-import UploadProfileComponent from "./UploadProfile.component";
+import UploadProfileComponent from "../Settings/profileImageSettings/UploadProfile.component";
 import { useState } from "react";
 
 const Profile: React.FC = () => {

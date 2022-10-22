@@ -6,7 +6,7 @@ const UploadProfileComponent = () => {
   const [profileImage, setProfileImage] = useState<FileWithPath[]>([]);
   const resetRef = useRef<() => void>(null);
   // open dialog if a file is dragged to screen and close when dragged away
-  const [openDialogWindow, setOpenDialogWindow] = useState(false);
+  const [openDialogWindow, setOpenDialogWindow] = useState(true);
 
   const previews = profileImage.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -21,7 +21,7 @@ const UploadProfileComponent = () => {
 
   const openModal = () =>
     openConfirmModal({
-      title: "Please confirm your action",
+      title: "Save image?",
       children: (
         <Text size="sm">
           This action is so important that you are required to confirm it with a
