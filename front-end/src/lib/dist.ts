@@ -32,6 +32,18 @@ export const isArrayUndefinedOrNull = <T>(object: T[] | undefined | null) => {
 export const capitalString = (text: string) => {
   return text.charAt(0).toUpperCase() + text.slice(1);
 };
+
+export const formatBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
 // export const RandomColorGenerator = () => {
 //   let arrayColors: string[] = [];
 //   for (let i = 0; i < 5; i++) {

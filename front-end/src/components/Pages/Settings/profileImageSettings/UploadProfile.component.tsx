@@ -21,7 +21,7 @@ import {
   TRANSPARENT_LIGHT_COLORS,
 } from "../../../../Theme/Theme";
 import { showNotification } from "@mantine/notifications";
-import { isArrayUndefinedOrNull } from "../../../../lib/dist";
+import { formatBytes, isArrayUndefinedOrNull } from "../../../../lib/dist";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
@@ -43,29 +43,29 @@ const UploadProfileComponent = () => {
       </div>
     );
   });
-  // FileInvalidType = "file-invalid-type",
-  // FileTooLarge = "file-too-large",
-  // FileTooSmall = "file-too-small",
-  // TooManyFiles = "too-many-files",
-
+  const errorsArray = ["too-many-files", "file-too-small", "file-invalid-type"];
   const rejectedUpload = (
-    errorText: any,
-    errorType: string,
-    fileSize: number
+    // errorText: any,
+    // errorType: string,
+    fileError: any,
+    fileSize: any
   ) => {
-    let errorMessage: string;
-    // if (errorType === "FileTooLarge") {
-    //   console.log();
-    // }
-    showNotification({
-      icon: <AlertCircle size={18} color={COMMON_WHITE} />,
-      title: <Text color={COMMON_WHITE}>Bummer!</Text>,
-      // <Text color={COMMON_WHITE}>{errorText[0].errors[0].message}</Text>
-      message: <Text color={COMMON_WHITE}>{errorText}</Text>,
-      sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
-      autoClose: 5000,
-      color: "red",
-    });
+    let errorMessage = () => {
+      if (fileError.code === "file-too-large") {
+        console.log(`File is larger than ${formatBytes(fileSize)}`);
+      } else if (errorsArray.includes(fileError)) {
+        console.log(fileError.message);
+      }
+    };
+    // showNotification({
+    //   icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+    //   title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+    //   // <Text color={COMMON_WHITE}>{}</Text>
+    //   message: <Text color={COMMON_WHITE}>{fileError}</Text>,
+    //   sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+    //   autoClose: 5000,
+    //   color: "red",
+    // });
   };
 
   return (
@@ -78,7 +78,8 @@ const UploadProfileComponent = () => {
         <Dropzone
           activateOnDrag
           accept={IMAGE_MIME_TYPE}
-          onDrop={(files) => setProfileImage(files)}
+          // onDrop={(files) => setProfileImage(files)}
+          onDrop={(files) => console.log(isArrayUndefinedOrNull(files))}
           sx={{
             width: 400,
             height: 400,
@@ -88,20 +89,25 @@ const UploadProfileComponent = () => {
               backgroundColor: TRANSPARENT_LIGHT_COLORS[0],
             },
           }}
-          onReject={(file) =>
+          onReject={(file) => {
+            // rejectedUpload(
+            //   file[0].errors[0].message,
+            //   file[0].errors[0].code,
+            //   file[0].file.size
+            // );
+            // TODO!: Check alternatives | how to map an object inside another object
             rejectedUpload(
-              file[0].errors[0].message,
-              file[0].errors[0].code,
-              file[0].file.size
-            )
-          }
+              file.map((e) => e.errors.map((a) => a)),
+              file.map((k) => k.file.size)
+            );
+          }}
           // onReject={(file) => rejectedUpload(file)}
           // Max size in bytes it can be accepted
-          maxSize={4 * 1024 ** 2}
+          maxSize={1 * 1024 ** 2}
           multiple={false}
         >
           <Group
-            align="flex-start"
+            align="center"
             position="center"
             spacing="xl"
             style={{ minHeight: 220, pointerEvents: "none" }}
@@ -140,7 +146,6 @@ const UploadProfileComponent = () => {
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Text>Profile picture</Text>
-
       <Avatar
         className={classes.profileImage}
         radius={200}
