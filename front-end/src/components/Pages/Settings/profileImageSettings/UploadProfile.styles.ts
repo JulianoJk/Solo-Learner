@@ -17,7 +17,4 @@ export const useStyles = createStyles(() => ({
     marginLeft: "auto",
     marginRight: "auto",
   },
-  imagePreviewContainer: {
-    border: "1px solid red",
-  },
 }));

@@ -7,8 +7,6 @@ export const ERROR_VERY_LIGHT_COLOR = "#EEA0A7";
 export const INFO_MAIN_COLOR = "#d6ecff";
 export const LIME_GREEN = "#2cf67d92";
 
-
-
 export const DEFAULT_AUDIENCE_CHART_COLOR = "#ced9eb";
 export const MAIN_CHART_COLORS = [
   "#007cb6",
@@ -57,6 +55,7 @@ export const DISABLED_BACKGROUND_COLOR_SAVEDCHARTS = "#CED9EB";
 export const DISABLED_COLOR_SAVEDCHARTS = "#ffffff";
 export const DIMMED_OPACITY = "40%";
 export const GRAY_SCROLLBAR = "#c7c7c7";
+
 export const GRAY_BORDER = "#cedaeb";
 export const PALE_GRAY = "#ebf0fa";
 export const LIGHTER_GRAY = "#657694";
@@ -68,8 +67,11 @@ export const PERRY_WINKLE = "#8782d9";
 export const PURPLE_DARK = "#493396";
 export const DEEP_BLUE = "#0981c0";
 export const LIGHT_VIOLET = "#bfbfef";
+// Mine
 export const LIGHT_MENT = "#3ED2B0";
 export const NAVY = "#112A46";
 export const LIGHT_NAVY = "#373B58";
-export const LIGaHT_NAVY = "#25262B";
+export const HEAVY_NAVY = "#25262B";
+export const LIGHT_BEIGE = "#E5D8D0";
 
+export const TRANSPARENT_LIGHT_COLORS = ["#373b5896"];

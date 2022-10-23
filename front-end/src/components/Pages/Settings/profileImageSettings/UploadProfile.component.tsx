@@ -12,7 +12,14 @@ import {
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { useStyles } from "./UploadProfile.styles";
 import { AlertCircle, Upload } from "tabler-icons-react";
-import { COMMON_WHITE, LIGHT_NAVY } from "../../../../Theme/Theme";
+import {
+  COMMON_WHITE,
+  DEEP_BLUE,
+  LIGHTER_GRAY,
+  LIGHT_BEIGE,
+  LIGHT_NAVY,
+  TRANSPARENT_LIGHT_COLORS,
+} from "../../../../Theme/Theme";
 import { showNotification } from "@mantine/notifications";
 import { isArrayUndefinedOrNull } from "../../../../lib/dist";
 
@@ -36,50 +43,24 @@ const UploadProfileComponent = () => {
       </div>
     );
   });
+  // FileInvalidType = "file-invalid-type",
+  // FileTooLarge = "file-too-large",
+  // FileTooSmall = "file-too-small",
+  // TooManyFiles = "too-many-files",
 
-  // const ConfirmationModal = () =>
-  //   openConfirmModal({
-  //     title: <Title>Upload profile image</Title>,
-  //     children: (
-  //       <>
-  //         <Dropzone
-  //           activateOnDrag
-  //           accept={IMAGE_MIME_TYPE}
-  //           onDrop={(files) => setProfileImage(files)}
-  //           // style={{ width: "50%", height: "50%" }}
-  //           // onDrop={(files) => console.log("accepted files", files)}
-  //           // onDrop={ConfirmationModal}
-
-  //           onReject={(files) => console.log("rejected files", files)}
-  //           // Max size in bytes it can be accepted
-  //           // maxSize={4.8 * 1024 ** 2}
-  //           maxSize={10 * 1024 ** 2}
-  //           // onDragEnter={() => {
-  //           //   setOpenDialogWindow(true);
-  //           // }}
-  //           // onDragLeave={() => {
-  //           //   setOpenDialogWindow(false);
-  //           // }}
-  //         >
-  //           {previewImage ? (
-  //             { profileImage }
-  //           ) : (
-  //             <Text align="center">Drop images here</Text>
-  //           )}
-  //         </Dropzone>
-  //         )
-  //       </>
-  //     ),
-  //     labels: { confirm: "Confirm", cancel: "Cancel" },
-  //     onCancel: () => console.log("Cancel"),
-  //     onConfirm: () => console.log("Confirmed"),
-  //     confirmProps: { color: "red", disabled: !!profileImage },
-  //   });
-
-  const rejectedUpload = (errorText: any) => {
+  const rejectedUpload = (
+    errorText: any,
+    errorType: string,
+    fileSize: number
+  ) => {
+    let errorMessage: string;
+    // if (errorType === "FileTooLarge") {
+    //   console.log();
+    // }
     showNotification({
       icon: <AlertCircle size={18} color={COMMON_WHITE} />,
       title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+      // <Text color={COMMON_WHITE}>{errorText[0].errors[0].message}</Text>
       message: <Text color={COMMON_WHITE}>{errorText}</Text>,
       sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
       autoClose: 5000,
@@ -92,40 +73,45 @@ const UploadProfileComponent = () => {
       <Modal
         title={<Title>Upload profile image</Title>}
         opened={openModal}
-        // opened={true}
         onClose={() => setOpenModal(false)}
-        sx={{
-          ":root": {
-            backgroundColor: "red",
-            width: 900,
-            height: 900,
-          },
-          ":modal": {
-            backgroundColor: "red",
-            width: 900,
-            height: 900,
-          },
-        }}
       >
         <Dropzone
           activateOnDrag
           accept={IMAGE_MIME_TYPE}
           onDrop={(files) => setProfileImage(files)}
-          style={{ width: 400, height: 400 }}
-          // onDrop={(files) => console.log("accepted files", files)}
-          // onDrop={ConfirmationModal}
-          onReject={(file) => rejectedUpload(file[0].errors[0].message)}
+          sx={{
+            width: 400,
+            height: 400,
+            border: 0,
+            backgroundColor: LIGHTER_GRAY,
+            ":hover": {
+              backgroundColor: TRANSPARENT_LIGHT_COLORS[0],
+            },
+          }}
+          onReject={(file) =>
+            rejectedUpload(
+              file[0].errors[0].message,
+              file[0].errors[0].code,
+              file[0].file.size
+            )
+          }
+          // onReject={(file) => rejectedUpload(file)}
           // Max size in bytes it can be accepted
-          maxSize={14.8 * 1024 ** 2}
+          maxSize={4 * 1024 ** 2}
           multiple={false}
         >
-          <div className={classes.imagePreviewContainer}>
+          <Group
+            align="flex-start"
+            position="center"
+            spacing="xl"
+            style={{ minHeight: 220, pointerEvents: "none" }}
+          >
             {!isArrayUndefinedOrNull(profileImage) ? (
               previews
             ) : (
               <Text align="center">Drop images here</Text>
             )}
-          </div>
+          </Group>
         </Dropzone>
         <Group
           spacing={"xl"}
@@ -134,26 +120,27 @@ const UploadProfileComponent = () => {
         >
           <Button
             onClick={() => {
-              console.log("asdas");
-            }}
-            variant="outline"
-          >
-            Save
-          </Button>
-          <Button
-            onClick={() => {
               setProfileImage([]);
-              console.log(profileImage);
             }}
             variant="outline"
             color="red"
           >
             Clear
           </Button>
+
+          <Button
+            onClick={() => {
+              console.log("asdas");
+            }}
+            variant="outline"
+          >
+            Save
+          </Button>
         </Group>
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Text>Profile picture</Text>
+
       <Avatar
         className={classes.profileImage}
         radius={200}

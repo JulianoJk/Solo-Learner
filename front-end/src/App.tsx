@@ -25,7 +25,17 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider withNormalizeCSS withGlobalStyles>
+      <MantineProvider
+        withNormalizeCSS
+        withGlobalStyles
+        theme={{
+          activeStyles: { transform: "scale(0.95)" },
+          colorScheme: "light",
+          colors:{
+            
+          }
+        }}
+      >
         <ModalsProvider>
           <NotificationsProvider>
             <BrowserRouter>
