@@ -47,10 +47,13 @@ export const profileAPI = async (
   token: string
 ): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(`http://localhost:3001/users/profile/${token}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const response = await fetch(
+      `http://localhost:3001/users/profile/${token}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
     const data: IUserInfoContext = await response.json();
     return data;
   } catch (error) {
@@ -59,18 +62,16 @@ export const profileAPI = async (
 };
 export const saveProfileImageAPI = async ({
   token,
-  email,
-  password,
+  imageSRC,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch(
-      `http://localhost:3001/users/deleteAccount/${token}`,
+      `http://localhost:3001/users/settings/profilePicture/${token}`,
       {
-        method: "DELETE",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: email,
-          password: password,
+          imageSRC: imageSRC,
         }),
       }
     );
