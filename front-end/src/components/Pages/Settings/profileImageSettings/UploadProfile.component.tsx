@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   Text,
   Image,
@@ -7,19 +7,11 @@ import {
   Button,
   Group,
   Title,
-  Center,
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { useStyles } from "./UploadProfile.styles";
-import { AlertCircle, Upload } from "tabler-icons-react";
-import {
-  COMMON_WHITE,
-  DEEP_BLUE,
-  LIGHTER_GRAY,
-  LIGHT_BEIGE,
-  LIGHT_NAVY,
-  TRANSPARENT_LIGHT_COLORS,
-} from "../../../../Theme/Theme";
+import { AlertCircle } from "tabler-icons-react";
+import { COMMON_WHITE, LIGHT_NAVY } from "../../../../Theme/Theme";
 import { showNotification } from "@mantine/notifications";
 import { formatBytes, isArrayUndefinedOrNull } from "../../../../lib/dist";
 
@@ -30,6 +22,7 @@ const UploadProfileComponent = () => {
   const [profileImage, setProfileImage] = useState<FileWithPath[]>([]);
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
+  const [saveImage, setSaveImage] = useState(false);
 
   const previews = profileImage.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
@@ -38,13 +31,12 @@ const UploadProfileComponent = () => {
         <Image
           radius="md"
           src={imageUrl}
-          imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+          // imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
           alt="profile image preview"
         />
       </div>
     );
   });
-  const errorsArray = ["too-many-files", "file-too-small", "file-invalid-type"];
   // const rejectedUpload = (file: any) => {
   //   let errorMessage;
   //   const b = file.forEach((element: any) => {
@@ -98,19 +90,11 @@ const UploadProfileComponent = () => {
           activateOnDrag
           accept={IMAGE_MIME_TYPE}
           onDrop={(files) => setProfileImage(files)}
-          sx={{
-            width: 400,
-            height: 400,
-            border: 0,
-            backgroundColor: LIGHTER_GRAY,
-            ":hover": {
-              backgroundColor: TRANSPARENT_LIGHT_COLORS[0],
-            },
-          }}
           onReject={(file) => rejectedUpload(file)}
           // Max size in bytes it can be accepted
           maxSize={maxSizeImages}
           multiple={false}
+          className={classes.dropzoneContainer}
         >
           <Group
             align="center"
@@ -142,7 +126,8 @@ const UploadProfileComponent = () => {
 
           <Button
             onClick={() => {
-              console.log("asdas");
+              setSaveImage(true);
+              setOpenModal(false);
             }}
             variant="outline"
           >
@@ -152,14 +137,32 @@ const UploadProfileComponent = () => {
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Text>Profile picture</Text>
-      <Avatar
-        className={classes.profileImage}
-        radius={200}
-        size={200}
-        color={"cyan"}
-        variant="filled"
-        alt="profile-image"
-      />
+      <div>
+        {/* {isArrayUndefinedOrNull(profileImage) ? (
+          <Avatar
+            className={classes.profileImage}
+            radius={200}
+            size={200}
+            color={"cyan"}
+            variant="filled"
+            alt="profile-image"
+          />
+        ) : (
+          { previews }
+        )} */}
+      </div>
+      {saveImage ? (
+        <>{previews} </>
+      ) : (
+        <Avatar
+          className={classes.profileImage}
+          radius={200}
+          size={200}
+          color={"cyan"}
+          variant="filled"
+          alt="profile-image"
+        />
+      )}
     </div>
   );
 };
