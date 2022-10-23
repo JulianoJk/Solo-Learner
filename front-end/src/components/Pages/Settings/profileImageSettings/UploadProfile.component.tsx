@@ -25,6 +25,7 @@ import { formatBytes, isArrayUndefinedOrNull } from "../../../../lib/dist";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
+  const maxSizeImages = 3 * 1024 ** 2;
 
   const [profileImage, setProfileImage] = useState<FileWithPath[]>([]);
   // open dialog if a file is dragged to screen and close when dragged away
@@ -44,28 +45,46 @@ const UploadProfileComponent = () => {
     );
   });
   const errorsArray = ["too-many-files", "file-too-small", "file-invalid-type"];
-  const rejectedUpload = (
-    // errorText: any,
-    // errorType: string,
-    fileError: any,
-    fileSize: any
-  ) => {
-    let errorMessage = () => {
-      if (fileError.code === "file-too-large") {
-        console.log(`File is larger than ${formatBytes(fileSize)}`);
-      } else if (errorsArray.includes(fileError)) {
-        console.log(fileError.message);
-      }
-    };
-    // showNotification({
-    //   icon: <AlertCircle size={18} color={COMMON_WHITE} />,
-    //   title: <Text color={COMMON_WHITE}>Bummer!</Text>,
-    //   // <Text color={COMMON_WHITE}>{}</Text>
-    //   message: <Text color={COMMON_WHITE}>{fileError}</Text>,
-    //   sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
-    //   autoClose: 5000,
-    //   color: "red",
-    // });
+  // const rejectedUpload = (file: any) => {
+  //   let errorMessage;
+  //   const b = file.forEach((element: any) => {
+  //     const a = element.errors;
+  //     a.forEach((elements: any) => {
+  //       showNotification({
+  //         icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+  //         title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+  //         // <Text color={COMMON_WHITE}>{}</Text>
+  //         message: <Text color={COMMON_WHITE}>{elements.message}</Text>,
+  //         sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+  //         autoClose: 5000,
+  //         color: "red",
+  //       });
+  //     });
+  //   });
+  // };
+  const rejectedUpload = (file: any) => {
+    let errorMessage: string;
+    file.forEach((element: any) => {
+      element.errors.forEach((elements: any) => {
+        console.log(elements.message);
+        errorMessage = elements.message;
+        if (elements.code === "file-too-large") {
+          errorMessage = `File is larger than ${formatBytes(maxSizeImages)}.`;
+        } else if (elements.code === "file-invalid-type") {
+          errorMessage =
+            "File type must be .png, .gif, .jpeg, .svg, .xml, .webp  ";
+        }
+
+        showNotification({
+          icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+          title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+          message: <Text color={COMMON_WHITE}>{errorMessage}</Text>,
+          sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+          autoClose: 5000,
+          color: "red",
+        });
+      });
+    });
   };
 
   return (
@@ -78,8 +97,7 @@ const UploadProfileComponent = () => {
         <Dropzone
           activateOnDrag
           accept={IMAGE_MIME_TYPE}
-          // onDrop={(files) => setProfileImage(files)}
-          onDrop={(files) => console.log(isArrayUndefinedOrNull(files))}
+          onDrop={(files) => setProfileImage(files)}
           sx={{
             width: 400,
             height: 400,
@@ -89,21 +107,9 @@ const UploadProfileComponent = () => {
               backgroundColor: TRANSPARENT_LIGHT_COLORS[0],
             },
           }}
-          onReject={(file) => {
-            // rejectedUpload(
-            //   file[0].errors[0].message,
-            //   file[0].errors[0].code,
-            //   file[0].file.size
-            // );
-            // TODO!: Check alternatives | how to map an object inside another object
-            rejectedUpload(
-              file.map((e) => e.errors.map((a) => a)),
-              file.map((k) => k.file.size)
-            );
-          }}
-          // onReject={(file) => rejectedUpload(file)}
+          onReject={(file) => rejectedUpload(file)}
           // Max size in bytes it can be accepted
-          maxSize={1 * 1024 ** 2}
+          maxSize={maxSizeImages}
           multiple={false}
         >
           <Group
