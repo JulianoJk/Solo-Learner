@@ -10,14 +10,14 @@ export const useStyles = createStyles(() => ({
     margin: 30,
   },
   modalButtons: {
-    margin: 10,
-    right: 0,
-    bottom: 0,
+    marginTop: 10,
   },
-  modalRoot: {
-    ":root": {
-      width: 500,
-      height: 1300,
-    },
+  imagePreview: {
+    width: 240,
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
+  imagePreviewContainer: {
+    border: "1px solid red",
   },
 }));

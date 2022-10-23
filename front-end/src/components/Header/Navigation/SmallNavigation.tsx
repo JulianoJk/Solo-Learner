@@ -28,7 +28,7 @@ const SmallNavigation: React.FC = () => {
 
   const logOut = () => {
     userDispatch({ type: "RESET_STATE" });
-    navigate("/index");
+    navigate("/");
   };
   useEffect(() => {}, []);
 
@@ -103,7 +103,7 @@ const SmallNavigation: React.FC = () => {
             <Menu.Dropdown className={classes.menuDropDown}>
               <Menu.Item
                 onClick={() => {
-                  navigate("/index");
+                  navigate("/");
                 }}
                 className={classes.menuItems}
               >

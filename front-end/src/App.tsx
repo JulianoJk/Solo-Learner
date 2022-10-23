@@ -17,11 +17,10 @@ import { useMediaQuery } from "@mantine/hooks";
 import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
 import DeleteAccount from "./components/Pages/Settings/DeleteAccount/DeleteAccount";
 import SettingsComponent from "./components/Pages/Settings/Settings.component";
-
+import { isUserLoggedIn } from "../src/lib/dist";
 const App = () => {
   const queryClient = new QueryClient();
 
-  const isLoggedIn = !!localStorage.getItem("user");
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
 
   return (
@@ -39,14 +38,11 @@ const App = () => {
                   <Route path="/home" element={<Home />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/delete-account" element={<DeleteAccount />} />
-                  <Route
-                    path="/account/settings"
-                    element={<SettingsComponent />}
-                  />
+                  <Route path="/settings" element={<SettingsComponent />} />
 
                   <Route
                     path="/*"
-                    element={isLoggedIn ? <Home /> : <Index />}
+                    element={isUserLoggedIn() ? <Home /> : <Index />}
                   />
                 </Routes>
               </UserContextProvider>

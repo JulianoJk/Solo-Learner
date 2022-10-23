@@ -24,10 +24,13 @@ export const isUserLoggedIn = () => {
   return !isUndefinedOrNullString(userInfo);
 };
 
-export const isUndefinedOrNullArray = <T>(object: T[] | undefined | null) => {
+export const isArrayUndefinedOrNull = <T>(object: T[] | undefined | null) => {
   return object === undefined || object === null || object.length === 0
     ? true
     : false;
+};
+export const capitalString = (text: string) => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 };
 // export const RandomColorGenerator = () => {
 //   let arrayColors: string[] = [];

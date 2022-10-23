@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import {
@@ -12,12 +12,29 @@ import {
 import { Button, Group, Header, Avatar, Anchor } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
-import { checkIfUserReloads, isUserLoggedIn } from "../../../lib/dist";
-import { useEffect } from "react";
+import {
+  capitalString,
+  checkIfUserReloads,
+  isUserLoggedIn,
+} from "../../../lib/dist";
+import { useEffect, useState } from "react";
+import { useDocumentTitle } from "@mantine/hooks";
 
 const NavigationNormal: React.FC = () => {
+  const [documentTitle, setDocumentTitle] = useState("");
+  useDocumentTitle(documentTitle);
+
   const navigate = useNavigate();
-  let userIsLoggedInLocal = localStorage.getItem("user");
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const titles = capitalString(pathname.replace("/", ""));
+    if (pathname !== "/") {
+      setDocumentTitle(titles + " - Solo Learner");
+    } else {
+      setDocumentTitle("Solo Learner");
+    }
+  }, [pathname]);
+
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
 
@@ -33,7 +50,7 @@ const NavigationNormal: React.FC = () => {
     navigate("/");
   };
 
-  const logoNavigation = isUserLoggedIn() ? "/home" : "/index";
+  const logoNavigation = isUserLoggedIn() ? "/home" : "/";
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
@@ -45,7 +62,7 @@ const NavigationNormal: React.FC = () => {
           <LogoImage width={170} height={160} className={classes.logo} />
         </Anchor>
 
-        {userIsLoggedInLocal ? (
+        {isUserLoggedIn() ? (
           <>
             <Button
               component={Link}
@@ -76,7 +93,7 @@ const NavigationNormal: React.FC = () => {
                 size="sm"
                 color="dark"
                 src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
-                onClick={() => navigate("/account/settings")}
+                onClick={() => navigate("/settings")}
               />
             </>
 

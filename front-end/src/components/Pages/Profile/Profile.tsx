@@ -63,7 +63,7 @@ const Profile: React.FC = () => {
       <div>
         <PageNotFound
           navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={<Login />}
+          navigationPath={"/login"}
           btnText="Login"
         />
       </div>
