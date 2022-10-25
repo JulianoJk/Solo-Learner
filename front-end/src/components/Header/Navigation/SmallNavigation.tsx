@@ -1,14 +1,12 @@
 import { useUserDispatch } from "../../../context/UserContext";
-import { Menu, Group, Header, Burger, Center, Anchor } from "@mantine/core";
+import { Menu, Group, Header, Burger, Center } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import { useState } from "react";
 import LogoImage from "../../../images/Logo";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useClickOutside } from "@mantine/hooks";
 import { useEffect } from "react";
 import { Home } from "tabler-icons-react";
-import { useDocumentTitle } from "@mantine/hooks";
-import { capitalString, isUserLoggedIn } from "../../../lib/dist";
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -17,10 +15,6 @@ const SmallNavigation: React.FC = () => {
 
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
-
-  const [documentTitle, setDocumentTitle] = useState("");
-  useDocumentTitle(documentTitle);
-  const { pathname } = useLocation();
 
   const [opened, setOpened] = useState(false);
 
@@ -36,25 +30,12 @@ const SmallNavigation: React.FC = () => {
     userDispatch({ type: "RESET_STATE" });
     navigate("/");
   };
-  useEffect(() => {
-    const titles = capitalString(pathname.replace("/", ""));
-    if (pathname !== "/") {
-      setDocumentTitle(titles + " - Solo Learner");
-    } else {
-      setDocumentTitle("Solo Learner");
-    }
-  }, [pathname]);
-  const logoNavigation = isUserLoggedIn() ? "/home" : "/";
+  useEffect(() => {}, []);
+
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
-        <Anchor
-          onClick={() => {
-            navigate(logoNavigation);
-          }}
-        >
-          <LogoImage width={170} height={160} className={classes.logo} />
-        </Anchor>
+        <LogoImage width={150} height={150} className={classes.logo} />
         {userIsLoggedInLocal ? (
           <Menu
             shadow="md"
@@ -95,17 +76,6 @@ const SmallNavigation: React.FC = () => {
                 <Center>PROFILE</Center>
               </Menu.Item>
               <Menu.Divider />
-              <Menu.Item
-                color={"indigo"}
-                onClick={() => {
-                  navigate("/settings");
-                }}
-                className={classes.menuItems}
-              >
-                <Center>Settings</Center>
-              </Menu.Item>
-              <Menu.Divider />
-
               <Menu.Item onClick={logOut} className={classes.menuItems}>
                 <Center>LOG OUT</Center>
               </Menu.Item>

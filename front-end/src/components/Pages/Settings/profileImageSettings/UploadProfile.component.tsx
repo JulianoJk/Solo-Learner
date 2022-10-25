@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Text,
   Image,
@@ -10,11 +10,10 @@ import {
 } from "@mantine/core";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 import { useStyles } from "./UploadProfile.styles";
-import { AlertCircle, Upload } from "tabler-icons-react";
+import { AlertCircle } from "tabler-icons-react";
 import { COMMON_WHITE, LIGHT_NAVY } from "../../../../Theme/Theme";
 import { showNotification } from "@mantine/notifications";
 import { formatBytes, isArrayUndefinedOrNull } from "../../../../lib/dist";
-import { useLocalStorage } from "@mantine/hooks";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
@@ -22,29 +21,39 @@ const UploadProfileComponent = () => {
 
   const [profileImage, setProfileImage] = useState<FileWithPath[]>([]);
   // open dialog if a file is dragged to screen and close when dragged away
-  const [openModal, setOpenModal] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
-  const [value, setValue] = useLocalStorage({
-    key: "profile-Image",
-    defaultValue: "",
-  });
 
-  let imageUrl: string = "";
   const previews = profileImage.map((file, index) => {
-    imageUrl = URL.createObjectURL(file);
+    const imageUrl = URL.createObjectURL(file);
     return (
       <div className={classes.imagePreview} key={index}>
         <Image
+          radius="md"
           src={imageUrl}
-          // radius={"xl"}
-          withPlaceholder
-          imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+          // imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
           alt="profile image preview"
         />
       </div>
     );
   });
-
+  // const rejectedUpload = (file: any) => {
+  //   let errorMessage;
+  //   const b = file.forEach((element: any) => {
+  //     const a = element.errors;
+  //     a.forEach((elements: any) => {
+  //       showNotification({
+  //         icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+  //         title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+  //         // <Text color={COMMON_WHITE}>{}</Text>
+  //         message: <Text color={COMMON_WHITE}>{elements.message}</Text>,
+  //         sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+  //         autoClose: 5000,
+  //         color: "red",
+  //       });
+  //     });
+  //   });
+  // };
   const rejectedUpload = (file: any) => {
     let errorMessage: string;
     file.forEach((element: any) => {
@@ -55,7 +64,7 @@ const UploadProfileComponent = () => {
           errorMessage = `File is larger than ${formatBytes(maxSizeImages)}.`;
         } else if (elements.code === "file-invalid-type") {
           errorMessage =
-            "File type must be .png, .gif, .jpeg, .svg, .xml, .webp !";
+            "File type must be .png, .gif, .jpeg, .svg, .xml, .webp  ";
         }
 
         showNotification({
@@ -70,19 +79,12 @@ const UploadProfileComponent = () => {
     });
   };
 
-  const imageSource = saveImage ? imageUrl : "";
-  useEffect(() => {
-    setValue(imageUrl);
-  }, [saveImage]);
   return (
     <div>
       <Modal
         title={<Title>Upload profile image</Title>}
         opened={openModal}
         onClose={() => setOpenModal(false)}
-        className={classes.modalContainer}
-        size={"90%"}
-        centered
       >
         <Dropzone
           activateOnDrag
@@ -103,9 +105,7 @@ const UploadProfileComponent = () => {
             {!isArrayUndefinedOrNull(profileImage) ? (
               previews
             ) : (
-              <Title order={3} className={classes.dropzoneLabel}>
-                <Upload /> Drop images here
-              </Title>
+              <Text align="center">Drop images here</Text>
             )}
           </Group>
         </Dropzone>
@@ -129,9 +129,7 @@ const UploadProfileComponent = () => {
               setSaveImage(true);
               setOpenModal(false);
             }}
-            variant="filled"
-            color="indigo"
-            disabled={profileImage.length === 0 ? true : false}
+            variant="outline"
           >
             Save
           </Button>
@@ -139,16 +137,32 @@ const UploadProfileComponent = () => {
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Text>Profile picture</Text>
-
-      <Avatar
-        className={classes.profileImage}
-        radius={200}
-        size={200}
-        color={"indigo"}
-        variant="filled"
-        alt="profile-image"
-        src={imageSource}
-      />
+      <div>
+        {/* {isArrayUndefinedOrNull(profileImage) ? (
+          <Avatar
+            className={classes.profileImage}
+            radius={200}
+            size={200}
+            color={"cyan"}
+            variant="filled"
+            alt="profile-image"
+          />
+        ) : (
+          { previews }
+        )} */}
+      </div>
+      {saveImage ? (
+        <>{previews} </>
+      ) : (
+        <Avatar
+          className={classes.profileImage}
+          radius={200}
+          size={200}
+          color={"cyan"}
+          variant="filled"
+          alt="profile-image"
+        />
+      )}
     </div>
   );
 };

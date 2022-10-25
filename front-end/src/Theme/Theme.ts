@@ -58,7 +58,7 @@ export const GRAY_SCROLLBAR = "#c7c7c7";
 
 export const GRAY_BORDER = "#cedaeb";
 export const PALE_GRAY = "#ebf0fa";
-export const LIGHTER_GRAY = "#AAB4C5";
+export const LIGHTER_GRAY = "#657694";
 export const BLUE_GRAY = "#7989a6";
 export const VERY_LIGHT_BLUE = "#dfe7f5";
 export const APRICOT = "#f6c26d";
