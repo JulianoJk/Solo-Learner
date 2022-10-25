@@ -23,9 +23,11 @@ const UploadProfileComponent = () => {
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState();
 
+  let imageUrl;
   const previews = profileImage.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
+    imageUrl = URL.createObjectURL(file);
     return (
       <div className={classes.imagePreview} key={index}>
         <Image
@@ -151,18 +153,16 @@ const UploadProfileComponent = () => {
           { previews }
         )} */}
       </div>
-      {saveImage ? (
-        <>{previews} </>
-      ) : (
-        <Avatar
-          className={classes.profileImage}
-          radius={200}
-          size={200}
-          color={"cyan"}
-          variant="filled"
-          alt="profile-image"
-        />
-      )}
+      <Avatar
+        className={classes.profileImage}
+        radius={200}
+        size={200}
+        color={"cyan"}
+        variant="filled"
+        alt="profile-image"
+        src={saveImage ? imageUrl : ""}
+      />
+      )
     </div>
   );
 };

@@ -8,9 +8,16 @@ export interface IUserInfoContext {
   dateJoined?: Date | string;
 }
 
+export interface IUserAccountContext {
+  profileImage: string;
+}
+
 //interface for the context's default state
 export interface StateInterface {
   user: IUserInfoContext;
+}
+export interface AccountSettingsInterface {
+  userSettings: IUserAccountContext;
 }
 // Reset everything
 interface ResetAction {
@@ -21,6 +28,10 @@ export type TUserAction =
   | {
       type: "SET_USER";
       user: IUserInfoContext;
+    }
+  | {
+      type: "SET_PROFILE_IMAGE";
+      userSettings: IUserAccountContext;
     }
   | ResetAction;
 
