@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Text,
   Image,
@@ -8,13 +8,13 @@ import {
   Group,
   Title,
 } from "@mantine/core";
-import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
+import { Dropzone, IMAGE_MIME_TYPE, FileWithPath, MIME_TYPES } from "@mantine/dropzone";
 import { useStyles } from "./UploadProfile.styles";
 import { AlertCircle } from "tabler-icons-react";
 import { COMMON_WHITE, LIGHT_NAVY } from "../../../../Theme/Theme";
 import { showNotification } from "@mantine/notifications";
 import { formatBytes, isArrayUndefinedOrNull } from "../../../../lib/dist";
-
+import { useLocalStorage } from '@mantine/hooks';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const maxSizeImages = 3 * 1024 ** 2;
@@ -24,6 +24,9 @@ const UploadProfileComponent = () => {
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
   const [uploadedImage, setUploadedImage] = useState();
+  // TODO!: Dropzone
+  const [value, setValue] = useLocalStorage({ key: 'profile-image', defaultValue: '' });
+
 
   let imageUrl;
   const previews = profileImage.map((file, index) => {
@@ -66,7 +69,7 @@ const UploadProfileComponent = () => {
           errorMessage = `File is larger than ${formatBytes(maxSizeImages)}.`;
         } else if (elements.code === "file-invalid-type") {
           errorMessage =
-            "File type must be .png, .gif, .jpeg, .svg, .xml, .webp  ";
+            "File type must be either .png or .jpeg or .svg !  ";
         }
 
         showNotification({
@@ -81,6 +84,11 @@ const UploadProfileComponent = () => {
     });
   };
 
+
+  useEffect(() => {
+
+    setSaveImage(false)
+  }, [profileImage])
   return (
     <div>
       <Modal
@@ -90,7 +98,7 @@ const UploadProfileComponent = () => {
       >
         <Dropzone
           activateOnDrag
-          accept={IMAGE_MIME_TYPE}
+          accept={[MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.svg]}
           onDrop={(files) => setProfileImage(files)}
           onReject={(file) => rejectedUpload(file)}
           // Max size in bytes it can be accepted
@@ -139,20 +147,6 @@ const UploadProfileComponent = () => {
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Text>Profile picture</Text>
-      <div>
-        {/* {isArrayUndefinedOrNull(profileImage) ? (
-          <Avatar
-            className={classes.profileImage}
-            radius={200}
-            size={200}
-            color={"cyan"}
-            variant="filled"
-            alt="profile-image"
-          />
-        ) : (
-          { previews }
-        )} */}
-      </div>
       <Avatar
         className={classes.profileImage}
         radius={200}

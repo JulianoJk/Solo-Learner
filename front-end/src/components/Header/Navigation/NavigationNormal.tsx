@@ -79,22 +79,26 @@ const NavigationNormal: React.FC = () => {
               radius="md"
               size="lg"
               uppercase
-              color="yellow"
+              color="indigo"
               m={1}
               component={Link}
-              to="/profile"
+              to="/settings"
             >
-              Profile
+              Settings
             </Button>
             <>
-              <Avatar
-                variant="outline"
+              <Button
+                leftIcon={<User size={16} />}
                 radius="md"
-                size="sm"
-                color="dark"
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
-                onClick={() => navigate("/settings")}
-              />
+                size="lg"
+                uppercase
+                color="yellow"
+                m={1}
+                component={Link}
+                to="/profile"
+              >
+                Profile
+              </Button>
             </>
 
             <Button
