@@ -30,6 +30,7 @@ export type TUserAction =
       user: IUserInfoContext;
     }
   | {
+      profileImage: any;
       type: "SET_PROFILE_IMAGE";
       userSettings: IUserAccountContext;
     }

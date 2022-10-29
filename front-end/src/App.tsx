@@ -18,6 +18,7 @@ import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
 import DeleteAccount from "./components/Pages/Settings/DeleteAccount/DeleteAccount";
 import SettingsComponent from "./components/Pages/Settings/Settings.component";
 import { isUserLoggedIn } from "../src/lib/dist";
+import { AccountSettingsContextProvider } from "./context/AccountSettingsContext";
 const App = () => {
   const queryClient = new QueryClient();
 
@@ -31,8 +32,8 @@ const App = () => {
         theme={{
           activeStyles: { transform: "scale(0.95)" },
           colorScheme: "light",
-          colors:{
-            
+          colors: {
+
           }
         }}
       >
@@ -40,21 +41,24 @@ const App = () => {
           <NotificationsProvider>
             <BrowserRouter>
               <UserContextProvider>
-                {isSmallWindow ? <NavigationNormal /> : <SmallNavigation />}
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/home" element={<Home />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/delete-account" element={<DeleteAccount />} />
-                  <Route path="/settings" element={<SettingsComponent />} />
+                <AccountSettingsContextProvider>
 
-                  <Route
-                    path="/*"
-                    element={isUserLoggedIn() ? <Home /> : <Index />}
-                  />
-                </Routes>
+                  {isSmallWindow ? <NavigationNormal /> : <SmallNavigation />}
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/home" element={<Home />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/delete-account" element={<DeleteAccount />} />
+                    <Route path="/settings" element={<SettingsComponent />} />
+
+                    <Route
+                      path="/*"
+                      element={isUserLoggedIn() ? <Home /> : <Index />}
+                    />
+                  </Routes>
+                </AccountSettingsContextProvider>
               </UserContextProvider>
             </BrowserRouter>
             <ReactQueryDevtools initialIsOpen={false} />

@@ -29,7 +29,7 @@ const appReducer = (state: AccountSettingsInterface, action: TUserAction) => {
 
             localStorage.setItem("user_settings", JSON.stringify(action.userSettings));
 
-            return { ...state, user: action.userSettings };
+            return { ...state, userSettings: action.profileImage };
         case "RESET_STATE":
             // Clear user from localStorage
             localStorage.clear();
