@@ -1609,7 +1609,7 @@
 
 "@noxyseras/react-ui-components@^0.2.2":
   version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@noxyseras/react-ui-components/-/react-ui-components-0.2.2.tgz#4c2d39a9456892d76d2034727c0345e565259f04"
+  resolved "https://registry.npmjs.org/@noxyseras/react-ui-components/-/react-ui-components-0.2.2.tgz"
   integrity sha512-AtxtEZ7Ssq4UZckWgTJoQnb/K2U+uoVDTuiS/uPy1mJHCnKL4XpIiaiCAYqedFxk6pe5u+LLRHv0cmmuEAWLuQ==
   dependencies:
     "@emotion/react" "^11.10.5"
@@ -7569,6 +7569,11 @@ react-error-overlay@^6.0.10:
   version "6.0.10"
   resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.10.tgz"
   integrity sha512-mKR90fX7Pm5seCOfz8q9F+66VCc1PGsWSBxKbITjfKVQHMNF2zudxHnMdJiB1fRCb+XsbQV9sO9DCkgsMQgBIA==
+
+react-image-file-resizer@^0.4.8:
+  version "0.4.8"
+  resolved "https://registry.npmjs.org/react-image-file-resizer/-/react-image-file-resizer-0.4.8.tgz"
+  integrity sha512-Ue7CfKnSlsfJ//SKzxNMz8avDgDSpWQDOnTKOp/GNRFJv4dO9L5YGHNEnj40peWkXXAK2OK0eRIoXhOYpUzUTQ==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

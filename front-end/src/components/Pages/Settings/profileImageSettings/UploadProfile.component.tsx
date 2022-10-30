@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import Resizer from 'react-image-file-resizer';
+
 import {
   Text,
   Image,
@@ -8,6 +10,7 @@ import {
   Group,
   Title,
   SimpleGrid,
+  Center,
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
 import { useLocalStorage } from '@mantine/hooks';
@@ -15,6 +18,8 @@ import { DropzoneComponent } from '@noxyseras/react-ui-components';
 import { FileWithPath } from '@mantine/dropzone';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
+  const [img, setImg] = useState('');
+
   const maxSizeImages = 2 * 1024 ** 2;
   const images = [
     'image/png',
@@ -28,17 +33,48 @@ const UploadProfileComponent = () => {
   const [saveImage, setSaveImage] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
 
+  const fileChangedHandler = (e: any) => {
+    let fileInput = false;
+    if (e) {
+      console.log(e);
+      fileInput = true;
+    }
+    if (fileInput) {
+      try {
+        Resizer.imageFileResizer(
+          e,
+          500,
+          500,
+          'png',
+          100,
+          0,
+          (uri: any) => {
+            console.log(uri);
+            setImg(uri);
+          },
+          'base64',
+          70,
+          70
+        );
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
+    console.log(imageUrl);
+    fileChangedHandler(file);
 
     return (
       <Image
         key={index}
-        src={imageUrl}
+        src={img}
         imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
       />
     );
   });
+
   return (
     <div>
       <Modal
@@ -51,11 +87,13 @@ const UploadProfileComponent = () => {
           rejectedUpload={(file) => console.log('rejected: ' + { ...file })}
           acceptFiles={images}
         >
-          <Text>Drop images here</Text>
+          <Center>
+            <Text>Drop images here</Text>
+          </Center>
         </DropzoneComponent>
         <SimpleGrid
           cols={4}
-          breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
+          breakpoints={[{ maxWidth: 'lg', cols: 1 }]}
           mt={previews.length > 0 ? 'xl' : 0}
         >
           {previews}
@@ -68,6 +106,7 @@ const UploadProfileComponent = () => {
           <Button
             onClick={() => {
               setOpenModal(false);
+              setFiles([]);
             }}
             variant="outline"
             color="red"
@@ -87,17 +126,15 @@ const UploadProfileComponent = () => {
         </Group>
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
-      <Text>Profile picture</Text>
-      {/* <Avatar
+      <Avatar
         className={classes.profileImage}
         radius={200}
-        size={200}
-        color={"cyan"}
+        size={400}
+        color={'cyan'}
         variant="filled"
         alt="profile-image"
-        src={value}
-      /> */}
-      )
+        src={img}
+      />
     </div>
   );
 };
