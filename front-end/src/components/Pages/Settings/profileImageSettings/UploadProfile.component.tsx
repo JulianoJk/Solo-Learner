@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+// TODO!: Bug? OnDrop causes the save button to click. Check it!
+import { useEffect, useRef, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
 import {
@@ -32,11 +33,21 @@ const UploadProfileComponent = () => {
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
+  // Might want to delete
+  const ref = useRef<HTMLButtonElement>(null);
+  const imageRef = useRef<any>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current !== null) {
+      console.log('clicked!');
+      imageRef.current.src = 'https://picsum.photos/200/300';
+    }
+  }, [ref.current]);
 
   const fileChangedHandler = (e: any) => {
     let fileInput = false;
     if (e) {
-      console.log(e);
       fileInput = true;
     }
     if (fileInput) {
@@ -49,7 +60,6 @@ const UploadProfileComponent = () => {
           100,
           0,
           (uri: any) => {
-            console.log(uri);
             setImg(uri);
           },
           'base64',
@@ -63,7 +73,6 @@ const UploadProfileComponent = () => {
   };
   const previews = files.map((file, index) => {
     const imageUrl = URL.createObjectURL(file);
-    console.log(imageUrl);
     fileChangedHandler(file);
 
     return (
@@ -104,9 +113,9 @@ const UploadProfileComponent = () => {
           className={classes.modalButtons}
         >
           <Button
+            ref={ref}
             onClick={() => {
               setOpenModal(false);
-              setFiles([]);
             }}
             variant="outline"
             color="red"
@@ -126,14 +135,14 @@ const UploadProfileComponent = () => {
         </Group>
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
-      <Avatar
-        className={classes.profileImage}
-        radius={200}
-        size={400}
-        color={'cyan'}
-        variant="filled"
-        alt="profile-image"
-        src={img}
+
+      <Image
+        ref={rootRef}
+        imageRef={imageRef}
+        src={''}
+        width={200}
+        height={120}
+        alt="empty"
       />
     </div>
   );
