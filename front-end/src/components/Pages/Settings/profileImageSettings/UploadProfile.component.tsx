@@ -14,13 +14,17 @@ import {
   Center,
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
-import { useLocalStorage } from '@mantine/hooks';
 import { DropzoneComponent } from '@noxyseras/react-ui-components';
 import { FileWithPath } from '@mantine/dropzone';
+import {
+  useAccountSettingsDispatch,
+  useAccountSettingsState,
+} from '../../../../context/AccountSettingsContext';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
-
+  const accountSettingsDispatch = useAccountSettingsDispatch();
+  const { profileImage } = useAccountSettingsState();
   const maxSizeImages = 2 * 1024 ** 2;
   const images = [
     'image/png',
@@ -33,27 +37,16 @@ const UploadProfileComponent = () => {
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
-  // Might want to delete
-  const ref = useRef<HTMLButtonElement>(null);
-  const imageRef = useRef<any>(null);
-  const rootRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (ref.current !== null) {
-      console.log('clicked!');
-      imageRef.current.src = 'https://picsum.photos/200/300';
-    }
-  }, [ref.current]);
-
-  const fileChangedHandler = (e: any) => {
+  const fileChangedHandler = (file: any) => {
     let fileInput = false;
-    if (e) {
+    if (file) {
       fileInput = true;
     }
     if (fileInput) {
       try {
         Resizer.imageFileResizer(
-          e,
+          file,
           500,
           500,
           'png',
@@ -95,6 +88,7 @@ const UploadProfileComponent = () => {
           onDrop={(file) => setFiles(file)}
           rejectedUpload={(file) => console.log('rejected: ' + { ...file })}
           acceptFiles={images}
+          maxSize={maxSizeImages}
         >
           <Center>
             <Text>Drop images here</Text>
@@ -113,9 +107,9 @@ const UploadProfileComponent = () => {
           className={classes.modalButtons}
         >
           <Button
-            ref={ref}
             onClick={() => {
               setOpenModal(false);
+              setFiles([]);
             }}
             variant="outline"
             color="red"
@@ -127,22 +121,36 @@ const UploadProfileComponent = () => {
             onClick={() => {
               setSaveImage(true);
               setOpenModal(false);
+              accountSettingsDispatch({
+                type: 'SET_PROFILE_IMAGE',
+                profileImage: img,
+              });
             }}
-            variant="outline"
+            disabled={files.length === 0 ? true : false}
+            variant="filled"
+            color="green"
           >
             Save
           </Button>
         </Group>
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
-
-      <Image
-        ref={rootRef}
-        imageRef={imageRef}
-        src={''}
-        width={200}
-        height={120}
-        alt="empty"
+      <Button
+        onClick={() => {
+          console.log(profileImage);
+        }}
+        variant="outline"
+      >
+        Check context
+      </Button>
+      <Avatar
+        className={classes.profileImage}
+        radius={200}
+        size={300}
+        color={'cyan'}
+        variant="filled"
+        alt="profile-image"
+        src={profileImage}
       />
     </div>
   );

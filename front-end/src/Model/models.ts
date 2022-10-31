@@ -1,5 +1,3 @@
-// Interface for the user Context
-// Type message for the auth response(if there is an error to display to user, E.G.: "Wrong Password")
 export interface IUserInfoContext {
   message?: string;
   username?: string;
@@ -7,32 +5,28 @@ export interface IUserInfoContext {
   id: string | undefined;
   dateJoined?: Date | string;
 }
-
 export interface IUserAccountContext {
   profileImage: string;
 }
-
-//interface for the context's default state
 export interface StateInterface {
   user: IUserInfoContext;
 }
 export interface AccountSettingsInterface {
-  userSettings: IUserAccountContext;
+  profileImage: string;
 }
 // Reset everything
 interface ResetAction {
-  type: "RESET_STATE";
+  type: 'RESET_STATE';
 }
 // Type for the action for the context
 export type TUserAction =
   | {
-      type: "SET_USER";
+      type: 'SET_USER';
       user: IUserInfoContext;
     }
   | {
-      profileImage: any;
-      type: "SET_PROFILE_IMAGE";
-      userSettings: IUserAccountContext;
+      profileImage: string;
+      type: 'SET_PROFILE_IMAGE';
     }
   | ResetAction;
 
@@ -41,10 +35,10 @@ export type usersDispatchContext = (action: TUserAction) => void;
 
 // An enum with all the types of actions to use in the registration useReduce
 export enum EActionTypes {
-  SET_EMAIL = "SET_EMAIL",
-  SET_NAME = "SET_NAME",
-  SET_PASSWORD = "SET_PASSWORD",
-  SET_CONFIRM_PASSWORD = "SET_CONFIRM_PASSWORD",
+  SET_EMAIL = 'SET_EMAIL',
+  SET_NAME = 'SET_NAME',
+  SET_PASSWORD = 'SET_PASSWORD',
+  SET_CONFIRM_PASSWORD = 'SET_CONFIRM_PASSWORD',
 }
 // Interface the the registration
 export interface IAuthCredentials {
