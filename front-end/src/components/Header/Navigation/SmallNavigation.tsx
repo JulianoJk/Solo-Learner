@@ -1,17 +1,23 @@
-import { useUserDispatch } from "../../../context/UserContext";
-import { Menu, Group, Header, Burger, Center } from "@mantine/core";
-import { useStyles } from "./Navigation.styles";
-import { useState } from "react";
-import LogoImage from "../../../images/Logo";
-import { useNavigate } from "react-router-dom";
-import { useClickOutside } from "@mantine/hooks";
-import { useEffect } from "react";
-import { Home } from "tabler-icons-react";
+import { useUserDispatch } from '../../../context/UserContext';
+import { Menu, Group, Header, Burger, Center } from '@mantine/core';
+import { useStyles } from './Navigation.styles';
+import { useState } from 'react';
+import LogoImage from '../../../images/Logo';
+import { useNavigate } from 'react-router-dom';
+import { useClickOutside } from '@mantine/hooks';
+import { useEffect } from 'react';
+import { Home } from 'tabler-icons-react';
+import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
+import {
+  saveProfileImageAfterReload,
+  saveUserAfterReload,
+} from '../../../lib/dist';
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
+  const accountSettingsDispatch = useAccountSettingsDispatch();
 
-  let userIsLoggedInLocal = localStorage.getItem("user");
+  let userIsLoggedInLocal = localStorage.getItem('user');
 
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
@@ -20,17 +26,20 @@ const SmallNavigation: React.FC = () => {
 
   const ref = useClickOutside(() => setOpened(false));
 
-  const title = opened ? "Close navigation" : "Open navigation";
+  const title = opened ? 'Close navigation' : 'Open navigation';
 
   const handleClick = () => {
     setOpened((openedBurger) => !openedBurger);
   };
 
   const logOut = () => {
-    userDispatch({ type: "RESET_STATE" });
-    navigate("/");
+    userDispatch({ type: 'RESET_STATE' });
+    navigate('/');
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+    saveUserAfterReload(userDispatch);
+    saveProfileImageAfterReload(accountSettingsDispatch);
+  }, []);
 
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
@@ -58,7 +67,7 @@ const SmallNavigation: React.FC = () => {
             <Menu.Dropdown className={classes.menuDropDown}>
               <Menu.Item
                 onClick={() => {
-                  navigate("/home");
+                  navigate('/home');
                 }}
                 className={classes.menuItems}
               >
@@ -69,7 +78,7 @@ const SmallNavigation: React.FC = () => {
               <Menu.Divider />
               <Menu.Item
                 onClick={() => {
-                  navigate("/profile");
+                  navigate('/profile');
                 }}
                 className={classes.menuItems}
               >
@@ -103,7 +112,7 @@ const SmallNavigation: React.FC = () => {
             <Menu.Dropdown className={classes.menuDropDown}>
               <Menu.Item
                 onClick={() => {
-                  navigate("/");
+                  navigate('/');
                 }}
                 className={classes.menuItems}
               >
@@ -112,7 +121,7 @@ const SmallNavigation: React.FC = () => {
               <Menu.Divider />
               <Menu.Item
                 onClick={() => {
-                  navigate("/login");
+                  navigate('/login');
                 }}
                 className={classes.menuItems}
               >
@@ -121,7 +130,7 @@ const SmallNavigation: React.FC = () => {
               <Menu.Divider />
               <Menu.Item
                 onClick={() => {
-                  navigate("/register");
+                  navigate('/register');
                 }}
                 className={classes.menuItems}
               >

@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useUserDispatch, useUserState } from "../../../context/UserContext";
+import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import {
   Logout,
   Home,
@@ -8,30 +8,33 @@ import {
   Login,
   Pencil,
   Settings,
-} from "tabler-icons-react";
-import { Button, Group, Header, Avatar, Anchor } from "@mantine/core";
-import { useStyles } from "./Navigation.styles";
-import LogoImage from "../../../images/Logo";
+} from 'tabler-icons-react';
+import { Button, Group, Header, Avatar, Anchor } from '@mantine/core';
+import { useStyles } from './Navigation.styles';
+import LogoImage from '../../../images/Logo';
 import {
   capitalString,
-  checkIfUserReloads,
+  saveUserAfterReload,
   isUserLoggedIn,
-} from "../../../lib/dist";
-import { useEffect, useState } from "react";
-import { useDocumentTitle } from "@mantine/hooks";
+  saveProfileImageAfterReload,
+} from '../../../lib/dist';
+import { useEffect, useState } from 'react';
+import { useDocumentTitle } from '@mantine/hooks';
+import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 
 const NavigationNormal: React.FC = () => {
-  const [documentTitle, setDocumentTitle] = useState("");
+  const [documentTitle, setDocumentTitle] = useState('');
   useDocumentTitle(documentTitle);
+  const accountSettingsDispatch = useAccountSettingsDispatch();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
   useEffect(() => {
-    const titles = capitalString(pathname.replace("/", ""));
-    if (pathname !== "/") {
-      setDocumentTitle(titles + " - Solo Learner");
+    const titles = capitalString(pathname.replace('/', ''));
+    if (pathname !== '/') {
+      setDocumentTitle(titles + ' - Solo Learner');
     } else {
-      setDocumentTitle("Solo Learner");
+      setDocumentTitle('Solo Learner');
     }
   }, [pathname]);
 
@@ -41,16 +44,17 @@ const NavigationNormal: React.FC = () => {
   const { user } = useUserState();
 
   useEffect(() => {
-    checkIfUserReloads(userDispatch);
+    saveUserAfterReload(userDispatch);
+    saveProfileImageAfterReload(accountSettingsDispatch);
   }, []);
 
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
-    userDispatch({ type: "RESET_STATE" });
-    navigate("/");
+    userDispatch({ type: 'RESET_STATE' });
+    navigate('/');
   };
 
-  const logoNavigation = isUserLoggedIn() ? "/home" : "/";
+  const logoNavigation = isUserLoggedIn() ? '/home' : '/';
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">

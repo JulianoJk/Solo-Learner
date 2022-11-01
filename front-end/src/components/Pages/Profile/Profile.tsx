@@ -4,18 +4,21 @@ import { IUserInfoContext } from '../../../Model/models';
 import { profileAPI } from '../../api/api';
 import Login from '../../Auth/Login/Login';
 import PageNotFound from '../pageNotFound/PageNotFound';
-import { Avatar, Button, Center, Image, Loader } from '@mantine/core';
+
+import { Avatar, Loader, Stack, Text, Title } from '@mantine/core';
 import { useStyles } from './Profile.styles';
 import { isUndefinedOrNullString } from '../../../lib/dist';
 import DeleteAccount from '../Settings/DeleteAccount/DeleteAccount';
-import { useState } from 'react';
-import UploadProfileComponent from '../Settings/profileImageSettings/UploadProfile.component';
+import { useEffect, useState } from 'react';
+import { useAccountSettingsState } from '../../../context/AccountSettingsContext';
 
 const Profile: React.FC = () => {
   const { user } = useUserState();
   let userIsLoggedInLocal: any = localStorage.getItem('user');
+  const { profileImage } = useAccountSettingsState();
 
   const { classes } = useStyles();
+  const [userProfileImage, setUserProfileImage] = useState('');
   const hasToken = !isUndefinedOrNullString(user.token)
     ? user.token
     : undefined;
@@ -33,29 +36,54 @@ const Profile: React.FC = () => {
       staleTime: Infinity,
     }
   );
-
+  useEffect(() => {
+    setUserProfileImage(profileImage);
+  });
   if (userIsLoggedInLocal) {
     return (
-      <>
-        {isLoading ? (
-          <div className={classes.loader}>
-            <Loader size={400} />
-          </div>
-        ) : (
-          <div>
-            <Avatar
-              className={classes.profileImage}
-              radius={200}
-              size={300}
-              color={'cyan'}
-              variant="filled"
-              alt="profile-image"
-            />
-            <h1> Welcome Back: {user.username}!</h1>
-            <h2>Date joined:{userProfileData}</h2>
-          </div>
-        )}
-      </>
+      // <>
+      //   {isLoading ? (
+      //     <Stack align="center">
+      //       <div>
+      //         <Loader size={400} />
+      //       </div>
+      //       <Title>Loading...</Title>
+      //     </Stack>
+      //   ) : (
+      //     <div>
+      //       <Avatar
+      //         className={classes.profileImage}
+      //         radius={200}
+      //         size={300}
+      //         color={'cyan'}
+      //         variant="filled"
+      //         alt="profile-image"
+      //         src={
+      //           !isUndefinedOrNullString(userProfileImage)
+      //             ? userProfileImage
+      //             : ''
+      //         }
+      //       />
+      //       <h1> Welcome Back: {user.username}!</h1>
+      //       <h2>Date joined:{userProfileData}</h2>
+      //     </div>
+      //   )}
+      // </>
+      <div>
+        <Avatar
+          className={classes.profileImage}
+          radius={200}
+          size={300}
+          color={'cyan'}
+          variant="filled"
+          alt="profile-image"
+          src={
+            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ''
+          }
+        />
+        <h1> Welcome Back: {user.username}!</h1>
+        <h2>Date joined:{userProfileData}</h2>
+      </div>
     );
   } else {
     return (

@@ -20,6 +20,7 @@ import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
 } from '../../../../context/AccountSettingsContext';
+import { saveProfileImageAfterReload } from '../../../../lib/dist';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
@@ -33,6 +34,7 @@ const UploadProfileComponent = () => {
     'image/svg+xml',
     'image/webp',
   ];
+
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
@@ -76,7 +78,9 @@ const UploadProfileComponent = () => {
       />
     );
   });
-
+  useEffect(() => {
+    saveProfileImageAfterReload(accountSettingsDispatch);
+  }, []);
   return (
     <div>
       <Modal

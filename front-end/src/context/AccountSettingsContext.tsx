@@ -24,10 +24,9 @@ const appReducer = (state: AccountSettingsInterface, action: TUserAction) => {
   switch (action.type) {
     case 'SET_PROFILE_IMAGE':
       localStorage.setItem(
-        'user_settings',
+        'profile_image',
         JSON.stringify(action.profileImage)
       );
-      console.log(action.profileImage);
 
       return { ...state, profileImage: action.profileImage };
     case 'RESET_STATE':
