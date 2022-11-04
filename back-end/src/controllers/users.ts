@@ -226,7 +226,6 @@ router.post('/profile-image/:id', async (req: any, res: any) => {
     res.status(500).send(err);
   }
 });
-
 router.get('/profileImage/:id', async (req: any, res: any) => {
   const { id } = req.params;
 
