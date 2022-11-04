@@ -253,12 +253,3 @@ router.get('/profileImage/:id', async (req: any, res: any) => {
     console.log(error);
   }
 });
-// fs.access(uploaded, function(error: any) {
-//   if (error) {
-//     console.log('DOES NOT exist:', path);
-//     console.error(error);
-//   } else {
-//     console.log('exists:', path);
-//     res.status(200).sendFile(image);
-//   }
-// });
