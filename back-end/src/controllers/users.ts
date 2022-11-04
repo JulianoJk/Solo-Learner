@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const auth = require('../middleware/auth');
 const checkIfTokenExpired = require('../utils/utils');
+const path = require('path');
+const fs = require('fs');
 
 export interface IUser {
   token?: string;
@@ -224,3 +226,43 @@ router.post('/profile-image/:id', async (req: any, res: any) => {
     res.status(500).send(err);
   }
 });
+
+router.get('/profileImage/:id', async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const uploaded = path.resolve(__dirname, `../../uploads`);
+  const image = path.resolve(__dirname, `../../uploads/${id}.png`);
+
+  try {
+    // Check if folder is empty
+    fs.readdir(uploaded, function(err: any, files: any) {
+      if (err) {
+        // res.status(404).json('Empty');
+        // console.log('empty');
+        console.log('error');
+        res.json('bad');
+
+        return;
+      } else {
+        if (fs.existsSync(image)) {
+          res.status(200).sendFile(image);
+        } else {
+          res.json('does not exist');
+        }
+      }
+    });
+
+    return;
+  } catch (error) {
+    console.log(error);
+  }
+});
+// fs.access(uploaded, function(error: any) {
+//   if (error) {
+//     console.log('DOES NOT exist:', path);
+//     console.error(error);
+//   } else {
+//     console.log('exists:', path);
+//     res.status(200).sendFile(image);
+//   }
+// });
