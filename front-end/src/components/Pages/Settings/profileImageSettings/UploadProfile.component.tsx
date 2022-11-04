@@ -1,5 +1,5 @@
 // TODO!: Bug? OnDrop causes the save button to click. Check it!
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
 import {
@@ -21,11 +21,13 @@ import {
   useAccountSettingsState,
 } from '../../../../context/AccountSettingsContext';
 import { saveProfileImageAfterReload } from '../../../../lib/dist';
+import { useUserState } from '../../../../context/UserContext';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
   const accountSettingsDispatch = useAccountSettingsDispatch();
   const { profileImage } = useAccountSettingsState();
+  const user = useUserState();
   const maxSizeImages = 2 * 1024 ** 2;
   const images = [
     'image/png',
@@ -34,11 +36,36 @@ const UploadProfileComponent = () => {
     'image/svg+xml',
     'image/webp',
   ];
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    const formData = new FormData();
+    formData.append('files', data['file']);
+
+    const res = await fetch('http://localhost:5000/upload-file', {
+      method: 'POST',
+      body: formData,
+    }).then(res => res.json());
+    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
+  };
 
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [saveImage, setSaveImage] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
+
+  //TODO!: Check
+  const handleSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append('file', data[0]);
+    const res = await fetch(
+      `http://localhost:3001/users/profile-image/${user.user.id}`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then(res => res.json());
+    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
+  };
 
   const fileChangedHandler = (file: any) => {
     let fileInput = false;
@@ -78,8 +105,10 @@ const UploadProfileComponent = () => {
       />
     );
   });
+
   useEffect(() => {
     saveProfileImageAfterReload(accountSettingsDispatch);
+    console.log(user.user.id);
   }, []);
   return (
     <div>
@@ -89,10 +118,11 @@ const UploadProfileComponent = () => {
         onClose={() => setOpenModal(false)}
       >
         <DropzoneComponent
-          onDrop={(file) => setFiles(file)}
-          rejectedUpload={(file) => console.log('rejected: ' + { ...file })}
+          onDrop={file => setFiles(file)}
+          rejectedUpload={file => console.log('rejected: ' + { ...file })}
           acceptFiles={images}
           maxSize={maxSizeImages}
+          useFsAccessApi={false}
         >
           <Center>
             <Text>Drop images here</Text>
@@ -141,11 +171,12 @@ const UploadProfileComponent = () => {
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
       <Button
         onClick={() => {
-          console.log(profileImage);
+          console.log(files);
+
+          handleSubmit(files);
         }}
-        variant="outline"
       >
-        Check context
+        Submit
       </Button>
       <Avatar
         className={classes.profileImage}
