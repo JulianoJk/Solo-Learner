@@ -1,0 +1,128 @@
+import { useState } from "react";
+import { Text, Image, SimpleGrid } from "@mantine/core";
+import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
+import { showNotification } from "@mantine/notifications";
+import { AlertCircle } from "tabler-icons-react";
+import { COMMON_WHITE, LIGHT_NAVY } from "../../../../Theme/Theme";
+import { formatBytes, isUndefinedOrNullString } from "../../../../lib/dist";
+
+const ImageDropzone = () => {
+  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const maxSizeImages = 3 * 1024 ** 2;
+
+  const previews = files.map((file, index) => {
+    setImageUrl(URL.createObjectURL(file));
+    return (
+      <Image
+        key={index}
+        src={imageUrl}
+        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+      />
+    );
+  });
+
+  const rejectedUpload = (file: any) => {
+    let errorMessage: string;
+    file.forEach((element: any) => {
+      element.errors.forEach((elements: any) => {
+        console.log(elements.message);
+        errorMessage = elements.message;
+        if (elements.code === "file-too-large") {
+          errorMessage = `File is larger than ${formatBytes(maxSizeImages)}.`;
+        } else if (elements.code === "file-invalid-type") {
+          errorMessage = "File type must be either .png or .jpeg or .svg !  ";
+        }
+
+        showNotification({
+          icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+          title: <Text color={COMMON_WHITE}>Bummer!</Text>,
+          message: <Text color={COMMON_WHITE}>{errorMessage}</Text>,
+          sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+          autoClose: 5000,
+          color: "red",
+        });
+      });
+    });
+  };
+  return (
+    <div>
+      <Dropzone
+        accept={IMAGE_MIME_TYPE}
+        onDrop={setFiles}
+        onReject={rejectedUpload}
+      >
+        <Text align="center">"Drop images here"</Text>
+      </Dropzone>
+
+      <SimpleGrid
+        cols={4}
+        breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+        mt={previews.length > 0 ? "xl" : 0}
+      >
+        {previews}
+      </SimpleGrid>
+    </div>
+  );
+};
+export default ImageDropzone;
+
+
+
+
+
+
+import { useEffect, useState } from 'react';
+import { Text, Image, SimpleGrid, Button } from '@mantine/core';
+import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from '@mantine/dropzone';
+import React from 'react';
+
+export default function Dropzones() {
+  const onSubmit = async data => {
+    const formData = new FormData();
+
+    formData.append('file', data[0]);
+
+    const res = await fetch('http://localhost:3001/users/upload-file', {
+      method: 'POST',
+      body: formData,
+    }).then(res => res.json());
+    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
+  };
+
+  const [files, setFiles] = useState([]);
+
+  const previews = files.map((file, index) => {
+    const imageUrl = URL.createObjectURL(file);
+    return (
+      <Image
+        key={index}
+        src={imageUrl}
+        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+      />
+    );
+  });
+
+  return (
+    <div>
+      <Dropzone accept={IMAGE_MIME_TYPE} onDrop={setFiles}>
+        <Text align="center">Drop images here</Text>
+      </Dropzone>
+
+      <SimpleGrid
+        cols={4}
+        breakpoints={[{ maxWidth: 'sm', cols: 1 }]}
+        mt={previews.length > 0 ? 'xl' : 0}
+      >
+        {previews}
+      </SimpleGrid>
+      <Button
+        onClick={() => {
+          onSubmit(files);
+        }}
+      >
+        Submit{' '}
+      </Button>
+    </div>
+  );
+}

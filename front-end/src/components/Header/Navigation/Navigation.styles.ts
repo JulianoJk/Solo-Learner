@@ -1,9 +1,9 @@
 import { createStyles } from "@mantine/core";
-import { MAIN_CHART_COLORS, NAVY } from "../../../Theme/Theme";
+import { MAIN_CHART_COLORS, NAVY, LIME_GREEN } from "../../../Theme/Theme";
 
 export const useStyles = createStyles((props) => ({
   headerRoot: {
-    backgroundColor: "transparent",
+    backgroundColor: LIME_GREEN,
     borderBottom: `2px solid ${MAIN_CHART_COLORS[2]}`,
     marginBottom: 20,
   },

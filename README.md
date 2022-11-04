@@ -67,3 +67,9 @@ As for the signature key, you can find random signature keys generators online a
 An example is "https://randomkeygen.com/" or "https://keygen.io/"
 
 ---
+
+## Libaries used:
+
+- [Mantine UI](https://mantine.dev/)
+- [Use Query ](https://react-query.tanstack.com/)
+- [Tabler Icons for React](https://tabler-icons-react.vercel.app/)

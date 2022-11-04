@@ -1,36 +1,72 @@
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useUserDispatch, useUserState } from "../../../context/UserContext";
-import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
-import { Button, Group, Header, Avatar } from "@mantine/core";
-import { useStyles } from "./Navigation.styles";
-import LogoImage from "../../../images/Logo";
-import { checkIfUserReloads } from "../../../lib/dist";
-import { useEffect } from "react";
+import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useUserDispatch, useUserState } from '../../../context/UserContext';
+import {
+  Logout,
+  Home,
+  User,
+  Login,
+  Pencil,
+  Settings,
+} from 'tabler-icons-react';
+import { Button, Group, Header, Avatar, Anchor } from '@mantine/core';
+import { useStyles } from './Navigation.styles';
+import LogoImage from '../../../images/Logo';
+import {
+  capitalString,
+  saveUserAfterReload,
+  isUserLoggedIn,
+  saveProfileImageAfterReload,
+} from '../../../lib/dist';
+import { useEffect, useState } from 'react';
+import { useDocumentTitle } from '@mantine/hooks';
+import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 
 const NavigationNormal: React.FC = () => {
+  const [documentTitle, setDocumentTitle] = useState('');
+  useDocumentTitle(documentTitle);
+  const accountSettingsDispatch = useAccountSettingsDispatch();
+
   const navigate = useNavigate();
-  let userIsLoggedInLocal = localStorage.getItem("user");
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const titles = capitalString(pathname.replace('/', ''));
+    if (pathname !== '/') {
+      setDocumentTitle(titles + ' - Solo Learner');
+    } else {
+      setDocumentTitle('Solo Learner');
+    }
+  }, [pathname]);
+
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
 
   const { user } = useUserState();
 
   useEffect(() => {
-    checkIfUserReloads(userDispatch);
+    saveUserAfterReload(userDispatch);
+    saveProfileImageAfterReload(accountSettingsDispatch);
   }, []);
 
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
-    userDispatch({ type: "RESET_STATE" });
-    navigate("/");
+    userDispatch({ type: 'RESET_STATE' });
+    navigate('/');
   };
 
+  const logoNavigation = isUserLoggedIn() ? '/home' : '/';
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
-        <LogoImage width={170} height={160} className={classes.logo} />
-        {userIsLoggedInLocal ? (
+        <Anchor
+          onClick={() => {
+            navigate(logoNavigation);
+          }}
+        >
+          <LogoImage width={170} height={160} className={classes.logo} />
+        </Anchor>
+
+        {isUserLoggedIn() ? (
           <>
             <Button
               component={Link}
@@ -47,20 +83,27 @@ const NavigationNormal: React.FC = () => {
               radius="md"
               size="lg"
               uppercase
-              color="yellow"
+              color="indigo"
               m={1}
               component={Link}
-              to="/profile"
+              to="/settings"
             >
-              Profile
+              Settings
             </Button>
-            {/* <Avatar
-              variant="outline"
-              radius="md"
-              size="xl"
-              color="dark"
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80"
-            /> */}
+            <>
+              <Button
+                leftIcon={<User size={16} />}
+                radius="md"
+                size="lg"
+                uppercase
+                color="yellow"
+                m={1}
+                component={Link}
+                to="/profile"
+              >
+                Profile
+              </Button>
+            </>
 
             <Button
               leftIcon={<Logout size={16} />}
@@ -87,7 +130,7 @@ const NavigationNormal: React.FC = () => {
               radius="md"
               size="lg"
               uppercase
-              color="green"
+              color="indigo"
               variant="outline"
               m={1}
               component={Link}
