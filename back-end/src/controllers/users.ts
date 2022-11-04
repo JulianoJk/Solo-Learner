@@ -237,17 +237,13 @@ router.get('/profileImage/:id', async (req: any, res: any) => {
     // Check if folder is empty
     fs.readdir(uploaded, function(err: any, files: any) {
       if (err) {
-        // res.status(404).json('Empty');
-        // console.log('empty');
-        console.log('error');
-        res.json('bad');
-
+        res.json(null);
         return;
       } else {
         if (fs.existsSync(image)) {
           res.status(200).sendFile(image);
         } else {
-          res.json('does not exist');
+          res.json(null);
         }
       }
     });
