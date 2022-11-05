@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const auth = require('../middleware/auth');
 const checkIfTokenExpired = require('../utils/utils');
+const path = require('path');
+const fs = require('fs');
 
 export interface IUser {
   token?: string;
@@ -222,5 +224,31 @@ router.post('/profile-image/:id', async (req: any, res: any) => {
     }
   } catch (err) {
     res.status(500).send(err);
+  }
+});
+router.get('/profileImage/:id', async (req: any, res: any) => {
+  const { id } = req.params;
+
+  const uploaded = path.resolve(__dirname, `../../uploads`);
+  const image = path.resolve(__dirname, `../../uploads/${id}.png`);
+
+  try {
+    // Check if folder is empty
+    fs.readdir(uploaded, function(err: any, files: any) {
+      if (err) {
+        res.json(null);
+        return;
+      } else {
+        if (fs.existsSync(image)) {
+          res.status(200).sendFile(image);
+        } else {
+          res.json(null);
+        }
+      }
+    });
+
+    return;
+  } catch (error) {
+    console.log(error);
   }
 });

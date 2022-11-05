@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 
 require("dotenv").config();
 
-// Verify the token of the user, is is it okay, then continue to the next function
+// Verify the token of the user, is  it okay, then continue to the next function
 const auth = (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers["AccessToken"];
   if (!token) {

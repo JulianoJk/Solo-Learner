@@ -21,7 +21,6 @@ $ cd server
 $ npm i mongoose
 $ npm install
 $ node server.js
-
 ```
 
 ## Setup with yarn
@@ -57,7 +56,10 @@ Now type inside the .env file
 - The link to connect with the MongoDB Atlas as `MONGO_CONN = mongodb+srv://<username>:<password>@cluster0.jnw32.mongodb.net/<Database Name>?retryWrites=true&w=majority`
 - The signature key as `JWT_KEY= <your signature key>`
 
-Or just check the .env_sample, copy all, then change the needed fields
+Or just check the .env_sample, copy all, then change the needed fields.
+
+---
+If is first time running, create an empty folder named "uploads" in order to save uploaded images.
 
 ---
 
