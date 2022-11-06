@@ -111,9 +111,9 @@ const NavigationNormal: React.FC = () => {
               color="indigo"
               m={1}
               component={Link}
-              to="/settings"
+              to="/profile"
             >
-              Settings
+              profile
             </Button>
             <Menu
               shadow="md"

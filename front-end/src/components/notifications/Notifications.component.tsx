@@ -1,18 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { showNotification } from '@mantine/notifications';
+
 interface IProps {
   type: 'Error' | 'Success';
-  title: string;
+  errorType: 'file-invalid-type' | 'file-too-large' | 'too-many-files' | null;
+  title: any;
   message: string;
+  maxAcceptedFiles: number;
 }
 const [message, setMessage] = useState('');
+const [title, setTitle] = useState('');
 export const NotificationsComponent = (props: IProps) => {
-  if (props.type === 'Error') {
-  }
+  useEffect(() => {
+    if (props.type === 'Error') {
+      if (props.errorType === 'file-invalid-type') {
+        setTitle('Invalid file type!');
+        setMessage(`Try uploading only .png, .jpg, .svg, .gif, .webp!`);
+      } else if (props.errorType === 'file-too-large') {
+        setTitle(`File too big!`);
+        setMessage(`Image must not exceed ${props.maxAcceptedFiles}!`);
+      } else if (props.errorType === 'too-many-files') {
+        setTitle(`Too many files!`);
+        setMessage(`Upload only 1 image!`);
+      }
+    }
+  }, [props]);
+
   // Most used notification props
   showNotification({
-    title: 'Default notification',
-    message: 'Hey there, your code is awesome! 🤥',
+    title: title,
+    message: message,
 
     autoClose: 5000,
 

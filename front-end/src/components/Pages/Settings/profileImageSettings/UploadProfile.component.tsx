@@ -1,7 +1,5 @@
-
 import { useEffect, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
-
 import {
   Text,
   Image,
@@ -14,7 +12,7 @@ import {
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
 import { Dropzone } from '@mantine/dropzone';
-import { FileWithPath } from '@mantine/dropzone';
+import { FileRejection, FileWithPath } from 'react-dropzone';
 import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
@@ -24,6 +22,7 @@ import { useUserState } from '../../../../context/UserContext';
 import { sendImageToServerAPI } from '../../../api/api';
 import { IconPhoto, IconX, IconUpload } from '@tabler/icons';
 import { LIGHTER_GRAY } from '../../../../Theme/Theme';
+import { NotificationsComponent } from '../../../notifications/Notifications.component';
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
@@ -41,6 +40,7 @@ const UploadProfileComponent = () => {
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [rejectedFile, setRejectedFile] = useState<FileRejection[]>([]);
   const fileChangedHandler = (file: any) => {
     let fileInput = false;
     if (file) {
@@ -82,8 +82,10 @@ const UploadProfileComponent = () => {
 
   useEffect(() => {
     saveProfileImageAfterReload(accountSettingsDispatch);
+    console.log(rejectedFile);
+
     console.log(user.user.id);
-  }, []);
+  });
   return (
     <div>
       <Modal
@@ -96,7 +98,9 @@ const UploadProfileComponent = () => {
       >
         <Dropzone
           onDrop={file => setFiles(file)}
-          onReject={files => console.log('rejected files', files)}
+          onReject={file => {
+            setRejectedFile(file);
+          }}
           accept={images}
           maxSize={maxSizeImages}
           useFsAccessApi={false}
