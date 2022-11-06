@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
@@ -23,7 +24,6 @@ import { useUserState } from '../../../../context/UserContext';
 import { sendImageToServerAPI } from '../../../api/api';
 import { IconPhoto, IconX, IconUpload } from '@tabler/icons';
 import { LIGHTER_GRAY } from '../../../../Theme/Theme';
-
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
@@ -38,11 +38,9 @@ const UploadProfileComponent = () => {
     'image/svg+xml',
     'image/webp',
   ];
-
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
-
   const fileChangedHandler = (file: any) => {
     let fileInput = false;
     if (file) {

@@ -1,3 +1,4 @@
+
 import Index from './components/Pages/Index/Index';
 import Home from './components/Pages/Home/Home';
 import Login from './components/Auth/Login/Login';
@@ -24,6 +25,7 @@ import { useEffect } from 'react';
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery('(min-width: 650px)');
+
   return (
     <QueryClientProvider client={queryClient}>
       <MantineProvider
@@ -66,6 +68,7 @@ const App = () => {
             </NotificationsProvider>
           </ModalsProvider>
         </AppContextProvider>
+
       </MantineProvider>
     </QueryClientProvider>
   );

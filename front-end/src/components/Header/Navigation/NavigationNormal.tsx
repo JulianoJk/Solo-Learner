@@ -41,6 +41,7 @@ const NavigationNormal: React.FC = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useUserState();
+
   const { classes } = useStyles();
   const appDisp = AppDispatch();
   const { profileImage } = useAccountSettingsState();
@@ -107,12 +108,12 @@ const NavigationNormal: React.FC = () => {
               radius="md"
               size="lg"
               uppercase
-              color="yellow"
+              color="indigo"
               m={1}
               component={Link}
-              to="/profile"
+              to="/settings"
             >
-              Profile
+              Settings
             </Button>
             <Menu
               shadow="md"
