@@ -149,7 +149,7 @@ const Register: React.FC = () => {
           to="/login"
           className={classes.switchAuthLinkAnchor}
         >
-          Log-In
+          Sign-In
         </Anchor>
       </span>
     </Box>

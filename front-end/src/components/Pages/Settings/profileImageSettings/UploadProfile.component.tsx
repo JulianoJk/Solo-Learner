@@ -1,4 +1,3 @@
-// TODO!: Bug? OnDrop causes the save button to click. Check it!
 import { useEffect, useState } from 'react';
 import Resizer from 'react-image-file-resizer';
 
@@ -11,10 +10,9 @@ import {
   Group,
   Title,
   SimpleGrid,
-  Center,
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
-import { DropzoneComponent } from '@noxyseras/react-ui-components';
+import { Dropzone } from '@mantine/dropzone';
 import { FileWithPath } from '@mantine/dropzone';
 import {
   useAccountSettingsDispatch,
@@ -22,6 +20,10 @@ import {
 } from '../../../../context/AccountSettingsContext';
 import { saveProfileImageAfterReload } from '../../../../lib/dist';
 import { useUserState } from '../../../../context/UserContext';
+import { sendImageToServerAPI } from '../../../api/api';
+import { IconPhoto, IconX, IconUpload } from '@tabler/icons';
+import { LIGHTER_GRAY } from '../../../../Theme/Theme';
+
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
   const [img, setImg] = useState('');
@@ -36,36 +38,10 @@ const UploadProfileComponent = () => {
     'image/svg+xml',
     'image/webp',
   ];
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    const formData = new FormData();
-    formData.append('files', data['file']);
-
-    const res = await fetch('http://localhost:5000/upload-file', {
-      method: 'POST',
-      body: formData,
-    }).then(res => res.json());
-    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
-  };
 
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
-  const [saveImage, setSaveImage] = useState(false);
   const [files, setFiles] = useState<FileWithPath[]>([]);
-
-  //TODO!: Check
-  const handleSubmit = async (data: any) => {
-    const formData = new FormData();
-    formData.append('file', data[0]);
-    const res = await fetch(
-      `http://localhost:3001/users/profile-image/${user.user.id}`,
-      {
-        method: 'POST',
-        body: formData,
-      }
-    ).then(res => res.json());
-    alert(JSON.stringify(`${res.message}, status: ${res.status}`));
-  };
 
   const fileChangedHandler = (file: any) => {
     let fileInput = false;
@@ -113,21 +89,47 @@ const UploadProfileComponent = () => {
   return (
     <div>
       <Modal
+        size={600}
         title={<Title>Upload profile image</Title>}
         opened={openModal}
         onClose={() => setOpenModal(false)}
+        className={classes.modalRoot}
+        overflow="inside"
       >
-        <DropzoneComponent
+        <Dropzone
           onDrop={file => setFiles(file)}
-          rejectedUpload={file => console.log('rejected: ' + { ...file })}
-          acceptFiles={images}
+          onReject={files => console.log('rejected files', files)}
+          accept={images}
           maxSize={maxSizeImages}
           useFsAccessApi={false}
+          multiple={false}
         >
-          <Center>
-            <Text>Drop images here</Text>
-          </Center>
-        </DropzoneComponent>
+          <Group
+            position="center"
+            spacing="xl"
+            style={{ minHeight: 70, pointerEvents: 'none' }}
+          >
+            <Dropzone.Accept>
+              <IconUpload size={50} stroke={1.5} color={LIGHTER_GRAY} />
+            </Dropzone.Accept>
+            <Dropzone.Reject>
+              <IconX size={50} stroke={1.5} color={LIGHTER_GRAY} />
+            </Dropzone.Reject>
+            <Dropzone.Idle>
+              <IconPhoto size={50} stroke={1.5} />
+            </Dropzone.Idle>
+
+            <div>
+              <Text size="xl" inline>
+                Drag images here or click to select files
+              </Text>
+              <Text size="sm" color="dimmed" inline mt={7}>
+                Attach as many files as you like, each file should not exceed
+                5mb
+              </Text>
+            </div>
+          </Group>
+        </Dropzone>
         <SimpleGrid
           cols={4}
           breakpoints={[{ maxWidth: 'lg', cols: 1 }]}
@@ -153,12 +155,12 @@ const UploadProfileComponent = () => {
 
           <Button
             onClick={() => {
-              setSaveImage(true);
               setOpenModal(false);
               accountSettingsDispatch({
                 type: 'SET_PROFILE_IMAGE',
                 profileImage: img,
               });
+              sendImageToServerAPI(files, user.user.id);
             }}
             disabled={files.length === 0 ? true : false}
             variant="filled"
@@ -169,25 +171,18 @@ const UploadProfileComponent = () => {
         </Group>
       </Modal>
       <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
-      <Button
-        onClick={() => {
-          console.log(files);
-
-          handleSubmit(files);
-        }}
-      >
-        Submit
-      </Button>
+      {/* <Button onClick={() => NotificationsComponent()}>Update Profile</Button> */}
       <Avatar
         className={classes.profileImage}
         radius={200}
-        size={300}
+        size={200}
         color={'cyan'}
         variant="filled"
         alt="profile-image"
         src={profileImage}
       />
     </div>
+    // TODO!: Add a notification alert to inform user of the status
   );
 };
 

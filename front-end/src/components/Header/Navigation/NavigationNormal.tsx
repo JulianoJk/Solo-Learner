@@ -1,15 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
+import { Logout, Home, User, Login, Pencil } from 'tabler-icons-react';
 import {
-  Logout,
-  Home,
-  User,
-  Login,
-  Pencil,
-  Settings,
-} from 'tabler-icons-react';
-import { Button, Group, Header, Avatar, Anchor } from '@mantine/core';
+  Button,
+  Group,
+  Header,
+  Avatar,
+  Anchor,
+  Menu,
+  Text,
+  ActionIcon,
+  Burger,
+} from '@mantine/core';
 import { useStyles } from './Navigation.styles';
 import LogoImage from '../../../images/Logo';
 import {
@@ -19,16 +22,39 @@ import {
   saveProfileImageAfterReload,
 } from '../../../lib/dist';
 import { useEffect, useState } from 'react';
-import { useDocumentTitle } from '@mantine/hooks';
-import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
+import {
+  useClickOutside,
+  useDocumentTitle,
+  useMediaQuery,
+} from '@mantine/hooks';
+import {
+  useAccountSettingsDispatch,
+  useAccountSettingsState,
+} from '../../../context/AccountSettingsContext';
+import { AppDispatch } from '../../../context/AppContext';
+import { IconSettings, IconTrash, IconMenu2 } from '@tabler/icons';
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState('');
-  useDocumentTitle(documentTitle);
   const accountSettingsDispatch = useAccountSettingsDispatch();
-
+  const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user } = useUserState();
+  const { classes } = useStyles();
+  const appDisp = AppDispatch();
+  const { profileImage } = useAccountSettingsState();
+  const [opened, setOpened] = useState(false);
+  const ref = useClickOutside(() => setOpened(false));
+
+  const isSmallWindow: any = useMediaQuery('(min-width: 650px)');
+  useEffect(() => {
+    console.log(isSmallWindow);
+
+    appDisp({ type: 'IS_SMALL_WINDOW', isSmallWindow: isSmallWindow });
+  }, [isSmallWindow]);
+
+  useDocumentTitle(documentTitle);
   useEffect(() => {
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
@@ -37,11 +63,6 @@ const NavigationNormal: React.FC = () => {
       setDocumentTitle('Solo Learner');
     }
   }, [pathname]);
-
-  const { classes } = useStyles();
-  const userDispatch = useUserDispatch();
-
-  const { user } = useUserState();
 
   useEffect(() => {
     saveUserAfterReload(userDispatch);
@@ -52,6 +73,9 @@ const NavigationNormal: React.FC = () => {
   const logOut = () => {
     userDispatch({ type: 'RESET_STATE' });
     navigate('/');
+  };
+  const handleClick = () => {
+    setOpened(openedBurger => !openedBurger);
   };
 
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
@@ -83,41 +107,46 @@ const NavigationNormal: React.FC = () => {
               radius="md"
               size="lg"
               uppercase
-              color="indigo"
+              color="yellow"
               m={1}
               component={Link}
-              to="/settings"
+              to="/profile"
             >
-              Settings
+              Profile
             </Button>
-            <>
-              <Button
-                leftIcon={<User size={16} />}
-                radius="md"
-                size="lg"
-                uppercase
-                color="yellow"
-                m={1}
-                component={Link}
-                to="/profile"
-              >
-                Profile
-              </Button>
-            </>
+            <Menu
+              shadow="md"
+              width={200}
+              opened={opened}
+              withArrow
+              closeOnClickOutside={true}
+              closeOnEscape={true}
+              closeOnItemClick={true}
+            >
+              <Menu.Target>
+                <Burger opened={opened} onClick={handleClick} ref={ref} />
+              </Menu.Target>
 
-            <Button
-              leftIcon={<Logout size={16} />}
-              radius="md"
-              color="red"
-              size="lg"
-              uppercase
-              component={Link}
-              to="/"
-              m={1}
-              onClick={logOut}
-            >
-              logOut
-            </Button>
+              <Menu.Dropdown>
+                <Menu.Item
+                  icon={<IconSettings size={14} />}
+                  onClick={() => navigate('/settings')}
+                >
+                  Settings
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item
+                  color="red"
+                  icon={<IconTrash size={14} />}
+                  onClick={() => {
+                    logOut();
+                    navigate('/');
+                  }}
+                >
+                  SIGN-OUT
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </>
         ) : (
           <>
@@ -136,7 +165,7 @@ const NavigationNormal: React.FC = () => {
               component={Link}
               to="/login"
             >
-              Log-In
+              Sign-in
             </Button>
             <Button
               leftIcon={<Pencil size={16} />}

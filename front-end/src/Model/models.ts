@@ -14,6 +14,9 @@ export interface StateInterface {
 export interface AccountSettingsInterface {
   profileImage: string;
 }
+export interface ApplicationInterface {
+  isSmallWindow: boolean;
+}
 // Reset everything
 interface ResetAction {
   type: 'RESET_STATE';
@@ -30,8 +33,13 @@ export type TUserAction =
     }
   | ResetAction;
 
+export type TApplicationAction = {
+  type: 'IS_SMALL_WINDOW';
+  isSmallWindow: ApplicationInterface;
+};
 // Type for the dispatch reducer user
 export type usersDispatchContext = (action: TUserAction) => void;
+export type ApplicationDispatchContext = (action: TApplicationAction) => void;
 
 // An enum with all the types of actions to use in the registration useReduce
 export enum EActionTypes {
