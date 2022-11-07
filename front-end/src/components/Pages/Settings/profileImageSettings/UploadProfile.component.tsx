@@ -37,8 +37,8 @@ const UploadProfileComponent = () => {
   const { profileImage } = useAccountSettingsState();
   const user = useUserState();
   // TODO! Change this!
-  // const maxSizeImages = 2 * 1024 ** 2;
-  const maxSizeImages = 2;
+  const maxSizeImages = 2 * 1024 ** 2;
+  // const maxSizeImages = 2;
 
   const images = [
     'image/png',
@@ -181,7 +181,7 @@ const UploadProfileComponent = () => {
               </Text>
               <Text size="sm" color="dimmed" inline mt={7}>
                 Attach as many files as you like, each file should not exceed
-                5mb
+                2mb
               </Text>
             </div>
           </Group>

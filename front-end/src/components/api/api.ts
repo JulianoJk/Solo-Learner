@@ -116,14 +116,19 @@ export const sendImageToServerAPI = async (
   data: any,
   userID: string | undefined
 ) => {
-  const formData = new FormData();
-  formData.append('file', data[0]);
-  const res = await fetch(
-    `http://localhost:3001/users/profile-image/${userID}`,
-    {
-      method: 'POST',
-      body: formData,
-    }
-  ).then(res => res.json());
-  alert(JSON.stringify(`${res.message}, status: ${res.status}`));
+  try {
+    const formData = new FormData();
+    formData.append('file', data[0]);
+    const res = await fetch(
+      `http://localhost:3001/users/profile-image/${userID}`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    );
+    const results: any = await res.json();
+    return results;
+  } catch (error) {
+    return;
+  }
 };
