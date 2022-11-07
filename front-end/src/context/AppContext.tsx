@@ -26,7 +26,6 @@ const appReducer = (
 ) => {
   switch (action.type) {
     case 'IS_SMALL_WINDOW':
-      console.log(!action.isSmallWindow);
 
       return { ...state, isSmallWindow: !action.isSmallWindow };
   }

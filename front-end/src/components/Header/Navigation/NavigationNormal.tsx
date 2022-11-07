@@ -50,7 +50,6 @@ const NavigationNormal: React.FC = () => {
 
   const isSmallWindow: any = useMediaQuery('(min-width: 650px)');
   useEffect(() => {
-    console.log(isSmallWindow);
 
     appDisp({ type: 'IS_SMALL_WINDOW', isSmallWindow: isSmallWindow });
   }, [isSmallWindow]);
