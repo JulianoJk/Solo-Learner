@@ -36,9 +36,8 @@ const UploadProfileComponent = () => {
   const accountSettingsDispatch = useAccountSettingsDispatch();
   const { profileImage } = useAccountSettingsState();
   const user = useUserState();
-  // TODO! Change this!
+
   const maxSizeImages = 2 * 1024 ** 2;
-  // const maxSizeImages = 2;
 
   const images = [
     'image/png',
@@ -108,11 +107,14 @@ const UploadProfileComponent = () => {
         if (!errorsArray.includes(errorCode.code)) {
           errorsArray.push(errorCode.code);
         }
+        if (
+          rejectedFile.length > 1 &&
+          !errorsArray.includes('too-many-files')
+        ) {
+          errorsArray.push('too-many-files');
+        }
       });
     });
-    if (rejectedFile.length > 1) {
-      errorsArray.push('too-many-files');
-    }
 
     errorsArray.forEach((code: any) => {
       if (code === 'file-invalid-type') {
@@ -241,6 +243,3 @@ const UploadProfileComponent = () => {
 };
 
 export default UploadProfileComponent;
-function formatBytes(maxSizeImages: number) {
-  throw new Error('Function not implemented.');
-}
