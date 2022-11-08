@@ -51,9 +51,7 @@ router.post('/login', async (req: Request, res: Response) => {
     const user = await User.findOne({ email: email });
     // if there is no user, inform client
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: 'Invalid username or password..' });
+      return res.status(400).json({ message: 'No account found!' });
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
 
@@ -177,7 +175,7 @@ router.delete('/deleteAccount/:token', async (req: Request, res: Response) => {
     if (checkIfTokenExpired(decoded.exp)) {
       res.json('Expired session, please login again!');
     } else {
-      User.deleteOne({ _id: currentUser.id }, function(err: any, docs: any) {
+      User.deleteOne({ _id: currentUser.id }, function (err: any, docs: any) {
         if (err) {
           console.log(err);
         } else {
@@ -235,7 +233,7 @@ router.get('/profileImage/:id', async (req: any, res: any) => {
 
   try {
     // Check if folder is empty
-    fs.readdir(uploaded, function(err: any, files: any) {
+    fs.readdir(uploaded, function (err: any, files: any) {
       if (err) {
         res.json(null);
         return;

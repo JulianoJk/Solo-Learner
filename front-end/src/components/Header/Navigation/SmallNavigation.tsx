@@ -1,5 +1,5 @@
 import { useUserDispatch } from '../../../context/UserContext';
-import { Menu, Group, Header, Burger, Center } from '@mantine/core';
+import { Menu, Group, Header, Burger, Center, Text } from '@mantine/core';
 import { useStyles } from './Navigation.styles';
 import { useState } from 'react';
 import LogoImage from '../../../images/Logo';
@@ -12,6 +12,7 @@ import {
   saveProfileImageAfterReload,
   saveUserAfterReload,
 } from '../../../lib/dist';
+import { IconSettings, IconTrash, IconUser } from '@tabler/icons';
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -72,21 +73,52 @@ const SmallNavigation: React.FC = () => {
                 className={classes.menuItems}
               >
                 <Center>
-                  <Home size={16} /> HOME
+                  <Home size={16} fontWeight={700} />
+                  <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    HOME
+                  </Text>
                 </Center>
               </Menu.Item>
+
               <Menu.Divider />
               <Menu.Item
+                color="indigo"
                 onClick={() => {
                   navigate('/profile');
                 }}
-                className={classes.menuItems}
               >
-                <Center>PROFILE</Center>
+                <Center>
+                  <IconUser size={16} fontWeight={700} />
+                  <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    Profile
+                  </Text>
+                </Center>
               </Menu.Item>
               <Menu.Divider />
-              <Menu.Item onClick={logOut} className={classes.menuItems}>
-                <Center>LOG OUT</Center>
+              <Menu.Item onClick={() => navigate('/settings')}>
+                <Center>
+                  <IconSettings size={16} fontWeight={700} />
+                  <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    Settings
+                  </Text>
+                </Center>
+              </Menu.Item>
+
+              <Menu.Divider />
+              <Menu.Item
+                color="red"
+                className={classes.menuItems}
+                onClick={() => {
+                  logOut();
+                  navigate('/');
+                }}
+              >
+                <Center>
+                  <IconTrash size={16} fontWeight={700} />
+                  <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    Sign-Out
+                  </Text>
+                </Center>
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

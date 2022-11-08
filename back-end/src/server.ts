@@ -18,5 +18,6 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on: ${PORT}`));
 
 mongoose.connect(process.env.MONGO_CONN, () => console.log('DB connected'));
+console.log(mongoose.connection.readyState);
 
 app.use('/users', require('./controllers/users'));

@@ -2,17 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import { Logout, Home, User, Login, Pencil } from 'tabler-icons-react';
-import {
-  Button,
-  Group,
-  Header,
-  Avatar,
-  Anchor,
-  Menu,
-  Text,
-  ActionIcon,
-  Burger,
-} from '@mantine/core';
+import { Button, Group, Header, Anchor, Menu, Burger } from '@mantine/core';
 import { useStyles } from './Navigation.styles';
 import LogoImage from '../../../images/Logo';
 import {
@@ -32,7 +22,7 @@ import {
   useAccountSettingsState,
 } from '../../../context/AccountSettingsContext';
 import { AppDispatch } from '../../../context/AppContext';
-import { IconSettings, IconTrash, IconMenu2 } from '@tabler/icons';
+import { IconSettings, IconTrash } from '@tabler/icons';
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState('');
@@ -40,17 +30,14 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user } = useUserState();
 
   const { classes } = useStyles();
   const appDisp = AppDispatch();
-  const { profileImage } = useAccountSettingsState();
   const [opened, setOpened] = useState(false);
   const ref = useClickOutside(() => setOpened(false));
 
   const isSmallWindow: any = useMediaQuery('(min-width: 650px)');
   useEffect(() => {
-
     appDisp({ type: 'IS_SMALL_WINDOW', isSmallWindow: isSmallWindow });
   }, [isSmallWindow]);
 
@@ -75,7 +62,7 @@ const NavigationNormal: React.FC = () => {
     navigate('/');
   };
   const handleClick = () => {
-    setOpened(openedBurger => !openedBurger);
+    setOpened((openedBurger) => !openedBurger);
   };
 
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
