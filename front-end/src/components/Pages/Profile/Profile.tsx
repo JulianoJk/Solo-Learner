@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useUserState } from '../../../context/UserContext';
 import { IUserInfoContext } from '../../../Model/models';
-import { profileAPI } from '../../api/api';
+import { profileAPI, profileImageAPI } from '../../api/api';
 import Login from '../../Auth/Login/Login';
 import PageNotFound from '../pageNotFound/PageNotFound';
 
@@ -36,8 +36,12 @@ const Profile: React.FC = () => {
       staleTime: Infinity,
     }
   );
+  var b;
   useEffect(() => {
     setUserProfileImage(profileImage);
+    if (user.id !== undefined) {
+      b = profileImageAPI(user.id);
+    }
   });
   if (userIsLoggedInLocal) {
     return (
@@ -83,6 +87,7 @@ const Profile: React.FC = () => {
         />
         <h1> Welcome Back: {user.username}!</h1>
         <h2>Date joined:{userProfileData}</h2>
+        <img src={b} />
       </div>
     );
   } else {

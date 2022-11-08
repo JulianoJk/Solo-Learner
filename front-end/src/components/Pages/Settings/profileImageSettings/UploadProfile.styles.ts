@@ -30,4 +30,7 @@ export const useStyles = createStyles(() => ({
       backgroundColor: TRANSPARENT_LIGHT_COLORS[0],
     },
   },
+  modalRoot: {
+    maxHeight: 700,
+  },
 }));

@@ -74,7 +74,7 @@ const Login: React.FC = () => {
       <Center>
         <AuthImage />
       </Center>
-      <h1 className={classes.title}>Log-In</h1>
+      <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
           icon={<Mail />}

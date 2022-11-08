@@ -189,7 +189,7 @@ router.delete('/deleteAccount/:token', async (req: Request, res: Response) => {
     res.status(400).json({ error: e.message });
   }
 });
-//
+// Save image from FE
 router.post('/profile-image/:id', async (req: any, res: any) => {
   const { id } = req.params;
   try {
@@ -226,6 +226,7 @@ router.post('/profile-image/:id', async (req: any, res: any) => {
     res.status(500).send(err);
   }
 });
+// Send image
 router.get('/profileImage/:id', async (req: any, res: any) => {
   const { id } = req.params;
 
