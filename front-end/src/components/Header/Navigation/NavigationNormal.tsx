@@ -10,6 +10,7 @@ import {
   saveUserAfterReload,
   isUserLoggedIn,
   saveProfileImageAfterReload,
+  parseJwt,
 } from '../../../lib/dist';
 import { useEffect, useState } from 'react';
 import {
@@ -23,6 +24,7 @@ import {
 } from '../../../context/AccountSettingsContext';
 import { AppDispatch } from '../../../context/AppContext';
 import { IconSettings, IconTrash } from '@tabler/icons';
+import { useLocalStorage } from '@mantine/hooks';
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState('');
@@ -30,11 +32,15 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user } = useUserState();
 
   const { classes } = useStyles();
   const appDisp = AppDispatch();
   const [opened, setOpened] = useState(false);
   const ref = useClickOutside(() => setOpened(false));
+  const [value] = useLocalStorage<any>({
+    key: 'user',
+  });
 
   const isSmallWindow: any = useMediaQuery('(min-width: 650px)');
   useEffect(() => {
@@ -56,6 +62,14 @@ const NavigationNormal: React.FC = () => {
     saveProfileImageAfterReload(accountSettingsDispatch);
   }, []);
 
+  useEffect(() => {
+    const token = value?.token;
+    var isValidToken;
+    if (token !== undefined) {
+      isValidToken = parseJwt(token)['exp'] > Date.now() / 1000;
+    }
+    console.log(isValidToken);
+  });
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
     userDispatch({ type: 'RESET_STATE' });

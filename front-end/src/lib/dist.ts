@@ -1,9 +1,4 @@
-import {
-  AccountSettingsInterface,
-  IUserInfoContext,
-  TUserAction,
-  usersDispatchContext,
-} from '../Model/models';
+import { usersDispatchContext } from '../Model/models';
 
 export const isUndefinedOrNullString = (object: string | undefined | null) => {
   return object === undefined || object === null || object.trim() === ''
@@ -55,11 +50,18 @@ export const formatBytes = (bytes: number, decimals = 2) => {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
-// export const RandomColorGenerator = () => {
-//   let arrayColors: string[] = [];
-//   for (let i = 0; i < 5; i++) {
-//     var randomColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
-//     arrayColors.push(randomColor);
-//   }
-//   return arrayColors;
-// };
+
+const b64DecodeUnicode = (str: string) =>
+  decodeURIComponent(
+    Array.prototype.map
+      .call(
+        atob(str),
+        (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      )
+      .join('')
+  );
+
+export const parseJwt = (token: string) =>
+  JSON.parse(
+    b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/'))
+  );

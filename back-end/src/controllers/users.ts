@@ -75,7 +75,6 @@ router.post('/login', async (req: Request, res: Response) => {
           username: user.username,
           id: user._id,
           isTeacher: checkIfTeacher ? true : false,
-          password: user.password,
         });
       }
     );
