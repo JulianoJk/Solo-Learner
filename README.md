@@ -2,6 +2,14 @@
 
 MERN stack Duolingo clone! This is a Duolingo clone, which is being developed by 3 BS students, a CS student, English Language & Literature student and a Fine arts student!
 
+## How to start (With Docker)
+
+1. Install docker on your machine
+2. Create a .env file in the backend(Check below if need help)
+3. Type: ``` docker-compose up ``` 
+
+## How to start (Without Docker)
+
 ## Setup with npm
 
 ### Front-End
