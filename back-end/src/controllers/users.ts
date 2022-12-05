@@ -86,6 +86,8 @@ router.post("/login", async (req: Request, res: Response) => {
 router.post("/register", async (req: Request, res: Response) => {
   try {
     let { email, password, passwordRepeat, username } = req.body;
+    console.log("REQUESTED");
+
     // Validations
     if (password !== passwordRepeat) {
       return res.status(400).json({ message: "Passwords do not match." });
