@@ -37,6 +37,9 @@ services:
     volumes:
       - ./back-end:/app/back-end
       - /app/back-end/node_modules
+    ports:
+    # Port that can be accessed from outside docker or anywhere
+        - '3001:3001'
     env_file:
       - ./back-end/.env
 
