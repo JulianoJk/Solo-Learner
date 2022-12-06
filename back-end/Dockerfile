@@ -6,7 +6,7 @@ COPY package.json .
 
 RUN yarn 
 
-RUN npm i bcryptjs && npm i @types/express && npm install express && npm i --save-dev @types/express
+RUN npm i bcryptjs && npm install express && npm i --save-dev @types/express
 
 RUN yarn add nodemon && yarn add dotenv && yarn
 

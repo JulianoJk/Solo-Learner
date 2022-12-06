@@ -1,7 +1,7 @@
 const router = require("express").Router();
 import { Request, Response } from "express";
-import bcrypt from "bcryptjs";
-import jwt_decode from "jwt-decode";
+const bcrypt = require("bcryptjs");
+const jwt_decode = require("jwt-decode");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user.model");
 const auth = require("../middleware/auth");
