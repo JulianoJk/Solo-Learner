@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import Resizer from 'react-image-file-resizer';
+import { useEffect, useState } from "react";
+import Resizer from "react-image-file-resizer";
 import {
   Text,
   Image,
@@ -10,29 +10,32 @@ import {
   Title,
   SimpleGrid,
   Center,
-} from '@mantine/core';
-import { showNotification } from '@mantine/notifications';
-import { useStyles } from './UploadProfile.styles';
-import { Dropzone } from '@mantine/dropzone';
-import { FileRejection, FileWithPath } from 'react-dropzone';
+} from "@mantine/core";
+import { useDropzone } from "react-dropzone";
+import { showNotification } from "@mantine/notifications";
+import { useStyles } from "./UploadProfile.styles";
+import { Dropzone } from "@mantine/dropzone";
+import { FileRejection, FileWithPath } from "react-dropzone";
 import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
-} from '../../../../context/AccountSettingsContext';
-import { saveProfileImageAfterReload } from '../../../../lib/dist';
-import { useUserState } from '../../../../context/UserContext';
-import { sendImageToServerAPI } from '../../../api/api';
-import { IconPhoto, IconX, IconUpload } from '@tabler/icons';
+} from "../../../../context/AccountSettingsContext";
+import { saveProfileImageAfterReload } from "../../../../lib/dist";
+import { useUserState } from "../../../../context/UserContext";
+import { sendImageToServerAPI } from "../../../api/api";
+import { IconPhoto, IconX, IconUpload } from "@tabler/icons";
 import {
   COMMON_WHITE,
   LIGHTER_GRAY,
   LIGHT_NAVY,
-} from '../../../../Theme/Theme';
-import { AlertCircle } from 'tabler-icons-react';
+} from "../../../../Theme/Theme";
+import { AlertCircle } from "tabler-icons-react";
+import MyImageCrop from "./imageCrop/MyImageCrop";
+import Demo from "./imageCrop/Dms";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
-  const [img, setImg] = useState('');
+  const [img, setImg] = useState("");
   const accountSettingsDispatch = useAccountSettingsDispatch();
   const { profileImage } = useAccountSettingsState();
   const user = useUserState();
@@ -40,57 +43,58 @@ const UploadProfileComponent = () => {
   const maxSizeImages = 2 * 1024 ** 2;
 
   const images = [
-    'image/png',
-    'image/gif',
-    'image/jpeg',
-    'image/svg+xml',
-    'image/webp',
+    "image/png",
+    "image/gif",
+    "image/jpeg",
+    "image/svg+xml",
+    "image/webp",
   ];
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
-  const [files, setFiles] = useState<FileWithPath[]>([]);
+  const [files, setFiles] = useState<(File & { preview: string })[]>([]);
+  const MAX_WIDTH = 240;
+  const MAX_HEIGHT = 240;
+  // const fileChangedHandler = (file: any) => {
+  //   let fileInput = false;
+  //   if (file) {
+  //     fileInput = true;
+  //   }
+  //   if (fileInput) {
+  //     try {
+  //       Resizer.imageFileResizer(
+  //         file,
+  //         500,
+  //         500,
+  //         "png",
+  //         100,
+  //         0,
+  //         (uri: any) => {
+  //           setImg(uri);
+  //         },
+  //         "base64",
+  //         70,
+  //         70
+  //       );
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   }
+  // };
+  // const previews = files.map((file, index) => {
+  //   const imageUrl = URL.createObjectURL(file);
+  //   fileChangedHandler(file);
 
-  const fileChangedHandler = (file: any) => {
-    let fileInput = false;
-    if (file) {
-      fileInput = true;
-    }
-    if (fileInput) {
-      try {
-        Resizer.imageFileResizer(
-          file,
-          500,
-          500,
-          'png',
-          100,
-          0,
-          (uri: any) => {
-            setImg(uri);
-          },
-          'base64',
-          70,
-          70
-        );
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-  const previews = files.map((file, index) => {
-    const imageUrl = URL.createObjectURL(file);
-    fileChangedHandler(file);
-
-    return (
-      <Center key={index}>
-        <Image
-          src={img}
-          width={200}
-          height={250}
-          imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
-        />
-      </Center>
-    );
-  });
+  //   return (
+  //     <Center key={index}>
+  //       <Image
+  //         src={img}
+  //         width={200}
+  //         height={250}
+  //         imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+  //       />
+  //     </Center>
+  //   );
+  // });
 
   useEffect(() => {
     saveProfileImageAfterReload(accountSettingsDispatch);
@@ -102,30 +106,30 @@ const UploadProfileComponent = () => {
     let notificationMessage: string[] = [];
     let notificationTitle: string[] = [];
 
-    rejectedFile.forEach(element => {
-      element.errors.forEach(errorCode => {
+    rejectedFile.forEach((element) => {
+      element.errors.forEach((errorCode) => {
         if (!errorsArray.includes(errorCode.code)) {
           errorsArray.push(errorCode.code);
         }
         if (
           rejectedFile.length > 1 &&
-          !errorsArray.includes('too-many-files')
+          !errorsArray.includes("too-many-files")
         ) {
-          errorsArray.push('too-many-files');
+          errorsArray.push("too-many-files");
         }
       });
     });
 
     errorsArray.forEach((code: any) => {
-      if (code === 'file-invalid-type') {
-        notificationTitle.push('Invalid file type.');
+      if (code === "file-invalid-type") {
+        notificationTitle.push("Invalid file type.");
         notificationMessage.push(
           `Try uploading only .png, .jpg, .svg, .gif, .webp!`
         );
-      } else if (code === 'file-too-large') {
+      } else if (code === "file-too-large") {
         notificationTitle.push(`File too big.`);
         notificationMessage.push(`Image must not exceed ${maxSizeImages} MB!`);
-      } else if (code === 'too-many-files') {
+      } else if (code === "too-many-files") {
         notificationTitle.push(`Too many files.`);
         notificationMessage.push(`Upload only 1 image!`);
       }
@@ -138,9 +142,18 @@ const UploadProfileComponent = () => {
         message: <Text color={COMMON_WHITE}>{notificationMessage[i]}</Text>,
         sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
         autoClose: 5000,
-        color: 'red',
+        color: "red",
       });
     }
+  };
+  const handleOnDrop = (acceptedFiles: File[]) => {
+    setFiles(
+      acceptedFiles.map((file) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
   };
   return (
     <div>
@@ -153,8 +166,8 @@ const UploadProfileComponent = () => {
         overflow="inside"
       >
         <Dropzone
-          onDrop={file => setFiles(file)}
-          onReject={file => {
+          onDrop={handleOnDrop}
+          onReject={(file) => {
             rejectedUpload(file);
           }}
           accept={images}
@@ -165,7 +178,7 @@ const UploadProfileComponent = () => {
           <Group
             position="center"
             spacing="xl"
-            style={{ minHeight: 70, pointerEvents: 'none' }}
+            style={{ minHeight: 70, pointerEvents: "none" }}
           >
             <Dropzone.Accept>
               <IconUpload size={50} stroke={1.5} color={LIGHTER_GRAY} />
@@ -177,27 +190,32 @@ const UploadProfileComponent = () => {
               <IconPhoto size={50} stroke={1.5} />
             </Dropzone.Idle>
 
-            <div>
-              <Text size="xl" inline>
-                Drag images here or click to select files
-              </Text>
-              <Text size="sm" color="dimmed" inline mt={7}>
-                Attach as many files as you like, each file should not exceed
-                2mb
-              </Text>
-            </div>
+            <Text size="xl" inline>
+              Drag images here or click to select files
+            </Text>
+            <Text size="sm" color="dimmed" inline mt={7}>
+              Attach as many files as you like, each file should not exceed 2mb
+            </Text>
           </Group>
         </Dropzone>
-        <SimpleGrid
-          cols={4}
-          breakpoints={[{ maxWidth: 'lg', cols: 1 }]}
-          mt={previews.length > 0 ? 'xl' : 0}
-        >
-          {previews}
+        <SimpleGrid cols={4} breakpoints={[{ maxWidth: "lg", cols: 1 }]}>
+          {files.map((file) => (
+            // <img
+            //   key={file.name}
+            //   src={file.preview}
+            //   style={{
+            //     maxWidth: MAX_WIDTH,
+            //     maxHeight: MAX_HEIGHT,
+            //   }}
+            //   alt="Preview"
+            // />
+            // <MyImageCrop></MyImageCrop>
+            <Demo />
+          ))}
         </SimpleGrid>
         <Group
-          spacing={'xl'}
-          position={'right'}
+          spacing={"xl"}
+          position={"right"}
           className={classes.modalButtons}
         >
           <Button
@@ -215,7 +233,7 @@ const UploadProfileComponent = () => {
             onClick={() => {
               setOpenModal(false);
               accountSettingsDispatch({
-                type: 'SET_PROFILE_IMAGE',
+                type: "SET_PROFILE_IMAGE",
                 profileImage: img,
               });
               sendImageToServerAPI(files, user.user.id);
@@ -233,7 +251,7 @@ const UploadProfileComponent = () => {
         className={classes.profileImage}
         radius={200}
         size={200}
-        color={'cyan'}
+        color={"cyan"}
         variant="filled"
         alt="profile-image"
         src={profileImage}

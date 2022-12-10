@@ -17,6 +17,8 @@ body {
   left: 0;
   right: 0;
   bottom: 80px;
+  max-width: 350px;
+  max-height: 350px;
 }
 
 .controls {

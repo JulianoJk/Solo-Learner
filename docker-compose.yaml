@@ -26,11 +26,11 @@ services:
       ME_CONFIG_MONGODB_SERVER: mongodb
     depends_on:
       - mongodb
-  front-end:
-      build: ./front-end
-      container_name: front_end_c
-      ports:
-        - '3000:3000'
+  # front-end:
+  #     build: ./front-end
+  #     container_name: front_end_c
+  #     ports:
+  #       - '3000:3000'
   back-end:
     build: ./back-end
     container_name: back_end_c
