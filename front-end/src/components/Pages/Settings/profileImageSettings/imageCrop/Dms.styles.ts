@@ -1,9 +1,8 @@
 import { createStyles } from "@mantine/core";
 export const useStyles = createStyles(() => ({
   cropContainer: {
-    position: "relative",
-    width: "100%",
-    height: 200,
+    maxWidth: "20rem",
+    height: 250,
     background: "#333",
   },
   cropButton: {
@@ -15,14 +14,5 @@ export const useStyles = createStyles(() => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "stretch",
-  },
-  sliderContainer: {
-    display: "flex",
-    flex: "1",
-    alignItems: "center",
-  },
-  slider: {
-    padding: "22px 0px",
-    marginLeft: 32,
   },
 }));

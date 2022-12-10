@@ -164,6 +164,8 @@ const UploadProfileComponent = () => {
         onClose={() => setOpenModal(false)}
         className={classes.modalRoot}
         overflow="inside"
+        closeOnClickOutside={false}
+        closeOnEscape={true}
       >
         <Dropzone
           onDrop={handleOnDrop}

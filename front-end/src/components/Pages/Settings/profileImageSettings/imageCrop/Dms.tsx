@@ -40,30 +40,31 @@ const Demo = () => {
         />
       </div>
       <div className={classes.controls}>
-        <div className={classes.sliderContainer}>
-          <Text size="md">Zoom</Text>
-          <Slider
-            value={zoom}
-            min={11}
-            max={13}
-            step={10.1}
-            aria-labelledby="Zoom"
-            className={classes.slider}
-            onChange={setZoom}
-          />
-        </div>
-        <div className={classes.sliderContainer}>
-          <Text size="md">Rotation</Text>
-          <Slider
-            value={rotation}
-            min={10}
-            max={360}
-            step={10}
-            aria-labelledby="Rotation"
-            className={classes.slider}
-            onChange={setRotation}
-          />
-        </div>
+        <Text size="md">Zoom</Text>
+        <Slider
+          value={zoom}
+          min={1}
+          aria-labelledby="Zoom"
+          onChange={setZoom}
+          labelAlwaysOn={false}
+          showLabelOnHover={false}
+          label={null}
+          size="xl"
+          color="indigo"
+        />
+        <Text size="md">Rotation</Text>
+        <Slider
+          value={rotation}
+          min={1}
+          max={360}
+          step={0.1}
+          showLabelOnHover={false}
+          aria-labelledby="Rotation"
+          onChange={setRotation}
+          label={null}
+          size="xl"
+          color="indigo"
+        />
       </div>
     </div>
   );
