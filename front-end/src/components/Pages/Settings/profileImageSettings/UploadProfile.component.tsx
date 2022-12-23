@@ -31,7 +31,6 @@ import {
 } from "../../../../Theme/Theme";
 import { AlertCircle } from "tabler-icons-react";
 import MyImageCrop from "./imageCrop/imageCropper";
-// import MyImageCrop from "./imageCrop/imageCropper.component";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
@@ -212,8 +211,7 @@ const UploadProfileComponent = () => {
             //   alt="Preview"
             // />
             // <MyImageCrop></MyImageCrop>
-            // <Demo />
-            <MyImageCrop></MyImageCrop>
+            <MyImageCrop imageFile={file} />
           ))}
         </SimpleGrid>
         <Group
