@@ -1,6 +1,5 @@
 import { Modal, Title } from "@mantine/core";
 import React, { useState } from "react";
-import MyImageCrop from "./imageCrop/MyImageCrop";
 
 const ResizeImageModal = () => {
   const [isOpen, setisOpen] = useState(false);
@@ -12,7 +11,7 @@ const ResizeImageModal = () => {
       title={<Title>Upload profile image</Title>}
       overflow="inside"
     >
-      <MyImageCrop></MyImageCrop>
+      <h1>Hello</h1>
     </Modal>
   );
 };

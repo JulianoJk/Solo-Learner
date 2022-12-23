@@ -30,8 +30,8 @@ import {
   LIGHT_NAVY,
 } from "../../../../Theme/Theme";
 import { AlertCircle } from "tabler-icons-react";
-import MyImageCrop from "./imageCrop/MyImageCrop";
-import Demo from "./imageCrop/Dms";
+import MyImageCrop from "./imageCrop/imageCropper";
+// import MyImageCrop from "./imageCrop/imageCropper.component";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
@@ -212,7 +212,8 @@ const UploadProfileComponent = () => {
             //   alt="Preview"
             // />
             // <MyImageCrop></MyImageCrop>
-            <Demo />
+            // <Demo />
+            <MyImageCrop></MyImageCrop>
           ))}
         </SimpleGrid>
         <Group

@@ -2,12 +2,12 @@ import React, { useState, useCallback } from "react";
 import ReactDOM from "react-dom";
 import Cropper from "react-easy-crop";
 import { Slider, Button, Text } from "@mantine/core";
-import { useStyles } from "./Dms.styles";
+import { useStyles } from "./ImageCropper.styles";
 
 const dogImg =
   "https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000";
 
-const Demo = () => {
+const MyImageCrop = () => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [rotation, setRotation] = useState(0);
   const [zoom, setZoom] = useState(1);
@@ -22,16 +22,19 @@ const Demo = () => {
   const onClose = useCallback(() => {
     setCroppedImage(null);
   }, []);
-
+  const onZoomChange = (e: React.BaseSyntheticEvent): void => {
+    setZoom(e.target.value);
+  };
   return (
     <div>
       <div className={classes.cropContainer}>
         <Cropper
+          objectFit="auto-cover"
           image={dogImg}
           crop={crop}
-          rotation={rotation}
           zoom={zoom}
           aspect={1}
+          maxZoom={3}
           cropShape="round"
           onCropChange={setCrop}
           onRotationChange={setRotation}
@@ -41,32 +44,17 @@ const Demo = () => {
       </div>
       <div className={classes.controls}>
         <Text size="md">Zoom</Text>
-        <Slider
+        <input
+          type="range"
           value={zoom}
           min={1}
-          aria-labelledby="Zoom"
-          onChange={setZoom}
-          labelAlwaysOn={false}
-          showLabelOnHover={false}
-          label={null}
-          size="xl"
-          color="indigo"
-        />
-        <Text size="md">Rotation</Text>
-        <Slider
-          value={rotation}
-          min={1}
-          max={360}
+          max={3}
           step={0.1}
-          showLabelOnHover={false}
-          aria-labelledby="Rotation"
-          onChange={setRotation}
-          label={null}
-          size="xl"
-          color="indigo"
+          onChange={onZoomChange}
+          color="red"
         />
       </div>
     </div>
   );
 };
-export default Demo;
+export default MyImageCrop;
