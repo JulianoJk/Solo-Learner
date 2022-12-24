@@ -195,7 +195,7 @@ const UploadProfileComponent = () => {
               Drag images here or click to select files
             </Text>
             <Text size="sm" color="dimmed" inline mt={7}>
-              Attach as many files as you like, each file should not exceed 2mb
+              Attach only an image file, the image file should not exceed 2mb
             </Text>
           </Group>
         </Dropzone>
