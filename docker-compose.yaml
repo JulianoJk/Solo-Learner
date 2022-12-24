@@ -31,6 +31,10 @@ services:
       container_name: front_end_c
       ports:
         - '3000:3000'
+      stdin_open: true
+      volumes:
+       - ./front-end:/app/front_end
+       - /usr/src/app/front-end/node_modules
   back-end:
     build: ./back-end
     container_name: back_end_c

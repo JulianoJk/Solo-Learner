@@ -1,29 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
-import { useUserState } from '../../../context/UserContext';
-import { IUserInfoContext } from '../../../Model/models';
-import { profileAPI, profileImageAPI } from '../../api/api';
-import Login from '../../Auth/Login/Login';
-import PageNotFound from '../pageNotFound/PageNotFound';
+import { useQuery } from "@tanstack/react-query";
+import { useUserState } from "../../../context/UserContext";
+import { IUserInfoContext } from "../../../Model/models";
+import { profileAPI, profileImageAPI } from "../../api/api";
+import Login from "../../Auth/Login/Login";
+import PageNotFound from "../pageNotFound/PageNotFound";
 
-import { Avatar, Loader, Stack, Text, Title } from '@mantine/core';
-import { useStyles } from './Profile.styles';
-import { isUndefinedOrNullString } from '../../../lib/dist';
-import DeleteAccount from '../Settings/DeleteAccount/DeleteAccount';
-import { useEffect, useState } from 'react';
-import { useAccountSettingsState } from '../../../context/AccountSettingsContext';
+import { Avatar, Loader, Stack, Text, Title } from "@mantine/core";
+import { useStyles } from "./Profile.styles";
+import { isUndefinedOrNullString } from "../../../lib/dist";
+import DeleteAccount from "../Settings/DeleteAccount/DeleteAccount";
+import { useEffect, useState } from "react";
+import { useAccountSettingsState } from "../../../context/AccountSettingsContext";
 
 const Profile: React.FC = () => {
   const { user } = useUserState();
-  let userIsLoggedInLocal: any = localStorage.getItem('user');
+  let userIsLoggedInLocal: any = localStorage.getItem("user");
   const { profileImage } = useAccountSettingsState();
 
   const { classes } = useStyles();
-  const [userProfileImage, setUserProfileImage] = useState('');
+  const [userProfileImage, setUserProfileImage] = useState("");
   const hasToken = !isUndefinedOrNullString(user.token)
     ? user.token
     : undefined;
   const { isLoading, data: userProfileData } = useQuery(
-    ['getProfileItems', hasToken],
+    ["getProfileItems", hasToken],
     async () => {
       if (hasToken) {
         const data: IUserInfoContext | undefined = await profileAPI(hasToken);
@@ -42,6 +42,9 @@ const Profile: React.FC = () => {
     if (user.id !== undefined) {
       b = profileImageAPI(user.id);
     }
+  });
+  useEffect(() => {
+    console.log(isLoading);
   });
   if (userIsLoggedInLocal) {
     return (
@@ -78,11 +81,11 @@ const Profile: React.FC = () => {
           className={classes.profileImage}
           radius={200}
           size={300}
-          color={'cyan'}
+          color={"cyan"}
           variant="filled"
           alt="profile-image"
           src={
-            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ''
+            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
           }
         />
         <h1> Welcome Back: {user.username}!</h1>
@@ -95,7 +98,7 @@ const Profile: React.FC = () => {
       <div>
         <PageNotFound
           navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={'/login'}
+          navigationPath={"/login"}
           btnText="Login"
         />
       </div>
