@@ -11,7 +11,6 @@ export default function Vocabulary() {
     <>
       <Card shadow="sm" p="xl" component="a" href="#" className={classes.root}>
         <Card.Section>
-          {/* <Grammar width={550} /> */}
           <span>
             <GrammarIcon></GrammarIcon>
           </span>

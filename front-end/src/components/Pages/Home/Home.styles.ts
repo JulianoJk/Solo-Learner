@@ -1,7 +1,7 @@
 import { createStyles } from "@mantine/core";
 export const useStyles = createStyles(() => ({
   sectionContainer: {
-    width: "43%",
-
+    maxWidth: "140em",
+    minWidth: "10em",
   },
 }));
