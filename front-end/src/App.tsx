@@ -1,30 +1,29 @@
+import Index from "./components/Pages/Index/Index";
+import Home from "./components/Pages/Home/Home";
+import Login from "./components/Auth/Login/Login";
+import Register from "./components/Auth/Register/Register";
+import Profile from "./components/Pages/Profile/Profile";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
+import NavigationNormal from "./components/Header/Navigation/NavigationNormal";
+import { UserContextProvider } from "./context/UserContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./App.css";
+import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { MantineProvider } from "@mantine/core";
+import { ModalsProvider } from "@mantine/modals";
+import { NotificationsProvider } from "@mantine/notifications";
+import { useMediaQuery } from "@mantine/hooks";
+import SmallNavigation from "./components/Header/Navigation/SmallNavigation";
+import DeleteAccount from "./components/Pages/Settings/DeleteAccount/DeleteAccount";
+import SettingsComponent from "./components/Pages/Settings/Settings.component";
+import { isUserLoggedIn } from "../src/lib/dist";
+import { AccountSettingsContextProvider } from "./context/AccountSettingsContext";
+import { AppContextProvider } from "./context/AppContext";
 
-import Index from './components/Pages/Index/Index';
-import Home from './components/Pages/Home/Home';
-import Login from './components/Auth/Login/Login';
-import Register from './components/Auth/Register/Register';
-import Profile from './components/Pages/Profile/Profile';
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import NavigationNormal from './components/Header/Navigation/NavigationNormal';
-import { UserContextProvider } from './context/UserContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import './App.css';
-import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { MantineProvider } from '@mantine/core';
-import { ModalsProvider } from '@mantine/modals';
-import { NotificationsProvider } from '@mantine/notifications';
-import { useMediaQuery } from '@mantine/hooks';
-import SmallNavigation from './components/Header/Navigation/SmallNavigation';
-import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount';
-import SettingsComponent from './components/Pages/Settings/Settings.component';
-import { isUserLoggedIn } from '../src/lib/dist';
-import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
-import { AppContextProvider, AppDispatch } from './context/AppContext';
-import { useEffect } from 'react';
 const App = () => {
   const queryClient = new QueryClient();
-  const isSmallWindow = useMediaQuery('(min-width: 650px)');
+  const isSmallWindow = useMediaQuery("(min-width: 650px)");
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -32,8 +31,8 @@ const App = () => {
         withNormalizeCSS
         withGlobalStyles
         theme={{
-          activeStyles: { transform: 'scale(0.95)' },
-          colorScheme: 'light',
+          activeStyles: { transform: "scale(0.95)" },
+          colorScheme: "light",
           colors: {},
         }}
       >
@@ -68,7 +67,6 @@ const App = () => {
             </NotificationsProvider>
           </ModalsProvider>
         </AppContextProvider>
-
       </MantineProvider>
     </QueryClientProvider>
   );

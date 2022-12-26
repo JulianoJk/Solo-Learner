@@ -21,8 +21,14 @@ import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+interface ILoginProps {
+  loginImage?: React.ReactNode;
+  switchToRegister?: boolean;
+  pathToNavigateAfterLogin?: string;
+  refreshPageAfterLogin?: boolean;
+}
 
-const Login: React.FC = () => {
+const Login: React.FC<ILoginProps> = (props) => {
   const navigate: NavigateFunction = useNavigate();
   const { classes } = useStyles();
   const [errorMessage, setErrorMessage] = useState<any>();
@@ -30,7 +36,10 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const userDispatch: usersDispatchContext = useUserDispatch();
-
+  const navigateTo =
+    props.pathToNavigateAfterLogin !== undefined
+      ? props.pathToNavigateAfterLogin
+      : "/home";
   const { mutate: login, isLoading } = useMutation(loginAPI, {
     onSuccess: (data) => {
       const hasToken = !isUndefinedOrNullString(data?.token);
@@ -45,8 +54,9 @@ const Login: React.FC = () => {
           username: data?.username,
           token: data?.token,
         };
+        props.refreshPageAfterLogin === true ? window.location.reload() : "";
         userDispatch({ type: "SET_USER", user: user });
-        navigate("/home");
+        navigate(navigateTo);
       }
     },
   });
@@ -61,19 +71,16 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       login({ email, password });
+      return;
     } catch (error) {
       console.warn(error);
+      return;
     }
   };
-  useEffect(()=>{
-    
-  })
 
   return (
     <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
-      <Center>
-        <AuthImage />
-      </Center>
+      <Center>{props.loginImage ?? <AuthImage />}</Center>
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
@@ -112,16 +119,20 @@ const Login: React.FC = () => {
         {/*Display error message if any*/}
         <AlertComponent message={errorMessage} />
       </form>
-      <span className={classes.switchAuthLinks}>
-        New to Solo Learner?
-        <Anchor
-          component={Link}
-          to="/register"
-          className={classes.switchAuthLinkAnchor}
-        >
-          Create an account
-        </Anchor>
-      </span>
+      {props.switchToRegister === false ? (
+        <></>
+      ) : (
+        <span className={classes.switchAuthLinks}>
+          New to Solo Learner?
+          <Anchor
+            component={Link}
+            to="/register"
+            className={classes.switchAuthLinkAnchor}
+          >
+            Create an account
+          </Anchor>
+        </span>
+      )}
     </Box>
   );
 };
