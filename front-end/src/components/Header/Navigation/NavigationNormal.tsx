@@ -2,7 +2,15 @@ import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
 import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
-import { Button, Group, Header, Anchor, Menu, Avatar } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Header,
+  Anchor,
+  Menu,
+  Avatar,
+  UnstyledButton,
+} from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
 import {
@@ -18,13 +26,11 @@ import {
   useDocumentTitle,
   useMediaQuery,
 } from "@mantine/hooks";
-import {
-  useAccountSettingsDispatch,
-  useAccountSettingsState,
-} from "../../../context/AccountSettingsContext";
+import { useAccountSettingsDispatch } from "../../../context/AccountSettingsContext";
 import { AppDispatch } from "../../../context/AppContext";
 import { IconSettings, IconTrash } from "@tabler/icons";
 import { useLocalStorage } from "@mantine/hooks";
+import TokenExpirationChecker from "../../expireSession/TokenExpirationChecker";
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState("");
@@ -37,7 +43,7 @@ const NavigationNormal: React.FC = () => {
   const { classes } = useStyles();
   const appDisp = AppDispatch();
   const [opened, setOpened] = useState(false);
-  const ref = useClickOutside(() => setOpened(false));
+  const clickedOutsideRef = useClickOutside(() => setOpened(false));
   const [value] = useLocalStorage<any>({
     key: "user",
   });
@@ -65,10 +71,10 @@ const NavigationNormal: React.FC = () => {
   useEffect(() => {
     const token = value?.token;
     var isValidToken;
+
     if (token !== undefined) {
       isValidToken = parseJwt(token)["exp"] > Date.now() / 1000;
     }
-    console.log(isValidToken);
   });
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
@@ -76,7 +82,7 @@ const NavigationNormal: React.FC = () => {
     navigate("/");
   };
   const handleClick = () => {
-    setOpened((openedBurger) => !openedBurger);
+    setOpened((openedMenuDropdown) => !openedMenuDropdown);
   };
 
   const logoNavigation = isUserLoggedIn() ? "/home" : "/";
@@ -93,6 +99,7 @@ const NavigationNormal: React.FC = () => {
 
         {isUserLoggedIn() ? (
           <>
+            <TokenExpirationChecker />
             <Button
               component={Link}
               to="/home"
@@ -125,12 +132,9 @@ const NavigationNormal: React.FC = () => {
               closeOnItemClick={true}
             >
               <Menu.Target>
-                <Avatar
-                  onClick={handleClick}
-                  ref={ref}
-                  radius="xl"
-                  color="indigo"
-                />
+                <UnstyledButton onClick={handleClick}>
+                  <Avatar ref={clickedOutsideRef} radius="xl" color="indigo" />
+                </UnstyledButton>
               </Menu.Target>
 
               <Menu.Dropdown>

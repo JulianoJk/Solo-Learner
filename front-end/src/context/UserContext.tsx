@@ -27,8 +27,11 @@ const UserDispatchContext = React.createContext<
 const appReducer = (state: StateInterface, action: TUserAction) => {
   switch (action.type) {
     case "SET_USER":
+      // Clear any previous data
+      localStorage.clear();
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem("user", JSON.stringify(action.user));
+      localStorage.setItem("jwtToken", JSON.stringify(action.user.token));
 
       return { ...state, user: action.user };
     case "RESET_STATE":

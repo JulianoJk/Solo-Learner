@@ -43,9 +43,6 @@ const Profile: React.FC = () => {
       b = profileImageAPI(user.id);
     }
   });
-  useEffect(() => {
-    console.log(isLoading);
-  });
   if (userIsLoggedInLocal) {
     return (
       // <>
