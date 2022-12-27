@@ -114,6 +114,11 @@ router.post("/register", async (req: Request, res: Response) => {
       username = email;
     }
 
+    // Check if username is taken
+    const usernameExists = await User.findOne({ username: username });
+    if (usernameExists) {
+      return res.status(400).json({ message: "Username is already taken." });
+    }
     const salt = await bcrypt.genSalt();
     const passwordHashed = await bcrypt.hash(password, salt);
     const dateJointed = new Date().toDateString();
