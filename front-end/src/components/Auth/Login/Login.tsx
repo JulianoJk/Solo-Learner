@@ -22,10 +22,12 @@ import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 interface ILoginProps {
+  displayImage?: boolean;
   loginImage?: React.ReactNode;
   switchToRegister?: boolean;
   pathToNavigateAfterLogin?: string;
   refreshPageAfterLogin?: boolean;
+  hasBorder?: boolean;
 }
 
 const Login: React.FC<ILoginProps> = (props) => {
@@ -79,8 +81,16 @@ const Login: React.FC<ILoginProps> = (props) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
-      <Center>{props.loginImage ?? <AuthImage />}</Center>
+    <Box
+      sx={{ maxWidth: 600 }}
+      mx="auto"
+      className={props.hasBorder === false ? "" : classes.border_style}
+    >
+      {props.displayImage === false ? (
+        <></>
+      ) : (
+        <Center>{props.loginImage ?? <AuthImage />}</Center>
+      )}
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
