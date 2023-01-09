@@ -14,7 +14,7 @@ import { deleteAccountAPI } from "../../../api/api";
 import { useMutation } from "@tanstack/react-query";
 import { isUndefinedOrNullString } from "../../../../lib/dist";
 import { useStyles } from "./DeleteAccount.styles";
-import { LIGHT_NAVY } from "../../../../Theme/Theme";
+import { LIGHT_NAVY } from "../../../../Theme/Styles";
 import { useUserDispatch, useUserState } from "../../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { showNotification, hideNotification } from "@mantine/notifications";

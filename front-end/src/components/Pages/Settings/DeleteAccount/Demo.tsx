@@ -1,6 +1,6 @@
 import { Group, Button, Text } from "@mantine/core";
 import { openConfirmModal, closeAllModals } from "@mantine/modals";
-import { ERROR_DARK_COLOR, ERROR_LIGHT_COLOR } from "../../../../Theme/Theme";
+import { ERROR_DARK_COLOR, ERROR_LIGHT_COLOR } from "../../../../Theme/Styles";
 
 export default function Demo() {
   return (
@@ -29,11 +29,9 @@ export default function Demo() {
                 closeOnConfirm: true,
                 confirmProps: { color: "red" },
                 children: (
-                    
                   <Text size="sm">
                     Are you sure you want to delete your profile? This action is
-                    destructive!
-                    All you data will be deleted for ever.
+                    destructive! All you data will be deleted for ever.
                   </Text>
                 ),
                 onConfirm: closeAllModals,

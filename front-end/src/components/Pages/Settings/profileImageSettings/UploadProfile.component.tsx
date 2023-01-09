@@ -28,7 +28,7 @@ import {
   COMMON_WHITE,
   LIGHTER_GRAY,
   LIGHT_NAVY,
-} from "../../../../Theme/Theme";
+} from "../../../../Theme/Styles";
 import { AlertCircle } from "tabler-icons-react";
 import MyImageCrop from "./imageCrop/imageCropper";
 

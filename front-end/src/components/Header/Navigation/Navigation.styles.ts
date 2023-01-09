@@ -1,10 +1,10 @@
-import { createStyles } from '@mantine/core';
+import { createStyles } from "@mantine/core";
 import {
   MAIN_CHART_COLORS,
   NAVY,
   LIME_GREEN,
   TRANSPARENT_CHART_COLORS,
-} from '../../../Theme/Theme';
+} from "../../../Theme/Styles";
 
 export const useStyles = createStyles((props) => ({
   headerRoot: {
@@ -13,7 +13,7 @@ export const useStyles = createStyles((props) => ({
     marginBottom: 20,
   },
   logo: {
-    position: 'absolute',
+    position: "absolute",
     top: -40,
     left: 0,
   },
@@ -22,12 +22,12 @@ export const useStyles = createStyles((props) => ({
   },
   menuItems: {
     fontWeight: 600,
-    ':hover': {
+    ":hover": {
       color: NAVY,
     },
     paddingLeft: 10,
   },
   buttonsHeader: {
-    userSelect: 'none',
+    userSelect: "none",
   },
 }));

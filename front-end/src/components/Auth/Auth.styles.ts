@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-import { LIGHT_MENT, NAVY } from "../../Theme/Theme";
+import { LIGHT_MENT, NAVY } from "../../Theme/Styles";
 export const useStyles = createStyles(() => ({
   border_style: {
     borderWidth: "2px !important",
