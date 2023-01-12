@@ -12,7 +12,6 @@ const TokenExpirationChecker = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-      console.log(isUserLoggedIn());
 
       const decoded: any = jwtDecode(token);
       const expirationTime = decoded.exp * 1000 * 60 * 60; // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)

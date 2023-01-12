@@ -1,20 +1,20 @@
-import React, { useContext, useReducer } from 'react';
+import React, { useContext, useReducer } from "react";
 import {
   usersDispatchContext,
   IChildrenProvider,
-  AccountSettingsInterface,
   TUserAction,
-} from '../Model/models';
+} from "../Model/UserModels";
+import { AccountSettingsInterface } from "../Model/models";
 
 // Default state fot the user context
 const defaultState = {
-  profileImage: '',
+  profileImage: "",
 };
 
 const AccountSettingsStateContext = React.createContext<
   AccountSettingsInterface | undefined
 >(undefined);
-AccountSettingsStateContext.displayName = 'AccountSettingsStateContext';
+AccountSettingsStateContext.displayName = "AccountSettingsStateContext";
 const AccountSettingsDispatchContext = React.createContext<
   usersDispatchContext | undefined
 >(undefined);
@@ -22,14 +22,14 @@ const AccountSettingsDispatchContext = React.createContext<
 // Reducer function
 const appReducer = (state: AccountSettingsInterface, action: TUserAction) => {
   switch (action.type) {
-    case 'SET_PROFILE_IMAGE':
+    case "SET_PROFILE_IMAGE":
       localStorage.setItem(
-        'profile_image',
+        "profile_image",
         JSON.stringify(action.profileImage)
       );
 
       return { ...state, profileImage: action.profileImage };
-    case 'RESET_STATE':
+    case "RESET_STATE":
       // Clear user from localStorage
       localStorage.clear();
       return { ...defaultState };
@@ -54,7 +54,7 @@ const useAccountSettingsState = (): AccountSettingsInterface => {
   const context = useContext(AccountSettingsStateContext);
   if (context === undefined) {
     throw new Error(
-      'useUserState must be used within AccountSettingsStateContext'
+      "useUserState must be used within AccountSettingsStateContext"
     );
   }
   return context;
@@ -65,7 +65,7 @@ const useAccountSettingsDispatch = (): usersDispatchContext => {
   const context = useContext(AccountSettingsDispatchContext);
   if (context === undefined) {
     throw new Error(
-      'useUserDispatch must be used within AccountSettingsDispatchContext'
+      "useUserDispatch must be used within AccountSettingsDispatchContext"
     );
   }
   return context;

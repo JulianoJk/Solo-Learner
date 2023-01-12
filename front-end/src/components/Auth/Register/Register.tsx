@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { usersDispatchContext, IUserInfoContext } from "../../../Model/models";
+import {
+  usersDispatchContext,
+  IUserInfoContext,
+} from "../../../Model/UserModels";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
   PasswordInput,

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
+import {
+  IUserInfoContext,
+  usersDispatchContext,
+} from "../../../Model/UserModels";
 
 import AuthImage from "../../../images/Auth";
 

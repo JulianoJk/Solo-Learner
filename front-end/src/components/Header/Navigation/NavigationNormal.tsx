@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useUserDispatch, useUserState } from "../../../context/UserContext";
-import { Logout, Home, User, Login, Pencil } from "tabler-icons-react";
+import { Home, User, Login, Pencil } from "tabler-icons-react";
 import {
   Button,
   Group,
@@ -27,10 +27,11 @@ import {
   useMediaQuery,
 } from "@mantine/hooks";
 import { useAccountSettingsDispatch } from "../../../context/AccountSettingsContext";
-import { AppDispatch } from "../../../context/AppContext";
+import { AppDispatch, AppState } from "../../../context/AppContext";
 import { IconSettings, IconTrash } from "@tabler/icons";
 import { useLocalStorage } from "@mantine/hooks";
 import TokenExpirationChecker from "../../expireSession/TokenExpirationChecker";
+import ModeTheme from "../../../Styles/ModeTheme";
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState("");
@@ -38,10 +39,10 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user } = useUserState();
 
   const { classes } = useStyles();
   const appDisp = AppDispatch();
+  const applicationState = AppState();
   const [opened, setOpened] = useState(false);
   const clickedOutsideRef = useClickOutside(() => setOpened(false));
   const [value] = useLocalStorage<any>({
@@ -89,6 +90,8 @@ const NavigationNormal: React.FC = () => {
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
+        <ModeTheme />
+
         <Anchor
           onClick={() => {
             navigate(logoNavigation);
