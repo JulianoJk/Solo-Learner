@@ -10,7 +10,7 @@ export const useStyles = createStyles((theme) => ({
   headerRoot: {
     backgroundImage:
       theme.colorScheme === "light"
-        ? theme.fn.linearGradient(300, " #2cf6b3", "#c1aac0")
+        ? theme.fn.linearGradient(300, " #2cf6b3", TRANSPARENT_CHART_COLORS[7])
         : theme.fn.linearGradient(300, " #161b22", "#21262d"),
 
     borderBottom: `2px solid ${MAIN_CHART_COLORS[2]}`,
@@ -27,7 +27,7 @@ export const useStyles = createStyles((theme) => ({
   menuItems: {
     fontWeight: 600,
     ":hover": {
-      color: NAVY,
+      color: "#495057",
     },
     paddingLeft: 10,
   },

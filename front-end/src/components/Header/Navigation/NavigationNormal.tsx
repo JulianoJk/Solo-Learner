@@ -165,7 +165,14 @@ const NavigationNormal: React.FC = () => {
           </>
         ) : (
           <>
-            <Button component={Link} to="/" radius="md" size="lg" uppercase>
+            <Button
+              component={Link}
+              to="/"
+              radius="md"
+              size="lg"
+              uppercase
+              variant="gradient"
+            >
               Index
             </Button>
 

@@ -34,7 +34,7 @@ export const TRANSPARENT_CHART_COLORS = [
   "#bfbfef",
   "#f9d2c4",
   "#d3efd4",
-  "##2cf6b38f",
+  "#2cf6b38f",
   "#c1aac086",
   "#de6c8397",
 ];
