@@ -22,7 +22,7 @@ const ModeTheme = () => {
   });
   const dark = colorScheme === "dark";
 
-  const handleOnClick = (value?: ColorScheme) => {
+  const handleOnClick = () => {
     setColorScheme(colorScheme === "dark" ? "light" : "dark");
     toggleColorScheme(colorScheme === "dark" ? "light" : "dark");
   };

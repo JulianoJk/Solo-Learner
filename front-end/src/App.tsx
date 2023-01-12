@@ -46,6 +46,7 @@ const App = () => {
       }
     }
   });
+
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -62,10 +63,10 @@ const App = () => {
               },
 
               body: {
-                backgroundColor:
-                  theme.colorScheme === "dark"
-                    ? theme.colors.dark[7]
-                    : theme.colors.green[4],
+                backgroundImage:
+                  theme.colorScheme === "light"
+                    ? theme.fn.linearGradient(899, " #2cf6b3", "#c1aac0")
+                    : theme.fn.linearGradient(300, " #161b22", "#21262d"),
                 color:
                   theme.colorScheme === "dark"
                     ? theme.colors.dark[0]

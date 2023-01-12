@@ -10,6 +10,7 @@ import {
   Menu,
   Avatar,
   UnstyledButton,
+  useMantineTheme,
 } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
@@ -39,6 +40,7 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const theme = useMantineTheme();
 
   const { classes } = useStyles();
   const appDisp = AppDispatch();
