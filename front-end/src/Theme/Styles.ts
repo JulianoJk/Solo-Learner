@@ -69,7 +69,8 @@ export const DEEP_BLUE = "#0981c0";
 export const LIGHT_VIOLET = "#bfbfef";
 // Mine
 export const LIGHT_MENT = "#3ED2B0";
-export const NAVY = "#112A46";
+export const LIGHT_CYAN = "#18C5DC";
+export const DARK_NAVY = "#112A46";
 export const LIGHT_NAVY = "#373B58";
 export const HEAVY_NAVY = "#25262B";
 export const LIGHT_BEIGE = "#E5D8D0";

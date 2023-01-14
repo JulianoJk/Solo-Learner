@@ -1,6 +1,6 @@
 import * as React from "react";
-import { ISvgImages } from "../Model/models";
-const GrammarIcon = (props: ISvgImages) => (
+
+const GrammarIcon = () => (
   <svg
     radius="30px"
     version="1.1"

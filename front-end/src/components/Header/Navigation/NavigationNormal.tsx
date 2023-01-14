@@ -1,6 +1,7 @@
+
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useUserDispatch, useUserState } from "../../../context/UserContext";
+import { useUserDispatch } from "../../../context/UserContext";
 import { Home, User, Login, Pencil } from "tabler-icons-react";
 import {
   Button,
@@ -10,7 +11,6 @@ import {
   Menu,
   Avatar,
   UnstyledButton,
-  useMantineTheme,
 } from "@mantine/core";
 import { useStyles } from "./Navigation.styles";
 import LogoImage from "../../../images/Logo";
@@ -28,7 +28,7 @@ import {
   useMediaQuery,
 } from "@mantine/hooks";
 import { useAccountSettingsDispatch } from "../../../context/AccountSettingsContext";
-import { AppDispatch, AppState } from "../../../context/AppContext";
+import { AppDispatch } from "../../../context/AppContext";
 import { IconSettings, IconTrash } from "@tabler/icons";
 import { useLocalStorage } from "@mantine/hooks";
 import TokenExpirationChecker from "../../expireSession/TokenExpirationChecker";
@@ -40,11 +40,9 @@ const NavigationNormal: React.FC = () => {
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const theme = useMantineTheme();
 
   const { classes } = useStyles();
   const appDisp = AppDispatch();
-  const applicationState = AppState();
   const [opened, setOpened] = useState(false);
   const clickedOutsideRef = useClickOutside(() => setOpened(false));
   const [value] = useLocalStorage<any>({
@@ -73,7 +71,7 @@ const NavigationNormal: React.FC = () => {
 
   useEffect(() => {
     const token = value?.token;
-    var isValidToken;
+    let isValidToken;
 
     if (token !== undefined) {
       isValidToken = parseJwt(token)["exp"] > Date.now() / 1000;
@@ -180,9 +178,9 @@ const NavigationNormal: React.FC = () => {
               leftIcon={<Login size={16} />}
               radius="md"
               size="lg"
+              variant="filled"
               uppercase
-              color="indigo"
-              variant="outline"
+              className={classes.singInButton}
               m={1}
               component={Link}
               to="/login"
@@ -196,7 +194,8 @@ const NavigationNormal: React.FC = () => {
               uppercase
               component={Link}
               to="/register"
-              color="green"
+              color="cyan"
+              variant="filled"
               m={1}
             >
               Register

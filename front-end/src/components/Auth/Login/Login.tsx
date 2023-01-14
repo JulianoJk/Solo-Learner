@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import {
   IUserInfoContext,

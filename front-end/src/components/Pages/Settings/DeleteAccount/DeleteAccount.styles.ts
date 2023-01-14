@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-import { LIGHT_MENT, NAVY, LIGHT_NAVY } from "../../../../Theme/Styles";
+import { LIGHT_MENT, DARK_NAVY, LIGHT_NAVY } from "../../../../Theme/Styles";
 export const useStyles = createStyles(() => ({
   modal: {
     ":root": {
@@ -13,7 +13,7 @@ export const useStyles = createStyles(() => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: NAVY,
+    color: DARK_NAVY,
   },
 
   submitButton: {

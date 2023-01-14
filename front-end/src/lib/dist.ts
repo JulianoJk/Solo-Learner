@@ -1,5 +1,3 @@
-
-import { ApplicationDispatchContext } from "../Model/models";
 import { usersDispatchContext } from "../Model/UserModels";
 
 export const isUndefinedOrNullString = (object: string | undefined | null) => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
-import { Button, Modal } from "@mantine/core";
+import { Modal } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { isUserLoggedIn } from "../../lib/dist";
 import Login from "../Auth/Login/Login";
@@ -12,7 +12,6 @@ const TokenExpirationChecker = () => {
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
-
       const decoded: any = jwtDecode(token);
       const expirationTime = decoded.exp * 1000 * 60 * 60; // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)
       const currentTime = Date.now();

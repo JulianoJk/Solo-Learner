@@ -1,6 +1,5 @@
 import { Group, Button, Text } from "@mantine/core";
 import { openConfirmModal, closeAllModals } from "@mantine/modals";
-import { ERROR_DARK_COLOR, ERROR_LIGHT_COLOR } from "../../../../Theme/Styles";
 
 export default function Demo() {
   return (

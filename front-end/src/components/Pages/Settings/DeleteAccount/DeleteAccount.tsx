@@ -8,8 +8,7 @@ import {
   Center,
   Text,
 } from "@mantine/core";
-import { Mail, Lock, Trash, MoodSad } from "tabler-icons-react";
-import { AlertComponent } from "../../../AlertComponent/AlertComponent";
+import { Mail, Lock, MoodSad } from "tabler-icons-react";
 import { deleteAccountAPI } from "../../../api/api";
 import { useMutation } from "@tanstack/react-query";
 import { isUndefinedOrNullString } from "../../../../lib/dist";
@@ -17,7 +16,7 @@ import { useStyles } from "./DeleteAccount.styles";
 import { LIGHT_NAVY } from "../../../../Theme/Styles";
 import { useUserDispatch, useUserState } from "../../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { showNotification, hideNotification } from "@mantine/notifications";
+import { showNotification } from "@mantine/notifications";
 import { openConfirmModal, closeAllModals } from "@mantine/modals";
 
 const DeleteAccount = () => {
@@ -34,7 +33,6 @@ const DeleteAccount = () => {
   const {
     mutate: deleteAccount,
     isLoading,
-    status,
   } = useMutation(deleteAccountAPI, {
     onSuccess: (data) => {
       showNotification({

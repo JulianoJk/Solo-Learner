@@ -7,16 +7,13 @@ import { Route, BrowserRouter, Routes } from "react-router-dom";
 import NavigationNormal from "./components/Header/Navigation/NavigationNormal";
 import { UserContextProvider } from "./context/UserContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
+// import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   AppShell,
-  ButtonProps,
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
-  useMantineColorScheme,
-  useMantineTheme,
 } from "@mantine/core";
 import { ModalsProvider } from "@mantine/modals";
 import { NotificationsProvider } from "@mantine/notifications";
@@ -28,7 +25,10 @@ import { checkIfPageIsReload, isUserLoggedIn } from "../src/lib/dist";
 import { AccountSettingsContextProvider } from "./context/AccountSettingsContext";
 import { AppContextProvider } from "./context/AppContext";
 import { useEffect, useState } from "react";
-import ModeTheme from "./Styles/ModeTheme";
+import {
+  AvatarDefaultProps,
+  ButtonDefaultProps,
+} from "./Styles/DefaultPropsStyles.styles";
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
@@ -46,14 +46,6 @@ const App = () => {
       }
     }
   });
-  const ButtonDefaultProps: Partial<ButtonProps> = {
-    size: "xs",
-    color: "red",
-    gradient:
-      colorScheme === "light"
-        ? { from: "#0CA678", to: "blue", deg: 60 }
-        : { from: "#59A5D8", to: "#84D2F6", deg: 35 },
-  };
 
   return (
     <ColorSchemeProvider
@@ -73,8 +65,13 @@ const App = () => {
               body: {
                 backgroundImage:
                   theme.colorScheme === "light"
-                    ? theme.fn.linearGradient(899, " #2cf6b3", "#c1aac0")
-                    : theme.fn.linearGradient(300, " #161b22", "#21262d"),
+                    ? theme.fn.linearGradient(7, "#F8BBD0", "#64B5F6")
+                    : // Liked it 1
+                      // theme.fn.linearGradient(45, "#F8BBD0", "#64B5F6")
+                      // From ChatGTP
+                      // theme.fn.linearGradient(899, "#4CAF50", "#2196F3")
+                      theme.fn.linearGradient(7, "#1A1B1E"),
+
                 color:
                   theme.colorScheme === "dark"
                     ? theme.colors.dark[0]
@@ -84,6 +81,7 @@ const App = () => {
             }),
             components: {
               Button: { defaultProps: ButtonDefaultProps },
+              Avatar: { defaultProps: AvatarDefaultProps },
             },
             colorScheme,
           }}

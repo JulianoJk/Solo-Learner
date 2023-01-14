@@ -1,10 +1,10 @@
 import React from "react";
-import { useUserState } from "../../../context/UserContext";
+
 import Grammar from "../LearningUnits/Grammar/Grammar";
 import Theory from "../LearningUnits/Theory/Theory";
 import Vocabulary from "../LearningUnits/Vocabulary/Vocabulary";
 import { useStyles } from "./Home.styles";
-import { Center, Grid, Group, SimpleGrid } from "@mantine/core";
+import { Center, SimpleGrid } from "@mantine/core";
 
 const Home: React.FC = () => {
   const { classes } = useStyles();
@@ -17,7 +17,7 @@ const Home: React.FC = () => {
         className={classes.sectionContainer}
       >
         <Grammar />
-        <Grammar />
+        <Theory />
         <Grammar />
         <Vocabulary />
       </SimpleGrid>

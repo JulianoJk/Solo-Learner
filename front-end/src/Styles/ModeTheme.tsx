@@ -7,8 +7,6 @@ import {
 } from "@mantine/core";
 import { IconSun, IconMoonStars } from "@tabler/icons";
 import { useLocalStorage } from "@mantine/hooks";
-import { useEffect } from "react";
-import { checkIfPageIsReload } from "../lib/dist";
 
 const ModeTheme = () => {
   const theme = useMantineTheme();

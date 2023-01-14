@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 import { COMMON_BLACK } from "../../Theme/Styles";
-export const useStyles = createStyles((props) => ({
+export const useStyles = createStyles(() => ({
   alertBox: {
     margin: 10,
     border: `1px solid ${COMMON_BLACK}`,
