@@ -6,7 +6,7 @@ export const useStyles = createStyles((theme) => ({
     backgroundImage:
       theme.colorScheme === "light"
         ? theme.fn.linearGradient(1, "#8CB6EA")
-        : theme.fn.linearGradient(300, " #161b22", "#21262d"),
+        : theme.fn.linearGradient(300, "#161b22", "#21262d"),
 
     borderBottom:
       theme.colorScheme === "light"
@@ -31,20 +31,5 @@ export const useStyles = createStyles((theme) => ({
   },
   buttonsHeader: {
     userSelect: "none",
-  },
-  singInButton: {
-    background:
-      theme.colorScheme === "light"
-        ? "#15AABF"
-        : theme.fn.linearGradient(133, "#3f51b5", "#5c6bc0", " #7e57c2"),
-    "&:hover": {
-      root: {
-        backgroundColor: "#00acee",
-        border: 0,
-        height: 72,
-        paddingLeft: 20,
-        paddingRight: 20,
-      },
-    },
   },
 }));

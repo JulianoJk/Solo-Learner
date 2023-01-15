@@ -30,12 +30,12 @@ const Profile: React.FC = () => {
       staleTime: Infinity,
     }
   );
-  var b;
-  useEffect(() => {
-    if (user.id !== undefined) {
-      b = profileImageAPI(user.id);
-    }
-  });
+  // var b;
+  // useEffect(() => {
+  //   if (user.id !== undefined) {
+  //     b = profileImageAPI(user.id);
+  //   }
+  // });
   if (userIsLoggedInLocal) {
     return (
       // <>
@@ -68,9 +68,12 @@ const Profile: React.FC = () => {
       // </>
       <div>
         <Avatar radius="xl" color="indigo" />
+        {/* <Avatar radius="xl" color="indigo" src={
+            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
+          } /> */}
         <h1> Welcome Back: {user.username}!</h1>
         <h2>Date joined:{userProfileData}</h2>
-        <img src={b} />
+        {/* <img src={b} /> */}
       </div>
     );
   } else {

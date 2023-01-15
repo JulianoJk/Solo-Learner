@@ -4,7 +4,6 @@ export const ButtonDefaultProps: Partial<ButtonProps> = {
   size: "xs",
 
   sx: (theme) => ({
-    // theme.fn.linearGradient(133, "#3f51b5", "#5c6bc0", " #7e57c2"),
     "&:hover": {
       color:
         theme.colorScheme === "light"
@@ -13,9 +12,7 @@ export const ButtonDefaultProps: Partial<ButtonProps> = {
       backgroundColor: theme.fn.darken(theme.colors.cyan[9], 0.05),
     },
     color: theme.colorScheme === "light" ? "#F5F5F5" : "#F5F5F5",
-    backgroundColor: theme.colorScheme === "light" ? "#0CA678" : "#7e57c2",
-
-    // ? { from: "#0CA678", to: "blue", deg: 60 }
+    backgroundColor: theme.colorScheme === "light" ? "#0CA678" : "#7e57c2", //"#3f51b5", "#5c6bc0", " #7e57c2"
   }),
 };
 

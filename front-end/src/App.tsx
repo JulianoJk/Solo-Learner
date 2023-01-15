@@ -69,13 +69,8 @@ const App = () => {
               body: {
                 backgroundImage:
                   theme.colorScheme === "light"
-                    ? theme.fn.linearGradient(7, "#F8BBD0", "#64B5F6")
-                    : // Liked it 1
-                      // theme.fn.linearGradient(45, "#F8BBD0", "#64B5F6")
-                      // From ChatGTP
-                      // theme.fn.linearGradient(899, "#4CAF50", "#2196F3")
-                      theme.fn.linearGradient(7, "#1A1B1E"),
-
+                    ? theme.fn.linearGradient(7, "#F8BBD0", "#64B5F6") //OR "#4CAF50", "#2196F3"
+                    : theme.fn.linearGradient(7, "#1A1B1E"),
                 color:
                   theme.colorScheme === "dark"
                     ? theme.colors.dark[0]
@@ -118,7 +113,7 @@ const App = () => {
                           />
 
                           <Route
-                            path="/grammar"
+                            path="/learning-units/grammar"
                             element={<Grammar />}
                           />
                           <Route
@@ -135,7 +130,7 @@ const App = () => {
                           />
 
                           <Route
-                            path="/settings"
+                            path="/learning-units/settings"
                             element={<SettingsComponent />}
                           />
 

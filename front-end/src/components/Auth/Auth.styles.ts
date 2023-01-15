@@ -29,15 +29,13 @@ export const useStyles = createStyles(() => ({
   inputLabels: {
     fontWeight: 700,
   },
-  dividerLabel: {
-    color: DARK_NAVY,
-  },
   switchAuthLinks: {
     alignItems: "center",
     padding: 10,
   },
   switchAuthLinkAnchor: {
     marginLeft: 8,
+    textDecoration: 'underline'
   },
   imageContainer: {
     borderRadius: "50%",
