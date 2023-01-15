@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-import { LIGHT_MENT, NAVY } from "../../Theme/Theme";
+import { LIGHT_MENT, DARK_NAVY } from "../../Theme/Styles";
 export const useStyles = createStyles(() => ({
   border_style: {
     borderWidth: "2px !important",
@@ -16,7 +16,6 @@ export const useStyles = createStyles(() => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    color: NAVY,
   },
 
   submitButton: {
@@ -30,15 +29,13 @@ export const useStyles = createStyles(() => ({
   inputLabels: {
     fontWeight: 700,
   },
-  dividerLabel: {
-    color: NAVY,
-  },
   switchAuthLinks: {
     alignItems: "center",
     padding: 10,
   },
   switchAuthLinkAnchor: {
     marginLeft: 8,
+    textDecoration: 'underline'
   },
   imageContainer: {
     borderRadius: "50%",

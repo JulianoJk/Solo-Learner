@@ -20,8 +20,6 @@ const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
   const accountSettingsDispatch = useAccountSettingsDispatch();
 
-  let userIsLoggedInLocal = localStorage.getItem("user");
-
   const { classes } = useStyles();
   const userDispatch = useUserDispatch();
 

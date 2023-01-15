@@ -1,4 +1,4 @@
-import { Card, Image, Text } from "@mantine/core";
+import { Card, Text } from "@mantine/core";
 import React from "react";
 import GrammarIcon from "../../../../images/GrammarIcon";
 

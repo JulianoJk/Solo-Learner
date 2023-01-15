@@ -4,7 +4,7 @@ import {
   IChildrenProvider,
   StateInterface,
   TUserAction,
-} from "../Model/models";
+} from "../Model/UserModels";
 
 // Default state fot the user context
 const defaultState: StateInterface = {
@@ -28,7 +28,8 @@ const appReducer = (state: StateInterface, action: TUserAction) => {
   switch (action.type) {
     case "SET_USER":
       // Clear any previous data
-      localStorage.clear();
+      localStorage.removeItem("user");
+      localStorage.removeItem("jwtToken");
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem("user", JSON.stringify(action.user));
       localStorage.setItem("jwtToken", JSON.stringify(action.user.token));
@@ -36,7 +37,8 @@ const appReducer = (state: StateInterface, action: TUserAction) => {
       return { ...state, user: action.user };
     case "RESET_STATE":
       // Clear user from localStorage
-      localStorage.clear();
+      localStorage.removeItem("user");
+      localStorage.removeItem("jwtToken");
       return { ...defaultState };
     default:
       return { ...state };
