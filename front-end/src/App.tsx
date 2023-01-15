@@ -29,6 +29,10 @@ import {
   AvatarDefaultProps,
   ButtonDefaultProps,
 } from "./Styles/DefaultPropsStyles.styles";
+import Grammar from "./components/Pages/LearningUnits/Grammar/Grammar";
+import Theory from "./components/Pages/LearningUnits/Theory/Theory";
+import { Vocabulary } from "tabler-icons-react";
+import Exercises from "./components/Pages/LearningUnits/Exercises/Exercises";
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
@@ -112,6 +116,24 @@ const App = () => {
                             path="/delete-account"
                             element={<DeleteAccount />}
                           />
+
+                          <Route
+                            path="/grammar"
+                            element={<Grammar />}
+                          />
+                          <Route
+                            path="/learning-units/theory"
+                            element={<Theory />}
+                          />
+                          <Route
+                            path="/learning-units/vocabulary"
+                            element={<Vocabulary />}
+                          />
+                          <Route
+                            path="/learning-units/exercises"
+                            element={<Exercises />}
+                          />
+
                           <Route
                             path="/settings"
                             element={<SettingsComponent />}

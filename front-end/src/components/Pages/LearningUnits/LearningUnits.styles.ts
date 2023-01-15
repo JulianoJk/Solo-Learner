@@ -5,7 +5,8 @@ export const useStyles = createStyles((theme) => ({
     // borderRadius: 530,
     backgroundColor: theme.colorScheme === "light" ? "#E5D8D0" : "#21262d",
     textAlign: "center",
-    height: 300,
+    // height: 300,
+    height: "25em",
   },
   sectionContainer: {
     width: 500,
