@@ -27,7 +27,7 @@ const LearningUnits = () => {
               <Text weight={500} size="lg" mt="md">
                 Theory
               </Text>
-              <DictionaryIcon width={250} height={299} />
+              <DictionaryIcon />
             </span>
           </Card.Section>
         </Card>
@@ -41,7 +41,7 @@ const LearningUnits = () => {
         >
           <Card.Section>
             <span>
-              <GrammarIcon></GrammarIcon>
+              <GrammarIcon />
             </span>
           </Card.Section>
 
