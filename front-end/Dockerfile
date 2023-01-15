@@ -14,9 +14,6 @@ RUN npm i @tabler/icons
 
 RUN yarn 
 
-VOLUME /usr/src/app
-VOLUME /usr/src/app/node_modules
-
 COPY . .
 
 # exposes port 3000

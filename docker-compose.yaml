@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   mongodb:
     image: mongo:latest # use the latest image.
@@ -27,27 +27,28 @@ services:
     depends_on:
       - mongodb
   front-end:
-      build: ./front-end
-      container_name: front_end_c
-      ports:
-        - '3000:3000'
-      stdin_open: true
-      tty: true
-      volumes:
-       - ./front-end:/app/front_end
-       - /usr/src/app/front-end/node_modules
+    build: ./front-end
+    container_name: front_end_c
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+
+    volumes:
+      - ./front-end:/usr/src/app/front_end
+      - /usr/src/app/front-end/node_modules
   back-end:
     build: ./back-end
     container_name: back_end_c
     volumes:
+      - ./back-end:/usr/src/app/back-end
       - /usr/src/app/back-end/node_modules
-      - /app/back-end/node_modules
     ports:
-    # Port that can be accessed from outside docker or anywhere
-        - '3001:3001'
+      # Port that can be accessed from outside docker or anywhere
+      - "3001:3001"
     env_file:
       - ./back-end/.env
 
   # Opem mongodb in bash
   # docker exec -it mongodb bash
-  # mongosh "mongodb://localhost:27017" --username root --password root --authenticationDatabase admin%  
+  # mongosh "mongodb://localhost:27017" --username root --password root --authenticationDatabase admin%
