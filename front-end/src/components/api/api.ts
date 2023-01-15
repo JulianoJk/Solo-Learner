@@ -97,7 +97,7 @@ export const deleteAccountAPI = async ({
   }
 };
 
-export const profileImageAPI = async (
+export const getProfileImageAPI = async (
   id: string
 ): Promise<IUserInfoContext | undefined> => {
   try {

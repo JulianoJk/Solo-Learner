@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useUserState } from "../../../context/UserContext";
 import { IUserInfoContext } from "../../../Model/UserModels";
-import { profileAPI, profileImageAPI } from "../../api/api";
+import { profileAPI, getProfileImageAPI } from "../../api/api";
 
 import PageNotFound from "../pageNotFound/PageNotFound";
 
