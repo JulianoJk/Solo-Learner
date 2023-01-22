@@ -19,16 +19,19 @@ import {
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
-
 import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
 import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+import { notificationAlert } from "../../notifications/NotificationAlert";
+import { IconCheck } from "@tabler/icons";
+
 interface ILoginProps {
   loginImage?: React.ReactNode;
   switchToRegister?: boolean;
   pathToNavigateAfterLogin?: string;
   refreshPageAfterLogin?: boolean;
+  showNotification?: boolean;
 }
 
 const Login: React.FC<ILoginProps> = (props) => {
@@ -60,6 +63,16 @@ const Login: React.FC<ILoginProps> = (props) => {
         props.refreshPageAfterLogin === true ? window.location.reload() : "";
         userDispatch({ type: "SET_USER", user: user });
         navigate(navigateTo);
+        props.showNotification === false ? (
+          <></>
+        ) : (
+          notificationAlert({
+            title: "Login Successful!",
+            message: "Great to see you! You're all set to go.",
+            icon: <IconCheck size={18} />,
+            iconColor: "teal",
+          })
+        );
       }
     },
   });

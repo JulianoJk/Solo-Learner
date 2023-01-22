@@ -14,7 +14,7 @@ const Index: React.FC = () => {
           <LogoImage height="100%" width="100%" />
         </div>
         <div>
-          <em>Learn foreign languages with fun!</em>
+          <p className={classes.quote}>Learn foreign languages with fun!</p>
         </div>
       </Stack>
     </Center>

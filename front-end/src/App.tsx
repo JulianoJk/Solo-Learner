@@ -130,7 +130,7 @@ const App = () => {
                           />
 
                           <Route
-                            path="/learning-units/settings"
+                            path="/settings"
                             element={<SettingsComponent />}
                           />
 
