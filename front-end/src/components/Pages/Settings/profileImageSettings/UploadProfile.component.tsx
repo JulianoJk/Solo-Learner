@@ -24,7 +24,7 @@ import {
   LIGHTER_GRAY,
   LIGHT_NAVY,
 } from "../../../../Theme/Styles";
-import { AlertCircle } from "tabler-icons-react";
+import { IconAlertCircle } from '@tabler/icons';
 import MyImageCrop from "./imageCrop/imageCropper";
 import { showNotification } from "@mantine/notifications";
 
@@ -132,7 +132,7 @@ const UploadProfileComponent = () => {
 
     for (let i = 0; errorsArray.length > i; i++) {
       showNotification({
-        icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+        icon: <IconAlertCircle size={18} color={COMMON_WHITE} />,
         title: <Text color={COMMON_WHITE}>{notificationTitle[i]}</Text>,
         message: <Text color={COMMON_WHITE}>{notificationMessage[i]}</Text>,
         sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },

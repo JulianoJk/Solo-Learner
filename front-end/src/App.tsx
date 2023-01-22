@@ -31,8 +31,8 @@ import {
 } from "./Styles/DefaultPropsStyles.styles";
 import Grammar from "./components/Pages/LearningUnits/Grammar/Grammar";
 import Theory from "./components/Pages/LearningUnits/Theory/Theory";
-import { Vocabulary } from "tabler-icons-react";
 import Exercises from "./components/Pages/LearningUnits/Exercises/Exercises";
+import Vocabulary from "./components/Pages/LearningUnits/Vocabulary/Vocabulary";
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
