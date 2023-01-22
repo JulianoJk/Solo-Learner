@@ -20,6 +20,8 @@ import { registerAPI } from "../../api/api";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { useMutation } from "@tanstack/react-query";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+import { notificationAlert } from "../../notifications/NotificationAlert";
+import { IconCheck } from "@tabler/icons";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -48,6 +50,12 @@ const Register: React.FC = () => {
         };
         userDispatch({ type: "SET_USER", user: user });
         navigate("/home");
+        notificationAlert({
+          title: "Successful registration!",
+          message: "Congratulations! Your account has been created. ",
+          icon: <IconCheck size={18} />,
+          iconColor: "teal",
+        });
       }
     },
   });
