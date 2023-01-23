@@ -21,10 +21,15 @@ import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
 import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
-import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
 import { notificationAlert } from "../../notifications/NotificationAlert";
-import { IconCheck } from "@tabler/icons";
+import {
+  IconCheck,
+  IconMail,
+  IconLock,
+  IconEye,
+  IconEyeOff,
+} from "@tabler/icons";
 
 interface ILoginProps {
   loginImage?: React.ReactNode;
@@ -100,7 +105,7 @@ const Login: React.FC<ILoginProps> = (props) => {
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
-          icon={<Mail />}
+          icon={<IconMail />}
           required
           type="email"
           label={<span className={classes.inputLabels}>Email:</span>}
@@ -111,14 +116,14 @@ const Login: React.FC<ILoginProps> = (props) => {
         />
 
         <PasswordInput
-          icon={<Lock />}
+          icon={<IconLock />}
           required
           label={<span className={classes.inputLabels}>Password:</span>}
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
           visibilityToggleIcon={({ reveal }) =>
-            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+            reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
           autoComplete="on"
         />

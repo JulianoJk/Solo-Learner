@@ -1,6 +1,7 @@
 import React from "react";
 import { Alert, Center, Text, Title } from "@mantine/core";
-import { AlertCircle } from "tabler-icons-react";
+import { IconAlertCircle } from "@tabler/icons";
+
 import { useStyles } from "./Alert.styles";
 import { isUndefinedOrNullString } from "../../lib/dist";
 
@@ -16,32 +17,18 @@ export const AlertComponent: React.FC<IProps> = ({ message }) => {
       {!hasError ? (
         <>
           <Alert
-            icon={<AlertCircle strokeWidth={3} />}
+            icon={<IconAlertCircle strokeWidth={3} />}
             title={<Title order={4}>Oh no!</Title>}
-            color="red"
             radius="lg"
-            variant="filled"
             className={classes.alertBox}
           >
-            <Text weight={700} size="lg" >
+            <Text weight={500} size="lg">
               {message}
             </Text>
           </Alert>
-
-          {/* <Alert
-            icon={<AlertCircle strokeWidth={3} />}
-            title={<Title order={4}>Oh no!</Title>}
-            color="red"
-            radius="lg"
-            className={classes.alertBox}
-          >
-            <Text weight={700} size="lg">
-              {message}
-            </Text>
-          </Alert> */}
         </>
       ) : (
-        ""
+        <></>
       )}
     </Center>
   );

@@ -11,8 +11,11 @@ export const notificationAlert = (props: INotificationAlert) => {
   showNotification({
     title: props.title,
     message: props.message,
-    autoClose: 3500,
+    autoClose: 13500,
     icon: props.icon,
     color: props.iconColor,
+    style: {
+      minHeight: "7vh",
+    },
   });
 };
