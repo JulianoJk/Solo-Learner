@@ -1,6 +1,6 @@
 import { Card, Center, SimpleGrid, Text } from "@mantine/core";
 import React from "react";
-import DictionaryIcon from "../../../images/DictionaryIcon";
+import TheoryIcon from "../../../images/TheoryIcon";
 import GrammarIcon from "../../../images/GrammarIcon";
 import VocabularyImage from "../../../images/Vocabulary";
 import { useStyles } from "./LearningUnits.styles";
@@ -27,7 +27,7 @@ const LearningUnits = () => {
               <Text weight={500} size="lg" mt="md">
                 Theory
               </Text>
-              <DictionaryIcon />
+              <TheoryIcon />
             </span>
           </Card.Section>
         </Card>

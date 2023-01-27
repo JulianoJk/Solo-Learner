@@ -1,7 +1,7 @@
 import * as React from "react";
 import { SVGProps } from "react";
 
-const DictionaryIcon = (props: SVGProps<SVGSVGElement>) => (
+const TheoryIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
     id="Layer_1"
     xmlns="http://www.w3.org/2000/svg"
@@ -103,4 +103,4 @@ const DictionaryIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default DictionaryIcon;
+export default TheoryIcon;

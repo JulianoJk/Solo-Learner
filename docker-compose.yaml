@@ -33,7 +33,6 @@ services:
       - "3000:3000"
     stdin_open: true
     tty: true
-
     volumes:
       - ./front-end:/usr/src/app/front_end
       - /usr/src/app/front-end/node_modules

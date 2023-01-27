@@ -3,6 +3,7 @@ import styles from "./PageNotFound.module.css";
 import stop_sign from "../../../images/stop_sign.png";
 import { Button, Group, Image, Modal, Text, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import PageNotFoundImage from "../../../images/PageNotFoundImage";
 interface IPops {
   bodyText?: string;
   navText?: string;
@@ -36,7 +37,7 @@ const PageNotFound: React.FC<IPops> = ({
         size="lg"
         radius={30}
       >
-        <Image radius="md" src={stop_sign} alt="stop_sign" />
+        <PageNotFoundImage />
         <Text align="center">{text}</Text>
         <Group position="center">
           <Button

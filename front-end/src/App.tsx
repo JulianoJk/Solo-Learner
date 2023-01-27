@@ -33,6 +33,7 @@ import Grammar from "./components/Pages/LearningUnits/Grammar/Grammar";
 import Theory from "./components/Pages/LearningUnits/Theory/Theory";
 import Exercises from "./components/Pages/LearningUnits/Exercises/Exercises";
 import Vocabulary from "./components/Pages/LearningUnits/Vocabulary/Vocabulary";
+import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery("(min-width: 650px)");
@@ -136,7 +137,21 @@ const App = () => {
 
                           <Route
                             path="/*"
-                            element={isUserLoggedIn() ? <Home /> : <Index />}
+                            // element={isUserLoggedIn() ? <Home /> : <Index />}
+                            element={
+                              <PageNotFound
+                                navigationPath={
+                                  isUserLoggedIn() ? "home" : "index"
+                                }
+                                btnText="Go back!"
+                                bodyText="Hello"
+                              />
+                            }
+                            // bodyText?: string;
+                            // navText?: string;
+                            // statusNumber?: number;
+                            // btnText?: string;
+                            // navigationPath: string;
                           />
                         </Routes>
                       </AppShell>
