@@ -1,9 +1,15 @@
 import { useState } from "react";
-import styles from "./PageNotFound.module.css";
-import stop_sign from "../../../images/stop_sign.png";
-import { Button, Group, Image, Modal, Text, Title } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Modal,
+  Text,
+  Title,
+  useMantineTheme,
+} from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import PageNotFoundImage from "../../../images/PageNotFoundImage";
+import { useStyles } from "./PageNotFound.styles";
 interface IPops {
   bodyText?: string;
   navText?: string;
@@ -20,17 +26,26 @@ const PageNotFound: React.FC<IPops> = ({
 }) => {
   const navigate = useNavigate();
   const [opened, setOpened] = useState<boolean>(true);
+  const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   return (
     <div>
       <Modal
+        styles={{
+          modal: {
+            backgroundColor:
+              theme.colorScheme === "light" ? "#FFFFFF" : "#444654",
+            color: "red",
+          },
+        }}
         overlayOpacity={0.55}
         overlayBlur={3}
         opened={opened}
         withCloseButton={false}
         onClose={() => setOpened(true)}
         title={
-          <Title order={1} className={`${styles.nav_bg}`}>
+          <Title order={1} className={classes.navigation}>
             {navText}
           </Title>
         }
@@ -41,12 +56,11 @@ const PageNotFound: React.FC<IPops> = ({
         <Text align="center">{text}</Text>
         <Group position="center">
           <Button
-            variant="gradient"
-            gradient={{ from: "teal", to: "lime", deg: 105 }}
+            className={classes.goBackButton}
             radius="md"
             size="lg"
             fullWidth
-            onClick={() => navigate(`${navigationPath}`)}
+            onClick={() => navigate(navigationPath)}
           >
             {btnText}
           </Button>

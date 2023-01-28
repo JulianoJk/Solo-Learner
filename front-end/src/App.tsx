@@ -141,17 +141,13 @@ const App = () => {
                             element={
                               <PageNotFound
                                 navigationPath={
-                                  isUserLoggedIn() ? "home" : "index"
+                                  isUserLoggedIn() ? "/home" : "/"
                                 }
                                 btnText="Go back!"
-                                bodyText="Hello"
+                                statusNumber={404}
+                                navText="Sorry, the page you are looking for could not be found."
                               />
                             }
-                            // bodyText?: string;
-                            // navText?: string;
-                            // statusNumber?: number;
-                            // btnText?: string;
-                            // navigationPath: string;
                           />
                         </Routes>
                       </AppShell>
