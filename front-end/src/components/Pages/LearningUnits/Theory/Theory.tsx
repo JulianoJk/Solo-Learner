@@ -1,6 +1,6 @@
 import { Button, Card, Text, Title } from "@mantine/core";
 import React from "react";
-import DictionaryIcon from "../../../../images/DictionaryIcon";
+import TheoryIcon from "../../../../images/TheoryIcon";
 import { useStyles } from "../LearningUnits.styles";
 
 export default function Theory() {
