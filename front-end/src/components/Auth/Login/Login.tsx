@@ -100,7 +100,7 @@ const Login: React.FC<ILoginProps> = (props) => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.formContainer}>
       <Center>{props.loginImage ?? <AuthImage />}</Center>
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
