@@ -88,7 +88,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.formContainer}>
       <Center className={classes.imageContainer}>
         <AuthImage />
       </Center>
