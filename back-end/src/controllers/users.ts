@@ -56,7 +56,7 @@ router.post("/login", async (req: Request, res: Response) => {
     const passwordsMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordsMatch) {
-      return res.status(400).json({ message: "Invalid username or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
     const checkIfTeacher = process.env.TEACHER_EMAIL.includes(
       "niovits22@gmail.com"
@@ -174,7 +174,7 @@ router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
     if (!passwordsMatch) {
-      return res.status(400).json({ message: "Invalid username or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
     if (checkIfTokenExpired(decoded.exp)) {
@@ -277,7 +277,7 @@ router.delete("/testme/:token", async (req: Request, res: Response) => {
     }
     const passwordsMatch = await bcrypt.compare(password, user.password);
     if (!passwordsMatch) {
-      return res.status(400).json({ message: "Invalid username or password." });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
     if (checkIfTokenExpired(decoded.exp)) {

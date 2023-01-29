@@ -11,7 +11,7 @@ export const notificationAlert = (props: INotificationAlert) => {
   showNotification({
     title: props.title,
     message: props.message,
-    autoClose: 1600,
+    autoClose: 2000,
     icon: props.icon,
     color: props.iconColor,
     style: {

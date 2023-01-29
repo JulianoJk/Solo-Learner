@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
-import { Modal } from "@mantine/core";
+import { Center, Modal, Title } from "@mantine/core";
 import { useLocation } from "react-router-dom";
 import { isUserLoggedIn } from "../../lib/dist";
 import Login from "../Auth/Login/Login";
@@ -38,7 +38,12 @@ const TokenExpirationChecker = () => {
         overlayBlur={4}
         withCloseButton={false}
       >
-        <div>Session expired. Please log in again.</div>
+        <Center>
+          <Title size="md">
+            Session expired. Please log in again to continue!
+          </Title>
+        </Center>
+
         <Login
           switchToRegister={false}
           pathToNavigateAfterLogin={location.pathname}

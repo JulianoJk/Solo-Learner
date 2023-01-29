@@ -8,7 +8,7 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { openConfirmModal, closeAllModals } from "@mantine/modals";
-import { ERROR_DARK_COLOR, ERROR_LIGHT_COLOR } from "../../../../Theme/Theme";
+
 import { useForm } from "@mantine/form";
 
 export default function Demo() {
@@ -29,7 +29,6 @@ export default function Demo() {
     console.log("Deleted!");
   };
 
-  
   return (
     <Group position="center">
       <Button
