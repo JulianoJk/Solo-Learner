@@ -18,7 +18,8 @@ import { LIGHT_NAVY } from "../../../../Theme/Theme";
 import { useUserDispatch, useUserState } from "../../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { showNotification, hideNotification } from "@mantine/notifications";
-import { openConfirmModal, closeAllModals } from "@mantine/modals";
+import Demo from "./DeleteForm";
+import TryMe from "./TryMe";
 
 const DeleteAccount = () => {
   const { classes } = useStyles();
@@ -67,51 +68,7 @@ const DeleteAccount = () => {
   };
   return (
     <>
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        title="Delete account"
-        styles={{ modal: { backgroundColor: LIGHT_NAVY } }}
-      >
-        <Center>
-          <h1>
-            Are you sure you want to delete your account? If yes, please fill
-          </h1>
-        </Center>
-        <form onSubmit={handleInputs} className={classes.form}>
-          <TextInput
-            icon={<Mail />}
-            required
-            type="email"
-            label={<span className={classes.inputLabels}>Email:</span>}
-            placeholder="name@example.com"
-            value={email}
-            onChange={onEmailChange}
-            autoComplete="on"
-          />
-
-          <PasswordInput
-            icon={<Lock />}
-            required
-            label={<span className={classes.inputLabels}>Password:</span>}
-            placeholder="Password"
-            value={password}
-            onChange={onPasswordChange}
-            autoComplete="on"
-          />
-          <Button
-            color="cyan"
-            type="submit"
-            className={classes.submitButton}
-            loading={isLoading}
-            uppercase
-          >
-            Delete
-          </Button>
-        </form>
-      </Modal>
-
-      <Group position="center">
+      {/* <Group position="center">
         <Button
           onClick={() =>
             openConfirmModal({
@@ -177,7 +134,8 @@ const DeleteAccount = () => {
         >
           Delete Account
         </Button>
-      </Group>
+      </Group> */}
+      <TryMe />
     </>
   );
 };

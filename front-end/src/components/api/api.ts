@@ -132,3 +132,26 @@ export const sendImageToServerAPI = async (
     return;
   }
 };
+
+
+// test
+export const testmeAPI = async ({
+  token,
+  email,
+  password,
+}: any): Promise<IUserInfoContext | undefined> => {
+  try {
+    const response = await fetch(URL + `users/testme/${token}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+    const data: IUserInfoContext = await response.json();
+    return data;
+  } catch (error) {
+    return;
+  }
+};

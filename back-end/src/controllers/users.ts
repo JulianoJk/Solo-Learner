@@ -256,4 +256,43 @@ router.get("/profileImage/:id", async (req: any, res: any) => {
     console.log(error);
   }
 });
+
+// Test
+router.delete("/testme/:token", async (req: Request, res: Response) => {
+  try {
+    const parameters = req.params;
+
+    let decoded: IUser = jwt_decode(parameters.token);
+
+    currentUser = await User.findById(decoded.id);
+
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Mandatory fields are missing." });
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({ message: "Account not found." });
+    }
+    const passwordsMatch = await bcrypt.compare(password, user.password);
+    if (!passwordsMatch) {
+      return res.status(400).json({ message: "Invalid username or password." });
+    }
+
+    if (checkIfTokenExpired(decoded.exp)) {
+      res.json("Expired session, please login again!");
+    } else {
+      User.findOne({ _id: currentUser.id }, function (err: any, docs: any) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.status(202).json("Done!!");
+        }
+      });
+    }
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 module.exports = router;
