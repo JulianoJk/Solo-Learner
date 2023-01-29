@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
-import Resizer from "react-image-file-resizer";
 import {
   Text,
-  Image,
   Avatar,
   Modal,
   Button,
   Group,
   Title,
   SimpleGrid,
-  Center,
 } from "@mantine/core";
-import { useDropzone } from "react-dropzone";
-import { showNotification } from "@mantine/notifications";
 import { useStyles } from "./UploadProfile.styles";
 import { Dropzone } from "@mantine/dropzone";
-import { FileRejection, FileWithPath } from "react-dropzone";
+import { FileRejection } from "react-dropzone";
 import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
@@ -28,13 +23,14 @@ import {
   COMMON_WHITE,
   LIGHTER_GRAY,
   LIGHT_NAVY,
-} from "../../../../Theme/Theme";
-import { AlertCircle } from "tabler-icons-react";
+} from "../../../../Theme/Styles";
+import { IconAlertCircle } from '@tabler/icons';
 import MyImageCrop from "./imageCrop/imageCropper";
+import { showNotification } from "@mantine/notifications";
 
 const UploadProfileComponent = () => {
   const { classes } = useStyles();
-  const [img, setImg] = useState("");
+  const [img] = useState("");
   const accountSettingsDispatch = useAccountSettingsDispatch();
   const { profileImage } = useAccountSettingsState();
   const user = useUserState();
@@ -51,8 +47,8 @@ const UploadProfileComponent = () => {
   // open dialog if a file is dragged to screen and close when dragged away
   const [openModal, setOpenModal] = useState(false);
   const [files, setFiles] = useState<(File & { preview: string })[]>([]);
-  const MAX_WIDTH = 240;
-  const MAX_HEIGHT = 240;
+  // const MAX_WIDTH = 240;
+  // const MAX_HEIGHT = 240;
   // const fileChangedHandler = (file: any) => {
   //   let fileInput = false;
   //   if (file) {
@@ -136,7 +132,7 @@ const UploadProfileComponent = () => {
 
     for (let i = 0; errorsArray.length > i; i++) {
       showNotification({
-        icon: <AlertCircle size={18} color={COMMON_WHITE} />,
+        icon: <IconAlertCircle size={18} color={COMMON_WHITE} />,
         title: <Text color={COMMON_WHITE}>{notificationTitle[i]}</Text>,
         message: <Text color={COMMON_WHITE}>{notificationMessage[i]}</Text>,
         sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },

@@ -1,9 +1,9 @@
 import { createStyles } from "@mantine/core";
-import { TRANSPARENT_CHART_COLORS } from "../../../Theme/Theme";
 
 export const useStyles = createStyles(() => ({
   quote: {
     margin: 7,
+    fontStyle: "italic",
   },
   logoContainer: {
     margin: 10,

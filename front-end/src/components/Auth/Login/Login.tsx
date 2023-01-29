@@ -1,6 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import { IUserInfoContext, usersDispatchContext } from "../../../Model/models";
+import {
+  IUserInfoContext,
+  usersDispatchContext,
+} from "../../../Model/UserModels";
 
 import AuthImage from "../../../images/Auth";
 
@@ -16,11 +19,18 @@ import {
 } from "@mantine/core";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { loginAPI } from "../../api/api";
-
 import { useStyles } from "../Auth.styles";
 import { useMutation } from "@tanstack/react-query";
-import { Mail, Lock, Eye, EyeOff } from "tabler-icons-react";
 import { isUndefinedOrNullString } from "../../../lib/dist";
+import { notificationAlert } from "../../notifications/NotificationAlert";
+import {
+  IconCheck,
+  IconMail,
+  IconLock,
+  IconEye,
+  IconEyeOff,
+} from "@tabler/icons";
+
 interface ILoginProps {
   displayImage?: boolean;
   loginImage?: React.ReactNode;
@@ -28,6 +38,7 @@ interface ILoginProps {
   pathToNavigateAfterLogin?: string;
   refreshPageAfterLogin?: boolean;
   hasBorder?: boolean;
+  showNotification?: boolean;
 }
 
 const Login: React.FC<ILoginProps> = (props) => {
@@ -59,6 +70,16 @@ const Login: React.FC<ILoginProps> = (props) => {
         props.refreshPageAfterLogin === true ? window.location.reload() : "";
         userDispatch({ type: "SET_USER", user: user });
         navigate(navigateTo);
+        props.showNotification === false ? (
+          <></>
+        ) : (
+          notificationAlert({
+            title: "Login Successful!",
+            message: "Great to see you! You're all set to go.",
+            icon: <IconCheck size={18} />,
+            iconColor: "teal",
+          })
+        );
       }
     },
   });
@@ -84,7 +105,7 @@ const Login: React.FC<ILoginProps> = (props) => {
     <Box
       sx={{ maxWidth: 600 }}
       mx="auto"
-      className={props.hasBorder === false ? "" : classes.border_style}
+      className={props.hasBorder === false ? "" : classes.formContainer}
     >
       {props.displayImage === false ? (
         <></>
@@ -94,7 +115,7 @@ const Login: React.FC<ILoginProps> = (props) => {
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
-          icon={<Mail />}
+          icon={<IconMail />}
           required
           type="email"
           label={<span className={classes.inputLabels}>Email:</span>}
@@ -105,14 +126,14 @@ const Login: React.FC<ILoginProps> = (props) => {
         />
 
         <PasswordInput
-          icon={<Lock />}
+          icon={<IconLock />}
           required
           label={<span className={classes.inputLabels}>Password:</span>}
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
           visibilityToggleIcon={({ reveal }) =>
-            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+            reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
           autoComplete="on"
         />

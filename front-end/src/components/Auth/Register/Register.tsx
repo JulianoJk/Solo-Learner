@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { usersDispatchContext, IUserInfoContext } from "../../../Model/models";
+import {
+  usersDispatchContext,
+  IUserInfoContext,
+} from "../../../Model/UserModels";
 import { useUserDispatch } from "../../../context/UserContext";
 import {
   PasswordInput,
@@ -12,12 +15,19 @@ import {
 } from "@mantine/core";
 import { useStyles } from "../Auth.styles";
 import AuthImage from "../../../images/Auth";
-import { Eye, EyeOff, Lock, Mail, UserCircle } from "tabler-icons-react";
 import { registerAPI } from "../../api/api";
 import { AlertComponent } from "../../AlertComponent/AlertComponent";
 import { useMutation } from "@tanstack/react-query";
 import { isUndefinedOrNullString } from "../../../lib/dist";
-
+import { notificationAlert } from "../../notifications/NotificationAlert";
+import { IconCheck } from "@tabler/icons";
+import {
+  IconMail,
+  IconLock,
+  IconEye,
+  IconEyeOff,
+  IconUserCircle,
+} from "@tabler/icons";
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const userDispatch: usersDispatchContext = useUserDispatch();
@@ -45,6 +55,12 @@ const Register: React.FC = () => {
         };
         userDispatch({ type: "SET_USER", user: user });
         navigate("/home");
+        notificationAlert({
+          title: "Successful registration!",
+          message: "Congratulations! Your account has been created. ",
+          icon: <IconCheck size={18} />,
+          iconColor: "teal",
+        });
       }
     },
   });
@@ -72,14 +88,14 @@ const Register: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.border_style}>
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.formContainer}>
       <Center className={classes.imageContainer}>
         <AuthImage />
       </Center>
       <h1 className={classes.title}>Register</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput
-          icon={<Mail />}
+          icon={<IconMail />}
           type="email"
           value={email}
           id="email"
@@ -93,7 +109,7 @@ const Register: React.FC = () => {
 
         <TextInput
           type="text"
-          icon={<UserCircle />}
+          icon={<IconUserCircle />}
           label={
             <span className={classes.inputLabels}>Username (optional):</span>
           }
@@ -105,7 +121,7 @@ const Register: React.FC = () => {
         />
 
         <PasswordInput
-          icon={<Lock />}
+          icon={<IconLock />}
           value={password}
           placeholder="Password"
           onChange={handlePassword}
@@ -114,11 +130,11 @@ const Register: React.FC = () => {
           autoComplete="on"
           label={<span className={classes.inputLabels}>Password:</span>}
           visibilityToggleIcon={({ reveal }) =>
-            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+            reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
         />
         <PasswordInput
-          icon={<Lock />}
+          icon={<IconLock />}
           required
           value={passwordRepeat}
           placeholder="Confirm Password"
@@ -127,7 +143,7 @@ const Register: React.FC = () => {
           autoComplete="on"
           label={<span className={classes.inputLabels}>Confirm Password:</span>}
           visibilityToggleIcon={({ reveal }) =>
-            reveal ? <EyeOff size={16} /> : <Eye size={16} />
+            reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
         />
 

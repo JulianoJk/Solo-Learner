@@ -2,3 +2,5 @@
 uploads
 .idea
 database-data/*
+yarn-error.log
+package-lock.json
