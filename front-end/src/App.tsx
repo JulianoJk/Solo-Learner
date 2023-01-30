@@ -25,10 +25,7 @@ import { checkIfPageIsReload, isUserLoggedIn } from "../src/lib/dist";
 import { AccountSettingsContextProvider } from "./context/AccountSettingsContext";
 import { AppContextProvider } from "./context/AppContext";
 import { useEffect, useState } from "react";
-import {
-  AvatarDefaultProps,
-  ButtonDefaultProps,
-} from "./Styles/DefaultPropsStyles.styles";
+import { AvatarDefaultProps } from "./Styles/DefaultPropsStyles.styles";
 import Grammar from "./components/Pages/LearningUnits/Grammar/Grammar";
 import Theory from "./components/Pages/LearningUnits/Theory/Theory";
 import Exercises from "./components/Pages/LearningUnits/Exercises/Exercises";
@@ -80,7 +77,6 @@ const App = () => {
               },
             }),
             components: {
-              Button: { defaultProps: ButtonDefaultProps },
               Avatar: { defaultProps: AvatarDefaultProps },
             },
             colorScheme,

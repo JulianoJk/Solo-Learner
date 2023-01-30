@@ -6,12 +6,13 @@ interface INotificationAlert {
   status?: string;
   icon?: React.ReactNode;
   iconColor?: string;
+  closeAfter?: number;
 }
 export const notificationAlert = (props: INotificationAlert) => {
   showNotification({
     title: props.title,
     message: props.message,
-    autoClose: 2000,
+    autoClose: props.closeAfter ?? 2000,
     icon: props.icon,
     color: props.iconColor,
     style: {

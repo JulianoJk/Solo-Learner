@@ -1,141 +1,84 @@
-import React, { useState } from "react";
-import {
-  Modal,
-  Button,
-  Group,
-  PasswordInput,
-  TextInput,
-  Center,
-  Text,
-} from "@mantine/core";
-import { Mail, Lock, MoodSad } from "tabler-icons-react";
-import { deleteAccountAPI } from "../../../api/api";
-import { useMutation } from "@tanstack/react-query";
-import { isUndefinedOrNullString } from "../../../../lib/dist";
-import { useStyles } from "./DeleteAccount.styles";
-import { LIGHT_NAVY } from "../../../../Theme/Styles";
-import { useUserDispatch, useUserState } from "../../../../context/UserContext";
-import { useNavigate } from "react-router-dom";
-import TryMe from "./TryMe";
+import { Button, Text, useMantineTheme } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
 import { showNotification } from "@mantine/notifications";
-import { openConfirmModal, closeAllModals } from "@mantine/modals";
+import { useMutation } from "@tanstack/react-query";
+import { NavigateFunction, useNavigate } from "react-router-dom";
+import { ERROR_DARK_COLOR } from "../../../../Theme/Styles";
+import { notificationAlert } from "../../../notifications/NotificationAlert";
+import { useStyles } from "./DeleteAccount.styles";
 
-
-const DeleteAccount = () => {
+export default function Demo() {
   const { classes } = useStyles();
-  const [opened, setOpened] = useState(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { user } = useUserState();
-  const navigate = useNavigate();
-  const userDispatch = useUserDispatch();
+  const theme = useMantineTheme();
+  const navigate: NavigateFunction = useNavigate();
 
-  const id = !isUndefinedOrNullString(user.id) ? user.id : undefined;
+  // const { mutate: deleteAccount, isLoading } = useMutation(loginAPI, {
+  //   onSuccess: (data) => {
+  //     const hasToken = !isUndefinedOrNullString(data?.token);
 
-  const {
-    mutate: deleteAccount,
-    isLoading,
-  } = useMutation(deleteAccountAPI, {
-    onSuccess: (data) => {
-      showNotification({
-        id: "deletedAccount",
-        message: data,
-        autoClose: 6000,
-        // style: { backgroundColor: LIGHT_NAVY, border: "1px solid black" },
-        className: classes.notification,
-        icon: <MoodSad />,
-      });
+  //     if (typeof data?.message === "string" || data instanceof String) {
+  //       setErrorMessage(data?.message);
+  //     } else if (!hasToken) {
+  //       setErrorMessage("Something went wrong...");
+  //     } else if (hasToken) {
+  //       const user: IUserInfoContext = {
+  //         id: data?.id,
+  //         username: data?.username,
+  //         token: data?.token,
+  //       };
+  //       props.refreshPageAfterLogin === true ? window.location.reload() : "";
+  //       userDispatch({ type: "SET_USER", user: user });
+  //       navigate(navigateTo);
+  //       props.showNotification === false ? (
+  //         <></>
+  //       ) : (
+  //         notificationAlert({
+  //           title: "Login Successful!",
+  //           message: "Great to see you! You're all set to go.",
+  //           icon: <IconCheck size={18} />,
+  //           iconColor: "teal",
+  //         })
+  //       );
+  //     }
+  //   },
+  // });
 
-      userDispatch({ type: "RESET_STATE" });
-      navigate("/");
-    },
-  });
-  const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value);
+  const handlConfirm = () => {
+    notificationAlert({
+      title: "Account Deleted.",
+      message: "We're sorry to see you go:(. ",
+      iconColor: "red",
+      closeAfter: 3000,
+    });
+    navigate("/home");
   };
-  const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
-    setPassword(e.target.value);
-  };
+  const openDeleteModal = () =>
+    openConfirmModal({
+      title: "Delete your profile",
+      centered: true,
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete your profile? This action is
+          destructive and you will have to contact support to restore your data.
+        </Text>
+      ),
+      labels: { confirm: "Delete account", cancel: "No don't delete it" },
+      confirmProps: {
+        sx: {
+          backgroundColor: theme.colors.red[7],
+          "&: hover": {
+            backgroundColor: ERROR_DARK_COLOR,
+          },
+        },
+      },
 
-  const handleInputs = async (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
-    try {
-      deleteAccount({ id, email, password });
-    } catch (error) {
-      console.warn(error);
-    }
-  };
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => handlConfirm(),
+    });
+
   return (
-    <>
-      {/* <Group position="center">
-        <Button
-          onClick={() =>
-            openConfirmModal({
-              title: "Are you sure?",
-              closeOnConfirm: false,
-              labels: { confirm: "Yes, proceed", cancel: "Cancel" },
-              color: "red",
-
-              children: (
-                <Text size="md">
-                  Are you sure you want to delete your account? This action is
-                  invertible!
-                </Text>
-              ),
-              onConfirm: () =>
-                openConfirmModal({
-                  title: "Delete Account",
-                  labels: {
-                    confirm: "Delete Account",
-                    cancel: "No, don't delete it",
-                  },
-                  closeOnConfirm: true,
-                  confirmProps: { color: "red" },
-                  children: (
-                    <>
-                      <TextInput
-                        icon={<Mail />}
-                        required
-                        type="email"
-                        label={
-                          <span className={classes.inputLabels}>Email:</span>
-                        }
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={onEmailChange}
-                        autoComplete="on"
-                      />
-
-                      <PasswordInput
-                        icon={<Lock />}
-                        required
-                        label={
-                          <span className={classes.inputLabels}>Password:</span>
-                        }
-                        placeholder="Password"
-                        value={password}
-                        onChange={onPasswordChange}
-                        autoComplete="on"
-                      />
-
-                      <Text size="sm">
-                        Are you sure you want to delete your profile? This
-                        action is destructive!
-                      </Text>
-                    </>
-                  ),
-                  onConfirm: closeAllModals,
-                  onCancel: closeAllModals,
-                }),
-            })
-          }
-          color={"red"}
-        >
-          Delete Account
-        </Button>
-      </Group> */}
-      <TryMe />
-    </>
+    <Button onClick={openDeleteModal} className={classes.buttonContainer}>
+      Delete account
+    </Button>
   );
-};
-export default DeleteAccount;
+}

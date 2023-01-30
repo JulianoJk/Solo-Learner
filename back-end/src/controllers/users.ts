@@ -58,9 +58,8 @@ router.post("/login", async (req: Request, res: Response) => {
     if (!passwordsMatch) {
       return res.status(400).json({ message: "Invalid email or password." });
     }
-    const checkIfTeacher = process.env.TEACHER_EMAIL.includes(
-      "niovits22@gmail.com"
-    );
+    const checkIfTeacher = process.env.TEACHER_EMAIL.includes(email);
+
     //Assign the token to the user
     jwt.sign(
       { id: user._id },
