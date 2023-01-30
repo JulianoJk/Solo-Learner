@@ -7,9 +7,14 @@ export interface AccountSettingsInterface {
 export interface IAppStateContext {
   isSmallWindow: boolean;
   appTheme: ColorScheme;
+  handleModal: boolean;
 }
 
 export type TApplicationAction =
+  | {
+      type: "SET_MODAL_STATE";
+      handleModal: boolean;
+    }
   | {
       type: "IS_SMALL_WINDOW";
       isSmallWindow: boolean;

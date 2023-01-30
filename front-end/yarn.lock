@@ -1172,9 +1172,9 @@
   resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.8.0.tgz"
   integrity sha512-G/YwXTkv7Den9mXDO7AhLWkE3q+I92B+VqAE+dYG4NGPaHZGvt3G8Q0p9vmE+sq7rTGphUbAvmQ9YpbfMQGGlA==
 
-"@emotion/react@^11.10.4", "@emotion/react@^11.10.5":
+"@emotion/react@^11.10.5":
   version "11.10.5"
-  resolved "https://registry.npmjs.org/@emotion/react/-/react-11.10.5.tgz"
+  resolved "https://registry.yarnpkg.com/@emotion/react/-/react-11.10.5.tgz#95fff612a5de1efa9c0d535384d3cfa115fe175d"
   integrity sha512-TZs6235tCJ/7iF6/rvTaOH4oxQg2gMAcdHemjwLKIjKz4rRuYe1HJ2TQJKnAcRAfOUDdU8XoDadCe1rl72iv8A==
   dependencies:
     "@babel/runtime" "^7.18.3"
@@ -1510,7 +1510,14 @@
     "@radix-ui/react-scroll-area" "1.0.0"
     react-textarea-autosize "8.3.4"
 
-"@mantine/dates@^5.5.5", "@mantine/dates@^5.6.3":
+"@mantine/dates@^5.10.2":
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-5.10.2.tgz#c4c9dc99fc2699becf58117d393eb666a0a368a4"
+  integrity sha512-9ufXdaK8sCy6z5cUWqP8JzX9GBRQs5F+1YOJZOOE2gg6pvNSeab0fhin1rhKifEO+ufO07gE+2SElRmWG3tMhA==
+  dependencies:
+    "@mantine/utils" "5.10.2"
+
+"@mantine/dates@^5.6.3":
   version "5.6.3"
   resolved "https://registry.npmjs.org/@mantine/dates/-/dates-5.6.3.tgz"
   integrity sha512-VDKbUPNVI+WB7/ejfErOGmXK486fJG7SQz+TU+YiVa6OzMfBfYyvw28rGR4Jg83EdwugZ3loKBhUVsRrAVyAoA==
@@ -1525,7 +1532,15 @@
     "@mantine/utils" "5.6.3"
     react-dropzone "14.2.3"
 
-"@mantine/form@^5.5.5", "@mantine/form@^5.6.3":
+"@mantine/form@^5.10.2":
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/@mantine/form/-/form-5.10.2.tgz#26bb6eac9b20e93e0431545323ca2a7642f66522"
+  integrity sha512-06r/TykBRc8nxOEdeklMyIbNLWYQCRvUwGU1JLKHCKh/VLv2M0dyAFmCk8r6vnVoopbzYowHL3mcS0/qTT7PjA==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+    klona "^2.0.5"
+
+"@mantine/form@^5.6.3":
   version "5.6.3"
   resolved "https://registry.npmjs.org/@mantine/form/-/form-5.6.3.tgz"
   integrity sha512-FMOoDdcZp6LaBOAbTF35QRqCU/FMYHmyMZv2oOOZh8/9C27/fI40YgTp2BLMzNRMnuVZSDWoLecudXVaPuDYLA==
@@ -1543,14 +1558,29 @@
   resolved "https://registry.npmjs.org/@mantine/hooks/-/hooks-5.6.3.tgz"
   integrity sha512-de3Fm7Z2MrWms8Ah/YbG9fr6CLLtAfz5LCwtqnRXgOetqbu38ZERYNi7TMFxnhGdZko90QjdIpiQRJBsfVax+g==
 
-"@mantine/modals@^5.5.5", "@mantine/modals@^5.6.3":
+"@mantine/modals@^5.10.2":
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/@mantine/modals/-/modals-5.10.2.tgz#0558e65bfcd0501645765713048e845e5efe81a0"
+  integrity sha512-hKd9UqHd2m+Qn5+5yMJmiFeykR+rdVlD3j9MxfjStu//NCCRSrnbj+3kgpyKn6zvZy8UV3Erg7wDzP56PgjldQ==
+  dependencies:
+    "@mantine/utils" "5.10.2"
+
+"@mantine/modals@^5.6.3":
   version "5.6.3"
   resolved "https://registry.npmjs.org/@mantine/modals/-/modals-5.6.3.tgz"
   integrity sha512-eiS3nuDzltkHBryNL5XYyPXKUOo4kB2K5hhR/yHbzoWshM8nqDS+VpNaf6iABMzK/Bb+6OnjrQCSoMjN2rP//Q==
   dependencies:
     "@mantine/utils" "5.6.3"
 
-"@mantine/notifications@^5.5.5", "@mantine/notifications@^5.6.3":
+"@mantine/notifications@^5.10.2":
+  version "5.10.2"
+  resolved "https://registry.yarnpkg.com/@mantine/notifications/-/notifications-5.10.2.tgz#4e9477a08f0b0bfa423ee6206dda368d07edad98"
+  integrity sha512-JO92oVLRVbeD1Lz3zFlAFaK8uCWxev4R+RfhuAf3/MJgMLMvHT44hAJtnRUYC4jqnW0pweOKKflyQvnTZM7/Hg==
+  dependencies:
+    "@mantine/utils" "5.10.2"
+    react-transition-group "4.4.2"
+
+"@mantine/notifications@^5.6.3":
   version "5.6.3"
   resolved "https://registry.npmjs.org/@mantine/notifications/-/notifications-5.6.3.tgz"
   integrity sha512-YL+gqKDCakQ2NCh16w8zkwxD80xUTCmpLEwYXvJoLZix0jmt62pmwG+n/kIcZL4Bn04YYmLROOXKga1aiIFF/A==
@@ -3796,10 +3826,15 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-dayjs@^1.11.5, dayjs@^1.11.6:
+dayjs@^1.11.6:
   version "1.11.6"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.6.tgz"
   integrity sha512-zZbY5giJAinCG+7AGaw0wIhNZ6J8AhWuSXKvuc1KAyMiRsvGQWqh4L+MomvhdAYjN+lqvVCMq1I41e3YHvXkyQ==
+
+dayjs@^1.11.7:
+  version "1.11.7"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
+  integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
 
 debug@2.6.9, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"

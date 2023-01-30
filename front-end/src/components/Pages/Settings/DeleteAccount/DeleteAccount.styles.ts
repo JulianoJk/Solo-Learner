@@ -8,4 +8,7 @@ export const useStyles = createStyles((theme) => ({
       backgroundColor: ERROR_DARK_COLOR,
     },
   },
+  inputLabels: {
+    fontWeight: 700,
+  },
 }));
