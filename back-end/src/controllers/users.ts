@@ -184,6 +184,7 @@ router.delete("/deleteAccount/:token", async (req: Request, res: Response) => {
           console.log(err);
         } else {
           res.status(202).json("We're sorry to see you go :(. ");
+          console.log("We're sorry to see you go :(.");
         }
       });
     }

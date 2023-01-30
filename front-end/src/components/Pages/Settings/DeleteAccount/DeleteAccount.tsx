@@ -19,12 +19,19 @@ import { AppDispatch } from "../../../../context/AppContext";
 import { useState } from "react";
 import { notificationAlert } from "../../../notifications/NotificationAlert";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { isUndefinedOrNullString } from "../../../../lib/dist";
+import { deleteAccountAPI } from "../../../api/api";
+import { IUserInfoContext } from "../../../../Model/UserModels";
+import { useUserDispatch, useUserState } from "../../../../context/UserContext";
 
 export default function MantineDemo() {
   const navigate: NavigateFunction = useNavigate();
   const appDispatch = AppDispatch();
   const [errorMessage, setErrorMessage] = useState<any>();
   const [opened, setOpened] = useState<boolean>(false);
+  const { user } = useUserState();
+  const userDispatch = useUserDispatch();
 
   const form = useForm({
     initialValues: {
@@ -40,18 +47,42 @@ export default function MantineDemo() {
       ),
     },
   });
+  const logOut = () => {
+    notificationAlert({
+      title: "Account Deleted.",
+      message: "We're sorry to see you go:(. ",
+      iconColor: "red",
+      closeAfter: 3000,
+    });
+    userDispatch({ type: "RESET_STATE" });
+    navigate("/");
+  };
+  const { mutate: deleteAccount, isLoading } = useMutation(deleteAccountAPI, {
+    onSuccess: (data) => {
+      const hasToken = !isUndefinedOrNullString(data?.token);
 
-  const handleConfirm = () => {
-    if (form.validate().hasErrors) {
+      if (typeof data?.message === "string" || data instanceof String) {
+        setErrorMessage(data?.message);
+      } else if (!hasToken) {
+        setErrorMessage("Something went wrong...");
+      } else {
+        logOut();
+      }
+    },
+  });
+
+  const handleInputs = async (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    try {
+      const { email, password } = form.values;
+      const { token } = user;
+      if (!form.validate().hasErrors) {
+        deleteAccount({ token, email, password });
+      }
       return;
-    } else {
-      notificationAlert({
-        title: "Account Deleted.",
-        message: "We're sorry to see you go:(. ",
-        iconColor: "red",
-        closeAfter: 3000,
-      });
-      navigate("/home");
+    } catch (error) {
+      console.warn(error);
+      return;
     }
   };
   return (
@@ -69,32 +100,29 @@ export default function MantineDemo() {
         overlayBlur={4}
         withCloseButton={false}
       >
-        <Box
-          component="form"
-          maw={400}
-          mx="auto"
-          onSubmit={form.onSubmit(() => {})}
-        >
-          <TextInput
-            label="Email: "
-            placeholder="test@email.com"
-            withAsterisk
-            mt="md"
-            {...form.getInputProps("email")}
-          />
-          <PasswordInput
-            label="Password: "
-            withAsterisk
-            {...form.getInputProps("password")}
-          />
-          <Group position="right" mt="md">
-            <Button onClick={() => setOpened(false)} color={"gray"}>
-              No don't delete it
-            </Button>
-            <Button type="submit" color={"red"} onClick={() => handleConfirm()}>
-              Confirm
-            </Button>
-          </Group>
+        <Box component="form" maw={400} mx="auto">
+          <form onSubmit={handleInputs}>
+            <TextInput
+              label="Email: "
+              placeholder="test@email.com"
+              withAsterisk
+              mt="md"
+              {...form.getInputProps("email")}
+            />
+            <PasswordInput
+              label="Password: "
+              withAsterisk
+              {...form.getInputProps("password")}
+            />
+            <Group position="right" mt="md">
+              <Button onClick={() => setOpened(false)} color={"gray"}>
+                No don't delete it
+              </Button>
+              <Button type="submit" color={"red"}>
+                Confirm
+              </Button>
+            </Group>
+          </form>
         </Box>
       </Modal>
       <Group position="center">

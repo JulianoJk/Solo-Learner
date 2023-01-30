@@ -75,14 +75,13 @@ export const saveProfileImageAPI = async ({
     return;
   }
 };
-
 export const deleteAccountAPI = async ({
-  id,
+  token,
   email,
   password,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(URL + `users/deleteAccount/${id}`, {
+    const response = await fetch(URL + `users/deleteAccount/${token}`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -133,7 +132,6 @@ export const sendImageToServerAPI = async (
   }
 };
 
-
 // test
 export const testmeAPI = async ({
   token,
@@ -142,8 +140,8 @@ export const testmeAPI = async ({
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch(URL + `users/testme/${token}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: email,
         password: password,
