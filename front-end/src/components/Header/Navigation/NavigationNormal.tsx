@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useUserDispatch } from "../../../context/UserContext";
-import { Home, User, Login, Pencil } from "tabler-icons-react";
+import {Link, useLocation} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
+import {useUserDispatch} from '../../../context/UserContext'
+import {Home, User, Login, Pencil} from 'tabler-icons-react'
 import {
   Button,
   Group,
@@ -10,82 +10,78 @@ import {
   Menu,
   Avatar,
   UnstyledButton,
-} from "@mantine/core";
-import { useStyles } from "./Navigation.styles";
-import LogoImage from "../../../images/Logo";
+} from '@mantine/core'
+import {useStyles} from './Navigation.styles'
+import LogoImage from '../../../images/Logo'
 import {
   capitalString,
   saveUserAfterReload,
   isUserLoggedIn,
   saveProfileImageAfterReload,
   parseJwt,
-} from "../../../lib/dist";
-import { useEffect, useState } from "react";
-import {
-  useClickOutside,
-  useDocumentTitle,
-  useMediaQuery,
-} from "@mantine/hooks";
-import { useAccountSettingsDispatch } from "../../../context/AccountSettingsContext";
-import { AppDispatch } from "../../../context/AppContext";
-import { IconSettings, IconTrash } from "@tabler/icons";
-import { useLocalStorage } from "@mantine/hooks";
-import TokenExpirationChecker from "../../expireSession/TokenExpirationChecker";
-import ModeTheme from "../../../Styles/ModeTheme";
+} from '../../../lib/dist'
+import {useEffect, useState} from 'react'
+import {useClickOutside, useDocumentTitle, useMediaQuery} from '@mantine/hooks'
+import {useAccountSettingsDispatch} from '../../../context/AccountSettingsContext'
+import {AppDispatch} from '../../../context/AppContext'
+import {IconSettings, IconTrash} from '@tabler/icons'
+import {useLocalStorage} from '@mantine/hooks'
+import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker'
+import ModeTheme from '../../../Styles/ModeTheme'
 
 const NavigationNormal: React.FC = () => {
-  const [documentTitle, setDocumentTitle] = useState("");
-  const accountSettingsDispatch = useAccountSettingsDispatch();
-  const userDispatch = useUserDispatch();
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const [documentTitle, setDocumentTitle] = useState('')
+  const accountSettingsDispatch = useAccountSettingsDispatch()
+  const userDispatch = useUserDispatch()
+  const navigate = useNavigate()
+  const {pathname} = useLocation()
 
-  const { classes } = useStyles();
-  const appDisp = AppDispatch();
-  const [opened, setOpened] = useState(false);
-  const clickedOutsideRef = useClickOutside(() => setOpened(false));
+  const {classes} = useStyles()
+  const appDisp = AppDispatch()
+  const [opened, setOpened] = useState(false)
+  const clickedOutsideRef = useClickOutside(() => setOpened(false))
   const [value] = useLocalStorage<any>({
-    key: "user",
-  });
+    key: 'user',
+  })
 
-  const isSmallWindow: any = useMediaQuery("(min-width: 650px)");
+  const isSmallWindow: any = useMediaQuery('(min-width: 650px)')
   useEffect(() => {
-    appDisp({ type: "IS_SMALL_WINDOW", isSmallWindow: isSmallWindow });
-  }, [isSmallWindow]);
+    appDisp({type: 'IS_SMALL_WINDOW', isSmallWindow: isSmallWindow})
+  }, [isSmallWindow])
 
-  useDocumentTitle(documentTitle);
+  useDocumentTitle(documentTitle)
   useEffect(() => {
-    const titles = capitalString(pathname.replace("/", ""));
-    if (pathname !== "/") {
-      setDocumentTitle(titles + " - Solo Learner");
+    const titles = capitalString(pathname.replace('/', ''))
+    if (pathname !== '/') {
+      setDocumentTitle(titles + ' - Solo Learner')
     } else {
-      setDocumentTitle("Solo Learner");
+      setDocumentTitle('Solo Learner')
     }
-  }, [pathname]);
+  }, [pathname])
 
   useEffect(() => {
-    saveUserAfterReload(userDispatch);
-    saveProfileImageAfterReload(accountSettingsDispatch);
-  }, []);
+    saveUserAfterReload(userDispatch)
+    saveProfileImageAfterReload(accountSettingsDispatch)
+  }, [])
 
   useEffect(() => {
-    const token = value?.token;
-    let isValidToken;
+    const token = value?.token
+    let isValidToken
 
     if (token !== undefined) {
-      isValidToken = parseJwt(token)["exp"] > Date.now() / 1000;
+      isValidToken = parseJwt(token)['exp'] > Date.now() / 1000
     }
-  });
+  })
   // After logout, clear the context for the user and tasks, then navigate to index
   const logOut = () => {
-    userDispatch({ type: "RESET_STATE" });
-    navigate("/");
-  };
+    userDispatch({type: 'RESET_STATE'})
+    navigate('/')
+  }
   const handleClick = () => {
-    setOpened((openedMenuDropdown) => !openedMenuDropdown);
-  };
+    setOpened(openedMenuDropdown => !openedMenuDropdown)
+  }
 
-  const logoNavigation = isUserLoggedIn() ? "/home" : "/";
+  const logoNavigation = isUserLoggedIn() ? '/home' : '/'
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
@@ -93,7 +89,7 @@ const NavigationNormal: React.FC = () => {
 
         <Anchor
           onClick={() => {
-            navigate(logoNavigation);
+            navigate(logoNavigation)
           }}
         >
           <LogoImage width={170} height={160} className={classes.logo} />
@@ -142,7 +138,7 @@ const NavigationNormal: React.FC = () => {
               <Menu.Dropdown>
                 <Menu.Item
                   icon={<IconSettings size={14} />}
-                  onClick={() => navigate("/settings")}
+                  onClick={() => navigate('/settings')}
                 >
                   Settings
                 </Menu.Item>
@@ -151,8 +147,8 @@ const NavigationNormal: React.FC = () => {
                   color="red"
                   icon={<IconTrash size={14} />}
                   onClick={() => {
-                    logOut();
-                    navigate("/");
+                    logOut()
+                    navigate('/')
                   }}
                 >
                   SIGN-OUT
@@ -202,6 +198,6 @@ const NavigationNormal: React.FC = () => {
         )}
       </Group>
     </Header>
-  );
-};
-export default NavigationNormal;
+  )
+}
+export default NavigationNormal

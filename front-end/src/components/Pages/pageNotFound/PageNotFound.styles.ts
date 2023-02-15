@@ -1,21 +1,21 @@
-import { createStyles } from "@mantine/core";
+import {createStyles} from '@mantine/core'
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles(theme => ({
   modal: {
-    background: "red",
+    background: 'red',
   },
   goBackButton: {
     backgroundColor:
-      theme.colorScheme === "light"
-        ? "#85BCE0 !important"
-        : "#194461 !important",
+      theme.colorScheme === 'light'
+        ? '#85BCE0 !important'
+        : '#194461 !important',
 
-    color: "#FFFF",
+    color: '#FFFF',
   },
   navigation: {
-    padding: "7px",
+    padding: '7px',
     color:
-      theme.colorScheme === "light" ? "#000000 !important" : "white !important",
-    borderRadius: "10px",
+      theme.colorScheme === 'light' ? '#000000 !important' : 'white !important',
+    borderRadius: '10px',
   },
-}));
+}))

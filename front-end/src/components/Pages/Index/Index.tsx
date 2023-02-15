@@ -1,10 +1,10 @@
-import { Center, Stack } from "@mantine/core";
-import LogoImage from "../../../images/Logo";
-import { useStyles } from "./Index.styles";
+import {Center, Stack} from '@mantine/core'
+import LogoImage from '../../../images/Logo'
+import {useStyles} from './Index.styles'
 // import { showNotification, hideNotification } from "@mantine/notifications";
 
 const Index: React.FC = () => {
-  const { classes } = useStyles();
+  const {classes} = useStyles()
 
   return (
     <Center>
@@ -18,7 +18,7 @@ const Index: React.FC = () => {
         </div>
       </Stack>
     </Center>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index

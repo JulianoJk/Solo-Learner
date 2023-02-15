@@ -1,26 +1,26 @@
-import { createStyles } from "@mantine/core";
-import { LIGHT_MENT, DARK_NAVY, LIGHT_NAVY } from "../../../../Theme/Styles";
+import {createStyles} from '@mantine/core'
+import {LIGHT_MENT, DARK_NAVY, LIGHT_NAVY} from '../../../../Theme/Styles'
 export const useStyles = createStyles(() => ({
   modal: {
-    ":root": {
-      backgroundColor: "black",
+    ':root': {
+      backgroundColor: 'black',
     },
   },
   form: {
     padding: 10,
   },
   title: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     color: DARK_NAVY,
   },
 
   submitButton: {
-    display: "inline-block",
-    width: "100%",
+    display: 'inline-block',
+    width: '100%',
     marginTop: 10,
-    "&:hover": {
+    '&:hover': {
       backgroundColor: LIGHT_MENT,
     },
   },
@@ -28,9 +28,9 @@ export const useStyles = createStyles(() => ({
     fontWeight: 700,
   },
   notification: {
-    ":root": {
+    ':root': {
       backgroundColor: LIGHT_NAVY,
-      border: "1px solid black",
+      border: '1px solid black',
     },
   },
-}));
+}))

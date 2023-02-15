@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.18.6",
     "@emotion/react": "^11.10.4",
     "@mantine/core": "^5.10.2",
     "@mantine/dates": "^5.5.5",
@@ -22,9 +26,16 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.13",
     "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
     "dayjs": "^1.11.5",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "husky": "^8.0.3",
     "jwt-decode": "^3.1.2",
     "mantine-flagpack": "^1.0.1",
+    "npm-check-updates": "^16.7.4",
+    "prettier": "^2.8.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-easy-crop": "^4.6.3",
@@ -32,14 +43,18 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "^5.0.0",
     "tabler-icons-react": "^1.49.0",
-    "typescript": "^4.6.2",
+    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
+    "check-types": "tsc",
+    "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|tsx)\"",
+    "format": "yarn prettier -- --write",
+    "validate": "yarn format && yarn check-types && yarn prettier && yarn lint",
+    "prepare": "cd .. && husky install front-end/.husky"
   },
   "browserslist": {
     "production": [

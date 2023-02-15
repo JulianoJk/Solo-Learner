@@ -1,8 +1,8 @@
-import { Title } from "@mantine/core";
-import React from "react";
+import {Title} from '@mantine/core'
+import React from 'react'
 
-import DeleteAccount from "./DeleteAccount/DeleteAccount";
-import UploadProfileComponent from "./profileImageSettings/UploadProfile.component";
+import DeleteAccount from './DeleteAccount/DeleteAccount'
+import UploadProfileComponent from './profileImageSettings/UploadProfile.component'
 
 const SettingsComponent = () => {
   return (
@@ -11,7 +11,7 @@ const SettingsComponent = () => {
       <UploadProfileComponent />
       <DeleteAccount />
     </>
-  );
-};
+  )
+}
 
-export default SettingsComponent;
+export default SettingsComponent
