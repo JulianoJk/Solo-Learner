@@ -1,16 +1,8 @@
-import {
-  useForm,
-  isNotEmpty,
-  isEmail,
-  isInRange,
-  hasLength,
-  matches,
-} from '@mantine/form'
+import {useForm, isEmail, hasLength} from '@mantine/form'
 import {
   Button,
   Group,
   TextInput,
-  NumberInput,
   Box,
   PasswordInput,
   Modal,
@@ -22,7 +14,6 @@ import {NavigateFunction, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import {isUndefinedOrNullString} from '../../../../lib/dist'
 import {deleteAccountAPI} from '../../../api/api'
-import {IUserInfoContext} from '../../../../Model/UserModels'
 import {useUserDispatch, useUserState} from '../../../../context/UserContext'
 
 export default function MantineDemo() {
@@ -58,7 +49,7 @@ export default function MantineDemo() {
     navigate('/')
   }
   const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
-    onSuccess: data => {
+    onSuccess: (data: any) => {
       const hasToken = !isUndefinedOrNullString(data?.token)
 
       if (typeof data?.message === 'string' || data instanceof String) {

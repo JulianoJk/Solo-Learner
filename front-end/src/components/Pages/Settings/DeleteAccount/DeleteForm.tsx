@@ -7,54 +7,45 @@ import {
   PasswordInput,
   Code,
   Modal,
-} from "@mantine/core";
-import { openConfirmModal, closeAllModals } from "@mantine/modals";
-import {
-  IconCheck,
-  IconMail,
-  IconLock,
-  IconEye,
-  IconEyeOff,
-} from "@tabler/icons";
-import { isEmail, isInRange, useForm } from "@mantine/form";
-import { notificationAlert } from "../../../notifications/NotificationAlert";
-import { NavigateFunction, useNavigate } from "react-router-dom";
-import { useStyles } from "./DeleteAccount.styles";
-import { useState } from "react";
-import MantineDemo from "./DeleteAccount";
+} from '@mantine/core'
+import {openConfirmModal, closeAllModals} from '@mantine/modals'
+import {IconCheck, IconMail, IconLock, IconEye, IconEyeOff} from '@tabler/icons'
+import {isEmail, isInRange, useForm} from '@mantine/form'
+import {notificationAlert} from '../../../notifications/NotificationAlert'
+import {NavigateFunction, useNavigate} from 'react-router-dom'
+import {useStyles} from './DeleteAccount.styles'
+import {useState} from 'react'
+import MantineDemo from './DeleteAccount'
 
 export default function Demo() {
-  const navigate: NavigateFunction = useNavigate();
-  const { classes } = useStyles();
-  const [opened, setOpened] = useState<boolean>(false);
+  const navigate: NavigateFunction = useNavigate()
+  const {classes} = useStyles()
+  const [opened, setOpened] = useState<boolean>(false)
 
   const form = useForm({
     initialValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
 
     validate: {
       email: isEmail(),
-      password: isInRange(
-        { min: 6, max: 30 },
-        "Value must be between 10 and 20"
-      ),
+      password: isInRange({min: 6, max: 30}, 'Value must be between 10 and 20'),
     },
-  });
+  })
 
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    form.setFieldValue("email", e.target.value);
-  };
+    form.setFieldValue('email', e.target.value)
+  }
   const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
-    form.setFieldValue("password", e.target.value);
-  };
+    form.setFieldValue('password', e.target.value)
+  }
 
   const handleInputs = (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    console.log(form.values);
-  };
+    console.log(form.values)
+  }
   const formContainer = (
     <>
       <form onSubmit={handleInputs}>
@@ -65,23 +56,23 @@ export default function Demo() {
           label={<span className={classes.inputLabels}>Email:</span>}
           placeholder="Email"
           // onChange={onEmailChange}
-          {...form.getInputProps("email")}
+          {...form.getInputProps('email')}
         />
         <PasswordInput
           icon={<IconLock />}
           required
           label={<span className={classes.inputLabels}>Password:</span>}
           placeholder="Password"
-          visibilityToggleIcon={({ reveal }) =>
+          visibilityToggleIcon={({reveal}) =>
             reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
           autoComplete="on"
           // onChange={onPasswordChange}
-          {...form.getInputProps("password")}
+          {...form.getInputProps('password')}
         />
       </form>
     </>
-  );
+  )
 }
 
 // openConfirmModal({

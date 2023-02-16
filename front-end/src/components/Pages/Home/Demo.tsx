@@ -1,4 +1,4 @@
-import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
+import {Card, Image, Text, Badge, Button, Group} from '@mantine/core'
 
 export function Demo() {
   return (
@@ -27,5 +27,5 @@ export function Demo() {
         Book classic tour now
       </Button>
     </Card>
-  );
+  )
 }
