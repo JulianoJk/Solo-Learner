@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import {Button, Group, Modal, Text, Title, useMantineTheme} from '@mantine/core'
 import {useNavigate} from 'react-router-dom'
 import PageNotFoundImage from '../../../images/PageNotFoundImage'

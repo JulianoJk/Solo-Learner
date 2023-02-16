@@ -1,3 +1,4 @@
+import React from 'react'
 import {Center, Stack} from '@mantine/core'
 import LogoImage from '../../../images/Logo'
 import {useStyles} from './Index.styles'

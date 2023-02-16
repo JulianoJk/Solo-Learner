@@ -20,6 +20,7 @@ const AccountSettingsDispatchContext = React.createContext<
 >(undefined)
 
 // Reducer function
+
 const appReducer = (state: AccountSettingsInterface, action: TUserAction) => {
   switch (action.type) {
     case 'SET_PROFILE_IMAGE':

@@ -5,7 +5,7 @@ import {useState} from 'react'
 import LogoImage from '../../../images/Logo'
 import {useNavigate} from 'react-router-dom'
 import {useClickOutside} from '@mantine/hooks'
-import {useEffect} from 'react'
+import React, {useEffect} from 'react'
 import {Home} from 'tabler-icons-react'
 import {useAccountSettingsDispatch} from '../../../context/AccountSettingsContext'
 import {

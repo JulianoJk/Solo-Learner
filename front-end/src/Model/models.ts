@@ -1,4 +1,6 @@
 import {ColorScheme} from '@mantine/core'
+import React from 'react'
+
 // *** State ***
 export interface AccountSettingsInterface {
   profileImage: string

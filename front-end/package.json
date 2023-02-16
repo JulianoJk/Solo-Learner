@@ -53,7 +53,8 @@
     "check-types": "tsc",
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|tsx)\"",
     "format": "yarn prettier -- --write",
-    "validate": "yarn format && yarn check-types && yarn prettier && yarn lint",
+    "check-format": "yarn prettier -- --list-different",
+    "validate": "yarn format && yarn check-format && yarn check-types && yarn lint",
     "prepare": "cd .. && husky install front-end/.husky"
   },
   "browserslist": {
