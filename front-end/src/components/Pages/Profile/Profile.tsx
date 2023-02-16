@@ -1,35 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
-import { useUserState } from "../../../context/UserContext";
-import { IUserInfoContext } from "../../../Model/UserModels";
-import { profileAPI, getProfileImageAPI } from "../../api/api";
+import React from 'react'
 
-import PageNotFound from "../pageNotFound/PageNotFound";
+import {useQuery} from '@tanstack/react-query'
+import {useUserState} from '../../../context/UserContext'
+import {IUserInfoContext} from '../../../Model/UserModels'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import {profileAPI, getProfileImageAPI} from '../../api/api'
 
-import { Avatar } from "@mantine/core";
-import { isUndefinedOrNullString } from "../../../lib/dist";
+import PageNotFound from '../pageNotFound/PageNotFound'
 
-import { useEffect } from "react";
+import {Avatar} from '@mantine/core'
+import {isUndefinedOrNullString} from '../../../lib/dist'
 
 const Profile: React.FC = () => {
-  const { user } = useUserState();
-  let userIsLoggedInLocal: any = localStorage.getItem("user");
-  const hasToken = !isUndefinedOrNullString(user.token)
-    ? user.token
-    : undefined;
-  const { data: userProfileData } = useQuery(
-    ["getProfileItems", hasToken],
+  const {user} = useUserState()
+  let userIsLoggedInLocal: any = localStorage.getItem('user')
+  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : undefined
+  const {data: userProfileData} = useQuery(
+    ['getProfileItems', hasToken],
     async () => {
       if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
-        return data;
+        const data: IUserInfoContext | undefined = await profileAPI(hasToken)
+        return data
       }
     },
     {
       // Fetch when token available
       enabled: !!user.token,
       staleTime: Infinity,
-    }
-  );
+    },
+  )
   // var b;
   // useEffect(() => {
   //   if (user.id !== undefined) {
@@ -75,17 +74,17 @@ const Profile: React.FC = () => {
         <h2>Date joined:{userProfileData}</h2>
         {/* <img src={b} /> */}
       </div>
-    );
+    )
   } else {
     return (
       <div>
         <PageNotFound
           navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={"/login"}
+          navigationPath={'/login'}
           btnText="Login"
         />
       </div>
-    );
+    )
   }
-};
-export default Profile;
+}
+export default Profile

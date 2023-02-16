@@ -1,5 +1,5 @@
-import { Card, Text } from "@mantine/core";
-import React from "react";
+import {Card, Text} from '@mantine/core'
+import React from 'react'
 
 export default function Exercises() {
   return (
@@ -12,5 +12,5 @@ export default function Exercises() {
         </Text>
       </Card>
     </>
-  );
+  )
 }

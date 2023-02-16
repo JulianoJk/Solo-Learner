@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react'
 
 const GrammarIcon = () => (
   <svg
@@ -396,6 +396,6 @@ eQAyMDIyLTEwLTE2VDE2OjQzOjQzKzAwOjAwMWdsYgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAy
 Mi0xMC0xNlQxNjo0Mzo0MyswMDowMGZyTb0AAAAASUVORK5CYII="
     />
   </svg>
-);
+)
 
-export default GrammarIcon;
+export default GrammarIcon

@@ -1,10 +1,10 @@
-import { Card, Text } from "@mantine/core";
-import React from "react";
-import VocabularyImage from "../../../../images/Vocabulary";
-import { useStyles } from "../LearningUnits.styles";
+import {Card, Text} from '@mantine/core'
+import React from 'react'
+import VocabularyImage from '../../../../images/Vocabulary'
+import {useStyles} from '../LearningUnits.styles'
 
 export default function Vocabulary() {
-  const { classes } = useStyles();
+  const {classes} = useStyles()
   return (
     <>
       <Card shadow="sm" p="xl" component="a" href="#" className={classes.root}>
@@ -16,5 +16,5 @@ export default function Vocabulary() {
         </Card.Section>
       </Card>
     </>
-  );
+  )
 }
