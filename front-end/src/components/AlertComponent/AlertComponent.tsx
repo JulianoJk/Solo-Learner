@@ -1,17 +1,17 @@
-import React from "react";
-import { Alert, Center, Text, Title } from "@mantine/core";
-import { IconAlertCircle } from "@tabler/icons";
+import React from 'react'
+import {Alert, Center, Text, Title} from '@mantine/core'
+import {IconAlertCircle} from '@tabler/icons'
 
-import { useStyles } from "./Alert.styles";
-import { isUndefinedOrNullString } from "../../lib/dist";
+import {useStyles} from './Alert.styles'
+import {isUndefinedOrNullString} from '../../lib/dist'
 
 interface IProps {
-  message: string | null | undefined;
+  message: string | null | undefined
 }
-export const AlertComponent: React.FC<IProps> = ({ message }) => {
-  const hasError: boolean = isUndefinedOrNullString(message);
+export const AlertComponent: React.FC<IProps> = ({message}) => {
+  const hasError: boolean = isUndefinedOrNullString(message)
 
-  const { classes } = useStyles();
+  const {classes} = useStyles()
   return (
     <Center>
       {!hasError ? (
@@ -31,5 +31,5 @@ export const AlertComponent: React.FC<IProps> = ({ message }) => {
         <></>
       )}
     </Center>
-  );
-};
+  )
+}

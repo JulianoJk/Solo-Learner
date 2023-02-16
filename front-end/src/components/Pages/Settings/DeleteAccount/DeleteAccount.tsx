@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from 'react'
 import {
   Modal,
   Button,
@@ -7,69 +7,66 @@ import {
   TextInput,
   Center,
   Text,
-} from "@mantine/core";
-import { Mail, Lock, MoodSad } from "tabler-icons-react";
-import { deleteAccountAPI } from "../../../api/api";
-import { useMutation } from "@tanstack/react-query";
-import { isUndefinedOrNullString } from "../../../../lib/dist";
-import { useStyles } from "./DeleteAccount.styles";
-import { LIGHT_NAVY } from "../../../../Theme/Styles";
-import { useUserDispatch, useUserState } from "../../../../context/UserContext";
-import { useNavigate } from "react-router-dom";
-import { showNotification } from "@mantine/notifications";
-import { openConfirmModal, closeAllModals } from "@mantine/modals";
+} from '@mantine/core'
+import {Mail, Lock, MoodSad} from 'tabler-icons-react'
+import {deleteAccountAPI} from '../../../api/api'
+import {useMutation} from '@tanstack/react-query'
+import {isUndefinedOrNullString} from '../../../../lib/dist'
+import {useStyles} from './DeleteAccount.styles'
+import {LIGHT_NAVY} from '../../../../Theme/Styles'
+import {useUserDispatch, useUserState} from '../../../../context/UserContext'
+import {useNavigate} from 'react-router-dom'
+import {showNotification} from '@mantine/notifications'
+import {openConfirmModal, closeAllModals} from '@mantine/modals'
 
 const DeleteAccount = () => {
-  const { classes } = useStyles();
-  const [opened, setOpened] = useState(false);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const { user } = useUserState();
-  const navigate = useNavigate();
-  const userDispatch = useUserDispatch();
+  const {classes} = useStyles()
+  const [opened, setOpened] = useState(false)
+  const [email, setEmail] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+  const {user} = useUserState()
+  const navigate = useNavigate()
+  const userDispatch = useUserDispatch()
 
-  const id = !isUndefinedOrNullString(user.id) ? user.id : undefined;
+  const id = !isUndefinedOrNullString(user.id) ? user.id : undefined
 
-  const {
-    mutate: deleteAccount,
-    isLoading,
-  } = useMutation(deleteAccountAPI, {
-    onSuccess: (data) => {
+  const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
+    onSuccess: data => {
       showNotification({
-        id: "deletedAccount",
+        id: 'deletedAccount',
         message: data,
         autoClose: 6000,
         // style: { backgroundColor: LIGHT_NAVY, border: "1px solid black" },
         className: classes.notification,
         icon: <MoodSad />,
-      });
+      })
 
-      userDispatch({ type: "RESET_STATE" });
-      navigate("/");
+      userDispatch({type: 'RESET_STATE'})
+      navigate('/')
     },
-  });
+  })
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value);
-  };
+    setEmail(e.target.value)
+  }
   const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
-    setPassword(e.target.value);
-  };
+    setPassword(e.target.value)
+  }
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      deleteAccount({ id, email, password });
+      deleteAccount({id, email, password})
     } catch (error) {
-      console.warn(error);
+      console.warn(error)
     }
-  };
+  }
   return (
     <>
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
         title="Delete account"
-        styles={{ modal: { backgroundColor: LIGHT_NAVY } }}
+        styles={{modal: {backgroundColor: LIGHT_NAVY}}}
       >
         <Center>
           <h1>
@@ -113,10 +110,10 @@ const DeleteAccount = () => {
         <Button
           onClick={() =>
             openConfirmModal({
-              title: "Are you sure?",
+              title: 'Are you sure?',
               closeOnConfirm: false,
-              labels: { confirm: "Yes, proceed", cancel: "Cancel" },
-              color: "red",
+              labels: {confirm: 'Yes, proceed', cancel: 'Cancel'},
+              color: 'red',
 
               children: (
                 <Text size="md">
@@ -126,13 +123,13 @@ const DeleteAccount = () => {
               ),
               onConfirm: () =>
                 openConfirmModal({
-                  title: "Delete Account",
+                  title: 'Delete Account',
                   labels: {
-                    confirm: "Delete Account",
+                    confirm: 'Delete Account',
                     cancel: "No, don't delete it",
                   },
                   closeOnConfirm: true,
-                  confirmProps: { color: "red" },
+                  confirmProps: {color: 'red'},
                   children: (
                     <>
                       <TextInput
@@ -171,12 +168,12 @@ const DeleteAccount = () => {
                 }),
             })
           }
-          color={"red"}
+          color={'red'}
         >
           Delete Account
         </Button>
       </Group>
     </>
-  );
-};
-export default DeleteAccount;
+  )
+}
+export default DeleteAccount

@@ -1,10 +1,10 @@
-import React, { useContext, useReducer } from "react";
+import React, {useContext, useReducer} from 'react'
 import {
   usersDispatchContext,
   IChildrenProvider,
   StateInterface,
   TUserAction,
-} from "../Model/UserModels";
+} from '../Model/UserModels'
 
 // Default state fot the user context
 const defaultState: StateInterface = {
@@ -13,40 +13,40 @@ const defaultState: StateInterface = {
     token: undefined,
     id: undefined,
   },
-};
+}
 
 const UserStateContext = React.createContext<StateInterface | undefined>(
-  undefined
-);
-UserStateContext.displayName = "UserStateContext";
+  undefined,
+)
+UserStateContext.displayName = 'UserStateContext'
 const UserDispatchContext = React.createContext<
   usersDispatchContext | undefined
->(undefined);
+>(undefined)
 
 // Reducer function
 const appReducer = (state: StateInterface, action: TUserAction) => {
   switch (action.type) {
-    case "SET_USER":
+    case 'SET_USER':
       // Clear any previous data
-      localStorage.removeItem("user");
-      localStorage.removeItem("jwtToken");
+      localStorage.removeItem('user')
+      localStorage.removeItem('jwtToken')
       // Save user to localStorage to persist keeping logged after refreshing the page
-      localStorage.setItem("user", JSON.stringify(action.user));
-      localStorage.setItem("jwtToken", JSON.stringify(action.user.token));
+      localStorage.setItem('user', JSON.stringify(action.user))
+      localStorage.setItem('jwtToken', JSON.stringify(action.user.token))
 
-      return { ...state, user: action.user };
-    case "RESET_STATE":
+      return {...state, user: action.user}
+    case 'RESET_STATE':
       // Clear user from localStorage
-      localStorage.removeItem("user");
-      localStorage.removeItem("jwtToken");
-      return { ...defaultState };
+      localStorage.removeItem('user')
+      localStorage.removeItem('jwtToken')
+      return {...defaultState}
     default:
-      return { ...state };
+      return {...state}
   }
-};
+}
 // Context Provider for the user
-const UserContextProvider = ({ children }: IChildrenProvider) => {
-  const [userState, userDispatch] = useReducer(appReducer, defaultState);
+const UserContextProvider = ({children}: IChildrenProvider) => {
+  const [userState, userDispatch] = useReducer(appReducer, defaultState)
 
   return (
     <UserStateContext.Provider value={userState}>
@@ -54,24 +54,24 @@ const UserContextProvider = ({ children }: IChildrenProvider) => {
         {children}
       </UserDispatchContext.Provider>
     </UserStateContext.Provider>
-  );
-};
+  )
+}
 // Pass the state of the user
 const useUserState = (): StateInterface => {
-  const context = useContext(UserStateContext);
+  const context = useContext(UserStateContext)
   if (context === undefined) {
-    throw new Error("useUserState must be used within UserDispatchContext");
+    throw new Error('useUserState must be used within UserDispatchContext')
   }
-  return context;
-};
+  return context
+}
 
 // Function to use the userDispatch
 const useUserDispatch = (): usersDispatchContext => {
-  const context = useContext(UserDispatchContext);
+  const context = useContext(UserDispatchContext)
   if (context === undefined) {
-    throw new Error("useUserDispatch must be used within UserDispatchContext");
+    throw new Error('useUserDispatch must be used within UserDispatchContext')
   }
-  return context;
-};
+  return context
+}
 
-export { UserContextProvider, useUserState, useUserDispatch };
+export {UserContextProvider, useUserState, useUserDispatch}
