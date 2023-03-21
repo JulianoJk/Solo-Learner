@@ -1,6 +1,7 @@
 using System.Text.Json;
 using backend;
-
+using System.Net;
+using System.Net.Mail;
 public class RegisterUser
 {
     private readonly AuthenticationUtils _authenticator;
@@ -27,8 +28,13 @@ public class RegisterUser
         string password = registerModel.Password;
         string confirmPassword = registerModel.ConfirmPassword;
 
-        if (ArePasswordsEqual(password, confirmPassword))
+        if (IsValidEmail(email) && ArePasswordsEqual(password, confirmPassword))
         {
+            // If username is null, use the email or whatever is before @ as the default username
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                username = GetDefaultUsername(email);
+            }
             // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
             var (registerStatus, messageToUser) =
                 _authenticator.AuthenticateUser(true, username, email, password);
@@ -46,7 +52,13 @@ public class RegisterUser
                 await context.Response.WriteAsJsonAsync(messageToUser);
             }
         }
-        else
+        else if (!IsValidEmail(email))
+        {
+            // Return an error response with a 400(Bad Request) status code
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync("Invalid email address.");
+        }
+        else if (!ArePasswordsEqual(password, confirmPassword))
         {
             // Return an error response with a 400(Bad Request) status code
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -54,8 +66,73 @@ public class RegisterUser
         }
     }
 
+    private bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            // If email is null or empty, it is not valid
+            return false;
+        }
+
+        if (!email.Contains("@"))
+        {
+            // If email does not contain an '@' character, it is not valid
+            return false;
+        }
+
+        var emailParts = email.Split('@');
+
+        if (emailParts.Length != 2)
+        {
+            // If email contains more than one '@' character, it is not valid
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(emailParts[0]) || string.IsNullOrWhiteSpace(emailParts[1]))
+        {
+            // If the local or domain part of the email is null or empty, it is not valid
+            return false;
+        }
+
+        if (emailParts[0].Length > 64 || emailParts[1].Length > 255)
+        {
+            // If the local or domain part of the email is too long, it is not valid
+            return false;
+        }
+
+        try
+        {
+            var mailAddress = new System.Net.Mail.MailAddress(email);
+            return true;
+        }
+        catch
+        {
+            // If the email is not in a valid format according to .NET's MailAddress class, it is not valid
+            return false;
+        }
+    }
+
+
     private bool ArePasswordsEqual(string password, string confirmPassword)
     {
-        return password == confirmPassword;
+        return !string.IsNullOrWhiteSpace(confirmPassword) && string.Equals(password, confirmPassword);
     }
+
+    // This method returns a default username based on the provided email and username.
+    private string GetDefaultUsername(string email)
+    {
+
+        if (!string.IsNullOrWhiteSpace(email))
+        {
+            int index = email.IndexOf('@');
+            if (index > 0)
+            {
+                return email.Substring(0, index);
+            }
+        }
+
+        return null;
+    }
+
+
 }

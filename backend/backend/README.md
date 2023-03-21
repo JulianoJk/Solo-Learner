@@ -28,7 +28,7 @@ This project uses the following NuGet packages:
 - Microsoft.AspNetCore
 - dotenv.net
 - MySql.Data
-
+- MailKit
 You can install them using the following command:
 
 dotnet add package <package-name>
