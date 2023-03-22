@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  db:
+    build: ./database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: myserver2
+    restart: always
+    environment:
+      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
+    ports:
+      - 3001:80
+      - 3002:443
+    volumes:
+      - ./backend:/app
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}

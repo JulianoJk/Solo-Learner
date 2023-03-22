@@ -107,3 +107,4 @@ _pkginfo.txt
 *.pdb
 .idea/
 backend/.env
+database/data/
