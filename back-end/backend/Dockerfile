@@ -1,22 +1,20 @@
-# Use the official Microsoft .NET SDK image as the build environment
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /app
 
-# Copy the project file and restore dependencies
-COPY backend.csproj ./
+COPY *.csproj ./
 RUN dotnet restore
 
-# Copy the remaining files and build the project
+RUN dotnet add package Microsoft.AspNetCore.Cors
+RUN dotnet add package Microsoft.AspNetCore
+RUN dotnet add package dotenv.net
+RUN dotnet add package MySql.Data
+RUN dotnet add package MailKit
+
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-# Use the official Microsoft ASP.NET runtime image for the production environment
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-# Expose port 80 for the application
-EXPOSE 80
-
-# Start the application when the container starts
-ENTRYPOINT ["dotnet", "backend.dll"]
+CMD ["dotnet", "backend.dll"]

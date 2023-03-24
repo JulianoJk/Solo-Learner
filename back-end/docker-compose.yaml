@@ -2,31 +2,31 @@ version: '3.9'
 
 services:
   db:
+    env_file:
+    - ./backend/.env
     build: ./database
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - 3306:3306
     volumes:
       - ./database/data:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d
-
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: myserver2
-    restart: always
-    environment:
-      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING}
     ports:
-      - 3001:80
-      - 3002:443
+      - "3001:80"
     volumes:
-      - ./backend:/app
-
+    # Same here
+      - ./backend/output:/app/output
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
   phpmyadmin:
+    env_file:
+    - ./backend/.env
     image: phpmyadmin/phpmyadmin:latest
     restart: always
     ports:
