@@ -1,5 +1,9 @@
 version: '3.9'
 
+networks:
+  my-network:
+    driver: bridge
+
 services:
   db:
     env_file:
@@ -8,11 +12,12 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-    ports:
-      - 3306:3306
     volumes:
       - ./database/data:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - my-network
+
   backend:
     build:
       context: ./backend
@@ -20,10 +25,15 @@ services:
     ports:
       - "3001:80"
     volumes:
-    # Same here
       - ./backend/output:/app/output
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      CONNECTION_STRING: "server=db;port=3306;user=root;password=root;database=clients"
+    depends_on:
+      - db
+    networks:
+      - my-network
+
   phpmyadmin:
     env_file:
     - ./backend/.env
@@ -34,3 +44,5 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - my-network
