@@ -8,14 +8,14 @@ namespace backend
         {
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowAll", builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
+                options.AddPolicy(
+                    "AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                    }
+                );
             });
-
 
             // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         }

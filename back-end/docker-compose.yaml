@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 networks:
   my-network:
@@ -7,7 +7,7 @@ networks:
 services:
   db:
     env_file:
-    - ./backend/.env
+      - .env
     build: ./database
     restart: always
     environment:
@@ -19,6 +19,8 @@ services:
       - my-network
 
   backend:
+    env_file:
+      - .env
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -28,7 +30,7 @@ services:
       - ./backend/output:/app/output
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      CONNECTION_STRING: "server=db;port=3306;user=root;password=root;database=clients"
+      CONNECTION_STRING: ${CONNECTION_STRING}
     depends_on:
       - db
     networks:
@@ -36,7 +38,7 @@ services:
 
   phpmyadmin:
     env_file:
-    - ./backend/.env
+      - .env
     image: phpmyadmin/phpmyadmin:latest
     restart: always
     ports:

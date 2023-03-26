@@ -1,5 +1,5 @@
 using MySql.Data.MySqlClient;
-using dotenv.net;
+using backend;
 
 namespace backend
 {
@@ -16,14 +16,18 @@ namespace backend
         // Constructor to set the initial state of the properties and load the connection string from .env file
         public Database()
         {
-            DotEnv.Load();
-            connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+            connectionString = ConnectionString.Value;
             AreCredentialsCorrect = false;
             MessageToUser = "";
         }
 
         // Method to initialize the database connection and perform registration or login based on 'isRegister' parameter
-        public void InitializeDatabaseConnection(bool isRegister, string email, string? username, string password)
+        public void InitializeDatabaseConnection(
+            bool isRegister,
+            string email,
+            string? username,
+            string password
+        )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
             try
@@ -71,20 +75,32 @@ namespace backend
         }
 
         // Method to save user data to the database
-        public void saveToDatabase(MySqlConnection connection, string email, string username, string password)
+        public void saveToDatabase(
+            MySqlConnection connection,
+            string email,
+            string username,
+            string password
+        )
         {
-            MySqlCommand command =
-                new MySqlCommand(
-                    $"INSERT INTO USERS(EMAIL, USERNAME,PASSWORD) VALUES('{email}', '{username}', '{password}')",
-                    connection);
+            MySqlCommand command = new MySqlCommand(
+                $"INSERT INTO USERS(EMAIL, USERNAME,PASSWORD) VALUES('{email}', '{username}', '{password}')",
+                connection
+            );
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
         }
 
         // Method to verify if the email exists and password is correct
-        public void VerifyEmailAndPassword(MySqlConnection connection, string email, string password)
+        public void VerifyEmailAndPassword(
+            MySqlConnection connection,
+            string email,
+            string password
+        )
         {
-            MySqlCommand command = new MySqlCommand($"SELECT * FROM users WHERE email = '{email}';", connection);
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT * FROM users WHERE email = '{email}';",
+                connection
+            );
             if (CheckIfEmailExists(connection, email))
             {
                 MySqlDataReader reader = command.ExecuteReader();
@@ -115,7 +131,10 @@ namespace backend
         // Method to check if an email exists in the database
         public bool CheckIfEmailExists(MySqlConnection connection, string email)
         {
-            MySqlCommand command = new MySqlCommand($"SELECT COUNT(*) FROM users WHERE email = '{email}'", connection);
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT COUNT(*) FROM users WHERE email = '{email}'",
+                connection
+            );
             int count = Convert.ToInt32(command.ExecuteScalar());
             return count > 0;
         }

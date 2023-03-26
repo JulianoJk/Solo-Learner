@@ -108,3 +108,4 @@ _pkginfo.txt
 .idea/
 backend/.env
 database/data/
+.vscode/
