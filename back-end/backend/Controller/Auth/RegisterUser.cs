@@ -2,6 +2,7 @@ using System.Text.Json;
 using backend;
 using System.Net;
 using System.Net.Mail;
+
 public class RegisterUser
 {
     private readonly AuthenticationUtils _authenticator;
@@ -17,10 +18,10 @@ public class RegisterUser
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
         // Deserialize the request body into a RegisterModel object
-        var registerModel = JsonSerializer.Deserialize<RegisterModel>(requestBody, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
+        var registerModel = JsonSerializer.Deserialize<RegisterModel>(
+            requestBody,
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+        );
 
         // Extract the email, username, password, and confirm password from the RegisterModel object
         string email = registerModel.Email;
@@ -36,8 +37,12 @@ public class RegisterUser
                 username = GetDefaultUsername(email);
             }
             // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
-            var (registerStatus, messageToUser) =
-                _authenticator.AuthenticateUser(true, username, email, password);
+            var (registerStatus, messageToUser) = _authenticator.AuthenticateUser(
+                true,
+                username,
+                email,
+                password
+            );
 
             if (registerStatus)
             {
@@ -112,16 +117,15 @@ public class RegisterUser
         }
     }
 
-
     private bool ArePasswordsEqual(string password, string confirmPassword)
     {
-        return !string.IsNullOrWhiteSpace(confirmPassword) && string.Equals(password, confirmPassword);
+        return !string.IsNullOrWhiteSpace(confirmPassword)
+            && string.Equals(password, confirmPassword);
     }
 
     // This method returns a default username based on the provided email and username.
     private string GetDefaultUsername(string email)
     {
-
         if (!string.IsNullOrWhiteSpace(email))
         {
             int index = email.IndexOf('@');
@@ -133,6 +137,4 @@ public class RegisterUser
 
         return null;
     }
-
-
 }

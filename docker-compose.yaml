@@ -1,31 +1,53 @@
-version: "3.8"
+version: "3.9"
+
+networks:
+  my-network:
+    driver: bridge
+
 services:
-  mongodb:
-    image: mongo:latest # use the latest image.
-    container_name: mongodb
-    restart: unless-stopped
-    environment: # set required env variables to access mongo
-      MONGO_INITDB_DATABASE: fromInit
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - 27017:27017
-    volumes: # optional to preserve database after container is deleted.
-      - ./database-data:/data/db
-      - ./back-end/.env:/usr/src/app/back_end/.env
-  mongo-express:
-    image: mongo-express:latest # latest image
-    container_name: mongo-express
-    restart: unless-stopped
-    ports:
-      - 8081:8081
+  db:
+    env_file:
+      - .env
+    build: ./back-end/database
+    restart: always
     environment:
-      # Login with root
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_SERVER: mongodb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./back-end/database/data:/var/lib/mysql
+      - ./back-end/database:/docker-entrypoint-initdb.d
+    networks:
+      - my-network
+
+  backend:
+    env_file:
+      - .env
+    build:
+      context: ./back-end/backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:80"
+    volumes:
+      - ./back-end/backend/output:/app/output
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      CONNECTION_STRING: ${CONNECTION_STRING}
     depends_on:
-      - mongodb
+      - db
+    networks:
+      - my-network
+
+  phpmyadmin:
+    env_file:
+      - .env
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - my-network
   front-end:
     build: ./front-end
     container_name: front_end_c
@@ -36,18 +58,3 @@ services:
     volumes:
       - ./front-end:/usr/src/app/front_end
       - /usr/src/app/front-end/node_modules
-  back-end:
-    build: ./back-end
-    container_name: back_end_c
-    volumes:
-      - ./back-end:/usr/src/app/back-end
-      - /usr/src/app/back-end/node_modules
-    ports:
-      # Port that can be accessed from outside docker or anywhere
-      - "3001:3001"
-    env_file:
-      - ./back-end/.env
-
-  # Opem mongodb in bash
-  # docker exec -it mongodb bash
-  # mongosh "mongodb://localhost:27017" --username root --password root --authenticationDatabase admin%
