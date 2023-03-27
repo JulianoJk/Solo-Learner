@@ -26,15 +26,22 @@ The following routes are available:
 - `GET /`: Returns a string "Hello user".
 - `POST /login`: Authenticates a user and returns a message indicating success or failure.
 - `POST /register`: Registers a new user and returns a message indicating success or failure.
-For `POST` routes, the request body must be in JSON format.
+  For `POST` routes, the request body must be in JSON format.
 
 ## Dependencies
 
 This project uses the following NuGet packages:
+
 - Microsoft.AspNetCore
 - dotenv.net
 - MySql.Data
 - MailKit
+- Microsoft.AspNetCore.Authentication.JwtBearer
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.EntityFrameworkCore.Tools
+- BCrypt.Net-Next
+ 
 You can install them using the following command:
 
 dotnet add package <package-name>

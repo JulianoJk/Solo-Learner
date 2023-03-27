@@ -9,6 +9,11 @@ RUN dotnet add package Microsoft.AspNetCore
 RUN dotnet add package dotenv.net
 RUN dotnet add package MySql.Data
 RUN dotnet add package MailKit
+RUN dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.0
+RUN dotnet add package Microsoft.EntityFrameworkCore
+RUN dotnet add package Microsoft.EntityFrameworkCore.Design
+RUN dotnet add package Microsoft.EntityFrameworkCore.Tools
+RUN dotnet add package BCrypt.Net-Next
 
 COPY . ./
 RUN dotnet publish -c Release -o out

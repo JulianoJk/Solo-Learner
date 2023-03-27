@@ -2,6 +2,8 @@ using System.Text.Json;
 using backend;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
 
 public class RegisterUser
 {
@@ -16,7 +18,6 @@ public class RegisterUser
     {
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
-
         // Deserialize the request body into a RegisterModel object
         var registerModel = JsonSerializer.Deserialize<RegisterModel>(
             requestBody,
@@ -36,12 +37,29 @@ public class RegisterUser
             {
                 username = GetDefaultUsername(email);
             }
+            // Generate a random salt value
+            byte[] salt = new byte[16];
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                rng.GetBytes(salt);
+            }
+
+            // Append the salt value to the password
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+            byte[] saltedPasswordBytes = new byte[passwordBytes.Length + salt.Length];
+            Array.Copy(passwordBytes, saltedPasswordBytes, passwordBytes.Length);
+            Array.Copy(salt, 0, saltedPasswordBytes, passwordBytes.Length, salt.Length);
+
+            // Hash the salted password
+            byte[] hashedPasswordBytes = new SHA256Managed().ComputeHash(saltedPasswordBytes);
+            string hashedPassword = Convert.ToBase64String(hashedPasswordBytes);
+            Console.WriteLine(hashedPassword);
             // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
             var (registerStatus, messageToUser) = _authenticator.AuthenticateUser(
                 true,
                 username,
                 email,
-                password
+                hashedPassword
             );
 
             if (registerStatus)

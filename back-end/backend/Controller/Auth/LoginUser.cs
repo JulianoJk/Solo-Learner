@@ -16,18 +16,25 @@ public class LoginUser
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
         // Deserialize the request body into a LoginModel object
-        var loginModel = JsonSerializer.Deserialize<LoginModel>(requestBody, new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
+        var loginModel = JsonSerializer.Deserialize<LoginModel>(
+            requestBody,
+            new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
+        );
 
         // Extract the email and password from the LoginModel object
         string email = loginModel.Email;
         string password = loginModel.Password;
 
+        // TODO!: Hash the password using BCrypt and compare with the hashed password in the database
+        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+
         // Call AuthenticateUser method on the AuthenticationUtils instance with register=false
-        var (loginStatus, messageToUser) =
-            _authenticator.AuthenticateUser(false, null, email, password);
+        var (loginStatus, messageToUser) = _authenticator.AuthenticateUser(
+            false,
+            null,
+            email,
+            hashedPassword
+        );
 
         if (loginStatus)
         {
