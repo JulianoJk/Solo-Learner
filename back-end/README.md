@@ -40,8 +40,7 @@ This project uses the following NuGet packages:
 - Microsoft.EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.Design
 - Microsoft.EntityFrameworkCore.Tools
-- BCrypt.Net-Next
- 
+
 You can install them using the following command:
 
 dotnet add package <package-name>

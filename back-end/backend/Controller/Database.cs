@@ -26,7 +26,8 @@ namespace backend
             bool isRegister,
             string email,
             string? username,
-            string password
+            string password,
+            byte[] salt
         )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
@@ -48,7 +49,7 @@ namespace backend
                             else
                             {
                                 //TODO!: CHANGE THIS PRINT TO RETURN IT TO USER
-                                saveToDatabase(connection, email, username, password);
+                                saveToDatabase(connection, email, username, password, salt);
                                 MessageToUser = "Registration successful!";
                             }
                         }
@@ -60,7 +61,7 @@ namespace backend
                     else
                     {
                         // Call VerifyEmailAndPassword method to check email and password
-                        VerifyEmailAndPassword(connection, email, password);
+                        CheckIfEmailExists(connection, email);
                     }
                 }
             }
@@ -79,53 +80,20 @@ namespace backend
             MySqlConnection connection,
             string email,
             string username,
-            string password
+            string password,
+            byte[] salt
         )
         {
             MySqlCommand command = new MySqlCommand(
-                $"INSERT INTO USERS(EMAIL, USERNAME,PASSWORD) VALUES('{email}', '{username}', '{password}')",
+                "INSERT INTO users (email, username, password, salt) VALUES (@email, @username, @password, @salt)",
                 connection
             );
+            command.Parameters.AddWithValue("@email", email);
+            command.Parameters.AddWithValue("@username", username);
+            command.Parameters.AddWithValue("@password", password);
+            command.Parameters.AddWithValue("@salt", salt);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
-        }
-
-        // Method to verify if the email exists and password is correct
-        public void VerifyEmailAndPassword(
-            MySqlConnection connection,
-            string email,
-            string password
-        )
-        {
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT * FROM users WHERE email = '{email}';",
-                connection
-            );
-            if (CheckIfEmailExists(connection, email))
-            {
-                MySqlDataReader reader = command.ExecuteReader();
-                bool found = false;
-                while (reader.Read())
-                {
-                    string dbPassword = reader["password"].ToString();
-                    if (password == dbPassword)
-                    {
-                        found = true;
-                        MessageToUser = "Login successful!";
-                    }
-                    else
-                    {
-                        MessageToUser = "Incorrect email or password";
-                    }
-                }
-
-                reader.Close();
-                AreCredentialsCorrect = found;
-            }
-            else
-            {
-                MessageToUser = "Incorrect email or password";
-            }
         }
 
         // Method to check if an email exists in the database
@@ -140,9 +108,49 @@ namespace backend
         }
 
         // Method to return both AreCredentialsCorrect and MessageToUser
-        public (bool, string) GetLoginStatus()
+        public (bool, string) GetRegisterStatus()
         {
             return (AreCredentialsCorrect, MessageToUser);
+        }
+
+        // Method to retrieve a user's salt value from the database
+        public byte[] GetSaltFromDatabase(MySqlConnection connection, string email)
+        {
+            connection.Open();
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT salt FROM users WHERE email = '{email}'",
+                connection
+            );
+            object salt = command.ExecuteScalar();
+            if (salt == null || salt == DBNull.Value)
+            {
+                return null;
+            }
+            else
+            {
+                connection.Close();
+                return (byte[])salt;
+            }
+        }
+
+        // Method to retrieve a user's hashedPassword value from the database
+        public string GetHashedPasswordFromDatabase(MySqlConnection connection, string email)
+        {
+            connection.Open();
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT password FROM users WHERE email = '{email}'",
+                connection
+            );
+            object password = command.ExecuteScalar();
+            if (password == null || password == DBNull.Value)
+            {
+                return null;
+            }
+            else
+            {
+                connection.Close();
+                return (string)password;
+            }
         }
     }
 }

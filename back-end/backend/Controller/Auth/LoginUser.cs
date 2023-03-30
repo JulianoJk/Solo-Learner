@@ -25,15 +25,13 @@ public class LoginUser
         string email = loginModel.Email;
         string password = loginModel.Password;
 
-        // TODO!: Hash the password using BCrypt and compare with the hashed password in the database
-        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
         // Call AuthenticateUser method on the AuthenticationUtils instance with register=false
         var (loginStatus, messageToUser) = _authenticator.AuthenticateUser(
             false,
             null,
             email,
-            hashedPassword
+            password,
+            null
         );
 
         if (loginStatus)

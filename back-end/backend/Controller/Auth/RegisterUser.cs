@@ -1,9 +1,11 @@
-using System.Text.Json;
-using backend;
-using System.Net;
-using System.Net.Mail;
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using backend;
 
 public class RegisterUser
 {
@@ -14,10 +16,11 @@ public class RegisterUser
         _authenticator = new AuthenticationUtils();
     }
 
-    public async void HandleRegistrationRequest(HttpContext context)
+    public async Task HandleRegistrationRequest(HttpContext context)
     {
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
+
         // Deserialize the request body into a RegisterModel object
         var registerModel = JsonSerializer.Deserialize<RegisterModel>(
             requestBody,
@@ -37,42 +40,47 @@ public class RegisterUser
             {
                 username = GetDefaultUsername(email);
             }
-            // Generate a random salt value
-            byte[] salt = new byte[16];
-            using (var rng = new RNGCryptoServiceProvider())
+
+            // Generate a salt
+            byte[] salt = GenerateSalt();
+
+            // Hash the password
+            byte[] hash = _authenticator.GenerateHash(password, salt);
+
+            if (salt != null && salt.Length > 0)
             {
-                rng.GetBytes(salt);
-            }
+                // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
+                var (registerStatus, messageToUser) = _authenticator.AuthenticateUser(
+                    true,
+                    username,
+                    email,
+                    Convert.ToBase64String(hash),
+                    salt
+                );
 
-            // Append the salt value to the password
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
-            byte[] saltedPasswordBytes = new byte[passwordBytes.Length + salt.Length];
-            Array.Copy(passwordBytes, saltedPasswordBytes, passwordBytes.Length);
-            Array.Copy(salt, 0, saltedPasswordBytes, passwordBytes.Length, salt.Length);
+                if (registerStatus)
+                {
+                    // Generate a JWT token
+                    var token = _authenticator.GenerateJwtToken(username);
 
-            // Hash the salted password
-            byte[] hashedPasswordBytes = new SHA256Managed().ComputeHash(saltedPasswordBytes);
-            string hashedPassword = Convert.ToBase64String(hashedPasswordBytes);
-            Console.WriteLine(hashedPassword);
-            // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
-            var (registerStatus, messageToUser) = _authenticator.AuthenticateUser(
-                true,
-                username,
-                email,
-                hashedPassword
-            );
-
-            if (registerStatus)
-            {
-                // Return a successful response with a 200 status code
-                context.Response.StatusCode = StatusCodes.Status200OK;
-                await context.Response.WriteAsJsonAsync(messageToUser);
+                    // Return a successful response with a 200 status code and JWT token
+                    context.Response.StatusCode = StatusCodes.Status200OK;
+                    await context.Response.WriteAsJsonAsync("Registration successful!");
+                }
+                else
+                {
+                    // Return an error response with a 401 status code
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    await context.Response.WriteAsJsonAsync(messageToUser);
+                }
             }
             else
             {
-                // Return an error response with a 401 status code
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(messageToUser);
+                // Return an error response with a 500(Internal Server Error) status code
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsJsonAsync(
+                    "Internal Server Error.{Salt not generated}"
+                );
             }
         }
         else if (!IsValidEmail(email))
@@ -107,52 +115,57 @@ public class RegisterUser
 
         if (emailParts.Length != 2)
         {
-            // If email contains more than one '@' character, it is not valid
+            // If email does not have exactly one '@' character, it is not valid
+            return false;
+        }
+        var domain = emailParts[1];
+
+        if (string.IsNullOrWhiteSpace(domain))
+        {
+            // If the domain part of the email is null or empty, it is not valid
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(emailParts[0]) || string.IsNullOrWhiteSpace(emailParts[1]))
+        if (!domain.Contains("."))
         {
-            // If the local or domain part of the email is null or empty, it is not valid
+            // If the domain part of the email does not contain a '.' character, it is not valid
             return false;
         }
 
-        if (emailParts[0].Length > 64 || emailParts[1].Length > 255)
-        {
-            // If the local or domain part of the email is too long, it is not valid
-            return false;
-        }
-
-        try
-        {
-            var mailAddress = new System.Net.Mail.MailAddress(email);
-            return true;
-        }
-        catch
-        {
-            // If the email is not in a valid format according to .NET's MailAddress class, it is not valid
-            return false;
-        }
+        return true;
     }
 
     private bool ArePasswordsEqual(string password, string confirmPassword)
     {
-        return !string.IsNullOrWhiteSpace(confirmPassword)
-            && string.Equals(password, confirmPassword);
-    }
-
-    // This method returns a default username based on the provided email and username.
-    private string GetDefaultUsername(string email)
-    {
-        if (!string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
         {
-            int index = email.IndexOf('@');
-            if (index > 0)
-            {
-                return email.Substring(0, index);
-            }
+            // If either password or confirmPassword is null or empty, they are not equal
+            return false;
         }
 
-        return null;
+        return password == confirmPassword;
+    }
+
+    private string GetDefaultUsername(string email)
+    {
+        var emailParts = email.Split('@');
+
+        return emailParts[0];
+    }
+
+    private byte[] GenerateSalt()
+    {
+        byte[] salt = new byte[64];
+
+        try
+        {
+            salt = RandomNumberGenerator.GetBytes(64);
+            return salt;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error generating salt: {ex.Message}");
+            return null;
+        }
     }
 }
