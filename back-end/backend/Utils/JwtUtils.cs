@@ -1,15 +1,14 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Http;
 using backend;
 
 public static class JwtUtils
 {
-    private static readonly string SecretKey = JwtKey.Value;
-
     public static bool ValidateJwt(HttpContext context)
     {
         // Get the authorization header from the request
@@ -29,7 +28,7 @@ public static class JwtUtils
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(SecretKey);
+            var key = Encoding.ASCII.GetBytes(JwtKey.Value);
             tokenHandler.ValidateToken(
                 jwt,
                 new TokenValidationParameters
@@ -49,14 +48,28 @@ public static class JwtUtils
         return true;
     }
 
-    public string GenerateJwtToken(string username)
+    public static string GenerateJwt(string username)
+    {
+        // Implement your user authentication logic here
+        // ...
+        return GenerateJwtToken(username);
+    }
+
+    private static string GenerateJwtToken(string username, string email, bool isTeacher)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"));
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, username) }),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Subject = new ClaimsIdentity(
+                new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, username),
+                    new Claim(ClaimTypes.Name, email),
+                    new Claim(ClaimTypes.Name, isTeacher),
+                }
+            ),
+            Expires = DateTime.UtcNow.AddSeconds(20),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
@@ -64,17 +77,6 @@ public static class JwtUtils
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-
-        Console.WriteLine($"JWT token generated: {jwtToken}");
-
         return jwtToken;
-    }
-
-    private static bool IsValidUser(string username, string password)
-    {
-        // Implement your user authentication logic here
-        // ...
-
-        return true; // Return true if the user is valid
     }
 }

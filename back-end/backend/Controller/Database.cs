@@ -43,13 +43,13 @@ namespace backend
                         {
                             if (CheckIfEmailExists(connection, email))
                             {
-                                //TODO!: CHANGE THIS PRINT TO RETURN IT TO USER
+                                AreCredentialsCorrect = false;
                                 MessageToUser = "Email already exists.";
                             }
                             else
                             {
-                                //TODO!: CHANGE THIS PRINT TO RETURN IT TO USER
                                 saveToDatabase(connection, email, username, password, salt);
+                                AreCredentialsCorrect = true;
                                 MessageToUser = "Registration successful!";
                             }
                         }
@@ -94,6 +94,8 @@ namespace backend
             command.Parameters.AddWithValue("@salt", salt);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
+            // Set AreCredentialsCorrect to true if the data was successfully saved to the database
+            AreCredentialsCorrect = true;
         }
 
         // Method to check if an email exists in the database

@@ -50,22 +50,38 @@ public class RegisterUser
             if (salt != null && salt.Length > 0)
             {
                 // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
-                var (registerStatus, messageToUser) = _authenticator.AuthenticateUser(
+                var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
                     true,
                     username,
                     email,
                     Convert.ToBase64String(hash),
                     salt
                 );
-
-                if (registerStatus)
+                if (AreCredentialsCorrect)
                 {
                     // Generate a JWT token
-                    var token = _authenticator.GenerateJwtToken(username);
+                    string jwtToken = JwtUtils.GenerateJwt(username);
 
-                    // Return a successful response with a 200 status code and JWT token
-                    context.Response.StatusCode = StatusCodes.Status200OK;
-                    await context.Response.WriteAsJsonAsync("Registration successful!");
+                    // Check if the token was generated
+                    if (!string.IsNullOrWhiteSpace(jwtToken))
+                    {
+                        // Return a successful response with a 200 status code and JWT token
+                        var response = new
+                        {
+                            message = "Registration successful!",
+                            jwtToken = jwtToken
+                        };
+                        context.Response.StatusCode = StatusCodes.Status200OK;
+                        await context.Response.WriteAsJsonAsync(response);
+                    }
+                    else
+                    {
+                        // Return an error response with a 500(Internal Server Error) status code
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                        await context.Response.WriteAsJsonAsync(
+                            "Internal Server Error. JWT jwtToken not generated."
+                        );
+                    }
                 }
                 else
                 {

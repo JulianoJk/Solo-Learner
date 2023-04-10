@@ -47,13 +47,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapGet(
-        "/",
-        async (HttpContext context) =>
-        {
-            await context.Response.WriteAsync("This is index route!");
-        }
-    )
-    .RequireAuthorization();
+    "/",
+    async (HttpContext context) =>
+    {
+        await context.Response.WriteAsync("This is index route!");
+    }
+);
 
 app.MapPost(
     "/login",
