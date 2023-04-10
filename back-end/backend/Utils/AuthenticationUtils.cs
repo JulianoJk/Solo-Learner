@@ -42,27 +42,6 @@ public class AuthenticationUtils
         }
     }
 
-    public string GenerateJwtToken(string username)
-    {
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"));
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Name, username) }),
-            Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature
-            )
-        };
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        var jwtToken = tokenHandler.WriteToken(token);
-
-        Console.WriteLine($"JWT token generated: {jwtToken}");
-
-        return jwtToken;
-    }
-
     public byte[] GenerateHash(string password, byte[] salt)
     {
         byte[] hash = null;
