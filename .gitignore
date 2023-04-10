@@ -4,3 +4,4 @@ uploads
 database-data/*
 yarn-error.log
 package-lock.json
+.vscode

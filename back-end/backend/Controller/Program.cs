@@ -1,6 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using backend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,25 +33,27 @@ builder.Services
             ValidateIssuerSigningKey = true,
             ValidIssuer = "localhost",
             ValidAudience = "localhost",
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("your_security_key_here")
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey.Value)),
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.UseCors("AllowAll");
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet(
-    "/",
-    async (HttpContext context) =>
-    {
-        await context.Response.WriteAsync("This is index route!");
-    }
-);
+        "/",
+        async (HttpContext context) =>
+        {
+            await context.Response.WriteAsync("This is index route!");
+        }
+    )
+    .RequireAuthorization();
 
 app.MapPost(
     "/login",
@@ -70,5 +74,15 @@ app.MapPost(
         return Task.CompletedTask;
     }
 );
+
+// This is a sample route for testing authentication
+app.MapGet(
+        "/protected",
+        async (HttpContext context) =>
+        {
+            await context.Response.WriteAsync("This is a protected route!");
+        }
+    )
+    .RequireAuthorization();
 
 app.Run();

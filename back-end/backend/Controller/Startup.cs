@@ -31,8 +31,10 @@ namespace backend
                 );
             });
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddControllers();
+
+            // Add JWT authentication middleware
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
@@ -43,15 +45,16 @@ namespace backend
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.ASCII.GetBytes(Configuration["Jwt:Secret"])
                         ),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
+                        ValidateIssuer = true,
+                        ValidIssuer = "localhost", // Replace with your issuer
+                        ValidateAudience = true,
+                        ValidAudience = "my-api", // Replace with your audience
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero // Set clock skew to zero to require exp claim
                     };
                 });
-
-            services.AddAuthorization();
-
-            services.AddControllers();
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
