@@ -81,8 +81,6 @@ public class AuthenticationUtils
         }
         else
         {
-            Console.WriteLine($"Generated salt: {Convert.ToHexString(salt)}");
-
             // Generate hash of the password using the retrieved salt
             byte[] hashedPassword = GenerateHash(password, salt);
 

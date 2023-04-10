@@ -79,7 +79,7 @@ app.MapGet(
     "/protected",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.ValidateJwt(context);
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
 
         if (isValidJwt)
         {

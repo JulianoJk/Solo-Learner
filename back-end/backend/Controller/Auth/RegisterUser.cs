@@ -60,7 +60,7 @@ public class RegisterUser
                 if (AreCredentialsCorrect)
                 {
                     // Generate a JWT token
-                    string jwtToken = JwtUtils.GenerateJwt(username);
+                    string jwtToken = JwtUtils.GenerateJwt(username, email);
 
                     // Check if the token was generated
                     if (!string.IsNullOrWhiteSpace(jwtToken))

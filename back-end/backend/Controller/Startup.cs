@@ -34,7 +34,8 @@ namespace backend
             services.AddControllers();
 
             // Add JWT authentication middleware
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
@@ -55,7 +56,6 @@ namespace backend
                 });
         }
 
-
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -66,6 +66,13 @@ namespace backend
             app.UseRouting();
 
             app.UseCors("AllowAll");
+
+            app.Use(
+                async (context, next) =>
+                {
+                    await next();
+                }
+            );
 
             app.UseAuthentication();
 

@@ -9,7 +9,7 @@ using backend;
 
 public static class JwtUtils
 {
-    public static bool ValidateJwt(HttpContext context)
+    public static bool authenticateJwt(HttpContext context)
     {
         // Get the authorization header from the request
         string authHeader = context.Request.Headers["Authorization"];
@@ -23,7 +23,7 @@ public static class JwtUtils
         return false;
     }
 
-    public static bool ValidateJwt(string jwt)
+    private static bool ValidateJwt(string jwt)
     {
         try
         {
@@ -48,28 +48,30 @@ public static class JwtUtils
         return true;
     }
 
-    public static string GenerateJwt(string username)
+    public static string GenerateJwt(string username, string email)
     {
         // Implement your user authentication logic here
         // ...
-        return GenerateJwtToken(username);
+        return GenerateSecurityToken(username, email);
     }
 
-    private static string GenerateJwtToken(string username, string email, bool isTeacher)
+    private static string GenerateSecurityToken(string username, string email)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY"));
+        var key = Encoding.ASCII.GetBytes(JwtKey.Value);
+        var expires = DateTime.UtcNow.AddMinutes(
+            int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRES_IN_MINUTES") ?? "20")
+        );
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(
                 new Claim[]
                 {
                     new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Name, email),
-                    new Claim(ClaimTypes.Name, isTeacher),
+                    new Claim(ClaimTypes.Email, email)
                 }
             ),
-            Expires = DateTime.UtcNow.AddSeconds(20),
+            Expires = expires,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
