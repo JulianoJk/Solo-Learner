@@ -50,7 +50,17 @@ app.MapGet(
     "/",
     async (HttpContext context) =>
     {
-        await context.Response.WriteAsync("This is index route!");
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            await context.Response.WriteAsync("This is index route!");
+        }
+        else
+        {
+            context.Response.StatusCode = 401;
+            await context.Response.WriteAsync("Unauthorized.");
+        }
     }
 );
 
@@ -83,12 +93,12 @@ app.MapGet(
 
         if (isValidJwt)
         {
-            await context.Response.WriteAsync("This is a protected route!");
+            await context.Response.WriteAsync("Everything is okay to go!");
         }
         else
         {
             context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Hello, you are not going to procced");
+            await context.Response.WriteAsync("Unauthorized.");
         }
     }
 );

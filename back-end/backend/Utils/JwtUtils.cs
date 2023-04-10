@@ -18,9 +18,26 @@ public static class JwtUtils
         if (authHeader != null && authHeader.StartsWith("Bearer "))
         {
             string jwt = authHeader.Substring("Bearer ".Length);
-            return ValidateJwt(jwt);
+            if (ValidateJwt(jwt) && !IsJwtExpired(jwt))
+            {
+                return true;
+            }
         }
         return false;
+    }
+
+    public static bool IsJwtExpired(string jwt)
+    {
+        // Decode the JWT
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtToken = tokenHandler.ReadJwtToken(jwt);
+
+        // Check if the "exp" claim is present and has a valid value
+        if (jwtToken.ValidTo != null && jwtToken.ValidTo >= DateTime.UtcNow)
+        {
+            return false;
+        }
+        return true;
     }
 
     private static bool ValidateJwt(string jwt)
