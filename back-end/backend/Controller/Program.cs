@@ -65,7 +65,7 @@ app.MapGet(
 );
 
 app.MapPost(
-    "/login",
+    "/users/login",
     (HttpContext context) =>
     {
         LoginUser loginUser = new LoginUser();
@@ -75,7 +75,7 @@ app.MapPost(
 );
 
 app.MapPost(
-    "/register",
+    "/users/register",
     (HttpContext context) =>
     {
         RegisterUser registerUser = new RegisterUser();

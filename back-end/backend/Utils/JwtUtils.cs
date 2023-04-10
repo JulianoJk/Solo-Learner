@@ -30,10 +30,10 @@ public static class JwtUtils
     {
         // Decode the JWT
         var tokenHandler = new JwtSecurityTokenHandler();
-        var jwtToken = tokenHandler.ReadJwtToken(jwt);
+        var token = tokenHandler.ReadJwtToken(jwt);
 
         // Check if the "exp" claim is present and has a valid value
-        if (jwtToken.ValidTo != null && jwtToken.ValidTo >= DateTime.UtcNow)
+        if (token.ValidTo != null && token.ValidTo >= DateTime.UtcNow)
         {
             return false;
         }

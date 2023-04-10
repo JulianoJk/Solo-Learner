@@ -50,13 +50,13 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     networks:
       - my-network
-  # front-end:
-  #   build: ./front-end
-  #   container_name: front_end_c
-  #   ports:
-  #     - "3000:3000"
-  #   stdin_open: true
-  #   tty: true
-  #   volumes:
-  #     - ./front-end:/usr/src/app/front_end
-  #     - /usr/src/app/front-end/node_modules
+  front-end:
+    build: ./front-end
+    container_name: front_end_c
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./front-end:/usr/src/app/front_end
+      - /usr/src/app/front-end/node_modules

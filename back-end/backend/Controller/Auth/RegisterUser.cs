@@ -60,16 +60,16 @@ public class RegisterUser
                 if (AreCredentialsCorrect)
                 {
                     // Generate a JWT token
-                    string jwtToken = JwtUtils.GenerateJwt(username, email);
+                    string token = JwtUtils.GenerateJwt(username, email);
 
                     // Check if the token was generated
-                    if (!string.IsNullOrWhiteSpace(jwtToken))
+                    if (!string.IsNullOrWhiteSpace(token))
                     {
                         // Return a successful response with a 200 status code and JWT token
                         var response = new
                         {
                             message = "Registration successful!",
-                            jwtToken = jwtToken
+                            token = token
                         };
                         context.Response.StatusCode = StatusCodes.Status200OK;
                         await context.Response.WriteAsJsonAsync(response);
@@ -79,7 +79,7 @@ public class RegisterUser
                         // Return an error response with a 500(Internal Server Error) status code
                         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                         await context.Response.WriteAsJsonAsync(
-                            "Internal Server Error. JWT jwtToken not generated."
+                            "Internal Server Error. JWT token not generated."
                         );
                     }
                 }
