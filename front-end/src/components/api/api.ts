@@ -24,7 +24,7 @@ export const registerAPI = async ({
   email,
   username,
   password,
-  passwordRepeat,
+  passwordRepeat: confirmPassword,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
     const response = await fetch(URL + 'users/register', {
@@ -34,7 +34,7 @@ export const registerAPI = async ({
         email: email,
         username: username,
         password: password,
-        passwordRepeat: passwordRepeat,
+        confirmPassword: confirmPassword,
       }),
     })
     const data: IUserInfoContext = await response.json()
