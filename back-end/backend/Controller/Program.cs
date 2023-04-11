@@ -91,7 +91,8 @@ app.MapGet(
 
         if (isValidJwt)
         {
-            await ProfileController.GetProfile(context);
+            ProfileController profileController = new ProfileController();
+            await profileController.GetProfile(context);
         }
         else
         {

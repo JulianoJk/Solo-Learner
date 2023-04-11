@@ -33,11 +33,7 @@ public static class JwtUtils
         var token = tokenHandler.ReadJwtToken(jwt);
 
         // Check if the "exp" claim is present and has a valid value
-        if (token.ValidTo != null && token.ValidTo >= DateTime.UtcNow)
-        {
-            return false;
-        }
-        return true;
+        return token.ValidTo == null || token.ValidTo < DateTime.UtcNow;
     }
 
     private static bool ValidateJwt(string jwt)
@@ -98,5 +94,29 @@ public static class JwtUtils
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
         return jwtToken;
+    }
+
+    public static string GetUserEmailFromJwt(HttpContext context)
+    {
+        if (authenticateJwt(context))
+        {
+            string authHeader = context.Request.Headers["Authorization"];
+            string jwt = authHeader.Substring("Bearer ".Length);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var token = tokenHandler.ReadJwtToken(jwt);
+                var userIdClaim = token.Claims.FirstOrDefault(c => c.Type == "email");
+                if (userIdClaim != null)
+                {
+                    return userIdClaim.Value;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating hash: {ex.Message}");
+            }
+        }
+        return null;
     }
 }
