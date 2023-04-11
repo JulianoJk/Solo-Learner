@@ -66,20 +66,20 @@ app.MapGet(
 
 app.MapPost(
     "/users/login",
-    async (HttpContext context) =>
+    (HttpContext context) =>
     {
         LoginUser loginUser = new LoginUser();
-        await loginUser.HandleLoginRequest(context);
+        loginUser.HandleLoginRequest(context);
         return Task.CompletedTask;
     }
 );
 
 app.MapPost(
     "/users/register",
-    async (HttpContext context) =>
+    (HttpContext context) =>
     {
         RegisterUser registerUser = new RegisterUser();
-        await registerUser.HandleRegistrationRequest(context);
+        registerUser.HandleRegistrationRequest(context);
         return Task.CompletedTask;
     }
 );

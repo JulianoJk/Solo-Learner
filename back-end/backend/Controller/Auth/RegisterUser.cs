@@ -16,7 +16,7 @@ public class RegisterUser
         _authenticator = new AuthenticationUtils();
     }
 
-    public async Task HandleRegistrationRequest(HttpContext context)
+    public async void HandleRegistrationRequest(HttpContext context)
     {
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
