@@ -103,23 +103,4 @@ app.MapGet(
     }
 );
 
-// This is a sample route for testing authentication
-app.MapGet(
-    "/protected",
-    async (HttpContext context) =>
-    {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
-
-        if (isValidJwt)
-        {
-            await context.Response.WriteAsync("Everything is okay to go!");
-        }
-        else
-        {
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Unauthorized.");
-        }
-    }
-);
-
 app.Run();
