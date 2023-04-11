@@ -96,7 +96,7 @@ public static class JwtUtils
         return jwtToken;
     }
 
-    public static string GetUserEmailFromJwt(HttpContext context)
+    public static string? GetUserEmailFromJwt(HttpContext context)
     {
         if (authenticateJwt(context))
         {
