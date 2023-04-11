@@ -31,7 +31,7 @@ public class AuthenticationUtils
     {
         // Initialize the database connection
         db.InitializeDatabaseConnection(isRegister, email, username, password, salt, isTeacher);
-        if (isRegister == false)
+        if (!isRegister)
         {
             CheckPasswordForLogin(email, password);
             return CheckPasswordForLogin(email, password);

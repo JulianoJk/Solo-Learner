@@ -66,21 +66,39 @@ app.MapGet(
 
 app.MapPost(
     "/users/login",
-    (HttpContext context) =>
+    async (HttpContext context) =>
     {
         LoginUser loginUser = new LoginUser();
-        loginUser.HandleLoginRequest(context);
+        await loginUser.HandleLoginRequest(context);
         return Task.CompletedTask;
     }
 );
 
 app.MapPost(
     "/users/register",
-    (HttpContext context) =>
+    async (HttpContext context) =>
     {
         RegisterUser registerUser = new RegisterUser();
-        registerUser.HandleRegistrationRequest(context);
+        await registerUser.HandleRegistrationRequest(context);
         return Task.CompletedTask;
+    }
+);
+app.MapGet(
+    "/users/profile",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            await ProfileController.GetProfile(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
     }
 );
 

@@ -10,7 +10,7 @@ public class LoginUser
         _authenticator = new AuthenticationUtils();
     }
 
-    public async void HandleLoginRequest(HttpContext context)
+    public async Task HandleLoginRequest(HttpContext context)
     {
         try
         {
