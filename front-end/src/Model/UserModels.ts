@@ -5,7 +5,8 @@ export interface IUserInfoContext {
   username?: string
   token: string | undefined
   id: string | undefined
-  dateJoined?: Date | string
+  createdAt?: Date | string
+  isTeacher?: boolean
 }
 
 export interface IApiError {

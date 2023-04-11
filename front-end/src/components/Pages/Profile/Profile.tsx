@@ -26,6 +26,7 @@ const Profile: React.FC = () => {
     {
       // Fetch when token available
       enabled: !!user.token,
+      refetchOnWindowFocus: true,
       staleTime: Infinity,
     },
   )
@@ -70,8 +71,8 @@ const Profile: React.FC = () => {
         {/* <Avatar radius="xl" color="indigo" src={
             !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
           } /> */}
-        <h1> Welcome Back: {user.username}!</h1>
-        <h2>Date joined:{userProfileData}</h2>
+        <h1> Welcome Back: {userProfileData?.username}!</h1>
+        <h2>Date joined:{userProfileData?.createdAt}</h2>
         {/* <img src={b} /> */}
       </div>
     )

@@ -82,16 +82,21 @@ export const profileAPI = async (
   token: string,
 ): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(URL + `users/profile/${token}`, {
+    const response = await fetch(URL + 'users/profile', {
       method: 'GET',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     })
     const data: IUserInfoContext = await response.json()
     return data
   } catch (error) {
+    console.error(error)
     return
   }
 }
+
 export const saveProfileImageAPI = async ({
   token,
   email,
