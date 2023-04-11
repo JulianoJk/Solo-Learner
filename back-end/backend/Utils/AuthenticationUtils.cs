@@ -25,11 +25,12 @@ public class AuthenticationUtils
         string? username,
         string email,
         string password,
-        byte[]? salt
+        byte[]? salt,
+        bool isTeacher
     )
     {
         // Initialize the database connection
-        db.InitializeDatabaseConnection(isRegister, email, username, password, salt);
+        db.InitializeDatabaseConnection(isRegister, email, username, password, salt, isTeacher);
         if (isRegister == false)
         {
             CheckPasswordForLogin(email, password);

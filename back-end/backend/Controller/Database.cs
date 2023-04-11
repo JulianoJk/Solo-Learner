@@ -27,7 +27,8 @@ namespace backend
             string email,
             string? username,
             string password,
-            byte[] salt
+            byte[] salt,
+            bool isTeacher
         )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
@@ -48,7 +49,14 @@ namespace backend
                             }
                             else
                             {
-                                saveToDatabase(connection, email, username, password, salt);
+                                saveToDatabase(
+                                    connection,
+                                    email,
+                                    username,
+                                    password,
+                                    salt,
+                                    isTeacher
+                                );
                                 AreCredentialsCorrect = true;
                                 MessageToUser = "Registration From database!";
                             }
@@ -81,17 +89,19 @@ namespace backend
             string email,
             string username,
             string password,
-            byte[] salt
+            byte[] salt,
+            bool isTeacher
         )
         {
             MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email, username, password, salt) VALUES (@email, @username, @password, @salt)",
+                "INSERT INTO users (email, username, password, salt, isTeacher) VALUES (@email, @username, @password, @salt, @isTeacher)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
             command.Parameters.AddWithValue("@salt", salt);
+            command.Parameters.AddWithValue("@isTeacher", isTeacher);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
             // Set AreCredentialsCorrect to true if the data was successfully saved to the database

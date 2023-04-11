@@ -7,4 +7,5 @@ public class RegisterModel
     public string Password { get; set; }
     public string ConfirmPassword { get; set; }
     public byte[] Salt { get; set; }
+    public bool isTeacher { get; set; }
 }

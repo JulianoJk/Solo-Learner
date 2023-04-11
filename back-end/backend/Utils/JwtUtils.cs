@@ -65,14 +65,14 @@ public static class JwtUtils
         return true;
     }
 
-    public static string GenerateJwt(string username, string email)
+    public static string GenerateJwt(string username, string email, bool isTeacher)
     {
         // Implement your user authentication logic here
         // ...
-        return GenerateSecurityToken(username, email);
+        return GenerateSecurityToken(username, email, isTeacher);
     }
 
-    private static string GenerateSecurityToken(string username, string email)
+    private static string GenerateSecurityToken(string username, string email, bool isTeacher)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(JwtKey.Value);
@@ -85,7 +85,8 @@ public static class JwtUtils
                 new Claim[]
                 {
                     new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Email, email)
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("isTeacher", isTeacher.ToString())
                 }
             ),
             Expires = expires,
