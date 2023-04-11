@@ -59,8 +59,9 @@ public class LoginUser
             else
             {
                 // Return an error response with a 401 status code
+                var response = new { error = new { message = messageToUser } };
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(messageToUser);
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
         catch (Exception ex)

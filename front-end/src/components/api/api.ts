@@ -3,20 +3,36 @@ const URL: string = 'http://localhost:3001/'
 export const loginAPI = async ({
   email,
   password,
-}: any): Promise<IUserInfoContext | undefined> => {
+}: {
+  email: string
+  password: string
+}): Promise<IUserInfoContext | IApiError> => {
   try {
-    const response = await fetch(URL + 'users/login', {
+    const response = await fetch(`${URL}users/login`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        email: email,
-        password: password,
+        email,
+        password,
       }),
     })
+
+    if (!response.ok) {
+      const errorData: IApiError = await response.json()
+      return errorData
+    }
+
     const data: IUserInfoContext = await response.json()
     return data
   } catch (error) {
-    return
+    console.error(error)
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError
   }
 }
 

@@ -1,10 +1,6 @@
 import React, {useState} from 'react'
 import {NavigateFunction, useNavigate} from 'react-router-dom'
-import {
-  IApiError,
-  IUserInfoContext,
-  usersDispatchContext,
-} from '../../../Model/UserModels'
+import {IUserInfoContext, usersDispatchContext} from '../../../Model/UserModels'
 
 import AuthImage from '../../../images/Auth'
 
@@ -47,40 +43,47 @@ const Login: React.FC<ILoginProps> = props => {
     props.pathToNavigateAfterLogin !== undefined
       ? props.pathToNavigateAfterLogin
       : '/home'
+
   const {mutate: login, isLoading} = useMutation(loginAPI, {
     onSuccess: data => {
-      const hasToken = !isUndefinedOrNullString(data?.token)
+      if (typeof data === 'object' && 'error' in data) {
+        // handle the error case
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: data.error.message,
+        })
+      } else {
+        const hasToken = !isUndefinedOrNullString(data?.token)
 
-      if (!hasToken) {
-        console.log('Something went wrong...')
-      } else if (hasToken) {
-        const user: IUserInfoContext = {
-          id: data?.id,
-          username: data?.username,
-          token: data?.token,
-        }
-        props.refreshPageAfterLogin === true ? window.location.reload() : ''
-        userDispatch({type: 'SET_USER', user: user})
-        navigate(navigateTo)
-        props.showNotification === false ? (
-          <></>
-        ) : (
-          notificationAlert({
-            title: 'Login Successful!',
-            message: "Great to see you! You're all set to go.",
-            icon: <IconCheck size={18} />,
-            iconColor: 'teal',
+        if (!hasToken) {
+          appDispatch({
+            type: 'SET_ERROR_ALERT_MESSAGE',
+            errorAlertMessage: 'Something went wrong...',
           })
-        )
+        } else if (hasToken) {
+          const user: IUserInfoContext = {
+            id: data?.id,
+            username: data?.username,
+            token: data?.token,
+          }
+          props.refreshPageAfterLogin === true ? window.location.reload() : ''
+          userDispatch({type: 'SET_USER', user: user})
+          navigate(navigateTo)
+          props.showNotification === false ? (
+            <></>
+          ) : (
+            notificationAlert({
+              title: 'Login Successful!',
+              message: "Great to see you! You're all set to go.",
+              icon: <IconCheck size={18} />,
+              iconColor: 'teal',
+            })
+          )
+        }
       }
     },
-    onError: (response: IApiError) => {
-      appDispatch({
-        type: 'SET_ERROR_ALERT_MESSAGE',
-        errorAlertMessage: response.error.message,
-      })
-    },
   })
+
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
     setEmail(e.target.value)
   }
