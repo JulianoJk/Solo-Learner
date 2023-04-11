@@ -6,6 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using backend;
+using MySql.Data.MySqlClient;
 
 public static class JwtUtils
 {
@@ -70,6 +71,7 @@ public static class JwtUtils
 
     private static string GenerateSecurityToken(string username, string email, bool isTeacher)
     {
+        var id = GetUserIdFromDB(email);
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(JwtKey.Value);
         var expires = DateTime.UtcNow.AddMinutes(
@@ -82,7 +84,8 @@ public static class JwtUtils
                 {
                     new Claim(ClaimTypes.Name, username),
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("isTeacher", isTeacher.ToString())
+                    new Claim("isTeacher", isTeacher.ToString()),
+                    new Claim("id", id.ToString())
                 }
             ),
             Expires = expires,
@@ -118,5 +121,29 @@ public static class JwtUtils
             }
         }
         return null;
+    }
+
+    private static int? GetUserIdFromDB(string email)
+    {
+        int? id = null;
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+            using (
+                var command = new MySqlCommand(
+                    "SELECT id FROM users WHERE email=@Email",
+                    connection
+                )
+            )
+            {
+                command.Parameters.AddWithValue("@Email", email);
+                var result = command.ExecuteScalar();
+                if (result != null)
+                {
+                    id = Convert.ToInt32(result);
+                }
+            }
+        }
+        return id;
     }
 }

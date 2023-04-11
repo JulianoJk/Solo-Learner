@@ -3,9 +3,7 @@ import React from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {useUserState} from '../../../context/UserContext'
 import {IUserInfoContext} from '../../../Model/UserModels'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {profileAPI, getProfileImageAPI} from '../../api/api'
-
+import {profileAPI} from '../../api/api'
 import PageNotFound from '../pageNotFound/PageNotFound'
 
 import {Avatar} from '@mantine/core'
