@@ -1,6 +1,10 @@
 import React, {useState} from 'react'
 import {NavigateFunction, useNavigate} from 'react-router-dom'
-import {IUserInfoContext, usersDispatchContext} from '../../../Model/UserModels'
+import {
+  IApiError,
+  IUserInfoContext,
+  usersDispatchContext,
+} from '../../../Model/UserModels'
 
 import AuthImage from '../../../images/Auth'
 
@@ -21,6 +25,7 @@ import {useMutation} from '@tanstack/react-query'
 import {isUndefinedOrNullString} from '../../../lib/dist'
 import {notificationAlert} from '../../notifications/NotificationAlert'
 import {IconCheck, IconMail, IconLock, IconEye, IconEyeOff} from '@tabler/icons'
+import {AppDispatch} from '../../../context/AppContext'
 
 interface ILoginProps {
   loginImage?: React.ReactNode
@@ -33,11 +38,11 @@ interface ILoginProps {
 const Login: React.FC<ILoginProps> = props => {
   const navigate: NavigateFunction = useNavigate()
   const {classes} = useStyles()
-  const [errorMessage, setErrorMessage] = useState<any>()
-
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const userDispatch: usersDispatchContext = useUserDispatch()
+  const appDispatch = AppDispatch()
+
   const navigateTo =
     props.pathToNavigateAfterLogin !== undefined
       ? props.pathToNavigateAfterLogin
@@ -46,10 +51,8 @@ const Login: React.FC<ILoginProps> = props => {
     onSuccess: data => {
       const hasToken = !isUndefinedOrNullString(data?.token)
 
-      if (typeof data?.message === 'string' || data instanceof String) {
-        setErrorMessage(data?.message)
-      } else if (!hasToken) {
-        setErrorMessage('Something went wrong...')
+      if (!hasToken) {
+        console.log('Something went wrong...')
       } else if (hasToken) {
         const user: IUserInfoContext = {
           id: data?.id,
@@ -70,6 +73,12 @@ const Login: React.FC<ILoginProps> = props => {
           })
         )
       }
+    },
+    onError: (response: IApiError) => {
+      appDispatch({
+        type: 'SET_ERROR_ALERT_MESSAGE',
+        errorAlertMessage: response.error.message,
+      })
     },
   })
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
@@ -129,7 +138,7 @@ const Login: React.FC<ILoginProps> = props => {
         </Button>
 
         {/*Display error message if any*/}
-        <AlertComponent message={errorMessage} />
+        <AlertComponent />
       </form>
       {props.switchToRegister === false ? (
         <></>

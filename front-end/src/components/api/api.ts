@@ -1,4 +1,4 @@
-import {IUserInfoContext} from '../../Model/UserModels'
+import {IApiError, IUserInfoContext} from '../../Model/UserModels'
 const URL: string = 'http://localhost:3001/'
 export const loginAPI = async ({
   email,
@@ -24,25 +24,44 @@ export const registerAPI = async ({
   email,
   username,
   password,
-  passwordRepeat: confirmPassword,
-}: any): Promise<IUserInfoContext | undefined> => {
+  confirmPassword,
+}: {
+  email: string
+  username: string
+  password: string
+  confirmPassword: string
+}): Promise<IUserInfoContext | IApiError> => {
   try {
-    const response = await fetch(URL + 'users/register', {
+    const response = await fetch(`${URL}users/register`, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        email: email,
-        username: username,
-        password: password,
-        confirmPassword: confirmPassword,
+        email,
+        username,
+        password,
+        confirmPassword,
       }),
     })
+
+    if (!response.ok) {
+      const errorData: IApiError = await response.json()
+      return errorData
+    }
+
     const data: IUserInfoContext = await response.json()
     return data
   } catch (error) {
-    return
+    console.error(error)
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError
   }
 }
+
 export const profileAPI = async (
   token: string,
 ): Promise<IUserInfoContext | undefined> => {

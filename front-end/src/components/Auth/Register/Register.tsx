@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useState} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
-import {usersDispatchContext, IUserInfoContext} from '../../../Model/UserModels'
+import {
+  usersDispatchContext,
+  IUserInfoContext,
+  IApiError,
+} from '../../../Model/UserModels'
 import {useUserDispatch} from '../../../context/UserContext'
 import {
   PasswordInput,
@@ -25,39 +30,48 @@ import {
   IconEyeOff,
   IconUserCircle,
 } from '@tabler/icons'
+import {AppDispatch} from '../../../context/AppContext'
 const Register: React.FC = () => {
   const navigate = useNavigate()
   const userDispatch: usersDispatchContext = useUserDispatch()
+  const appDispatch = AppDispatch()
   const {classes} = useStyles()
 
-  const [errorMessage, setErrorMessage] = useState<any>()
   const [email, setEmail] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [passwordRepeat, setPasswordRepeat] = useState<string>('')
+  const [confirmPassword, setConfirmPassword] = useState<string>('')
 
   const {mutate: register, isLoading} = useMutation(registerAPI, {
     onSuccess: data => {
-      const hasToken = isUndefinedOrNullString(data?.token)
-
-      if (typeof data?.message === 'string' || data instanceof String) {
-        setErrorMessage(data?.message)
-      } else if (hasToken) {
-        setErrorMessage('Something went wrong...')
-      } else if (!hasToken) {
-        const user: IUserInfoContext = {
-          id: data?.id,
-          username: data?.username,
-          token: data?.token,
-        }
-        userDispatch({type: 'SET_USER', user: user})
-        navigate('/home')
-        notificationAlert({
-          title: 'Successful registration!',
-          message: 'Congratulations! Your account has been created. ',
-          icon: <IconCheck size={18} />,
-          iconColor: 'teal',
+      if (typeof data === 'object' && 'error' in data) {
+        // handle the error case
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: data.error.message,
         })
+      } else {
+        const hasToken = isUndefinedOrNullString(data?.token)
+        if (hasToken) {
+          appDispatch({
+            type: 'SET_ERROR_ALERT_MESSAGE',
+            errorAlertMessage: 'Something went wrong...',
+          })
+        } else if (!hasToken) {
+          const user: IUserInfoContext = {
+            id: data?.id,
+            username: data?.username,
+            token: data?.token,
+          }
+          userDispatch({type: 'SET_USER', user: user})
+          navigate('/home')
+          notificationAlert({
+            title: 'Successful registration!',
+            message: 'Congratulations! Your account has been created. ',
+            icon: <IconCheck size={18} />,
+            iconColor: 'teal',
+          })
+        }
       }
     },
   })
@@ -76,12 +90,12 @@ const Register: React.FC = () => {
   }
 
   const handleConfirmPassword = (e: React.BaseSyntheticEvent): void => {
-    setPasswordRepeat(e.target.value)
+    setConfirmPassword(e.target.value)
   }
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
-    register({email, username, password, passwordRepeat})
+    register({email, username, password, confirmPassword})
   }
 
   return (
@@ -133,7 +147,7 @@ const Register: React.FC = () => {
         <PasswordInput
           icon={<IconLock />}
           required
-          value={passwordRepeat}
+          value={confirmPassword}
           placeholder="Confirm Password"
           onChange={handleConfirmPassword}
           minLength={6}
@@ -153,7 +167,7 @@ const Register: React.FC = () => {
         >
           Register
         </Button>
-        <AlertComponent message={errorMessage} />
+        <AlertComponent />
       </form>
       <span className={classes.switchAuthLinks}>
         Already a member?

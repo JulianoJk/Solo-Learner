@@ -4,12 +4,11 @@ import {IconAlertCircle} from '@tabler/icons'
 
 import {useStyles} from './Alert.styles'
 import {isUndefinedOrNullString} from '../../lib/dist'
+import {AppState} from '../../context/AppContext'
 
-interface IProps {
-  message: string | null | undefined
-}
-export const AlertComponent: React.FC<IProps> = ({message}) => {
-  const hasError: boolean = isUndefinedOrNullString(message)
+export const AlertComponent: React.FC = () => {
+  const {errorAlertMessage} = AppState()
+  const hasError: boolean = isUndefinedOrNullString(errorAlertMessage)
 
   const {classes} = useStyles()
   return (
@@ -23,7 +22,7 @@ export const AlertComponent: React.FC<IProps> = ({message}) => {
             className={classes.alertBox}
           >
             <Text weight={500} size="lg">
-              {message}
+              {errorAlertMessage}
             </Text>
           </Alert>
         </>

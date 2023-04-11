@@ -7,6 +7,12 @@ export interface IUserInfoContext {
   id: string | undefined
   dateJoined?: Date | string
 }
+
+export interface IApiError {
+  error: {
+    message: string
+  }
+}
 export interface IUserAccountContext {
   profileImage: string
 }

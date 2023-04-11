@@ -1,20 +1,38 @@
 import React, {useContext, useReducer} from 'react'
-import {
-  ApplicationDispatchContext,
-  IAppStateContext,
-  IChildrenProvider,
-  TApplicationAction,
-} from '../Model/models'
+import {IChildrenProvider} from '../Model/models'
+import {ColorScheme} from '@mantine/core'
+interface IAppStateContext {
+  isSmallWindow: boolean
+  appTheme: ColorScheme
+  errorAlertMessage: string
+}
 
 // Default state fot the Application context
 const defaultState: IAppStateContext = {
   isSmallWindow: false,
   appTheme: 'light' ?? 'dark',
+  errorAlertMessage: '',
 }
+type TApplicationAction =
+  | {
+      type: 'IS_SMALL_WINDOW'
+      isSmallWindow: boolean
+    }
+  | {
+      type: 'SET_APP_THEME'
+      appTheme: ColorScheme
+    }
+  | {
+      type: 'SET_ERROR_ALERT_MESSAGE'
+      errorAlertMessage: string
+    }
 
 const ApplicationState = React.createContext<IAppStateContext | undefined>(
   undefined,
 )
+// *** Dispatch ***
+type ApplicationDispatchContext = (action: TApplicationAction) => void
+
 ApplicationState.displayName = 'ApplicationState'
 const ApplicationDispatch = React.createContext<
   ApplicationDispatchContext | undefined
@@ -27,6 +45,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return {...state, isSmallWindow: !action.isSmallWindow}
     case 'SET_APP_THEME':
       return {...state, appTheme: action.appTheme}
+    case 'SET_ERROR_ALERT_MESSAGE':
+      return {...state, errorAlertMessage: action.errorAlertMessage}
   }
 }
 // Context Provider for the user

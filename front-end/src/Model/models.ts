@@ -1,25 +1,9 @@
-import {ColorScheme} from '@mantine/core'
 import React from 'react'
 
 // *** State ***
 export interface AccountSettingsInterface {
   profileImage: string
 }
-
-export interface IAppStateContext {
-  isSmallWindow: boolean
-  appTheme: ColorScheme
-}
-
-export type TApplicationAction =
-  | {
-      type: 'IS_SMALL_WINDOW'
-      isSmallWindow: boolean
-    }
-  | {
-      type: 'SET_APP_THEME'
-      appTheme: ColorScheme
-    }
 
 // Interface for the ContextProvider children
 export interface IChildrenProvider {
@@ -32,6 +16,3 @@ export interface ISvgImages {
   className?: string
   radius?: number | string
 }
-
-// *** Dispatch ***
-export type ApplicationDispatchContext = (action: TApplicationAction) => void

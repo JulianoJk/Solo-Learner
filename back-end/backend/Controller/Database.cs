@@ -50,7 +50,7 @@ namespace backend
                             {
                                 saveToDatabase(connection, email, username, password, salt);
                                 AreCredentialsCorrect = true;
-                                MessageToUser = "Registration successful!";
+                                MessageToUser = "Registration From database!";
                             }
                         }
                         catch (MySqlException ex)

@@ -66,11 +66,7 @@ public class RegisterUser
                     if (!string.IsNullOrWhiteSpace(token))
                     {
                         // Return a successful response with a 200 status code and JWT token
-                        var response = new
-                        {
-                            message = "Registration successful!",
-                            token = token
-                        };
+                        var response = new { messageToUser, token };
                         context.Response.StatusCode = StatusCodes.Status200OK;
                         await context.Response.WriteAsJsonAsync(response);
                     }
@@ -85,9 +81,10 @@ public class RegisterUser
                 }
                 else
                 {
-                    // Return an error response with a 401 status code
-                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    await context.Response.WriteAsJsonAsync(messageToUser);
+                    // Return an error response with a 409 status code
+                    var response = new { error = new { message = messageToUser } };
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    await context.Response.WriteAsJsonAsync(response);
                 }
             }
             else
