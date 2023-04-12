@@ -123,25 +123,55 @@ public static class JwtUtils
         return null;
     }
 
+    public static bool GetIsTeacher(HttpContext context)
+    {
+        return GetIsTeacherFromJwt(context);
+    }
+
+    private static bool GetIsTeacherFromJwt(HttpContext context)
+    {
+        if (authenticateJwt(context))
+        {
+            string authHeader = context.Request.Headers["Authorization"];
+            string jwt = authHeader.Substring("Bearer ".Length);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var token = tokenHandler.ReadJwtToken(jwt);
+                var isUserATeacher = token.Claims.FirstOrDefault(c => c.Type == "isTeacher");
+                if (isUserATeacher != null)
+                {
+                    return bool.Parse(isUserATeacher.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating hash: {ex.Message}");
+            }
+        }
+        return false;
+    }
+
+    public static int? GetUserId(string email)
+    {
+        return GetUserIdFromDB(email);
+    }
+
     private static int? GetUserIdFromDB(string email)
     {
         int? id = null;
         using (var connection = new MySqlConnection(ConnectionString.Value))
         {
             connection.Open();
-            using (
-                var command = new MySqlCommand(
-                    "SELECT id FROM users WHERE email=@Email",
-                    connection
-                )
-            )
+            using var command = new MySqlCommand(
+                "SELECT id FROM users WHERE email=@Email",
+                connection
+            );
+            command.Parameters.AddWithValue("@Email", email);
+            var result = command.ExecuteScalar();
+            if (result != null)
             {
-                command.Parameters.AddWithValue("@Email", email);
-                var result = command.ExecuteScalar();
-                if (result != null)
-                {
-                    id = Convert.ToInt32(result);
-                }
+                id = Convert.ToInt32(result);
             }
         }
         return id;

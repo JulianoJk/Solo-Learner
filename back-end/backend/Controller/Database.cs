@@ -164,5 +164,36 @@ namespace backend
                 return (string)password;
             }
         }
+
+        public async Task<bool> DeleteUserByIdAsync(int? id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid user ID");
+            }
+
+            MySqlConnection connection = new(connectionString);
+
+            try
+            {
+                await connection.OpenAsync();
+
+                MySqlCommand command = new("DELETE FROM users WHERE id=@id", connection);
+                command.Parameters.AddWithValue("@id", id);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return false;
+            }
+            finally
+            {
+                await connection.CloseAsync();
+            }
+        }
     }
 }

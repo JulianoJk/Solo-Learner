@@ -102,5 +102,24 @@ app.MapGet(
         }
     }
 );
+app.MapDelete(
+    "/users/delete",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            AccountDeletionController accountDeletion = new();
+            await accountDeletion.InitAccountDeletion(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
 
 app.Run();
