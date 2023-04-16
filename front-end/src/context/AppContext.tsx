@@ -12,6 +12,7 @@ const defaultState: IAppStateContext = {
   isSmallWindow: false,
   appTheme: 'light' ?? 'dark',
   errorAlertMessage: '',
+  handleModal: false,
 }
 type TApplicationAction =
   | {
@@ -47,6 +48,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return {...state, appTheme: action.appTheme}
     case 'SET_ERROR_ALERT_MESSAGE':
       return {...state, errorAlertMessage: action.errorAlertMessage}
+    case 'SET_MODAL_STATE':
+      return {...state, handleModal: action.handleModal}
   }
 }
 // Context Provider for the user

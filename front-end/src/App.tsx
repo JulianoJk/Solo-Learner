@@ -80,6 +80,7 @@ const App = () => {
               },
             }),
             components: {
+              Avatar: {defaultProps: AvatarDefaultProps},
               Button: {defaultProps: ButtonDefaultProps},
               Avatar: {defaultProps: AvatarDefaultProps},
             },

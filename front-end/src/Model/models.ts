@@ -5,6 +5,26 @@ export interface AccountSettingsInterface {
   profileImage: string
 }
 
+export interface IAppStateContext {
+  isSmallWindow: boolean
+  appTheme: ColorScheme
+  handleModal: boolean
+}
+
+export type TApplicationAction =
+  | {
+      type: 'SET_MODAL_STATE'
+      handleModal: boolean
+    }
+  | {
+      type: 'IS_SMALL_WINDOW'
+      isSmallWindow: boolean
+    }
+  | {
+      type: 'SET_APP_THEME'
+      appTheme: ColorScheme
+    }
+
 // Interface for the ContextProvider children
 export interface IChildrenProvider {
   children: React.ReactNode
