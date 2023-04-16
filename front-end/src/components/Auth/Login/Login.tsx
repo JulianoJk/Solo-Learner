@@ -49,7 +49,6 @@ const Login: React.FC<ILoginProps> = props => {
   const {mutate: login, isLoading} = useMutation(loginAPI, {
     onSuccess: data => {
       if (typeof data === 'object' && 'error' in data) {
-        // handle the error case
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
@@ -70,6 +69,9 @@ const Login: React.FC<ILoginProps> = props => {
           }
           props.refreshPageAfterLogin === true ? window.location.reload() : ''
           userDispatch({type: 'SET_USER', user: user})
+          appDispatch({
+            type: 'RESET_ERROR_MESSAGE',
+          })
           navigate(navigateTo)
           props.showNotification === false ? (
             <></>
@@ -161,6 +163,11 @@ const Login: React.FC<ILoginProps> = props => {
           <Anchor
             component={Link}
             to="/register"
+            onClick={() => {
+              appDispatch({
+                type: 'RESET_ERROR_MESSAGE',
+              })
+            }}
             className={classes.switchAuthLinkAnchor}
           >
             Create an account

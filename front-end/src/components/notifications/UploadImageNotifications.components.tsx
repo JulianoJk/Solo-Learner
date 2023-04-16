@@ -11,7 +11,6 @@ const [notificationTitle, setNotificationTitle] = useState('')
 export const NotificationsComponent = (props: IProps) => {
   if (props.type === 'Error' && props.errorType !== null) {
     props.errorType.forEach(code => {
-      console.log(code)
       if (code === 'file-invalid-type') {
         setNotificationTitle('Invalid file type!')
         setNotificationMessage(

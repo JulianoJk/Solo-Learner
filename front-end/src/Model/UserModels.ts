@@ -3,10 +3,13 @@ import React from 'react'
 export interface IUserInfoContext {
   message?: string
   username?: string
-  token: string | undefined
+  token: string
   id: string | undefined
   createdAt?: Date | string
   isTeacher?: boolean
+}
+export interface IDeleteAccount {
+  message: string
 }
 
 export interface IApiError {

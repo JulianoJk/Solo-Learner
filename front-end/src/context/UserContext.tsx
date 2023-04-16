@@ -10,7 +10,7 @@ import {
 const defaultState: StateInterface = {
   user: {
     username: undefined,
-    token: undefined,
+    token: '',
     id: undefined,
   },
 }
@@ -32,7 +32,8 @@ const appReducer = (state: StateInterface, action: TUserAction) => {
       localStorage.removeItem('jwtToken')
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem('user', JSON.stringify(action.user))
-      localStorage.setItem('jwtToken', JSON.stringify(action.user.token))
+
+      localStorage.setItem('jwtToken', action.user.token)
 
       return {...state, user: action.user}
     case 'RESET_STATE':

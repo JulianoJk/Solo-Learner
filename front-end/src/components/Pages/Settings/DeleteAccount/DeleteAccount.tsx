@@ -1,3 +1,4 @@
+import React from 'react'
 import {useForm, isEmail, hasLength} from '@mantine/form'
 import {
   Button,
@@ -12,16 +13,15 @@ import {useState} from 'react'
 import {notificationAlert} from '../../../notifications/NotificationAlert'
 import {NavigateFunction, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
-import {isUndefinedOrNullString} from '../../../../lib/dist'
 import {deleteAccountAPI} from '../../../api/api'
-import {useUserDispatch, useUserState} from '../../../../context/UserContext'
+import {useUserDispatch} from '../../../../context/UserContext'
+import {IconLock, IconEye, IconEyeOff, IconMoodSad} from '@tabler/icons'
+import {IApiError, IDeleteAccount} from '../../../../Model/UserModels'
 
 export default function MantineDemo() {
   const navigate: NavigateFunction = useNavigate()
   const appDispatch = AppDispatch()
-  const [errorMessage, setErrorMessage] = useState<any>()
   const [opened, setOpened] = useState<boolean>(false)
-  const {user} = useUserState()
   const userDispatch = useUserDispatch()
 
   const form = useForm({
@@ -32,41 +32,40 @@ export default function MantineDemo() {
 
     validate: {
       email: isEmail('Invalid email'),
-      password: hasLength(
-        {min: 6, max: 60},
-        'Password must be at least 6 characters!',
-      ),
+      password: hasLength({min: 6, max: 30}, 'Value must be between 6 and 30'),
     },
   })
-  const logOut = () => {
+
+  const logOut = (messageToUser: string) => {
     notificationAlert({
       title: 'Account Deleted.',
-      message: "We're sorry to see you go:(. ",
+      message: messageToUser,
       iconColor: 'red',
-      closeAfter: 3000,
+      closeAfter: 5000,
+      icon: <IconMoodSad color="yellow" size={18} />,
     })
     userDispatch({type: 'RESET_STATE'})
     navigate('/')
   }
-  const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
-    onSuccess: (data: any) => {
-      const hasToken = !isUndefinedOrNullString(data?.token)
-
-      if (typeof data?.message === 'string' || data instanceof String) {
-        setErrorMessage(data?.message)
-      } else if (!hasToken) {
-        setErrorMessage('Something went wrong...')
+  // const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
+  const {mutate: deleteAccount} = useMutation(deleteAccountAPI, {
+    onSuccess: (data: IDeleteAccount | IApiError) => {
+      if (typeof data === 'object' && 'error' in data) {
+        // handle the error case
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: data.error.message,
+        })
       } else {
-        logOut()
+        logOut(data.message)
       }
     },
   })
 
-  const handleInputs = async (e: React.BaseSyntheticEvent) => {
-    e.preventDefault()
+  const handleInput = async (email: string, password: string) => {
     try {
-      const {email, password} = form.values
-      const {token} = user
+      const token = localStorage.getItem('jwtToken')
+
       if (!form.validate().hasErrors) {
         deleteAccount({token, email, password})
       }
@@ -76,6 +75,7 @@ export default function MantineDemo() {
       return
     }
   }
+
   return (
     <>
       <Modal
@@ -91,20 +91,31 @@ export default function MantineDemo() {
         overlayBlur={4}
         withCloseButton={false}
       >
-        <Box component="form" maw={400} mx="auto">
-          <form onSubmit={handleInputs}>
+        <Box maw={300} mx="auto">
+          <form
+            onSubmit={form.onSubmit(values => {
+              handleInput(values.email, values.password)
+            })}
+          >
             <TextInput
-              label="Email: "
-              placeholder="test@email.com"
               withAsterisk
-              mt="md"
+              label="Email"
+              placeholder="your@email.com"
               {...form.getInputProps('email')}
             />
             <PasswordInput
-              label="Password: "
-              withAsterisk
+              icon={<IconLock />}
+              required
+              label={<span>Password:</span>}
+              placeholder="Password"
+              visibilityToggleIcon={({reveal}) =>
+                reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+              }
+              autoComplete="on"
+              // onChange={onPasswordChange}
               {...form.getInputProps('password')}
             />
+
             <Group position="right" mt="md">
               <Button onClick={() => setOpened(false)} color={'gray'}>
                 No don't delete it

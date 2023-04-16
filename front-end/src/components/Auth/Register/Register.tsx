@@ -45,7 +45,6 @@ const Register: React.FC = () => {
   const {mutate: register, isLoading} = useMutation(registerAPI, {
     onSuccess: data => {
       if (typeof data === 'object' && 'error' in data) {
-        // handle the error case
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
@@ -64,6 +63,9 @@ const Register: React.FC = () => {
             token: data?.token,
           }
           userDispatch({type: 'SET_USER', user: user})
+          appDispatch({
+            type: 'RESET_ERROR_MESSAGE',
+          })
           navigate('/home')
           notificationAlert({
             title: 'Successful registration!',
@@ -76,7 +78,6 @@ const Register: React.FC = () => {
     },
   })
 
-  // Email handler
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
     setEmail(e.target.value)
   }
@@ -174,6 +175,11 @@ const Register: React.FC = () => {
         <Anchor
           component={Link}
           to="/login"
+          onClick={() => {
+            appDispatch({
+              type: 'RESET_ERROR_MESSAGE',
+            })
+          }}
           className={classes.switchAuthLinkAnchor}
         >
           Sign-In

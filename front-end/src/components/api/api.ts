@@ -1,4 +1,8 @@
-import {IApiError, IUserInfoContext} from '../../Model/UserModels'
+import {
+  IApiError,
+  IDeleteAccount,
+  IUserInfoContext,
+} from '../../Model/UserModels'
 const URL: string = 'http://localhost:3001/'
 export const loginAPI = async ({
   email,
@@ -114,60 +118,73 @@ export const saveProfileImageAPI = async ({
   } catch (error) {
     return
   }
-  export const deleteAccountAPI = async ({
-    token,
-    email,
-    password,
-  }: any): Promise<IUserInfoContext | undefined> => {
-    try {
-      const response = await fetch(URL + `users/deleteAccount/${id}`, {
-        method: 'DELETE',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      })
-      const data: IUserInfoContext = await response.json()
-      return data
-    } catch (error) {
-      return
+}
+export const deleteAccountAPI = async ({
+  token,
+  email,
+  password,
+}: any): Promise<IDeleteAccount | IApiError> => {
+  try {
+    const response = await fetch(URL + `users/delete`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    })
+    if (!response.ok) {
+      const errorData: IApiError = await response.json()
+      return errorData
     }
-  }
 
-  export const getProfileImageAPI = async (
-    id: string,
-  ): Promise<IUserInfoContext | undefined> => {
-    try {
-      const response = await fetch(URL + `users/profileImage/${id}`, {
-        method: 'GET',
-        headers: {'Content-Type': 'application/json'},
-      })
-      const data: IUserInfoContext = await response.json()
-      return data
-    } catch (error) {
-      return
-    }
+    const data: IDeleteAccount = await response.json()
+    return data
+  } catch (error) {
+    console.error(error)
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError
   }
+}
 
-  export const sendImageToServerAPI = async (
-    data: any,
-    userID: string | undefined,
-  ) => {
-    try {
-      const formData = new FormData()
-      formData.append('file', data[0])
-      const res = await fetch(
-        `http://localhost:3001/users/profile-image/${userID}`,
-        {
-          method: 'POST',
-          body: formData,
-        },
-      )
-      const results: any = await res.json()
-      return results
-    } catch (error) {
-      return
-    }
+export const getProfileImageAPI = async (
+  id: string,
+): Promise<IUserInfoContext | undefined> => {
+  try {
+    const response = await fetch(URL + `users/profileImage/${id}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+    })
+    const data: IUserInfoContext = await response.json()
+    return data
+  } catch (error) {
+    return
+  }
+}
+
+export const sendImageToServerAPI = async (
+  data: any,
+  userID: string | undefined,
+) => {
+  try {
+    const formData = new FormData()
+    formData.append('file', data[0])
+    const res = await fetch(
+      `http://localhost:3001/users/profile-image/${userID}`,
+      {
+        method: 'POST',
+        body: formData,
+      },
+    )
+    const results: any = await res.json()
+    return results
+  } catch (error) {
+    return
   }
 }

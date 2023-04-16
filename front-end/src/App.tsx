@@ -7,7 +7,6 @@ import {Route, BrowserRouter, Routes} from 'react-router-dom'
 import NavigationNormal from './components/Header/Navigation/NavigationNormal'
 import {UserContextProvider} from './context/UserContext'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-// import PageNotFound from "./components/Pages/pageNotFound/PageNotFound";
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {
   AppShell,
@@ -25,10 +24,7 @@ import {checkIfPageIsReload, isUserLoggedIn} from '../src/lib/dist'
 import {AccountSettingsContextProvider} from './context/AccountSettingsContext'
 import {AppContextProvider} from './context/AppContext'
 import {useEffect, useState} from 'react'
-import {
-  AvatarDefaultProps,
-  ButtonDefaultProps,
-} from './Styles/DefaultPropsStyles.styles'
+import {AvatarDefaultProps} from './Styles/DefaultPropsStyles.styles'
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar'
 import Theory from './components/Pages/LearningUnits/Theory/Theory'
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises'
@@ -80,8 +76,6 @@ const App = () => {
               },
             }),
             components: {
-              Avatar: {defaultProps: AvatarDefaultProps},
-              Button: {defaultProps: ButtonDefaultProps},
               Avatar: {defaultProps: AvatarDefaultProps},
             },
             colorScheme,

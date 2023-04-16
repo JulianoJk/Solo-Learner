@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react'
 import {Link, useLocation} from 'react-router-dom'
 import {useNavigate} from 'react-router-dom'
@@ -71,7 +72,6 @@ const NavigationNormal: React.FC = () => {
 
     if (token !== undefined) {
       isValidToken = parseJwt(token)['exp'] > Date.now() / 1000
-      console.log(isValidToken)
     }
   })
   // After logout, clear the context for the user and tasks, then navigate to index

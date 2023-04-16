@@ -1,14 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import jwtDecode from 'jwt-decode'
-import {Modal} from '@mantine/core'
-import {useLocation} from 'react-router-dom'
+import {Button, Center, Modal, Title} from '@mantine/core'
+import {useLocation, useNavigate} from 'react-router-dom'
 import {isUserLoggedIn} from '../../lib/dist'
 import Login from '../Auth/Login/Login'
 import {useDisclosure} from '@mantine/hooks'
+import {useUserDispatch} from '../../context/UserContext'
 const TokenExpirationChecker = () => {
   const [isExpired, setIsExpired] = useState<boolean>(false)
   const [openedModal, handlers] = useDisclosure(false)
   const location = useLocation() // <-- get current location being accessed
+  const userDispatch = useUserDispatch()
+  const navigate = useNavigate()
+
   useEffect(() => {
     const token = localStorage.getItem('jwtToken')
     if (token) {
@@ -23,7 +27,10 @@ const TokenExpirationChecker = () => {
       }
     }
   }, [])
-
+  const logOut = () => {
+    userDispatch({type: 'RESET_STATE'})
+    navigate('/')
+  }
   if (isExpired) {
     return (
       <Modal
@@ -49,6 +56,7 @@ const TokenExpirationChecker = () => {
           pathToNavigateAfterLogin={location.pathname}
           refreshPageAfterLogin={true}
         />
+        <Button onClick={logOut}>Logout</Button>
       </Modal>
     )
   }
