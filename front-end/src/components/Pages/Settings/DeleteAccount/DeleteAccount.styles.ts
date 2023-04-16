@@ -1,36 +1,14 @@
 import {createStyles} from '@mantine/core'
-import {LIGHT_MENT, DARK_NAVY, LIGHT_NAVY} from '../../../../Theme/Styles'
-export const useStyles = createStyles(() => ({
-  modal: {
-    ':root': {
-      backgroundColor: 'black',
-    },
-  },
-  form: {
-    padding: 10,
-  },
-  title: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: DARK_NAVY,
-  },
+import {ERROR_DARK_COLOR} from '../../../../Theme/Styles'
 
-  submitButton: {
-    display: 'inline-block',
-    width: '100%',
-    marginTop: 10,
-    '&:hover': {
-      backgroundColor: LIGHT_MENT,
+export const useStyles = createStyles(theme => ({
+  buttonContainer: {
+    backgroundColor: `${theme.colors.red[8]}`,
+    '&: hover': {
+      backgroundColor: ERROR_DARK_COLOR,
     },
   },
   inputLabels: {
     fontWeight: 700,
-  },
-  notification: {
-    ':root': {
-      backgroundColor: LIGHT_NAVY,
-      border: '1px solid black',
-    },
   },
 }))

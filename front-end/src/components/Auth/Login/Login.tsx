@@ -23,10 +23,12 @@ import {notificationAlert} from '../../notifications/NotificationAlert'
 import {IconCheck, IconMail, IconLock, IconEye, IconEyeOff} from '@tabler/icons'
 
 interface ILoginProps {
+  displayImage?: boolean
   loginImage?: React.ReactNode
   switchToRegister?: boolean
   pathToNavigateAfterLogin?: string
   refreshPageAfterLogin?: boolean
+  hasBorder?: boolean
   showNotification?: boolean
 }
 
@@ -91,8 +93,16 @@ const Login: React.FC<ILoginProps> = props => {
   }
 
   return (
-    <Box sx={{maxWidth: 600}} mx="auto" className={classes.formContainer}>
-      <Center>{props.loginImage ?? <AuthImage />}</Center>
+    <Box
+      sx={{maxWidth: 600}}
+      mx="auto"
+      className={props.hasBorder === false ? '' : classes.formContainer}
+    >
+      {props.displayImage === false ? (
+        <></>
+      ) : (
+        <Center>{props.loginImage ?? <AuthImage />}</Center>
+      )}
       <h1 className={classes.title}>Sign-In</h1>
       <form onSubmit={handleInputs} className={classes.form}>
         <TextInput

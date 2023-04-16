@@ -13,7 +13,7 @@ const TokenExpirationChecker = () => {
     const token = localStorage.getItem('jwtToken')
     if (token) {
       const decoded: any = jwtDecode(token)
-      const expirationTime = decoded.exp * 1000 * 60 * 60 // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)
+      const expirationTime = decoded.exp * 1000 // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)
       const currentTime = Date.now()
       if (isUserLoggedIn() === true && currentTime > expirationTime) {
         setIsExpired(true)
@@ -38,7 +38,12 @@ const TokenExpirationChecker = () => {
         overlayBlur={4}
         withCloseButton={false}
       >
-        <div>Session expired. Please log in again.</div>
+        <Center>
+          <Title size="md">
+            Session expired. Please log in again to continue!
+          </Title>
+        </Center>
+
         <Login
           switchToRegister={false}
           pathToNavigateAfterLogin={location.pathname}

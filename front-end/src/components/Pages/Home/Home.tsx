@@ -9,11 +9,7 @@ import LearningUnits from '../LearningUnits/LearningUnits'
 
 const Home: React.FC = () => {
   const {classes} = useStyles()
-  return (
-    <>
-      <LearningUnits />
-    </>
-  )
+  return <LearningUnits />
 }
 
 export default Home

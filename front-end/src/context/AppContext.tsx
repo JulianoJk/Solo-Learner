@@ -10,6 +10,7 @@ import {
 const defaultState: IAppStateContext = {
   isSmallWindow: false,
   appTheme: 'light' ?? 'dark',
+  handleModal: false,
 }
 
 const ApplicationState = React.createContext<IAppStateContext | undefined>(
@@ -27,6 +28,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return {...state, isSmallWindow: !action.isSmallWindow}
     case 'SET_APP_THEME':
       return {...state, appTheme: action.appTheme}
+    case 'SET_MODAL_STATE':
+      return {...state, handleModal: action.handleModal}
   }
 }
 // Context Provider for the user

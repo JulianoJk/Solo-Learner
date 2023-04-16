@@ -1,179 +1,126 @@
-import React, {useState} from 'react'
+import {useForm, isEmail, hasLength} from '@mantine/form'
 import {
-  Modal,
   Button,
   Group,
-  PasswordInput,
   TextInput,
-  Center,
-  Text,
+  Box,
+  PasswordInput,
+  Modal,
 } from '@mantine/core'
-import {Mail, Lock, MoodSad} from 'tabler-icons-react'
-import {deleteAccountAPI} from '../../../api/api'
+import {AppDispatch} from '../../../../context/AppContext'
+import {useState} from 'react'
+import {notificationAlert} from '../../../notifications/NotificationAlert'
+import {NavigateFunction, useNavigate} from 'react-router-dom'
 import {useMutation} from '@tanstack/react-query'
 import {isUndefinedOrNullString} from '../../../../lib/dist'
-import {useStyles} from './DeleteAccount.styles'
-import {LIGHT_NAVY} from '../../../../Theme/Styles'
+import {deleteAccountAPI} from '../../../api/api'
 import {useUserDispatch, useUserState} from '../../../../context/UserContext'
-import {useNavigate} from 'react-router-dom'
-import {showNotification} from '@mantine/notifications'
-import {openConfirmModal, closeAllModals} from '@mantine/modals'
 
-const DeleteAccount = () => {
-  const {classes} = useStyles()
-  const [opened, setOpened] = useState(false)
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
+export default function MantineDemo() {
+  const navigate: NavigateFunction = useNavigate()
+  const appDispatch = AppDispatch()
+  const [errorMessage, setErrorMessage] = useState<any>()
+  const [opened, setOpened] = useState<boolean>(false)
   const {user} = useUserState()
-  const navigate = useNavigate()
   const userDispatch = useUserDispatch()
 
-  const id = !isUndefinedOrNullString(user.id) ? user.id : undefined
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
 
-  const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
-    onSuccess: data => {
-      showNotification({
-        id: 'deletedAccount',
-        message: data,
-        autoClose: 6000,
-        // style: { backgroundColor: LIGHT_NAVY, border: "1px solid black" },
-        className: classes.notification,
-        icon: <MoodSad />,
-      })
-
-      userDispatch({type: 'RESET_STATE'})
-      navigate('/')
+    validate: {
+      email: isEmail('Invalid email'),
+      password: hasLength(
+        {min: 6, max: 60},
+        'Password must be at least 6 characters!',
+      ),
     },
   })
-  const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value)
+  const logOut = () => {
+    notificationAlert({
+      title: 'Account Deleted.',
+      message: "We're sorry to see you go:(. ",
+      iconColor: 'red',
+      closeAfter: 3000,
+    })
+    userDispatch({type: 'RESET_STATE'})
+    navigate('/')
   }
-  const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
-    setPassword(e.target.value)
-  }
+  const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
+    onSuccess: (data: any) => {
+      const hasToken = !isUndefinedOrNullString(data?.token)
+
+      if (typeof data?.message === 'string' || data instanceof String) {
+        setErrorMessage(data?.message)
+      } else if (!hasToken) {
+        setErrorMessage('Something went wrong...')
+      } else {
+        logOut()
+      }
+    },
+  })
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault()
     try {
-      deleteAccount({id, email, password})
+      const {email, password} = form.values
+      const {token} = user
+      if (!form.validate().hasErrors) {
+        deleteAccount({token, email, password})
+      }
+      return
     } catch (error) {
       console.warn(error)
+      return
     }
   }
   return (
     <>
       <Modal
+        title="Delete your profile"
+        transition="fade"
+        centered
+        transitionDuration={100}
+        transitionTimingFunction="ease"
         opened={opened}
-        onClose={() => setOpened(false)}
-        title="Delete account"
-        styles={{modal: {backgroundColor: LIGHT_NAVY}}}
+        onClose={() => {
+          setOpened(false)
+        }}
+        overlayBlur={4}
+        withCloseButton={false}
       >
-        <Center>
-          <h1>
-            Are you sure you want to delete your account? If yes, please fill
-          </h1>
-        </Center>
-        <form onSubmit={handleInputs} className={classes.form}>
-          <TextInput
-            icon={<Mail />}
-            required
-            type="email"
-            label={<span className={classes.inputLabels}>Email:</span>}
-            placeholder="name@example.com"
-            value={email}
-            onChange={onEmailChange}
-            autoComplete="on"
-          />
-
-          <PasswordInput
-            icon={<Lock />}
-            required
-            label={<span className={classes.inputLabels}>Password:</span>}
-            placeholder="Password"
-            value={password}
-            onChange={onPasswordChange}
-            autoComplete="on"
-          />
-          <Button
-            color="cyan"
-            type="submit"
-            className={classes.submitButton}
-            loading={isLoading}
-            uppercase
-          >
-            Delete
-          </Button>
-        </form>
+        <Box component="form" maw={400} mx="auto">
+          <form onSubmit={handleInputs}>
+            <TextInput
+              label="Email: "
+              placeholder="test@email.com"
+              withAsterisk
+              mt="md"
+              {...form.getInputProps('email')}
+            />
+            <PasswordInput
+              label="Password: "
+              withAsterisk
+              {...form.getInputProps('password')}
+            />
+            <Group position="right" mt="md">
+              <Button onClick={() => setOpened(false)} color={'gray'}>
+                No don't delete it
+              </Button>
+              <Button type="submit" color={'red'}>
+                Confirm
+              </Button>
+            </Group>
+          </form>
+        </Box>
       </Modal>
-
       <Group position="center">
-        <Button
-          onClick={() =>
-            openConfirmModal({
-              title: 'Are you sure?',
-              closeOnConfirm: false,
-              labels: {confirm: 'Yes, proceed', cancel: 'Cancel'},
-              color: 'red',
-
-              children: (
-                <Text size="md">
-                  Are you sure you want to delete your account? This action is
-                  invertible!
-                </Text>
-              ),
-              onConfirm: () =>
-                openConfirmModal({
-                  title: 'Delete Account',
-                  labels: {
-                    confirm: 'Delete Account',
-                    cancel: "No, don't delete it",
-                  },
-                  closeOnConfirm: true,
-                  confirmProps: {color: 'red'},
-                  children: (
-                    <>
-                      <TextInput
-                        icon={<Mail />}
-                        required
-                        type="email"
-                        label={
-                          <span className={classes.inputLabels}>Email:</span>
-                        }
-                        placeholder="name@example.com"
-                        value={email}
-                        onChange={onEmailChange}
-                        autoComplete="on"
-                      />
-
-                      <PasswordInput
-                        icon={<Lock />}
-                        required
-                        label={
-                          <span className={classes.inputLabels}>Password:</span>
-                        }
-                        placeholder="Password"
-                        value={password}
-                        onChange={onPasswordChange}
-                        autoComplete="on"
-                      />
-
-                      <Text size="sm">
-                        Are you sure you want to delete your profile? This
-                        action is destructive!
-                      </Text>
-                    </>
-                  ),
-                  onConfirm: closeAllModals,
-                  onCancel: closeAllModals,
-                }),
-            })
-          }
-          color={'red'}
-        >
+        <Button onClick={() => setOpened(true)} color={'red'}>
           Delete Account
         </Button>
       </Group>
     </>
   )
 }
-export default DeleteAccount
