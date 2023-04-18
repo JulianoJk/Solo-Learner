@@ -69,9 +69,6 @@ const Login: React.FC<ILoginProps> = props => {
           }
           props.refreshPageAfterLogin === true ? window.location.reload() : ''
           userDispatch({type: 'SET_USER', user: user})
-          appDispatch({
-            type: 'RESET_ERROR_MESSAGE',
-          })
           navigate(navigateTo)
           props.showNotification === false ? (
             <></>
@@ -163,11 +160,6 @@ const Login: React.FC<ILoginProps> = props => {
           <Anchor
             component={Link}
             to="/register"
-            onClick={() => {
-              appDispatch({
-                type: 'RESET_ERROR_MESSAGE',
-              })
-            }}
             className={classes.switchAuthLinkAnchor}
           >
             Create an account

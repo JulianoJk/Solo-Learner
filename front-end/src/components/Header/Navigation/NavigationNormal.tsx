@@ -60,7 +60,11 @@ const NavigationNormal: React.FC = () => {
       setDocumentTitle('Solo Learner')
     }
   }, [pathname])
-
+  useEffect(() => {
+    appDisp({
+      type: 'RESET_ERROR_MESSAGE',
+    })
+  }, [location.pathname])
   useEffect(() => {
     saveUserAfterReload(userDispatch)
     saveProfileImageAfterReload(accountSettingsDispatch)

@@ -15,6 +15,7 @@ import {
 } from '../../../lib/dist'
 import {IconSettings, IconTrash, IconUser} from '@tabler/icons'
 import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker'
+import {AppDispatch} from '../../../context/AppContext'
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate()
@@ -28,6 +29,7 @@ const SmallNavigation: React.FC = () => {
   const ref = useClickOutside(() => setOpened(false))
 
   const title = opened ? 'Close navigation' : 'Open navigation'
+  const appDisp = AppDispatch()
 
   const handleClick = () => {
     setOpened(openedBurger => !openedBurger)
@@ -41,6 +43,11 @@ const SmallNavigation: React.FC = () => {
     saveUserAfterReload(userDispatch)
     saveProfileImageAfterReload(accountSettingsDispatch)
   }, [])
+  useEffect(() => {
+    appDisp({
+      type: 'RESET_ERROR_MESSAGE',
+    })
+  }, [location.pathname])
 
   return (
     <Header height={90} p="md" className={classes.headerRoot}>

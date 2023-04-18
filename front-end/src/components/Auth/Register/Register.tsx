@@ -63,9 +63,6 @@ const Register: React.FC = () => {
             token: data?.token,
           }
           userDispatch({type: 'SET_USER', user: user})
-          appDispatch({
-            type: 'RESET_ERROR_MESSAGE',
-          })
           navigate('/home')
           notificationAlert({
             title: 'Successful registration!',
@@ -175,11 +172,6 @@ const Register: React.FC = () => {
         <Anchor
           component={Link}
           to="/login"
-          onClick={() => {
-            appDispatch({
-              type: 'RESET_ERROR_MESSAGE',
-            })
-          }}
           className={classes.switchAuthLinkAnchor}
         >
           Sign-In
