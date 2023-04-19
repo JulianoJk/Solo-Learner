@@ -12,6 +12,7 @@ const defaultState: StateInterface = {
     username: undefined,
     token: '',
     id: undefined,
+    email: undefined,
   },
 };
 

@@ -1,20 +1,21 @@
 import { Box, Modal, TextInput, Title } from '@mantine/core';
 import React, { useState } from 'react';
-import { IconMail } from '@tabler/icons';
 
 import DeleteAccount from './DeleteAccount/DeleteAccount';
 import UploadProfileComponent from './profileImageSettings/UploadProfile.component';
 import { useStyles } from './Settings.styles';
 import { AppDispatch, AppState } from '../../../context/AppContext';
+import { useUserState } from '../../../context/UserContext';
+import { IconMail } from '@tabler/icons';
 
 var SettingsComponent = () => {
-  const [email, setEmail] = useState<string>('');
   const { classes } = useStyles();
   const appDispatch = AppDispatch();
   const { isUserSettingsOpen } = AppState();
-
-  const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value);
+  const { user } = useUserState();
+  const [username, setUsername] = useState<string>(user.username as string);
+  const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
+    setUsername(e.target.value);
   };
   return (
     <>
@@ -24,7 +25,7 @@ var SettingsComponent = () => {
         centered
         transitionDuration={600}
         overlayBlur={4}
-        withCloseButton={false}
+        withCloseButton={true}
         transitionTimingFunction="ease"
         onClose={() =>
           appDispatch({
@@ -45,9 +46,16 @@ var SettingsComponent = () => {
               <span className={classes.inputLabels}>Your full name :</span>
             }
             placeholder="name@example.com"
-            value={email}
-            onChange={onEmailChange}
+            value={username}
+            onChange={onUsernameChange}
             autoComplete="on"
+          />
+          <TextInput
+            placeholder={user.email}
+            label="Email"
+            variant="filled"
+            disabled
+            withAsterisk
           />
         </Box>
       </Modal>

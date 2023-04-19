@@ -72,10 +72,9 @@ const Login: React.FC<ILoginProps> = (props) => {
           });
         } else if (hasToken) {
           const user: IUserInfoContext = {
-            id: data?.id,
-            username: data?.username,
             token: data?.token,
           };
+
           props.refreshPageAfterLogin === true ? window.location.reload() : '';
           userDispatch({ type: 'SET_USER', user: user });
           navigate(navigateTo);

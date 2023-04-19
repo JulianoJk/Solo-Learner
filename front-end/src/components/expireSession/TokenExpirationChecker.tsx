@@ -42,6 +42,8 @@ const TokenExpirationChecker = () => {
           id: decoded.id,
           username: decoded.username,
           token: localStorageToken,
+          isTeacher: decoded.isTeacher,
+          email: decoded.email,
         };
         userDispatch({ type: 'SET_USER', user: decodedUser });
       }

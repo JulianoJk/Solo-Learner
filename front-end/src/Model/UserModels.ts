@@ -4,9 +4,10 @@ export interface IUserInfoContext {
   message?: string;
   username?: string;
   token: string;
-  id: string | undefined;
+  id?: string | undefined;
   createdAt?: Date | string;
   isTeacher?: boolean;
+  email?: string;
 }
 export interface IDeleteAccount {
   message: string;

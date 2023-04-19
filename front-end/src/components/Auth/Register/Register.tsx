@@ -56,8 +56,6 @@ const Register: React.FC = () => {
           });
         } else if (!hasToken) {
           const user: IUserInfoContext = {
-            id: data?.id,
-            username: data?.username,
             token: data?.token,
           };
           userDispatch({ type: 'SET_USER', user: user });
