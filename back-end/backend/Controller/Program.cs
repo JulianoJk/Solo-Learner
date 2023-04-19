@@ -122,4 +122,24 @@ app.MapDelete(
     }
 );
 
+app.MapPut(
+    "/users/update/username",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            ProfileController profileController = new ProfileController();
+            await profileController.ChangeUsernameAsync(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+
 app.Run();
