@@ -2,14 +2,14 @@ import {
   IApiError,
   IDeleteAccount,
   IUserInfoContext,
-} from '../../Model/UserModels'
-const URL: string = 'http://localhost:3001/'
+} from '../../Model/UserModels';
+const URL: string = 'http://localhost:3001/';
 export const loginAPI = async ({
   email,
   password,
 }: {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }): Promise<IUserInfoContext | IApiError> => {
   try {
     const response = await fetch(`${URL}users/login`, {
@@ -21,24 +21,24 @@ export const loginAPI = async ({
         email,
         password,
       }),
-    })
+    });
 
     if (!response.ok) {
-      const errorData: IApiError = await response.json()
-      return errorData
+      const errorData: IApiError = await response.json();
+      return errorData;
     }
 
-    const data: IUserInfoContext = await response.json()
-    return data
+    const data: IUserInfoContext = await response.json();
+    return data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return {
       error: {
         message: 'Something went wrong. Please try again later.',
       },
-    } as IApiError
+    } as IApiError;
   }
-}
+};
 
 export const registerAPI = async ({
   email,
@@ -46,10 +46,10 @@ export const registerAPI = async ({
   password,
   confirmPassword,
 }: {
-  email: string
-  username: string
-  password: string
-  confirmPassword: string
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
 }): Promise<IUserInfoContext | IApiError> => {
   try {
     const response = await fetch(`${URL}users/register`, {
@@ -63,24 +63,24 @@ export const registerAPI = async ({
         password,
         confirmPassword,
       }),
-    })
+    });
 
     if (!response.ok) {
-      const errorData: IApiError = await response.json()
-      return errorData
+      const errorData: IApiError = await response.json();
+      return errorData;
     }
 
-    const data: IUserInfoContext = await response.json()
-    return data
+    const data: IUserInfoContext = await response.json();
+    return data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return {
       error: {
         message: 'Something went wrong. Please try again later.',
       },
-    } as IApiError
+    } as IApiError;
   }
-}
+};
 
 export const profileAPI = async (
   token: string,
@@ -92,14 +92,14 @@ export const profileAPI = async (
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-    })
-    const data: IUserInfoContext = await response.json()
-    return data
+    });
+    const data: IUserInfoContext = await response.json();
+    return data;
   } catch (error) {
-    console.error(error)
-    return
+    console.error(error);
+    return;
   }
-}
+};
 
 export const saveProfileImageAPI = async ({
   token,
@@ -108,17 +108,17 @@ export const saveProfileImageAPI = async ({
   try {
     const response = await fetch(URL + `users/deleteAccount/${token}`, {
       method: 'DELETE',
-      headers: {'Content-Type': 'application/json'},
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,
       }),
-    })
-    const data: IUserInfoContext = await response.json()
-    return data
+    });
+    const data: IUserInfoContext = await response.json();
+    return data;
   } catch (error) {
-    return
+    return;
   }
-}
+};
 export const deleteAccountAPI = async ({
   token,
   email,
@@ -135,23 +135,23 @@ export const deleteAccountAPI = async ({
         email: email,
         password: password,
       }),
-    })
+    });
     if (!response.ok) {
-      const errorData: IApiError = await response.json()
-      return errorData
+      const errorData: IApiError = await response.json();
+      return errorData;
     }
 
-    const data: IDeleteAccount = await response.json()
-    return data
+    const data: IDeleteAccount = await response.json();
+    return data;
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return {
       error: {
         message: 'Something went wrong. Please try again later.',
       },
-    } as IApiError
+    } as IApiError;
   }
-}
+};
 
 export const getProfileImageAPI = async (
   id: string,
@@ -159,32 +159,32 @@ export const getProfileImageAPI = async (
   try {
     const response = await fetch(URL + `users/profileImage/${id}`, {
       method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-    })
-    const data: IUserInfoContext = await response.json()
-    return data
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const data: IUserInfoContext = await response.json();
+    return data;
   } catch (error) {
-    return
+    return;
   }
-}
+};
 
 export const sendImageToServerAPI = async (
   data: any,
   userID: string | undefined,
 ) => {
   try {
-    const formData = new FormData()
-    formData.append('file', data[0])
+    const formData = new FormData();
+    formData.append('file', data[0]);
     const res = await fetch(
       `http://localhost:3001/users/profile-image/${userID}`,
       {
         method: 'POST',
         body: formData,
       },
-    )
-    const results: any = await res.json()
-    return results
+    );
+    const results: any = await res.json();
+    return results;
   } catch (error) {
-    return
+    return;
   }
-}
+};

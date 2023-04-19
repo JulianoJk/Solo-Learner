@@ -1,5 +1,5 @@
-import {createStyles} from '@mantine/core'
-export const useStyles = createStyles(theme => ({
+import { createStyles } from '@mantine/core';
+export const useStyles = createStyles((theme) => ({
   icon: {
     width: '100%',
     maxWidth: '40rem',
@@ -14,4 +14,4 @@ export const useStyles = createStyles(theme => ({
       maxHeight: '20rem',
     },
   },
-}))
+}));

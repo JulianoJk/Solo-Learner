@@ -1,43 +1,46 @@
-import React, {useContext, useReducer} from 'react'
+import React, { useContext, useReducer } from 'react';
 import {
   usersDispatchContext,
   IChildrenProvider,
   TUserAction,
-} from '../Model/UserModels'
-import {AccountSettingsInterface} from '../Model/models'
+} from '../Model/UserModels';
+import { AccountSettingsInterface } from '../Model/models';
 
 // Default state fot the user context
 const defaultState = {
   profileImage: '',
-}
+};
 
 const AccountSettingsStateContext = React.createContext<
   AccountSettingsInterface | undefined
->(undefined)
-AccountSettingsStateContext.displayName = 'AccountSettingsStateContext'
+>(undefined);
+AccountSettingsStateContext.displayName = 'AccountSettingsStateContext';
 const AccountSettingsDispatchContext = React.createContext<
   usersDispatchContext | undefined
->(undefined)
+>(undefined);
 
 // Reducer function
 
 const appReducer = (state: AccountSettingsInterface, action: TUserAction) => {
   switch (action.type) {
     case 'SET_PROFILE_IMAGE':
-      localStorage.setItem('profile_image', JSON.stringify(action.profileImage))
+      localStorage.setItem(
+        'profile_image',
+        JSON.stringify(action.profileImage),
+      );
 
-      return {...state, profileImage: action.profileImage}
+      return { ...state, profileImage: action.profileImage };
     case 'RESET_STATE':
       // Clear user from localStorage
-      localStorage.clear()
-      return {...defaultState}
+      localStorage.clear();
+      return { ...defaultState };
     default:
-      return {...state}
+      return { ...state };
   }
-}
+};
 // Context Provider for the user
-const AccountSettingsContextProvider = ({children}: IChildrenProvider) => {
-  const [userState, userDispatch] = useReducer(appReducer, defaultState)
+const AccountSettingsContextProvider = ({ children }: IChildrenProvider) => {
+  const [userState, userDispatch] = useReducer(appReducer, defaultState);
 
   return (
     <AccountSettingsStateContext.Provider value={userState}>
@@ -45,32 +48,32 @@ const AccountSettingsContextProvider = ({children}: IChildrenProvider) => {
         {children}
       </AccountSettingsDispatchContext.Provider>
     </AccountSettingsStateContext.Provider>
-  )
-}
+  );
+};
 // Pass the state of the user
 const useAccountSettingsState = (): AccountSettingsInterface => {
-  const context = useContext(AccountSettingsStateContext)
+  const context = useContext(AccountSettingsStateContext);
   if (context === undefined) {
     throw new Error(
       'useUserState must be used within AccountSettingsStateContext',
-    )
+    );
   }
-  return context
-}
+  return context;
+};
 
 // Function to use the userDispatch
 const useAccountSettingsDispatch = (): usersDispatchContext => {
-  const context = useContext(AccountSettingsDispatchContext)
+  const context = useContext(AccountSettingsDispatchContext);
   if (context === undefined) {
     throw new Error(
       'useUserDispatch must be used within AccountSettingsDispatchContext',
-    )
+    );
   }
-  return context
-}
+  return context;
+};
 
 export {
   AccountSettingsContextProvider,
   useAccountSettingsState,
   useAccountSettingsDispatch,
-}
+};

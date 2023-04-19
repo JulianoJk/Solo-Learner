@@ -1,5 +1,5 @@
 import { createStyles } from '@mantine/core';
-import { LIGHT_MENT } from '../../Theme/Styles';
+import { LIGHT_MENT } from '../../../Theme/Styles';
 export const useStyles = createStyles((theme) => ({
   formContainer: {
     borderWidth: '2px !important',

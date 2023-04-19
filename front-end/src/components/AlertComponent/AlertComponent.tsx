@@ -1,16 +1,16 @@
-import React from 'react'
-import {Alert, Center, Text, Title} from '@mantine/core'
-import {IconAlertCircle} from '@tabler/icons'
+import React from 'react';
+import { Alert, Center, Text, Title } from '@mantine/core';
+import { IconAlertCircle } from '@tabler/icons';
 
-import {useStyles} from './Alert.styles'
-import {isUndefinedOrNullString} from '../../lib/dist'
-import {AppState} from '../../context/AppContext'
+import { useStyles } from './Alert.styles';
+import { isUndefinedOrNullString } from '../../lib/dist';
+import { AppState } from '../../context/AppContext';
 
 export const AlertComponent: React.FC = () => {
-  const {errorAlertMessage} = AppState()
-  const hasError: boolean = isUndefinedOrNullString(errorAlertMessage)
+  const { errorAlertMessage } = AppState();
+  const hasError: boolean = isUndefinedOrNullString(errorAlertMessage);
 
-  const {classes} = useStyles()
+  const { classes } = useStyles();
   return (
     <Center>
       {!hasError ? (
@@ -30,5 +30,5 @@ export const AlertComponent: React.FC = () => {
         <></>
       )}
     </Center>
-  )
-}
+  );
+};

@@ -1,5 +1,8 @@
-import {createStyles} from '@mantine/core'
-import {LIGHTER_GRAY, TRANSPARENT_LIGHT_COLORS} from '../../../../Theme/Styles'
+import { createStyles } from '@mantine/core';
+import {
+  LIGHTER_GRAY,
+  TRANSPARENT_LIGHT_COLORS,
+} from '../../../../Theme/Styles';
 export const useStyles = createStyles(() => ({
   loader: {
     display: 'flex',
@@ -30,4 +33,4 @@ export const useStyles = createStyles(() => ({
   modalRoot: {
     maxHeight: 700,
   },
-}))
+}));

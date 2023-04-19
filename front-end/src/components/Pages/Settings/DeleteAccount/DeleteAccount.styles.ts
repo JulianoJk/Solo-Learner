@@ -1,7 +1,7 @@
-import {createStyles} from '@mantine/core'
-import {ERROR_DARK_COLOR} from '../../../../Theme/Styles'
+import { createStyles } from '@mantine/core';
+import { ERROR_DARK_COLOR } from '../../../../Theme/Styles';
 
-export const useStyles = createStyles(theme => ({
+export const useStyles = createStyles((theme) => ({
   buttonContainer: {
     backgroundColor: `${theme.colors.red[8]}`,
     '&: hover': {
@@ -11,4 +11,4 @@ export const useStyles = createStyles(theme => ({
   inputLabels: {
     fontWeight: 700,
   },
-}))
+}));

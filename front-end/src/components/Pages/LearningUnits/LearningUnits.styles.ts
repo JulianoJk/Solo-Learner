@@ -1,5 +1,5 @@
-import {createStyles} from '@mantine/core'
-export const useStyles = createStyles(theme => ({
+import { createStyles } from '@mantine/core';
+export const useStyles = createStyles((theme) => ({
   root: {
     border: '1px solid black',
     backgroundColor: theme.colorScheme === 'light' ? '#E5D8D0' : '#21262d',
@@ -14,4 +14,4 @@ export const useStyles = createStyles(theme => ({
     borderRadius: '70%',
     border: '10px solid red',
   },
-}))
+}));

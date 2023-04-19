@@ -1,6 +1,6 @@
-import {createStyles} from '@mantine/core'
+import { createStyles } from '@mantine/core';
 
-export const useStyles = createStyles(theme => ({
+export const useStyles = createStyles((theme) => ({
   modal: {
     background: 'red',
   },
@@ -18,4 +18,4 @@ export const useStyles = createStyles(theme => ({
       theme.colorScheme === 'light' ? '#000000 !important' : 'white !important',
     borderRadius: '10px',
   },
-}))
+}));

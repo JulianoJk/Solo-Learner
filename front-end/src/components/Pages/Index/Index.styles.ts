@@ -1,4 +1,4 @@
-import {createStyles} from '@mantine/core'
+import { createStyles } from '@mantine/core';
 
 export const useStyles = createStyles(() => ({
   quote: {
@@ -8,4 +8,4 @@ export const useStyles = createStyles(() => ({
   logoContainer: {
     margin: 10,
   },
-}))
+}));

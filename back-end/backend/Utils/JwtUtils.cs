@@ -82,7 +82,7 @@ public static class JwtUtils
             Subject = new ClaimsIdentity(
                 new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, username),
+                    new Claim("username", username),
                     new Claim(ClaimTypes.Email, email),
                     new Claim("isTeacher", isTeacher.ToString()),
                     new Claim("id", id.ToString())

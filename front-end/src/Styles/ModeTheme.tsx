@@ -4,30 +4,30 @@ import {
   ActionIcon,
   Tooltip,
   ColorScheme,
-} from '@mantine/core'
-import {IconSun, IconMoonStars} from '@tabler/icons'
-import {useLocalStorage} from '@mantine/hooks'
+} from '@mantine/core';
+import { IconSun, IconMoonStars } from '@tabler/icons';
+import { useLocalStorage } from '@mantine/hooks';
 
 const ModeTheme = () => {
-  const theme = useMantineTheme()
+  const theme = useMantineTheme();
 
-  const {toggleColorScheme} = useMantineColorScheme()
+  const { toggleColorScheme } = useMantineColorScheme();
 
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'app-theme',
     defaultValue: 'light',
     getInitialValueInEffect: true,
-  })
-  const dark = colorScheme === 'dark'
+  });
+  const dark = colorScheme === 'dark';
 
   const handleOnClick = () => {
-    setColorScheme(colorScheme === 'dark' ? 'light' : 'dark')
-    toggleColorScheme(colorScheme === 'dark' ? 'light' : 'dark')
-  }
+    setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+    toggleColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
+  };
 
   const switchDescription = `${
     theme.colorScheme === 'light' ? 'Dark' : 'Light'
-  } mode`
+  } mode`;
 
   return (
     <Tooltip
@@ -48,7 +48,7 @@ const ModeTheme = () => {
         {dark ? <IconSun size={26} /> : <IconMoonStars size={26} />}
       </ActionIcon>
     </Tooltip>
-  )
-}
+  );
+};
 
-export default ModeTheme
+export default ModeTheme;

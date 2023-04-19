@@ -1,89 +1,86 @@
-import React from 'react'
-
-import {useQuery} from '@tanstack/react-query'
-import {useUserState} from '../../../context/UserContext'
-import {IUserInfoContext} from '../../../Model/UserModels'
-import {profileAPI} from '../../api/api'
-import PageNotFound from '../pageNotFound/PageNotFound'
-
-import {Avatar} from '@mantine/core'
-import {isUndefinedOrNullString} from '../../../lib/dist'
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useUserState } from '../../../context/UserContext';
+import { IUserInfoContext } from '../../../Model/UserModels';
+import { profileAPI } from '../../api/api';
+import { Avatar } from '@mantine/core';
+import { isUndefinedOrNullString } from '../../../lib/dist';
 
 const Profile: React.FC = () => {
-  const {user} = useUserState()
-  let userIsLoggedInLocal: any = localStorage.getItem('user')
-  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : undefined
-  const {data: userProfileData} = useQuery(
+  const { user } = useUserState();
+  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
+  const { data: userProfileData } = useQuery(
     ['getProfileItems', hasToken],
     async () => {
       if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasToken)
-        return data
+        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
+        return data;
       }
     },
     {
-      // Fetch when token available
-      enabled: !!user.token,
+      enabled: true,
       refetchOnWindowFocus: true,
-      staleTime: Infinity,
     },
+  );
+  const displayUsername = isUndefinedOrNullString(userProfileData?.username)
+    ? user.username
+    : userProfileData?.username;
+  const displayDateJoined = isUndefinedOrNullString(
+    userProfileData?.createdAt as string,
   )
+    ? null
+    : userProfileData?.createdAt;
+
   // var b;
   // useEffect(() => {
   //   if (user.id !== undefined) {
   //     b = profileImageAPI(user.id);
   //   }
   // });
-  if (userIsLoggedInLocal) {
-    return (
-      // <>
-      //   {isLoading ? (
-      //     <Stack align="center">
-      //       <div>
-      //         <Loader size={400} />
-      //       </div>
-      //       <Title>Loading...</Title>
-      //     </Stack>
-      //   ) : (
-      //     <div>
-      //       <Avatar
-      //         className={classes.profileImage}
-      //         radius={200}
-      //         size={300}
-      //         color={'cyan'}
-      //         variant="filled"
-      //         alt="profile-image"
-      //         src={
-      //           !isUndefinedOrNullString(userProfileImage)
-      //             ? userProfileImage
-      //             : ''
-      //         }
-      //       />
-      //       <h1> Welcome Back: {user.username}!</h1>
-      //       <h2>Date joined:{userProfileData}</h2>
-      //     </div>
-      //   )}
-      // </>
-      <div>
-        <Avatar radius="xl" color="indigo" />
-        {/* <Avatar radius="xl" color="indigo" src={
-            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
-          } /> */}
-        <h1> Welcome Back: {userProfileData?.username}!</h1>
-        <h2>Date joined:{userProfileData?.createdAt}</h2>
-        {/* <img src={b} /> */}
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <PageNotFound
-          navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={'/login'}
-          btnText="Login"
-        />
-      </div>
-    )
-  }
-}
-export default Profile
+
+  // <>
+  //   {isLoading ? (
+  //     <Stack align="center">
+  //       <div>
+  //         <Loader size={400} />
+  //       </div>
+  //       <Title>Loading...</Title>
+  //     </Stack>
+  //   ) : (
+  //     <div>
+  //       <Avatar
+  //         className={classes.profileImage}
+  //         radius={200}
+  //         size={300}
+  //         color={'cyan'}
+  //         variant="filled"
+  //         alt="profile-image"
+  //         src={
+  //           !isUndefinedOrNullString(userProfileImage)
+  //             ? userProfileImage
+  //             : ''
+  //         }
+  //       />
+  //       <h1> Welcome Back: {user.username}!</h1>
+  //       <h2>Date joined:{userProfileData}</h2>
+  //     </div>
+  //   )}
+  // </>
+
+  return (
+    <div>
+      <Avatar radius="xl" color="indigo" />
+      {/* <Avatar radius="xl" color="indigo" src={
+        !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
+      } /> */}
+      <h1> Welcome Back: {displayUsername}!</h1>
+      {displayDateJoined === null ? (
+        <></>
+      ) : (
+        <h2>Date joined:{displayDateJoined}</h2>
+      )}
+      {/* <img src={b} /> */}
+    </div>
+  );
+};
+export default Profile;

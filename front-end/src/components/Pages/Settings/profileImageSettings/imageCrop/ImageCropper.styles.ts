@@ -1,4 +1,4 @@
-import {createStyles} from '@mantine/core'
+import { createStyles } from '@mantine/core';
 export const useStyles = createStyles(() => ({
   cropContainer: {
     position: 'relative',
@@ -13,4 +13,4 @@ export const useStyles = createStyles(() => ({
     alignItems: 'stretch',
     width: 500,
   },
-}))
+}));

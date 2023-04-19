@@ -1,19 +1,19 @@
-import React, {useState} from 'react'
-import Cropper from 'react-easy-crop'
-import {Text} from '@mantine/core'
-import {useStyles} from './ImageCropper.styles'
+import React, { useState } from 'react';
+import Cropper from 'react-easy-crop';
+import { Text } from '@mantine/core';
+import { useStyles } from './ImageCropper.styles';
 interface IMyImageCrop {
-  imageFile: any
+  imageFile: any;
 }
-const MyImageCrop: React.FC<IMyImageCrop> = props => {
-  const [crop, setCrop] = useState({x: 0, y: 0})
-  const [zoom, setZoom] = useState(1)
+const MyImageCrop: React.FC<IMyImageCrop> = (props) => {
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
 
-  const {classes} = useStyles()
+  const { classes } = useStyles();
 
   const onZoomChange = (e: React.BaseSyntheticEvent): void => {
-    setZoom(e.target.value)
-  }
+    setZoom(e.target.value);
+  };
   return (
     <div>
       <div className={classes.cropContainer}>
@@ -42,6 +42,6 @@ const MyImageCrop: React.FC<IMyImageCrop> = props => {
         />
       </div>
     </div>
-  )
-}
-export default MyImageCrop
+  );
+};
+export default MyImageCrop;

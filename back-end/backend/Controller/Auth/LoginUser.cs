@@ -39,8 +39,10 @@ public class LoginUser
 
             if (AreCredentialsCorrect)
             {
+                UserDataAccess usernameDataAccess = new UserDataAccess();
+                string username = usernameDataAccess.GetUsername(email);
                 // Generate a JWT token
-                string token = JwtUtils.GenerateJwt("", email, isTeacher);
+                string token = JwtUtils.GenerateJwt(username, email, isTeacher);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     // Return a successful response with a 200 status code

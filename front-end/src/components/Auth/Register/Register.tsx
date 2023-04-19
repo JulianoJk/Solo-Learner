@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {useState} from 'react'
-import {Link, useNavigate} from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   usersDispatchContext,
   IUserInfoContext,
-  IApiError,
-} from '../../../Model/UserModels'
-import {useUserDispatch} from '../../../context/UserContext'
+} from '../../../Model/UserModels';
+import { useUserDispatch } from '../../../context/UserContext';
 import {
   PasswordInput,
   Button,
@@ -14,90 +12,90 @@ import {
   TextInput,
   Anchor,
   Center,
-} from '@mantine/core'
-import {useStyles} from '../Auth.styles'
-import AuthImage from '../../../images/Auth'
-import {registerAPI} from '../../api/api'
-import {AlertComponent} from '../../AlertComponent/AlertComponent'
-import {useMutation} from '@tanstack/react-query'
-import {isUndefinedOrNullString} from '../../../lib/dist'
-import {notificationAlert} from '../../notifications/NotificationAlert'
-import {IconCheck} from '@tabler/icons'
+} from '@mantine/core';
+import { useStyles } from '../Auth.styles';
+import AuthImage from '../../../images/Auth';
+import { registerAPI } from '../../api/api';
+import { AlertComponent } from '../../AlertComponent/AlertComponent';
+import { useMutation } from '@tanstack/react-query';
+import { isUndefinedOrNullString } from '../../../lib/dist';
+import { notificationAlert } from '../../notifications/NotificationAlert';
+import { IconCheck } from '@tabler/icons';
 import {
   IconMail,
   IconLock,
   IconEye,
   IconEyeOff,
   IconUserCircle,
-} from '@tabler/icons'
-import {AppDispatch} from '../../../context/AppContext'
+} from '@tabler/icons';
+import { AppDispatch } from '../../../context/AppContext';
 const Register: React.FC = () => {
-  const navigate = useNavigate()
-  const userDispatch: usersDispatchContext = useUserDispatch()
-  const appDispatch = AppDispatch()
-  const {classes} = useStyles()
+  const navigate = useNavigate();
+  const userDispatch: usersDispatchContext = useUserDispatch();
+  const appDispatch = AppDispatch();
+  const { classes } = useStyles();
 
-  const [email, setEmail] = useState<string>('')
-  const [username, setUsername] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const [confirmPassword, setConfirmPassword] = useState<string>('')
+  const [email, setEmail] = useState<string>('');
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  const {mutate: register, isLoading} = useMutation(registerAPI, {
-    onSuccess: data => {
+  const { mutate: register, isLoading } = useMutation(registerAPI, {
+    onSuccess: (data) => {
       if (typeof data === 'object' && 'error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
-        })
+        });
       } else {
-        const hasToken = isUndefinedOrNullString(data?.token)
+        const hasToken = isUndefinedOrNullString(data?.token);
         if (hasToken) {
           appDispatch({
             type: 'SET_ERROR_ALERT_MESSAGE',
             errorAlertMessage: 'Something went wrong...',
-          })
+          });
         } else if (!hasToken) {
           const user: IUserInfoContext = {
             id: data?.id,
             username: data?.username,
             token: data?.token,
-          }
-          userDispatch({type: 'SET_USER', user: user})
-          navigate('/home')
+          };
+          userDispatch({ type: 'SET_USER', user: user });
+          navigate('/home');
           notificationAlert({
             title: 'Successful registration!',
             message: 'Congratulations! Your account has been created. ',
             icon: <IconCheck size={18} />,
             iconColor: 'teal',
-          })
+          });
         }
       }
     },
-  })
+  });
 
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value)
-  }
+    setEmail(e.target.value);
+  };
 
   const onNameChange = (e: React.BaseSyntheticEvent): void => {
-    setUsername(e.target.value)
-  }
+    setUsername(e.target.value);
+  };
 
   const handlePassword = (e: React.BaseSyntheticEvent): void => {
-    setPassword(e.target.value)
-  }
+    setPassword(e.target.value);
+  };
 
   const handleConfirmPassword = (e: React.BaseSyntheticEvent): void => {
-    setConfirmPassword(e.target.value)
-  }
+    setConfirmPassword(e.target.value);
+  };
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
-    e.preventDefault()
-    register({email, username, password, confirmPassword})
-  }
+    e.preventDefault();
+    register({ email, username, password, confirmPassword });
+  };
 
   return (
-    <Box sx={{maxWidth: 600}} mx="auto" className={classes.formContainer}>
+    <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.formContainer}>
       <Center className={classes.imageContainer}>
         <AuthImage />
       </Center>
@@ -138,7 +136,7 @@ const Register: React.FC = () => {
           minLength={6}
           autoComplete="on"
           label={<span className={classes.inputLabels}>Password:</span>}
-          visibilityToggleIcon={({reveal}) =>
+          visibilityToggleIcon={({ reveal }) =>
             reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
         />
@@ -151,7 +149,7 @@ const Register: React.FC = () => {
           minLength={6}
           autoComplete="on"
           label={<span className={classes.inputLabels}>Confirm Password:</span>}
-          visibilityToggleIcon={({reveal}) =>
+          visibilityToggleIcon={({ reveal }) =>
             reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
         />
@@ -178,6 +176,6 @@ const Register: React.FC = () => {
         </Anchor>
       </span>
     </Box>
-  )
-}
-export default Register
+  );
+};
+export default Register;

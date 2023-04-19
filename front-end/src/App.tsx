@@ -1,52 +1,51 @@
-import Index from './components/Pages/Index/Index'
-import Home from './components/Pages/Home/Home'
-import Login from './components/Auth/Login/Login'
-import Register from './components/Auth/Register/Register'
-import Profile from './components/Pages/Profile/Profile'
-import {Route, BrowserRouter, Routes} from 'react-router-dom'
-import NavigationNormal from './components/Header/Navigation/NavigationNormal'
-import {UserContextProvider} from './context/UserContext'
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
+import Index from './components/Pages/Index/Index';
+import Home from './components/Pages/Home/Home';
+import Login from './components/Auth/Login/Login';
+import Register from './components/Auth/Register/Register';
+import Profile from './components/Pages/Profile/Profile';
+import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import NavigationNormal from './components/Header/Navigation/NavigationNormal';
+import { UserContextProvider } from './context/UserContext';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   AppShell,
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
-} from '@mantine/core'
-import {ModalsProvider} from '@mantine/modals'
-import {NotificationsProvider} from '@mantine/notifications'
-import {useMediaQuery} from '@mantine/hooks'
-import SmallNavigation from './components/Header/Navigation/SmallNavigation'
-import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount'
-import SettingsComponent from './components/Pages/Settings/Settings.component'
-import {checkIfPageIsReload, isUserLoggedIn} from '../src/lib/dist'
-import {AccountSettingsContextProvider} from './context/AccountSettingsContext'
-import {AppContextProvider} from './context/AppContext'
-import {useEffect, useState} from 'react'
-import {AvatarDefaultProps} from './Styles/DefaultPropsStyles.styles'
-import Grammar from './components/Pages/LearningUnits/Grammar/Grammar'
-import Theory from './components/Pages/LearningUnits/Theory/Theory'
-import Exercises from './components/Pages/LearningUnits/Exercises/Exercises'
-import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary'
-import PageNotFound from './components/Pages/pageNotFound/PageNotFound'
+} from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
+import { NotificationsProvider } from '@mantine/notifications';
+import { useMediaQuery } from '@mantine/hooks';
+import SmallNavigation from './components/Header/Navigation/SmallNavigation';
+import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount';
+import { checkIfPageIsReload, isUserLoggedIn } from '../src/lib/dist';
+import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
+import { AppContextProvider } from './context/AppContext';
+import { useEffect, useState } from 'react';
+import { AvatarDefaultProps } from './Styles/DefaultPropsStyles.styles';
+import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
+import Theory from './components/Pages/LearningUnits/Theory/Theory';
+import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
+import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
+import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
 const App = () => {
-  const queryClient = new QueryClient()
-  const isSmallWindow = useMediaQuery('(min-width: 650px)')
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light')
+  const queryClient = new QueryClient();
+  const isSmallWindow = useMediaQuery('(min-width: 650px)');
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
 
   const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
+    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   useEffect(() => {
-    const appTheme: any = localStorage.getItem('app-theme')
+    const appTheme: any = localStorage.getItem('app-theme');
     if (checkIfPageIsReload()) {
       if (appTheme !== null) {
-        const appThemes = JSON.parse(appTheme)
-        toggleColorScheme(appThemes)
+        const appThemes = JSON.parse(appTheme);
+        toggleColorScheme(appThemes);
       }
     }
-  })
+  });
 
   return (
     <ColorSchemeProvider
@@ -58,7 +57,7 @@ const App = () => {
           withNormalizeCSS
           withGlobalStyles
           theme={{
-            globalStyles: theme => ({
+            globalStyles: (theme) => ({
               '*, *::before, *::after': {
                 boxSizing: 'border-box',
               },
@@ -76,7 +75,7 @@ const App = () => {
               },
             }),
             components: {
-              Avatar: {defaultProps: AvatarDefaultProps},
+              Avatar: { defaultProps: AvatarDefaultProps },
             },
             colorScheme,
           }}
@@ -126,11 +125,6 @@ const App = () => {
                           />
 
                           <Route
-                            path="/settings"
-                            element={<SettingsComponent />}
-                          />
-
-                          <Route
                             path="/*"
                             // element={isUserLoggedIn() ? <Home /> : <Index />}
                             element={
@@ -156,7 +150,7 @@ const App = () => {
         </MantineProvider>
       </QueryClientProvider>
     </ColorSchemeProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

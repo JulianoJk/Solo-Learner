@@ -1,7 +1,7 @@
-import {createStyles} from '@mantine/core'
-import {TRANSPARENT_CHART_COLORS} from '../../../Theme/Styles'
+import { createStyles } from '@mantine/core';
+import { TRANSPARENT_CHART_COLORS } from '../../../Theme/Styles';
 
-export const useStyles = createStyles(theme => ({
+export const useStyles = createStyles((theme) => ({
   headerRoot: {
     backgroundImage:
       theme.colorScheme === 'light'
@@ -32,4 +32,4 @@ export const useStyles = createStyles(theme => ({
   buttonsHeader: {
     userSelect: 'none',
   },
-}))
+}));

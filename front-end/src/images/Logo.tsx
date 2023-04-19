@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {ISvgImages} from '../Model/models'
+import * as React from 'react';
+import { ISvgImages } from '../Model/models';
 const LogoImage = (props: ISvgImages) => (
   <svg
     version="1.1"
@@ -202,5 +202,5 @@ ZGlmeQAyMDIyLTEwLTE3VDEwOjQ3OjAzKzAwOjAwskuMrgAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAA
 MjAyMi0xMC0xN1QxMDo0NzowMyswMDowMOVerXEAAAAASUVORK5CYII="
     />
   </svg>
-)
-export default LogoImage
+);
+export default LogoImage;

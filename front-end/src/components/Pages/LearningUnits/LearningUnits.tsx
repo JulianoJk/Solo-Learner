@@ -1,11 +1,11 @@
-import {Card, Center, SimpleGrid, Text} from '@mantine/core'
-import React from 'react'
-import TheoryIcon from '../../../images/TheoryIcon'
-import GrammarIcon from '../../../images/GrammarIcon'
-import {useStyles} from './LearningUnits.styles'
+import { Card, Center, SimpleGrid, Text } from '@mantine/core';
+import React from 'react';
+import TheoryIcon from '../../../images/TheoryIcon';
+import GrammarIcon from '../../../images/GrammarIcon';
+import { useStyles } from './LearningUnits.styles';
 
 const LearningUnits = () => {
-  const {classes} = useStyles()
+  const { classes } = useStyles();
   return (
     <Center>
       <SimpleGrid
@@ -50,6 +50,6 @@ const LearningUnits = () => {
         </Card>
       </SimpleGrid>
     </Center>
-  )
-}
-export default LearningUnits
+  );
+};
+export default LearningUnits;

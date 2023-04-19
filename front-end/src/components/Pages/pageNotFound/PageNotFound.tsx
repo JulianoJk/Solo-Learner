@@ -1,14 +1,21 @@
-import React, {useState} from 'react'
-import {Button, Group, Modal, Text, Title, useMantineTheme} from '@mantine/core'
-import {useNavigate} from 'react-router-dom'
-import PageNotFoundImage from '../../../images/PageNotFoundImage'
-import {useStyles} from './PageNotFound.styles'
+import React, { useState } from 'react';
+import {
+  Button,
+  Group,
+  Modal,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import PageNotFoundImage from '../../../images/PageNotFoundImage';
+import { useStyles } from './PageNotFound.styles';
 interface IPops {
-  bodyText?: string
-  navText?: string
-  statusNumber?: number
-  btnText?: string
-  navigationPath: string
+  bodyText?: string;
+  navText?: string;
+  statusNumber?: number;
+  btnText?: string;
+  navigationPath: string;
 }
 
 const PageNotFound: React.FC<IPops> = ({
@@ -17,10 +24,10 @@ const PageNotFound: React.FC<IPops> = ({
   btnText,
   navigationPath,
 }) => {
-  const navigate = useNavigate()
-  const [opened, setOpened] = useState<boolean>(true)
-  const {classes} = useStyles()
-  const theme = useMantineTheme()
+  const navigate = useNavigate();
+  const [opened, setOpened] = useState<boolean>(true);
+  const { classes } = useStyles();
+  const theme = useMantineTheme();
 
   return (
     <div>
@@ -60,7 +67,7 @@ const PageNotFound: React.FC<IPops> = ({
         </Group>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default PageNotFound
+export default PageNotFound;

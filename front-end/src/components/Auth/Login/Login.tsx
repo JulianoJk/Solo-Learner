@@ -1,11 +1,14 @@
-import React, {useState} from 'react'
-import {NavigateFunction, useNavigate} from 'react-router-dom'
-import {IUserInfoContext, usersDispatchContext} from '../../../Model/UserModels'
+import React, { useState } from 'react';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
+import {
+  IUserInfoContext,
+  usersDispatchContext,
+} from '../../../Model/UserModels';
 
-import AuthImage from '../../../images/Auth'
+import AuthImage from '../../../images/Auth';
 
-import {Link} from 'react-router-dom'
-import {useUserDispatch} from '../../../context/UserContext'
+import { Link } from 'react-router-dom';
+import { useUserDispatch } from '../../../context/UserContext';
 import {
   PasswordInput,
   Button,
@@ -13,63 +16,69 @@ import {
   TextInput,
   Anchor,
   Center,
-} from '@mantine/core'
-import {AlertComponent} from '../../AlertComponent/AlertComponent'
-import {loginAPI} from '../../api/api'
-import {useStyles} from '../Auth.styles'
-import {useMutation} from '@tanstack/react-query'
-import {isUndefinedOrNullString} from '../../../lib/dist'
-import {notificationAlert} from '../../notifications/NotificationAlert'
-import {IconCheck, IconMail, IconLock, IconEye, IconEyeOff} from '@tabler/icons'
-import {AppDispatch} from '../../../context/AppContext'
+} from '@mantine/core';
+import { AlertComponent } from '../../AlertComponent/AlertComponent';
+import { loginAPI } from '../../api/api';
+import { useStyles } from '../Auth.styles';
+import { useMutation } from '@tanstack/react-query';
+import { isUndefinedOrNullString } from '../../../lib/dist';
+import { notificationAlert } from '../../notifications/NotificationAlert';
+import {
+  IconCheck,
+  IconMail,
+  IconLock,
+  IconEye,
+  IconEyeOff,
+} from '@tabler/icons';
+import { AppDispatch } from '../../../context/AppContext';
 
 interface ILoginProps {
-  displayImage?: boolean
-  loginImage?: React.ReactNode
-  switchToRegister?: boolean
-  pathToNavigateAfterLogin?: string
-  refreshPageAfterLogin?: boolean
-  hasBorder?: boolean
-  showNotification?: boolean
+  displayImage?: boolean;
+  loginImage?: React.ReactNode;
+  switchToRegister?: boolean;
+  pathToNavigateAfterLogin?: string;
+  refreshPageAfterLogin?: boolean;
+  hasBorder?: boolean;
+  showNotification?: boolean;
 }
 
-const Login: React.FC<ILoginProps> = props => {
-  const navigate: NavigateFunction = useNavigate()
-  const {classes} = useStyles()
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-  const userDispatch: usersDispatchContext = useUserDispatch()
-  const appDispatch = AppDispatch()
+const Login: React.FC<ILoginProps> = (props) => {
+  const navigate: NavigateFunction = useNavigate();
+  const { classes } = useStyles();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const userDispatch: usersDispatchContext = useUserDispatch();
+  const appDispatch = AppDispatch();
 
   const navigateTo =
     props.pathToNavigateAfterLogin !== undefined
       ? props.pathToNavigateAfterLogin
-      : '/home'
+      : '/home';
 
-  const {mutate: login, isLoading} = useMutation(loginAPI, {
-    onSuccess: data => {
+  const { mutate: login, isLoading } = useMutation(loginAPI, {
+    onSuccess: (data) => {
       if (typeof data === 'object' && 'error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
-        })
+        });
       } else {
-        const hasToken = !isUndefinedOrNullString(data?.token)
+        const hasToken = !isUndefinedOrNullString(data?.token);
 
         if (!hasToken) {
           appDispatch({
             type: 'SET_ERROR_ALERT_MESSAGE',
             errorAlertMessage: 'Something went wrong...',
-          })
+          });
         } else if (hasToken) {
           const user: IUserInfoContext = {
             id: data?.id,
             username: data?.username,
             token: data?.token,
-          }
-          props.refreshPageAfterLogin === true ? window.location.reload() : ''
-          userDispatch({type: 'SET_USER', user: user})
-          navigate(navigateTo)
+          };
+          props.refreshPageAfterLogin === true ? window.location.reload() : '';
+          userDispatch({ type: 'SET_USER', user: user });
+          navigate(navigateTo);
           props.showNotification === false ? (
             <></>
           ) : (
@@ -79,33 +88,33 @@ const Login: React.FC<ILoginProps> = props => {
               icon: <IconCheck size={18} />,
               iconColor: 'teal',
             })
-          )
+          );
         }
       }
     },
-  })
+  });
 
   const onEmailChange = (e: React.BaseSyntheticEvent): void => {
-    setEmail(e.target.value)
-  }
+    setEmail(e.target.value);
+  };
   const onPasswordChange = (e: React.BaseSyntheticEvent): void => {
-    setPassword(e.target.value)
-  }
+    setPassword(e.target.value);
+  };
 
   const handleInputs = async (e: React.BaseSyntheticEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      login({email, password})
-      return
+      login({ email, password });
+      return;
     } catch (error) {
-      console.warn(error)
-      return
+      console.warn(error);
+      return;
     }
-  }
+  };
 
   return (
     <Box
-      sx={{maxWidth: 600}}
+      sx={{ maxWidth: 600 }}
       mx="auto"
       className={props.hasBorder === false ? '' : classes.formContainer}
     >
@@ -134,7 +143,7 @@ const Login: React.FC<ILoginProps> = props => {
           placeholder="Password"
           value={password}
           onChange={onPasswordChange}
-          visibilityToggleIcon={({reveal}) =>
+          visibilityToggleIcon={({ reveal }) =>
             reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
           }
           autoComplete="on"
@@ -167,6 +176,6 @@ const Login: React.FC<ILoginProps> = props => {
         </span>
       )}
     </Box>
-  )
-}
-export default Login
+  );
+};
+export default Login;
