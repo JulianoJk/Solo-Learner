@@ -16,7 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import { deleteAccountAPI } from '../../../api/api';
 import { useUserDispatch } from '../../../../context/UserContext';
 import { IconLock, IconEye, IconEyeOff, IconMoodSad } from '@tabler/icons';
-import { IApiError, IDeleteAccount } from '../../../../Model/UserModels';
+import { IApiError, IApiMessageResponse } from '../../../../Model/UserModels';
 
 export default function MantineDemo() {
   const navigate: NavigateFunction = useNavigate();
@@ -50,9 +50,8 @@ export default function MantineDemo() {
     userDispatch({ type: 'RESET_STATE' });
     navigate('/');
   };
-  // const {mutate: deleteAccount, isLoading} = useMutation(deleteAccountAPI, {
   const { mutate: deleteAccount } = useMutation(deleteAccountAPI, {
-    onSuccess: (data: IDeleteAccount | IApiError) => {
+    onSuccess: (data: IApiMessageResponse | IApiError) => {
       if (typeof data === 'object' && 'error' in data) {
         // handle the error case
         appDispatch({

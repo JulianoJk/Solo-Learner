@@ -1,6 +1,6 @@
 import {
   IApiError,
-  IDeleteAccount,
+  IApiMessageResponse,
   IUserInfoContext,
 } from '../../Model/UserModels';
 const URL: string = 'http://localhost:3001/';
@@ -123,7 +123,7 @@ export const deleteAccountAPI = async ({
   token,
   email,
   password,
-}: any): Promise<IDeleteAccount | IApiError> => {
+}: any): Promise<IApiMessageResponse | IApiError> => {
   try {
     const response = await fetch(URL + `users/delete`, {
       method: 'DELETE',
@@ -141,7 +141,7 @@ export const deleteAccountAPI = async ({
       return errorData;
     }
 
-    const data: IDeleteAccount = await response.json();
+    const data: IApiMessageResponse = await response.json();
     return data;
   } catch (error) {
     console.error(error);
@@ -186,5 +186,38 @@ export const sendImageToServerAPI = async (
     return results;
   } catch (error) {
     return;
+  }
+};
+export const updateUsernameAPI = async ({
+  token,
+  email,
+  newUsername,
+}: any): Promise<IApiMessageResponse | IApiError> => {
+  try {
+    const response = await fetch(URL + `users/update/username`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        email: email,
+        username: newUsername,
+      }),
+    });
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
+
+    const data: IApiMessageResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
   }
 };

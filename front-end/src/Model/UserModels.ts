@@ -9,7 +9,7 @@ export interface IUserInfoContext {
   isTeacher?: boolean;
   email?: string;
 }
-export interface IDeleteAccount {
+export interface IApiMessageResponse {
   message: string;
 }
 
