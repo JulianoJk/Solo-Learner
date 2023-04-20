@@ -114,7 +114,6 @@ export default function MantineDemo() {
                 reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
               }
               autoComplete="on"
-              // onChange={onPasswordChange}
               {...form.getInputProps('password')}
             />
 

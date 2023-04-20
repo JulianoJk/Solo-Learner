@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Box, Button, Modal, TextInput, Title } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import DeleteAccount from './DeleteAccount/DeleteAccount';
@@ -7,13 +6,10 @@ import { useStyles } from './Settings.styles';
 import { AppDispatch, AppState } from '../../../context/AppContext';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import { useMutation } from '@tanstack/react-query';
-import { IconMail } from '@tabler/icons';
+import { IconMail, IconMoodHappy } from '@tabler/icons';
 import { updateUsernameAPI } from '../../api/api';
-import {
-  IApiError,
-  IApiMessageResponse,
-  IUserInfoContext,
-} from '../../../Model/UserModels';
+import { IUserInfoContext } from '../../../Model/UserModels';
+import { notificationAlert } from '../../notifications/NotificationAlert';
 
 var SettingsComponent = () => {
   const { classes } = useStyles();
@@ -28,16 +24,34 @@ var SettingsComponent = () => {
   const { mutate: updateUsernameMutation, isLoading } = useMutation(
     updateUsernameAPI,
     {
-      onSuccess: (data: IApiMessageResponse | IApiError) => {
-        const updatedUserInfo: IUserInfoContext = {
-          ...user,
-          username: newUsername,
-        };
-        userDispatch({ type: 'SET_USER', user: updatedUserInfo });
+      onSuccess: (data) => {
+        if (typeof data === 'object' && 'error' in data) {
+          // handle the error case
+          appDispatch({
+            type: 'SET_ERROR_ALERT_MESSAGE',
+            errorAlertMessage: data.error.message,
+          });
+        } else {
+          const updatedUserInfo: IUserInfoContext = {
+            ...user,
+            username: newUsername,
+          };
+          userDispatch({ type: 'SET_USER', user: updatedUserInfo });
+          noitificationAlert(data.message);
+        }
       },
     },
   );
 
+  const noitificationAlert = (messageToUser: string) => {
+    notificationAlert({
+      title: 'Username updated!',
+      message: messageToUser,
+      iconColor: 'yellow',
+      closeAfter: 4000,
+      icon: <IconMoodHappy color="black" size={18} />,
+    });
+  };
   const email: string = user.email as string;
 
   const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
@@ -106,12 +120,6 @@ var SettingsComponent = () => {
             >
               Save changes
             </Button>
-            {/* {updateUsernameMutation.isError && (
-              <p>
-                {updateUsernameMutation.error ??
-                  'Something went wrong. Please try again later.'}
-              </p>
-            )} */}
           </form>
         </Box>
       </Modal>
