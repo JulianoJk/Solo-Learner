@@ -102,6 +102,7 @@ var SettingsComponent = () => {
           />
           <form onSubmit={handleSubmit}>
             <TextInput
+              defaultValue={user.username ?? ''}
               icon={<IconMail />}
               required
               type="text"
