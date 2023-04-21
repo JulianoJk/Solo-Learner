@@ -14,6 +14,9 @@ export const useStyles = createStyles((theme) => ({
   form: {
     padding: 10,
   },
+  formInput: {
+    width: 300,
+  },
   title: {
     display: 'flex',
     justifyContent: 'center',

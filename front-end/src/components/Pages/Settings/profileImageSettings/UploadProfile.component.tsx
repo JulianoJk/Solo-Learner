@@ -7,6 +7,7 @@ import {
   Group,
   Title,
   SimpleGrid,
+  UnstyledButton,
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
 import { Dropzone } from '@mantine/dropzone';
@@ -243,16 +244,30 @@ const UploadProfileComponent = () => {
           </Button>
         </Group>
       </Modal>
-      <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
-      <Avatar
-        className={classes.profileImage}
-        radius={200}
-        size={200}
-        color={'cyan'}
-        variant="filled"
-        alt="profile-image"
-        src={profileImage}
-      />
+      <Group>
+        <Avatar
+          className={classes.profileImage}
+          radius={200}
+          size={50}
+          color={'cyan'}
+          variant="filled"
+          alt="profile-image"
+          src={profileImage}
+        />
+        <UnstyledButton onClick={() => setOpenModal(true)}>
+          <div>
+            <Text> Update Profile</Text>
+            <Text
+              size="xs"
+              color="dimmed"
+              sx={{ inlineSize: 350, overflowWrap: 'break-word' }}
+            >
+              Upload a selfie, avatar, or anything in between to make your
+              profile pop!
+            </Text>
+          </div>
+        </UnstyledButton>
+      </Group>
     </div>
   );
 };

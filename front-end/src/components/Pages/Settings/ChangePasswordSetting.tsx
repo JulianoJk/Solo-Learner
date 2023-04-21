@@ -62,9 +62,7 @@ const ChangePasswordSetting = () => {
           <Button
             className={classes.changePasswordButton}
             onClick={toggle}
-            rightIcon={
-              <IconChevronRight color="black" size={18}></IconChevronRight>
-            }
+            rightIcon={<IconChevronRight></IconChevronRight>}
             variant="subtle"
             color="gray"
           >
@@ -92,31 +90,34 @@ const ChangePasswordSetting = () => {
           })}
         >
           <PasswordInput
+            className={classes.formInput}
             icon={<IconLock />}
             label={<span>Current Password:</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
-              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+              reveal ? <IconEyeOff /> : <IconEye />
             }
             autoComplete="on"
             {...form.getInputProps('currentPassword')}
           />
           <PasswordInput
+            className={classes.formInput}
             icon={<IconLock />}
             label={<span>New Password :</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
-              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+              reveal ? <IconEyeOff /> : <IconEye />
             }
             autoComplete="on"
             {...form.getInputProps('newPassword')}
           />
           <PasswordInput
+            className={classes.formInput}
             icon={<IconLock />}
             label={<span>Confirm New Password:</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
-              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+              reveal ? <IconEyeOff /> : <IconEye />
             }
             autoComplete="on"
             {...form.getInputProps('confirmNewPassword')}
@@ -129,9 +130,7 @@ const ChangePasswordSetting = () => {
         <div>
           <Button
             onClick={toggle}
-            rightIcon={
-              <IconChevronRight color="black" size={18}></IconChevronRight>
-            }
+            rightIcon={<IconChevronRight></IconChevronRight>}
             variant="light"
             color="grape"
           >

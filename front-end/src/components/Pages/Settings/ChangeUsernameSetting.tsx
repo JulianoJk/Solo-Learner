@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import { AppDispatch, AppState } from '../../../context/AppContext';
 import { IUserInfoContext } from '../../../Model/UserModels';
-import { TextInput } from '@mantine/core';
+import { Loader, LoadingOverlay, TextInput } from '@mantine/core';
 import { notificationAlert } from '../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons';
 import { useStyles } from './Settings.styles';
@@ -21,7 +21,7 @@ export const ChangeUsernameSetting = () => {
   const email: string = user.email as string;
   const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
 
-  useQuery(
+  const { isLoading } = useQuery(
     ['getSettingsItems', hasToken],
     async () => {
       if (hasToken) {
@@ -74,14 +74,13 @@ export const ChangeUsernameSetting = () => {
       }
     },
   });
-
   const noitificationAlert = (messageToUser: string) => {
     notificationAlert({
       title: 'Username updated!',
       message: messageToUser,
       iconColor: 'yellow',
       closeAfter: 4000,
-      icon: <IconMoodHappy color="black" size={18} />,
+      icon: <IconMoodHappy />,
     });
   };
   const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
@@ -90,14 +89,21 @@ export const ChangeUsernameSetting = () => {
 
   return (
     <>
+      <LoadingOverlay
+        visible={isLoading}
+        overlayBlur={3}
+        loaderProps={{ size: 'lg' }}
+      />
       <form onSubmit={(e) => e.preventDefault()}>
         <TextInput
           icon={<IconMail />}
+          className={classes.formInput}
           type="text"
           label={<span className={classes.inputLabels}>Your full name :</span>}
           value={newUsername}
           onChange={onUsernameChange}
           autoComplete="on"
+          rightSection={isLoading ? <Loader size="xs" /> : <></>}
         />
       </form>
     </>
