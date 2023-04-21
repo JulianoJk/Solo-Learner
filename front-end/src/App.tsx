@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Index from './components/Pages/Index/Index';
 import Home from './components/Pages/Home/Home';
 import Login from './components/Auth/Login/Login';
@@ -33,6 +34,8 @@ import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
 import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
+import HeaderMenu from './components/Header/HeaderMenu.component';
+
 const App = () => {
   const queryClient = new QueryClient();
   const isSmallWindow = useMediaQuery('(min-width: 650px)');
@@ -94,11 +97,12 @@ const App = () => {
                     <AppShell
                       padding="md"
                       header={
-                        isSmallWindow ? (
-                          <NavigationNormal />
-                        ) : (
-                          <SmallNavigation />
-                        )
+                        // isSmallWindow ? (
+                        //   <NavigationNormal />
+                        // ) : (
+                        //   <SmallNavigation />
+                        // )
+                        <HeaderMenu />
                       }
                     >
                       <Routes>

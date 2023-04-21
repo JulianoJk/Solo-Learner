@@ -1,5 +1,5 @@
 import { createStyles } from '@mantine/core';
-import { LIGHT_MENT } from '../../Theme/Styles';
+
 export const useStyles = createStyles((theme) => ({
   formContainer: {
     borderWidth: '2px !important',
@@ -24,9 +24,6 @@ export const useStyles = createStyles((theme) => ({
     display: 'inline-block',
     width: '100%',
     marginTop: 10,
-    '&:hover': {
-      backgroundColor: LIGHT_MENT,
-    },
   },
   inputLabels: {
     fontWeight: 700,

@@ -14,11 +14,7 @@ export const useStyles = createStyles((theme) => ({
         : `1px solid ${theme.colors.dark[5]}`,
     marginBottom: 20,
   },
-  logo: {
-    position: 'absolute',
-    top: -40,
-    left: 0,
-  },
+
   menuDropDown: {
     backgroundColor: TRANSPARENT_CHART_COLORS[6],
   },

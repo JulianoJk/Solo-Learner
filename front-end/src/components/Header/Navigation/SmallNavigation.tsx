@@ -48,7 +48,7 @@ const SmallNavigation: React.FC = () => {
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
-        <LogoImage width={150} height={150} className={classes.logo} />
+        <LogoImage width={150} height={150} />
         {isUserLoggedIn() ? (
           <>
             <TokenExpirationChecker />

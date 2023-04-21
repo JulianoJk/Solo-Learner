@@ -94,7 +94,7 @@ const NavigationNormal: React.FC = () => {
             navigate(logoNavigation);
           }}
         >
-          <LogoImage width={170} height={160} className={classes.logo} />
+          <LogoImage width={170} height={160} />
         </Anchor>
 
         {isUserLoggedIn() ? (

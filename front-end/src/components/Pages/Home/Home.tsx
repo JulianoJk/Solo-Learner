@@ -6,9 +6,11 @@ import Theory from '../LearningUnits/Theory/Theory';
 import Vocabulary from '../LearningUnits/Vocabulary/Vocabulary';
 import { useStyles } from './Home.styles';
 import LearningUnits from '../LearningUnits/LearningUnits';
+import { SettingsHeader } from '../Settings/SettingsHeader.component';
 
 const Home: React.FC = () => {
   const { classes } = useStyles();
+
   return <LearningUnits />;
 };
 
