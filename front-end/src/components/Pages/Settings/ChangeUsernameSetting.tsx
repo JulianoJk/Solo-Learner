@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { updateUsernameAPI } from '../../api/api';
-import { useMutation } from '@tanstack/react-query';
+import { profileAPI, updateUsernameAPI } from '../../api/api';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import { AppDispatch, AppState } from '../../../context/AppContext';
 import { IUserInfoContext } from '../../../Model/UserModels';
@@ -8,6 +8,7 @@ import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons';
 import { useStyles } from './Settings.styles';
+import { isUndefinedOrNullString } from '../../../lib/dist';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = AppDispatch();
@@ -15,9 +16,45 @@ export const ChangeUsernameSetting = () => {
   const userDispatch = useUserDispatch();
   const { user } = useUserState();
   const { classes } = useStyles();
-  const [newUsername, setNewUsername] = useState(user.username);
+  const [newUsername, setNewUsername] = useState<string>('');
 
   const email: string = user.email as string;
+  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
+
+  useQuery(
+    ['getSettingsItems', hasToken],
+    async () => {
+      if (hasToken) {
+        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
+        return data;
+      }
+    },
+    {
+      enabled: true,
+      refetchOnWindowFocus: true,
+      onSuccess: (data) => {
+        const displayUsername: string = isUndefinedOrNullString(data?.username)
+          ? (user.username as string)
+          : (data?.username as string);
+        setNewUsername(displayUsername);
+      },
+    },
+  );
+
+  useEffect(() => {
+    if (saveButtonClicked) {
+      const userToken = user.token;
+      updateUsernameMutation({ token: userToken, email, newUsername });
+      appDispatch({
+        type: 'SET_USER_SETTINGS_MODAL',
+        isUserSettingsOpen: false,
+      });
+    }
+    appDispatch({
+      type: 'SETTINGS_SAVE_BUTTON_CLICKED',
+      saveButtonClicked: false,
+    });
+  }, [saveButtonClicked, user, email, newUsername]);
 
   const { mutate: updateUsernameMutation } = useMutation(updateUsernameAPI, {
     onSuccess: (data) => {
@@ -35,23 +72,8 @@ export const ChangeUsernameSetting = () => {
         userDispatch({ type: 'SET_USER', user: updatedUserInfo });
         noitificationAlert(data.message);
       }
-      appDispatch({
-        type: 'SETTINGS_SAVE_BUTTON_CLICKED',
-        saveButtonClicked: false,
-      });
     },
   });
-
-  useEffect(() => {
-    if (saveButtonClicked) {
-      const userToken = user.token;
-      updateUsernameMutation({ token: userToken, email, newUsername });
-      appDispatch({
-        type: 'SET_USER_SETTINGS_MODAL',
-        isUserSettingsOpen: false,
-      });
-    }
-  }, [saveButtonClicked]);
 
   const noitificationAlert = (messageToUser: string) => {
     notificationAlert({
