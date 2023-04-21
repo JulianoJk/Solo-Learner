@@ -36,7 +36,10 @@ function HeaderMegaMenu() {
     <Box pb={120}>
       <Header height={60} px="md" className={classes.headerRoot}>
         <Group position="apart" sx={{ height: '100%' }}>
-          <Box sx={{ width: 70, height: 60, marginTop: '0.4rem' }} onClick={()=>navigateUserTo('/')}>
+          <Box
+            sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
+            onClick={() => navigateUserTo('/')}
+          >
             <LogoImage />
           </Box>
 
