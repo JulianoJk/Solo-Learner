@@ -3,23 +3,25 @@ import React, { useEffect, useState } from 'react';
 import DeleteAccount from './DeleteAccount/DeleteAccount';
 import UploadProfileComponent from './profileImageSettings/UploadProfile.component';
 import { useStyles } from './Settings.styles';
-import { AppDispatch, AppState } from '../../../context/AppContext';
+import { AppDispatch } from '../../../context/AppContext';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
 import { useMutation } from '@tanstack/react-query';
 import { IconMail, IconMoodHappy } from '@tabler/icons';
 import { updateUsernameAPI } from '../../api/api';
 import { IUserInfoContext } from '../../../Model/UserModels';
 import { notificationAlert } from '../../notifications/NotificationAlert';
+import ChangePasswordSetting from './ChangePasswordSetting';
+// import { isUndefinedOrNullString } from '../../../lib/dist';
 
-var SettingsComponent = () => {
+const SettingsComponent = () => {
   const { classes } = useStyles();
   const appDispatch = AppDispatch();
   const userDispatch = useUserDispatch();
-  const { isUserSettingsOpen } = AppState();
+  // const { isUserSettingsOpen } = AppState();
   const { user } = useUserState();
   const [newUsername, setNewUsername] = useState(user.username);
-
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
+  const email: string = user.email as string;
 
   const { mutate: updateUsernameMutation, isLoading } = useMutation(
     updateUsernameAPI,
@@ -52,11 +54,6 @@ var SettingsComponent = () => {
       icon: <IconMoodHappy color="black" size={18} />,
     });
   };
-  const email: string = user.email as string;
-
-  const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
-    setNewUsername(e.target.value);
-  };
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const userToken = user.token;
@@ -65,6 +62,9 @@ var SettingsComponent = () => {
       type: 'SET_USER_SETTINGS_MODAL',
       isUserSettingsOpen: false,
     });
+  };
+  const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
+    setNewUsername(e.target.value);
   };
 
   useEffect(() => {
@@ -75,13 +75,15 @@ var SettingsComponent = () => {
   return (
     <>
       <Modal
-        opened={isUserSettingsOpen}
+        // opened={isUserSettingsOpen}
+        opened={true}
         transition="fade"
         centered
         transitionDuration={600}
         overlayBlur={4}
         withCloseButton={true}
         transitionTimingFunction="ease"
+        size="80em"
         onClose={() =>
           appDispatch({
             type: 'SET_USER_SETTINGS_MODAL',
@@ -89,10 +91,10 @@ var SettingsComponent = () => {
           })
         }
       >
-        <Title>Settings</Title>
-        <UploadProfileComponent />
-        <DeleteAccount />
-        <Box sx={{ maxWidth: 600 }} mx="auto" className={classes.formContainer}>
+        <Box mx="auto" className={classes.formContainer}>
+          <Title>Settings</Title>
+          <UploadProfileComponent />
+          <DeleteAccount />
           <TextInput
             placeholder={user.email}
             label="Email"
@@ -102,7 +104,6 @@ var SettingsComponent = () => {
           />
           <form onSubmit={handleSubmit}>
             <TextInput
-              defaultValue={user.username ?? ''}
               icon={<IconMail />}
               required
               type="text"
@@ -122,6 +123,7 @@ var SettingsComponent = () => {
               Save changes
             </Button>
           </form>
+          <ChangePasswordSetting></ChangePasswordSetting>
         </Box>
       </Modal>
     </>

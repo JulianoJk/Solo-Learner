@@ -66,7 +66,7 @@ const TokenExpirationChecker = () => {
         onClose={() => {
           return;
         }}
-        overlayBlur={4}
+        overlayBlur={10}
         withCloseButton={false}
       >
         <Center>
