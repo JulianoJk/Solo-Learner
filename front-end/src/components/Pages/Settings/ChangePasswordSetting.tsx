@@ -1,13 +1,17 @@
 import React from 'react';
-import { Button, PasswordInput, Title } from '@mantine/core';
+import { Button, Collapse, PasswordInput, Title } from '@mantine/core';
 import { useState } from 'react';
 import { IconChevronRight, IconLock, IconEyeOff, IconEye } from '@tabler/icons';
 import { hasLength, useForm } from '@mantine/form';
 import { useStyles } from './Settings.styles';
+import { useDisclosure } from '@mantine/hooks';
 const ChangePasswordSetting = () => {
-  const [changePassVisible, setChangePassVisible] = useState<boolean>(false);
   const { classes } = useStyles();
-
+  const [changePassVisible, setChangePassVisible] = useState<boolean>(true);
+  const [opened, { toggle }] = useDisclosure(false, {
+    onOpen: () => setChangePassVisible(false),
+    onClose: () => setChangePassVisible(true),
+  });
   const form = useForm({
     initialValues: {
       currentPassword: '',
@@ -31,10 +35,6 @@ const ChangePasswordSetting = () => {
     },
   });
 
-  const onPasswordChangeHandler = (): void => {
-    setChangePassVisible(!changePassVisible);
-  };
-
   const handleInput = async (
     currentPassword: string,
     newPassword: string,
@@ -53,85 +53,92 @@ const ChangePasswordSetting = () => {
   };
   return (
     <>
-      <div>
-        <div className={classes.changePasswordLabel}>
-          <Title order={6}>Password </Title>
-          Change the password for your account
-        </div>
-        <Button
-          className={classes.changePasswordButton}
-          onClick={onPasswordChangeHandler}
-          rightIcon={
-            <IconChevronRight color="black" size={18}></IconChevronRight>
-          }
-          variant="subtle"
-          color="gray"
-        >
-          Change password
-        </Button>
-      </div>
       {changePassVisible ? (
-        <>
-          <form
-            onSubmit={form.onSubmit((values) => {
-              handleInput(
-                values.currentPassword,
-                values.newPassword,
-                values.confirmNewPassword,
-              );
-            })}
-          >
-            <PasswordInput
-              icon={<IconLock />}
-              label={<span>Current Password:</span>}
-              placeholder="Password"
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
-              }
-              autoComplete="on"
-              {...form.getInputProps('currentPassword')}
-            />
-            <PasswordInput
-              icon={<IconLock />}
-              label={<span>New Password :</span>}
-              placeholder="Password"
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
-              }
-              autoComplete="on"
-              {...form.getInputProps('newPassword')}
-            />
-            <PasswordInput
-              icon={<IconLock />}
-              label={<span>Confirm New Password:</span>}
-              placeholder="Password"
-              visibilityToggleIcon={({ reveal }) =>
-                reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
-              }
-              autoComplete="on"
-              {...form.getInputProps('confirmNewPassword')}
-            />
-            <Button type="submit" color={'cyan'}>
-              Confirm
-            </Button>
-          </form>
-
-          <div>
-            <Button
-              onClick={onPasswordChangeHandler}
-              rightIcon={
-                <IconChevronRight color="black" size={18}></IconChevronRight>
-              }
-              variant="light"
-              color="grape"
-            >
-              Cancel
-            </Button>
+        <div>
+          <div className={classes.changePasswordLabel}>
+            <Title order={6}>Password </Title>
+            Change the password for your account
           </div>
-        </>
+          <Button
+            className={classes.changePasswordButton}
+            onClick={toggle}
+            rightIcon={
+              <IconChevronRight color="black" size={18}></IconChevronRight>
+            }
+            variant="subtle"
+            color="gray"
+          >
+            Change password
+          </Button>
+        </div>
       ) : (
         <></>
       )}
+
+      <Collapse
+        in={opened}
+        transitionDuration={500}
+        transitionTimingFunction="linear"
+        animateOpacity={true}
+      >
+        <form
+          className={classes.formContainer}
+          onSubmit={form.onSubmit((values) => {
+            handleInput(
+              values.currentPassword,
+              values.newPassword,
+              values.confirmNewPassword,
+            );
+          })}
+        >
+          <PasswordInput
+            icon={<IconLock />}
+            label={<span>Current Password:</span>}
+            placeholder="Password"
+            visibilityToggleIcon={({ reveal }) =>
+              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+            }
+            autoComplete="on"
+            {...form.getInputProps('currentPassword')}
+          />
+          <PasswordInput
+            icon={<IconLock />}
+            label={<span>New Password :</span>}
+            placeholder="Password"
+            visibilityToggleIcon={({ reveal }) =>
+              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+            }
+            autoComplete="on"
+            {...form.getInputProps('newPassword')}
+          />
+          <PasswordInput
+            icon={<IconLock />}
+            label={<span>Confirm New Password:</span>}
+            placeholder="Password"
+            visibilityToggleIcon={({ reveal }) =>
+              reveal ? <IconEyeOff size={16} /> : <IconEye size={16} />
+            }
+            autoComplete="on"
+            {...form.getInputProps('confirmNewPassword')}
+          />
+          <Button type="submit" color={'cyan'}>
+            Confirm
+          </Button>
+        </form>
+
+        <div>
+          <Button
+            onClick={toggle}
+            rightIcon={
+              <IconChevronRight color="black" size={18}></IconChevronRight>
+            }
+            variant="light"
+            color="grape"
+          >
+            Cancel
+          </Button>
+        </div>
+      </Collapse>
     </>
   );
 };

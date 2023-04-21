@@ -7,6 +7,7 @@ interface IAppStateContext {
   errorAlertMessage: string;
   isUserSettingsOpen: boolean;
   isSessionExpired: boolean;
+  saveButtonClicked: boolean;
 }
 
 // Default state fot the Application context
@@ -16,6 +17,7 @@ const defaultState: IAppStateContext = {
   errorAlertMessage: '',
   isUserSettingsOpen: false,
   isSessionExpired: false,
+  saveButtonClicked: false,
 };
 type TApplicationAction =
   | {
@@ -37,6 +39,10 @@ type TApplicationAction =
   | {
       type: 'SET_SESSION_TOKEN_EXPIRED';
       isSessionExpired: boolean;
+    }
+  | {
+      type: 'SETTINGS_SAVE_BUTTON_CLICKED';
+      saveButtonClicked: boolean;
     }
   | {
       type: 'RESET_ERROR_MESSAGE';
@@ -66,6 +72,9 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, isUserSettingsOpen: action.isUserSettingsOpen };
     case 'SET_SESSION_TOKEN_EXPIRED':
       return { ...state, isSessionExpired: action.isSessionExpired };
+    case 'SETTINGS_SAVE_BUTTON_CLICKED':
+      return { ...state, saveButtonClicked: action.saveButtonClicked };
+
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }
