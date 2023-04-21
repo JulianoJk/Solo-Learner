@@ -76,7 +76,7 @@ function HeaderMegaMenu() {
           <Group className={classes.hiddenMobile}>
             <Button
               leftIcon={<IconLogin size={16} />}
-              variant="default"
+              variant="light"
               radius="sm"
               onClick={() => navigateUserTo('/login')}
             >
@@ -111,11 +111,16 @@ function HeaderMegaMenu() {
           <>
             <Center>
               <Box
-                sx={{ width: 70, height: 60 }}
+                sx={{
+                  width: 70,
+                  height: 60,
+                  marginRight: '35px',
+                }}
                 onClick={() => navigateUserTo('/')}
               >
                 <LogoImage />
               </Box>
+              <ModeTheme />
             </Center>
           </>
         }
@@ -166,7 +171,7 @@ function HeaderMegaMenu() {
           <Group position="center" grow pb="xl" px="md">
             <Button
               leftIcon={<IconLogin size={16} />}
-              variant="default"
+              variant="light"
               radius="sm"
               onClick={() => navigateUserTo('/login')}
             >
