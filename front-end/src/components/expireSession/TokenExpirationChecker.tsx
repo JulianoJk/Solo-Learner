@@ -58,15 +58,20 @@ const TokenExpirationChecker = () => {
   if (isSessionExpired) {
     return (
       <Modal
-        transition="fade"
+        transitionProps={{
+          transition: 'fade',
+          duration: 100,
+          timingFunction: 'ease',
+        }}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 10,
+        }}
         centered
-        transitionDuration={600}
-        transitionTimingFunction="ease"
         opened={openedModal}
         onClose={() => {
           return;
         }}
-        overlayBlur={10}
         withCloseButton={false}
       >
         <Center>

@@ -7,7 +7,6 @@ import {
   Group,
   Title,
   SimpleGrid,
-  UnstyledButton,
 } from '@mantine/core';
 import { useStyles } from './UploadProfile.styles';
 import { Dropzone } from '@mantine/dropzone';
@@ -19,13 +18,13 @@ import {
 import { saveProfileImageAfterReload } from '../../../../lib/dist';
 import { useUserState } from '../../../../context/UserContext';
 import { sendImageToServerAPI } from '../../../api/api';
-import { IconPhoto, IconX, IconUpload } from '@tabler/icons';
+import { IconPhoto, IconX, IconUpload } from '@tabler/icons-react';
 import {
   COMMON_WHITE,
   LIGHTER_GRAY,
   LIGHT_NAVY,
 } from '../../../../Theme/Styles';
-import { IconAlertCircle } from '@tabler/icons';
+import { IconAlertCircle } from '@tabler/icons-react';
 import MyImageCrop from './imageCrop/imageCropper';
 import { showNotification } from '@mantine/notifications';
 
@@ -159,7 +158,8 @@ const UploadProfileComponent = () => {
         opened={openModal}
         onClose={() => setOpenModal(false)}
         className={classes.modalRoot}
-        overflow="inside"
+        // TODO!: Fix the overflow
+        // overflow="inside"
         closeOnClickOutside={false}
         closeOnEscape={true}
       >
@@ -244,30 +244,16 @@ const UploadProfileComponent = () => {
           </Button>
         </Group>
       </Modal>
-      <Group>
-        <Avatar
-          className={classes.profileImage}
-          radius={200}
-          size={50}
-          color={'cyan'}
-          variant="filled"
-          alt="profile-image"
-          src={profileImage}
-        />
-        <UnstyledButton onClick={() => setOpenModal(true)}>
-          <div>
-            <Text> Update Profile</Text>
-            <Text
-              size="xs"
-              color="dimmed"
-              sx={{ inlineSize: 350, overflowWrap: 'break-word' }}
-            >
-              Upload a selfie, avatar, or anything in between to make your
-              profile pop!
-            </Text>
-          </div>
-        </UnstyledButton>
-      </Group>
+      <Button onClick={() => setOpenModal(true)}>Update Profile</Button>
+      <Avatar
+        className={classes.profileImage}
+        radius={200}
+        size={200}
+        color={'cyan'}
+        variant="filled"
+        alt="profile-image"
+        src={profileImage}
+      />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import {
   Button,
@@ -32,15 +33,6 @@ const PageNotFound: React.FC<IPops> = ({
   return (
     <div>
       <Modal
-        styles={{
-          modal: {
-            backgroundColor:
-              theme.colorScheme === 'light' ? '#FFFFFF' : '#444654',
-            color: 'red',
-          },
-        }}
-        overlayOpacity={0.55}
-        overlayBlur={3}
         opened={opened}
         withCloseButton={false}
         onClose={() => setOpened(true)}

@@ -15,7 +15,8 @@ import {
   MantineProvider,
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
-import { NotificationsProvider } from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
+
 import { useMediaQuery } from '@mantine/hooks';
 import SmallNavigation from './components/Header/Navigation/SmallNavigation';
 import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount';
@@ -86,69 +87,66 @@ const App = () => {
         >
           <AppContextProvider>
             <ModalsProvider>
-              <NotificationsProvider>
-                <BrowserRouter>
-                  <UserContextProvider>
-                    <AccountSettingsContextProvider>
-                      <AppShell
-                        padding="md"
-                        header={
-                          isSmallWindow ? (
-                            <NavigationNormal />
-                          ) : (
-                            <SmallNavigation />
-                          )
-                        }
-                      >
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route path="/login" element={<Login />} />
-                          <Route path="/register" element={<Register />} />
-                          <Route path="/home" element={<Home />} />
-                          <Route path="/profile" element={<Profile />} />
-                          <Route
-                            path="/delete-account"
-                            element={<DeleteAccount />}
-                          />
+              <BrowserRouter>
+                <Notifications />
+                <UserContextProvider>
+                  <AccountSettingsContextProvider>
+                    <AppShell
+                      padding="md"
+                      header={
+                        isSmallWindow ? (
+                          <NavigationNormal />
+                        ) : (
+                          <SmallNavigation />
+                        )
+                      }
+                    >
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route
+                          path="/delete-account"
+                          element={<DeleteAccount />}
+                        />
 
-                          <Route
-                            path="/learning-units/grammar"
-                            element={<Grammar />}
-                          />
-                          <Route
-                            path="/learning-units/theory"
-                            element={<Theory />}
-                          />
-                          <Route
-                            path="/learning-units/vocabulary"
-                            element={<Vocabulary />}
-                          />
-                          <Route
-                            path="/learning-units/exercises"
-                            element={<Exercises />}
-                          />
+                        <Route
+                          path="/learning-units/grammar"
+                          element={<Grammar />}
+                        />
+                        <Route
+                          path="/learning-units/theory"
+                          element={<Theory />}
+                        />
+                        <Route
+                          path="/learning-units/vocabulary"
+                          element={<Vocabulary />}
+                        />
+                        <Route
+                          path="/learning-units/exercises"
+                          element={<Exercises />}
+                        />
 
-                          <Route
-                            path="/*"
-                            // element={isUserLoggedIn() ? <Home /> : <Index />}
-                            element={
-                              <PageNotFound
-                                navigationPath={
-                                  isUserLoggedIn() ? '/home' : '/'
-                                }
-                                btnText="Go back!"
-                                statusNumber={404}
-                                navText="Sorry, the page you are looking for could not be found."
-                              />
-                            }
-                          />
-                        </Routes>
-                      </AppShell>
-                    </AccountSettingsContextProvider>
-                  </UserContextProvider>
-                </BrowserRouter>
-                <ReactQueryDevtools initialIsOpen={false} />
-              </NotificationsProvider>
+                        <Route
+                          path="/*"
+                          // element={isUserLoggedIn() ? <Home /> : <Index />}
+                          element={
+                            <PageNotFound
+                              navigationPath={isUserLoggedIn() ? '/home' : '/'}
+                              btnText="Go back!"
+                              statusNumber={404}
+                              navText="Sorry, the page you are looking for could not be found."
+                            />
+                          }
+                        />
+                      </Routes>
+                    </AppShell>
+                  </AccountSettingsContextProvider>
+                </UserContextProvider>
+              </BrowserRouter>
+              <ReactQueryDevtools initialIsOpen={false} />
             </ModalsProvider>
           </AppContextProvider>
         </MantineProvider>

@@ -28,7 +28,7 @@ The following routes are available:
 - `POST /users/register`: Registers a new user and returns a message indicating success or failure.
 - `GET /users/profile`: Returns user profile information if authenticated.
 
- For `POST` routes, the request body must be in JSON format.
+For `POST` routes, the request body must be in JSON format.
 
 ## Dependencies
 
@@ -52,3 +52,14 @@ dotnet add package <package-name>
 ## Contributing
 
 If you find a bug or have a suggestion for a new feature, feel free to open an issue or submit a pull request.
+
+# FRONT_END:
+
+## Libraries Used:
+
+- [Mantine UI](https://mantine.dev/)
+- [TanStack Query](https://tanstack.com/query/v4/?from=reactQueryV3&original=https://react-query-v3.tanstack.com/)
+<!-- - [Tabler Icons for React](https://tabler-icons-react.vercel.app/) -->
+- [Tabler Icons for React](https://tabler.io/docs/icons/react)
+
+- [react-easy-crop](https://www.npmjs.com/package/react-easy-crop?activeTab=readme)

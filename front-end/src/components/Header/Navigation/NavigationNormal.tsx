@@ -2,7 +2,14 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useUserDispatch } from '../../../context/UserContext';
-import { Home, User, Login, Pencil } from 'tabler-icons-react';
+import {
+  IconHome,
+  IconUserCircle,
+  IconLogin,
+  IconPencil,
+  IconSettings,
+  IconTrash,
+} from '@tabler/icons-react';
 import {
   Button,
   Group,
@@ -28,7 +35,6 @@ import {
 } from '@mantine/hooks';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 import { AppDispatch } from '../../../context/AppContext';
-import { IconSettings, IconTrash } from '@tabler/icons';
 import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import ModeTheme from '../../../Styles/ModeTheme';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
@@ -99,13 +105,13 @@ const NavigationNormal: React.FC = () => {
               to="/home"
               radius="md"
               size="lg"
-              leftIcon={<Home size={16} />}
+              leftIcon={<IconHome size={16} />}
               uppercase
             >
               Home
             </Button>
             <Button
-              leftIcon={<User size={16} />}
+              leftIcon={<IconUserCircle size={16} />}
               radius="md"
               size="lg"
               uppercase
@@ -171,7 +177,7 @@ const NavigationNormal: React.FC = () => {
             </Button>
 
             <Button
-              leftIcon={<Login size={16} />}
+              leftIcon={<IconLogin size={16} />}
               radius="md"
               size="lg"
               variant="filled"
@@ -183,7 +189,7 @@ const NavigationNormal: React.FC = () => {
               Sign-in
             </Button>
             <Button
-              leftIcon={<Pencil size={16} />}
+              leftIcon={<IconPencil size={16} />}
               radius="md"
               size="lg"
               uppercase

@@ -5,7 +5,7 @@ import {
   Tooltip,
   ColorScheme,
 } from '@mantine/core';
-import { IconSun, IconMoonStars } from '@tabler/icons';
+import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import { useLocalStorage } from '@mantine/hooks';
 
 const ModeTheme = () => {
@@ -36,7 +36,11 @@ const ModeTheme = () => {
       closeDelay={80}
       arrowSize={6}
       withArrow
-      transition="fade"
+      transitionProps={{
+        transition: 'fade',
+        duration: 100,
+        timingFunction: 'ease',
+      }}
     >
       <ActionIcon
         size="lg"

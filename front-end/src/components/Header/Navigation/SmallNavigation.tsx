@@ -6,10 +6,10 @@ import LogoImage from '../../../images/Logo';
 import { useNavigate } from 'react-router-dom';
 import { useClickOutside } from '@mantine/hooks';
 import React, { useEffect } from 'react';
-import { Home } from 'tabler-icons-react';
+import { IconHome } from '@tabler/icons-react';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 import { isUserLoggedIn, saveProfileImageAfterReload } from '../../../lib/dist';
-import { IconSettings, IconTrash, IconUser } from '@tabler/icons';
+import { IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
 import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import { AppDispatch } from '../../../context/AppContext';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
@@ -78,7 +78,7 @@ const SmallNavigation: React.FC = () => {
                   className={classes.menuItems}
                 >
                   <Center>
-                    <Home size={16} fontWeight={700} />
+                    <IconHome size={16} fontWeight={700} />
                     <Text weight={700} sx={{ paddingLeft: 5 }}>
                       HOME
                     </Text>

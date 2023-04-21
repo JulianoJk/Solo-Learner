@@ -15,7 +15,12 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { deleteAccountAPI } from '../../../api/api';
 import { useUserDispatch } from '../../../../context/UserContext';
-import { IconLock, IconEye, IconEyeOff, IconMoodSad } from '@tabler/icons';
+import {
+  IconLock,
+  IconEye,
+  IconEyeOff,
+  IconMoodSad,
+} from '@tabler/icons-react';
 import { IApiError, IApiMessageResponse } from '../../../../Model/UserModels';
 
 export default function MantineDemo() {
@@ -86,15 +91,20 @@ export default function MantineDemo() {
     <>
       <Modal
         title="Delete your profile"
-        transition="fade"
+        transitionProps={{
+          transition: 'fade',
+          duration: 100,
+          timingFunction: 'ease',
+        }}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 4,
+        }}
         centered
-        transitionDuration={100}
-        transitionTimingFunction="ease"
         opened={opened}
         onClose={() => {
           setOpened(false);
         }}
-        overlayBlur={4}
         withCloseButton={false}
       >
         <Box maw={300} mx="auto">

@@ -29,7 +29,7 @@ import {
   IconLock,
   IconEye,
   IconEyeOff,
-} from '@tabler/icons';
+} from '@tabler/icons-react';
 import { AppDispatch } from '../../../context/AppContext';
 
 interface ILoginProps {

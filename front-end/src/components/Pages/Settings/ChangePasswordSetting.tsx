@@ -1,7 +1,12 @@
 import React from 'react';
 import { Button, Collapse, PasswordInput, Title } from '@mantine/core';
 import { useState } from 'react';
-import { IconChevronRight, IconLock, IconEyeOff, IconEye } from '@tabler/icons';
+import {
+  IconChevronRight,
+  IconLock,
+  IconEyeOff,
+  IconEye,
+} from '@tabler/icons-react';
 import { hasLength, useForm } from '@mantine/form';
 import { useStyles } from './Settings.styles';
 import { useDisclosure } from '@mantine/hooks';

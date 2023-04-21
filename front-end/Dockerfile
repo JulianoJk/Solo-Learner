@@ -7,10 +7,10 @@ WORKDIR /usr/src/app/front_end
 # copy the package
 COPY package.json .
 
-# runs npm install
+# runs yarn install
 RUN yarn install
 
-RUN npm i @tabler/icons
+RUN yarn add @tabler/icons-react
 
 RUN yarn 
 
@@ -19,5 +19,5 @@ COPY . .
 # exposes port 3000
 EXPOSE 3000
 
-# runs the comand npm start
+# runs the comand yarn start
 CMD ["yarn", "start"]

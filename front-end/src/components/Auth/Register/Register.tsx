@@ -20,14 +20,14 @@ import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useMutation } from '@tanstack/react-query';
 import { isUndefinedOrNullString } from '../../../lib/dist';
 import { notificationAlert } from '../../notifications/NotificationAlert';
-import { IconCheck } from '@tabler/icons';
 import {
   IconMail,
   IconLock,
   IconEye,
   IconEyeOff,
   IconUserCircle,
-} from '@tabler/icons';
+  IconCheck,
+} from '@tabler/icons-react';
 import { AppDispatch } from '../../../context/AppContext';
 const Register: React.FC = () => {
   const navigate = useNavigate();
