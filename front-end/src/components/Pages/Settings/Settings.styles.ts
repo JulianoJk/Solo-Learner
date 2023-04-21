@@ -42,4 +42,12 @@ export const useStyles = createStyles((theme) => ({
   imageContainer: {
     borderRadius: '50%',
   },
+  changePasswordButton: {
+    float: 'right',
+    margin: 10,
+  },
+  changePasswordLabel: {
+    float: 'left',
+    margin: 10,
+  },
 }));

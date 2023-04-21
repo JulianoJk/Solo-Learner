@@ -105,7 +105,6 @@ const SettingsComponent = () => {
           <form onSubmit={handleSubmit}>
             <TextInput
               icon={<IconMail />}
-              required
               type="text"
               label={
                 <span className={classes.inputLabels}>Your full name :</span>
@@ -123,8 +122,8 @@ const SettingsComponent = () => {
               Save changes
             </Button>
           </form>
-          <ChangePasswordSetting></ChangePasswordSetting>
         </Box>
+        <ChangePasswordSetting />
       </Modal>
     </>
   );

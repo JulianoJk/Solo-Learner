@@ -111,7 +111,6 @@ export default function MantineDemo() {
             />
             <PasswordInput
               icon={<IconLock />}
-              required
               label={<span>Password:</span>}
               placeholder="Password"
               visibilityToggleIcon={({ reveal }) =>
