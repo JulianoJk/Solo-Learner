@@ -3,7 +3,7 @@ import React from 'react';
 import DeleteAccount from './DeleteAccount/DeleteAccount';
 import UploadProfileComponent from './profileImageSettings/UploadProfile.component';
 import { useStyles } from './Settings.styles';
-import { AppDispatch, AppState } from '../../../context/AppContext';
+import { useAppDispatch, AppState } from '../../../context/AppContext';
 import { useUserState } from '../../../context/UserContext';
 // import { IUserInfoContext } from '../../../Model/UserModels';
 import ChangePasswordSetting from './ChangePasswordSetting';
@@ -12,7 +12,7 @@ import { ChangeUsernameSetting } from './ChangeUsernameSetting';
 
 const SettingsComponent = () => {
   const { classes } = useStyles();
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   const { isUserSettingsOpen } = AppState();
   const { user } = useUserState();
 

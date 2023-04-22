@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { profileAPI, updateUsernameAPI } from '../../api/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../context/UserContext';
-import { AppDispatch, AppState } from '../../../context/AppContext';
+import { useAppDispatch, AppState } from '../../../context/AppContext';
 import { IUserInfoContext } from '../../../Model/UserModels';
 import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../notifications/NotificationAlert';
@@ -11,7 +11,7 @@ import { useStyles } from './Settings.styles';
 import { isUndefinedOrNullString } from '../../../lib/dist';
 
 export const ChangeUsernameSetting = () => {
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   const { saveButtonClicked } = AppState();
   const userDispatch = useUserDispatch();
   const { user } = useUserState();

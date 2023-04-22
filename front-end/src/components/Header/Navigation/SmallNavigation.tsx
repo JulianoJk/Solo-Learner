@@ -11,7 +11,7 @@ import { useAccountSettingsDispatch } from '../../../context/AccountSettingsCont
 import { isUserLoggedIn, saveProfileImageAfterReload } from '../../../lib/dist';
 import { IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
-import { AppDispatch } from '../../../context/AppContext';
+import { useAppDispatch } from '../../../context/AppContext';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
 
 const SmallNavigation: React.FC = () => {
@@ -26,7 +26,7 @@ const SmallNavigation: React.FC = () => {
   const ref = useClickOutside(() => setOpened(false));
 
   const title = opened ? 'Close navigation' : 'Open navigation';
-  const appDisp = AppDispatch();
+  const appDisp = useAppDispatch();
 
   const handleClick = () => {
     setOpened((openedBurger) => !openedBurger);

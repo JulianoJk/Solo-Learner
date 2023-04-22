@@ -30,7 +30,7 @@ import {
   IconEye,
   IconEyeOff,
 } from '@tabler/icons-react';
-import { AppDispatch } from '../../../context/AppContext';
+import { useAppDispatch } from '../../../context/AppContext';
 
 interface ILoginProps {
   displayImage?: boolean;
@@ -48,7 +48,7 @@ const Login: React.FC<ILoginProps> = (props) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const userDispatch: usersDispatchContext = useUserDispatch();
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   // TODO!: Add this to context ???
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 

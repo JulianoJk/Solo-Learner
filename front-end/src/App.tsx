@@ -36,6 +36,7 @@ import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
 import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
 import HeaderMenu from './components/Header/HeaderMenu.component';
 import NotFoundImage from './components/Pages/pageNotFound/NotFoundImage.component';
+import { AuthenticationForm } from './components/Auth/Login/AuthenticationForm';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -133,6 +134,7 @@ const App = () => {
                           path="/learning-units/exercises"
                           element={<Exercises />}
                         />
+                        <Route path="/auth" element={<AuthenticationForm />} />
 
                         <Route
                           path="/*"

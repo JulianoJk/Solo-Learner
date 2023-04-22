@@ -70,8 +70,7 @@ const Profile: React.FC = () => {
   // </>
 
   const data = {
-    avatar:
-      '',
+    avatar: '',
     role: userRole,
     userName: displayUsername,
     displayDateJoined: displayDateJoined,

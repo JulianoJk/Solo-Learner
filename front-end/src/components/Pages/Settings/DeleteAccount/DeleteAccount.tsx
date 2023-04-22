@@ -8,7 +8,7 @@ import {
   PasswordInput,
   Modal,
 } from '@mantine/core';
-import { AppDispatch } from '../../../../context/AppContext';
+import { useAppDispatch } from '../../../../context/AppContext';
 import { useState } from 'react';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
@@ -25,7 +25,7 @@ import { IApiError, IApiMessageResponse } from '../../../../Model/UserModels';
 
 export default function MantineDemo() {
   const navigate: NavigateFunction = useNavigate();
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   const [opened, setOpened] = useState<boolean>(false);
   const userDispatch = useUserDispatch();
 

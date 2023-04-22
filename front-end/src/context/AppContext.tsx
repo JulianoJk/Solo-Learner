@@ -101,12 +101,12 @@ const AppState = (): IAppStateContext => {
 };
 
 // Function to use the userDispatch
-const AppDispatch = (): ApplicationDispatchContext => {
+const useAppDispatch = (): ApplicationDispatchContext => {
   const context = useContext(ApplicationDispatch);
   if (context === undefined) {
-    throw new Error('AppDispatch must be used within AppDispatchContext');
+    throw new Error('useAppDispatch must be used within AppDispatchContext');
   }
   return context;
 };
 
-export { AppContextProvider, AppState, AppDispatch };
+export { AppContextProvider, AppState, useAppDispatch };

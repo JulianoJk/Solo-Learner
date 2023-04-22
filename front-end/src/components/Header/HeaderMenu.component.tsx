@@ -25,7 +25,7 @@ import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
 import { capitalString, isUserLoggedIn } from '../../lib/dist';
 import { useUserDispatch } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
-import { AppDispatch } from '../../context/AppContext';
+import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
 
 const HeaderMegaMenu = () => {
@@ -33,7 +33,7 @@ const HeaderMegaMenu = () => {
     useDisclosure(false);
   const { classes, theme } = useStyles();
   const userDispatch = useUserDispatch();
-  const appDisp = AppDispatch();
+  const appDisp = useAppDispatch();
   const { pathname } = useLocation();
   const [documentTitle, setDocumentTitle] = useState('');
 

@@ -7,10 +7,10 @@ import Login from '../Auth/Login/Login';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserDispatch } from '../../context/UserContext';
 import { IUserInfoContext } from '../../Model/UserModels';
-import { AppDispatch, AppState } from '../../context/AppContext';
+import { useAppDispatch, AppState } from '../../context/AppContext';
 const TokenExpirationChecker = () => {
   const { isSessionExpired } = AppState();
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   const [openedModal, handlers] = useDisclosure(false);
   const { pathname } = useLocation(); // <-- get current location being accessed
   const userDispatch = useUserDispatch();

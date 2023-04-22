@@ -28,11 +28,11 @@ import {
   IconUserCircle,
   IconCheck,
 } from '@tabler/icons-react';
-import { AppDispatch } from '../../../context/AppContext';
+import { useAppDispatch } from '../../../context/AppContext';
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const userDispatch: usersDispatchContext = useUserDispatch();
-  const appDispatch = AppDispatch();
+  const appDispatch = useAppDispatch();
   const { classes } = useStyles();
   // TODO!: Add this to context ???
   const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);

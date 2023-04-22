@@ -34,7 +34,7 @@ import {
   useMediaQuery,
 } from '@mantine/hooks';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
-import { AppDispatch } from '../../../context/AppContext';
+import { useAppDispatch } from '../../../context/AppContext';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import ModeTheme from '../../../Styles/ModeTheme';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
@@ -47,7 +47,7 @@ const NavigationNormal: React.FC = () => {
   const { pathname } = useLocation();
 
   const { classes } = useStyles();
-  const appDisp = AppDispatch();
+  const appDisp = useAppDispatch();
   const [opened, setOpened] = useState(false);
   const clickedOutsideRef = useClickOutside(() => setOpened(false));
 
