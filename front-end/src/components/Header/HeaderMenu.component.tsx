@@ -68,12 +68,13 @@ const HeaderMegaMenu = () => {
             sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
             onClick={() => navigateUserTo(logoNavigation)}
           >
-            <TokenExpirationChecker></TokenExpirationChecker>
             <LogoImage />
           </Box>
 
           {isUserLoggedIn() ? (
             <Group className={classes.hiddenMobile}>
+              <TokenExpirationChecker></TokenExpirationChecker>
+
               <Button
                 leftIcon={<IconLogin size={16} />}
                 variant="light"
