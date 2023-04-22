@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useUserState } from '../../../context/UserContext';
 import { IUserInfoContext } from '../../../Model/UserModels';
 import { profileAPI } from '../../api/api';
-import { Avatar } from '@mantine/core';
+// import { Avatar } from '@mantine/core';
 import { isUndefinedOrNullString } from '../../../lib/dist';
+import { UserInfoIcons } from './UserInfo.component';
 
 const Profile: React.FC = () => {
   const { user } = useUserState();
@@ -23,13 +24,14 @@ const Profile: React.FC = () => {
     },
   );
   const displayUsername = isUndefinedOrNullString(userProfileData?.username)
-    ? user.username
-    : userProfileData?.username;
+    ? (user.username as string)
+    : (userProfileData?.username as string);
   const displayDateJoined = isUndefinedOrNullString(
     userProfileData?.createdAt as string,
   )
     ? null
     : userProfileData?.createdAt;
+  const userRole = user.isTeacher === true ? 'Teacher' : 'Student';
 
   // var b;
   // useEffect(() => {
@@ -67,18 +69,20 @@ const Profile: React.FC = () => {
   //   )}
   // </>
 
+  const data = {
+    avatar:
+      '',
+    role: userRole,
+    userName: displayUsername,
+    displayDateJoined: displayDateJoined,
+  };
   return (
     <div>
-      <Avatar radius="xl" color="indigo" />
+      {/* <Avatar radius="xl" color="indigo" /> */}
+      <UserInfoIcons {...data}></UserInfoIcons>
       {/* <Avatar radius="xl" color="indigo" src={
         !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
       } /> */}
-      <h1> Welcome Back: {displayUsername}!</h1>
-      {displayDateJoined === null ? (
-        <></>
-      ) : (
-        <h2>Date joined:{displayDateJoined}</h2>
-      )}
       {/* <img src={b} /> */}
     </div>
   );

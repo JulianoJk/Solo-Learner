@@ -53,7 +53,7 @@ interface NotFoundImageProps {
   btnText?: string;
   navigationPath: string;
 }
-const NotFoundImage: React.FC<NotFoundImageProps> = () => {
+const NotFoundImage: React.FC<NotFoundImageProps> = (props) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
@@ -77,7 +77,7 @@ const NotFoundImage: React.FC<NotFoundImageProps> = () => {
             size="md"
             mt="xl"
             className={classes.control}
-            onClick={() => navigate('/')}
+            onClick={() => navigate(props.navigationPath ?? '/')}
           >
             Get back to home page
           </Button>
