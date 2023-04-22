@@ -9,8 +9,9 @@ import {
   ScrollArea,
   rem,
   Center,
+  Anchor,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
 import { useStyles } from './HeaderMenu.styles';
 import ModeTheme from '../../Styles/ModeTheme';
@@ -20,77 +21,127 @@ import {
   IconLogin,
   IconUserEdit,
 } from '@tabler/icons-react';
-import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
+import { capitalString, isUserLoggedIn } from '../../lib/dist';
+import { useUserDispatch } from '../../context/UserContext';
+import { useEffect, useState } from 'react';
+import { AppDispatch } from '../../context/AppContext';
+import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
 
-function HeaderMegaMenu() {
+const HeaderMegaMenu = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const { classes, theme } = useStyles();
-  const navigate: NavigateFunction = useNavigate();
+  const userDispatch = useUserDispatch();
+  const appDisp = AppDispatch();
+  const { pathname } = useLocation();
+  const [documentTitle, setDocumentTitle] = useState('');
 
+  const navigate: NavigateFunction = useNavigate();
+  const logOut = () => {
+    userDispatch({ type: 'RESET_STATE' });
+    navigate('/');
+  };
   const navigateUserTo = (path: string) => {
     navigate(path);
     closeDrawer();
   };
+  useDocumentTitle(documentTitle);
+  useEffect(() => {
+    const titles = capitalString(pathname.replace('/', ''));
+    if (pathname !== '/') {
+      setDocumentTitle(titles + ' - Solo Learner');
+    } else {
+      setDocumentTitle('Solo Learner');
+    }
+    appDisp({
+      type: 'RESET_ERROR_MESSAGE',
+    });
+  }, [pathname]);
+  const logoNavigation = isUserLoggedIn() ? '/home' : '/';
+
   return (
     <Box pb={120}>
       <Header height={60} px="md" className={classes.headerRoot}>
         <Group position="apart" sx={{ height: '100%' }}>
           <Box
             sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
-            onClick={() => navigateUserTo('/')}
+            onClick={() => navigateUserTo(logoNavigation)}
           >
+            <TokenExpirationChecker></TokenExpirationChecker>
             <LogoImage />
           </Box>
 
-          <Group
-            sx={{ height: '100%' }}
-            spacing={0}
-            className={classes.hiddenMobile}
-          >
-            <Button
-              leftIcon={<IconHome size={16} />}
-              radius="sm"
-              onClick={() => navigateUserTo('/')}
-              color="cyan"
-              variant="subtle"
-              className={classes.link}
-            >
-              Home
-            </Button>
+          {isUserLoggedIn() ? (
+            <Group className={classes.hiddenMobile}>
+              <Button
+                leftIcon={<IconLogin size={16} />}
+                variant="light"
+                radius="sm"
+                onClick={() => navigateUserTo('/home')}
+              >
+                Home
+              </Button>
+              <Button
+                leftIcon={<IconLogin size={16} />}
+                variant="light"
+                color="red"
+                radius="sm"
+                onClick={() => logOut()}
+              >
+                log out
+              </Button>
+            </Group>
+          ) : (
+            <>
+              <Group
+                sx={{ height: '100%' }}
+                spacing={0}
+                className={classes.hiddenMobile}
+              >
+                <Button
+                  leftIcon={<IconHome size={16} />}
+                  radius="sm"
+                  onClick={() => navigateUserTo('/')}
+                  color="cyan"
+                  variant="subtle"
+                  className={classes.link}
+                >
+                  Home
+                </Button>
 
-            <Button
-              leftIcon={<IconInfoCircle size={16} />}
-              radius="sm"
-              onClick={() => navigateUserTo('/')}
-              color="cyan"
-              variant="subtle"
-              className={classes.link}
-            >
-              About
-            </Button>
-
-            <ModeTheme />
-          </Group>
-
-          <Group className={classes.hiddenMobile}>
-            <Button
-              leftIcon={<IconLogin size={16} />}
-              variant="light"
-              radius="sm"
-              onClick={() => navigateUserTo('/login')}
-            >
-              Log in
-            </Button>
-            <Button
-              leftIcon={<IconUserEdit size={16} />}
-              radius="sm"
-              onClick={() => navigateUserTo('/register')}
-              color="cyan"
-            >
-              Sign up
-            </Button>
-          </Group>
+                <Button
+                  leftIcon={<IconInfoCircle size={16} />}
+                  radius="sm"
+                  onClick={() => navigateUserTo('/')}
+                  color="cyan"
+                  variant="subtle"
+                  className={classes.link}
+                >
+                  About
+                </Button>
+                <ModeTheme />
+              </Group>
+              <Group className={classes.hiddenMobile}>
+                <Button
+                  leftIcon={<IconLogin size={16} />}
+                  variant="light"
+                  radius="sm"
+                  onClick={() => navigateUserTo('/login')}
+                >
+                  Log in
+                </Button>
+                <Button
+                  leftIcon={<IconUserEdit size={16} />}
+                  radius="sm"
+                  onClick={() => navigateUserTo('/register')}
+                  color="cyan"
+                >
+                  Sign up
+                </Button>
+              </Group>
+            </>
+          )}
 
           <Burger
             opened={drawerOpened}
@@ -110,16 +161,22 @@ function HeaderMegaMenu() {
         title={
           <>
             <Center>
-              <Box
-                sx={{
-                  width: 70,
-                  height: 60,
-                  marginRight: '35px',
+              <Anchor
+                onClick={() => {
+                  navigate('/');
                 }}
-                onClick={() => navigateUserTo('/')}
               >
-                <LogoImage />
-              </Box>
+                <Box
+                  sx={{
+                    width: 70,
+                    height: 60,
+                    marginRight: '35px',
+                  }}
+                  onClick={() => navigateUserTo(logoNavigation)}
+                >
+                  <LogoImage />
+                </Box>
+              </Anchor>
               <ModeTheme />
             </Center>
           </>
@@ -188,7 +245,8 @@ function HeaderMegaMenu() {
           </Group>
         </ScrollArea>
       </Drawer>
+      {/* <TokenExpirationChecker /> */}
     </Box>
   );
-}
+};
 export default HeaderMegaMenu;

@@ -35,6 +35,7 @@ import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
 import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
 import HeaderMenu from './components/Header/HeaderMenu.component';
+import NotFoundImage from './components/Pages/pageNotFound/NotFoundImage.component';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -137,11 +138,9 @@ const App = () => {
                           path="/*"
                           // element={isUserLoggedIn() ? <Home /> : <Index />}
                           element={
-                            <PageNotFound
+                            <NotFoundImage
                               navigationPath={isUserLoggedIn() ? '/home' : '/'}
-                              btnText="Go back!"
                               statusNumber={404}
-                              navText="Sorry, the page you are looking for could not be found."
                             />
                           }
                         />

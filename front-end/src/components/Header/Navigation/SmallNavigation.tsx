@@ -10,7 +10,7 @@ import { IconHome } from '@tabler/icons-react';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 import { isUserLoggedIn, saveProfileImageAfterReload } from '../../../lib/dist';
 import { IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
-import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
+// import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import { AppDispatch } from '../../../context/AppContext';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
 
@@ -51,7 +51,7 @@ const SmallNavigation: React.FC = () => {
         <LogoImage width={150} height={150} />
         {isUserLoggedIn() ? (
           <>
-            <TokenExpirationChecker />
+            {/* <TokenExpirationChecker /> */}
             <Menu
               shadow="md"
               width={200}

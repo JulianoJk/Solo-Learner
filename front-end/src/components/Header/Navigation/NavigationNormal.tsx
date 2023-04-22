@@ -35,7 +35,7 @@ import {
 } from '@mantine/hooks';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 import { AppDispatch } from '../../../context/AppContext';
-import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
+// import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import ModeTheme from '../../../Styles/ModeTheme';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
 
@@ -99,7 +99,7 @@ const NavigationNormal: React.FC = () => {
 
         {isUserLoggedIn() ? (
           <>
-            <TokenExpirationChecker />
+            {/* <TokenExpirationChecker /> */}
             <Button
               component={Link}
               to="/home"
