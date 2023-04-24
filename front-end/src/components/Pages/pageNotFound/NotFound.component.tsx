@@ -8,7 +8,7 @@ import {
   SimpleGrid,
   rem,
 } from '@mantine/core';
-import NotFound from '../../../images/NotFount';
+import NotFoundImage from '../../../images/NotFount';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({
@@ -46,14 +46,14 @@ const useStyles = createStyles((theme) => ({
     },
   },
 }));
-interface NotFoundImageProps {
+interface NotFoundProps {
   bodyText?: string;
   navText?: string;
   statusNumber?: number;
   btnText?: string;
   navigationPath: string;
 }
-const NotFoundImage: React.FC<NotFoundImageProps> = (props) => {
+const NotFound: React.FC<NotFoundProps> = (props) => {
   const { classes } = useStyles();
   const navigate = useNavigate();
 
@@ -64,7 +64,7 @@ const NotFoundImage: React.FC<NotFoundImageProps> = (props) => {
         cols={2}
         breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}
       >
-        <NotFound className={classes.mobileImage} />
+        <NotFoundImage className={classes.mobileImage} />
         <div>
           <Title className={classes.title}>Something is not right...</Title>
           <Text color="dimmed" size="lg">
@@ -82,9 +82,9 @@ const NotFoundImage: React.FC<NotFoundImageProps> = (props) => {
             Get back to home page
           </Button>
         </div>
-        <NotFound className={classes.desktopImage} />
+        <NotFoundImage className={classes.desktopImage} />
       </SimpleGrid>
     </Container>
   );
 };
-export default NotFoundImage;
+export default NotFound;

@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Index from './components/Pages/Index/Index';
 import Home from './components/Pages/Home/Home';
-import Login from './components/Auth/Login/Login';
-import Register from './components/Auth/Register/Register';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import NavigationNormal from './components/Header/Navigation/NavigationNormal';
+// import NavigationNormal from './components/Header/Navigation/NavigationNormal';
 import { UserContextProvider } from './context/UserContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -17,9 +14,7 @@ import {
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-
-import { useMediaQuery } from '@mantine/hooks';
-import SmallNavigation from './components/Header/Navigation/SmallNavigation';
+// import SmallNavigation from './components/Header/Navigation/SmallNavigation';
 import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount';
 import { checkIfPageIsReload, isUserLoggedIn } from '../src/lib/dist';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
@@ -33,14 +28,13 @@ import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
-import PageNotFound from './components/Pages/pageNotFound/PageNotFound';
 import HeaderMenu from './components/Header/HeaderMenu.component';
-import NotFoundImage from './components/Pages/pageNotFound/NotFoundImage.component';
-import { AuthenticationForm } from './components/Auth/Login/AuthenticationForm';
+import NotFound from './components/Pages/pageNotFound/NotFound.component';
+import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
+import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
 
 const App = () => {
   const queryClient = new QueryClient();
-  const isSmallWindow = useMediaQuery('(min-width: 650px)');
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
 
   const toggleColorScheme = (value?: ColorScheme) =>
@@ -96,21 +90,23 @@ const App = () => {
                 <Notifications />
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
-                    <AppShell
-                      padding="md"
-                      header={
-                        // isSmallWindow ? (
-                        //   <NavigationNormal />
-                        // ) : (
-                        //   <SmallNavigation />
-                        // )
-                        <HeaderMenu />
-                      }
-                    >
+                    <AppShell padding="md" header={<HeaderMenu />}>
                       <Routes>
                         <Route path="/" element={<Index />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                        <Route
+                          path="/login"
+                          element={
+                            <AuthenticationLoginForm
+                              hasBorder={true}
+                              switchToRegister={true}
+                            />
+                          }
+                        />
+                        <Route
+                          path="/register"
+                          element={<AuthenticationRegisterForm />}
+                        />
+
                         <Route path="/home" element={<Home />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route
@@ -134,13 +130,12 @@ const App = () => {
                           path="/learning-units/exercises"
                           element={<Exercises />}
                         />
-                        <Route path="/auth" element={<AuthenticationForm />} />
 
                         <Route
                           path="/*"
                           // element={isUserLoggedIn() ? <Home /> : <Index />}
                           element={
-                            <NotFoundImage
+                            <NotFound
                               navigationPath={isUserLoggedIn() ? '/home' : '/'}
                               statusNumber={404}
                             />

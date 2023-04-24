@@ -12,6 +12,7 @@ export const useStyles = createStyles((theme) => ({
       theme.colorScheme === 'light' ? `11px solid indigo` : `1px solid #343541`,
   },
   form: {
+    // width: '40em',   
     padding: 10,
   },
   title: {

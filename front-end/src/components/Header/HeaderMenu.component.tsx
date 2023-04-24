@@ -8,6 +8,7 @@ import {
   Drawer,
   ScrollArea,
   rem,
+  Text,
   Center,
   Anchor,
 } from '@mantine/core';
@@ -73,8 +74,7 @@ const HeaderMegaMenu = () => {
 
           {isUserLoggedIn() ? (
             <Group className={classes.hiddenMobile}>
-              <TokenExpirationChecker></TokenExpirationChecker>
-
+              <TokenExpirationChecker />
               <Button
                 leftIcon={<IconLogin size={16} />}
                 variant="light"
@@ -126,11 +126,14 @@ const HeaderMegaMenu = () => {
               <Group className={classes.hiddenMobile}>
                 <Button
                   leftIcon={<IconLogin size={16} />}
-                  variant="light"
+                  variant="filled"
+                  color="violet"
                   radius="sm"
                   onClick={() => navigateUserTo('/login')}
                 >
-                  Log in
+                  <Text fz="md" color="white">
+                    Log in
+                  </Text>
                 </Button>
                 <Button
                   leftIcon={<IconUserEdit size={16} />}
@@ -229,11 +232,14 @@ const HeaderMegaMenu = () => {
           <Group position="center" grow pb="xl" px="md">
             <Button
               leftIcon={<IconLogin size={16} />}
-              variant="light"
               radius="sm"
+              variant="filled"
+              color="violet"
               onClick={() => navigateUserTo('/login')}
             >
-              Log in
+              <Text fz="md" color="white">
+                Log in
+              </Text>
             </Button>
             <Button
               leftIcon={<IconUserEdit size={16} />}

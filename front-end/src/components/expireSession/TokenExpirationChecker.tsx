@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
-import { Button, Center, Modal, Title } from '@mantine/core';
+import { Button, Center, Modal, Title, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { checkIfPageIsReload, isUserLoggedIn } from '../../lib/dist';
-import Login from '../Auth/Login/Login';
+// import Login from '../Auth/Login/Login';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserDispatch } from '../../context/UserContext';
 import { IUserInfoContext } from '../../Model/UserModels';
 import { useAppDispatch, AppState } from '../../context/AppContext';
+import AuthenticationLoginForm from '../Auth/Login/AuthenticationLoginForm';
+
 const TokenExpirationChecker = () => {
   const { isSessionExpired } = AppState();
   const appDispatch = useAppDispatch();
@@ -19,9 +21,10 @@ const TokenExpirationChecker = () => {
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
     if (token) {
-      const decoded: any = jwtDecode(token);
+      // const decoded: any = jwtDecode(token);
 
-      const isExpired = decoded.exp < Date.now() / 1000;
+      // const isExpired = decoded.exp < Date.now() / 1000;
+      const isExpired = true;
 
       if (isUserLoggedIn() === true && isExpired) {
         appDispatch({
@@ -75,17 +78,26 @@ const TokenExpirationChecker = () => {
         withCloseButton={false}
       >
         <Center>
-          <Title size="md">
-            Session expired. Please log in again to continue!
-          </Title>
+          <Title size="md"></Title>
         </Center>
 
-        <Login
+        <AuthenticationLoginForm
           switchToRegister={false}
           pathToNavigateAfterLogin={pathname}
           refreshPageAfterLogin={true}
+          loginTitle={
+            <Text size="lg" weight={650} ta="center">
+              Session expired.
+              <br />
+              Please log in again to continue!
+            </Text>
+          }
+          children={
+            <Button onClick={logOut} color="red">
+              Logout
+            </Button>
+          }
         />
-        <Button onClick={logOut}>Logout</Button>
       </Modal>
     );
   }

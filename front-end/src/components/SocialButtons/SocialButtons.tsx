@@ -1,15 +1,20 @@
 import { Button, ButtonProps, Group } from '@mantine/core';
 import { GoogleIcon } from './GoogleIcon';
 import { FacebookIcon } from './FacebookIcon';
-
+interface SocialButtonsProps extends ButtonProps {
+  disableGoogle?: boolean;
+  disableFacebook?: boolean;
+}
 export function GoogleButton(props: ButtonProps) {
   return (
-    <Button
-      leftIcon={<GoogleIcon />}
-      variant="default"
-      color="gray"
-      {...props}
-    />
+    <>
+      <Button
+        leftIcon={<GoogleIcon />}
+        variant="default"
+        color="gray"
+        {...props}
+      />
+    </>
   );
 }
 
@@ -29,11 +34,15 @@ export function FacebookButton(props: ButtonProps) {
   );
 }
 
-export function SocialButtons() {
+export function SocialButtons(props: SocialButtonsProps) {
   return (
-    <Group position="center" sx={{ padding: 15 }}>
-      <GoogleButton>Continue with Google</GoogleButton>
-      <FacebookButton>Sign in with Facebook</FacebookButton>
+    <Group position="center">
+      <GoogleButton disabled={props.disableGoogle}>
+        Continue with Google
+      </GoogleButton>
+      <FacebookButton disabled={props.disableFacebook}>
+        Sign in with Facebook
+      </FacebookButton>
     </Group>
   );
 }
