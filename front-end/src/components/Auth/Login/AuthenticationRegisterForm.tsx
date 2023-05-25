@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { useForm } from '@mantine/form';
 import {
@@ -27,7 +28,7 @@ const AuthenticationLoginForm: React.FC = () => {
   const form = useForm({
     initialValues: {
       email: '',
-      username: '',
+      name: '',
       password: '',
       confirmPassword: '',
       terms: true,
@@ -43,6 +44,7 @@ const AuthenticationLoginForm: React.FC = () => {
         value !== values.password ? 'Passwords did not match' : null;
       },
     },
+    validateInputOnChange: true,
   });
 
   return (
@@ -62,8 +64,15 @@ const AuthenticationLoginForm: React.FC = () => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            const { email, username, password, confirmPassword } = value;
-            register({ email, username, password, confirmPassword });
+            const { email, name, password, confirmPassword } = value;
+            console.log(
+              '🚀 ~ file: AuthenticationRegisterForm.tsx:73 ~ onSubmit={form.onSubmit ~ email, username, password, confirmPassword:',
+              email,
+              name,
+              password,
+              confirmPassword,
+            );
+            // register({ email, username, password, confirmPassword });
           })}
         >
           <Stack>
@@ -80,12 +89,8 @@ const AuthenticationLoginForm: React.FC = () => {
             />
             <TextInput
               label="Name"
-              placeholder="Your name"
-              value={form.values.username}
-              onChange={(event) =>
-                form.setFieldValue('name', event.currentTarget.value)
-              }
-              radius="md"
+              placeholder="Name"
+              {...form.getInputProps('name')}
             />
             <PasswordInput
               withAsterisk

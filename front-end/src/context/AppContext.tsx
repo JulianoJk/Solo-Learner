@@ -8,6 +8,7 @@ interface IAppStateContext {
   isUserSettingsOpen: boolean;
   isSessionExpired: boolean;
   saveButtonClicked: boolean;
+  userReLoggedIn: boolean;
 }
 
 // Default state fot the Application context
@@ -18,6 +19,7 @@ const defaultState: IAppStateContext = {
   isUserSettingsOpen: false,
   isSessionExpired: false,
   saveButtonClicked: false,
+  userReLoggedIn: false,
 };
 type TApplicationAction =
   | {
@@ -43,6 +45,10 @@ type TApplicationAction =
   | {
       type: 'SETTINGS_SAVE_BUTTON_CLICKED';
       saveButtonClicked: boolean;
+    }
+  | {
+      type: 'SET_USER_LOGGED_IN_AGAIN';
+      userReLoggedIn: boolean;
     }
   | {
       type: 'RESET_ERROR_MESSAGE';
@@ -74,6 +80,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, isSessionExpired: action.isSessionExpired };
     case 'SETTINGS_SAVE_BUTTON_CLICKED':
       return { ...state, saveButtonClicked: action.saveButtonClicked };
+    case 'SET_USER_LOGGED_IN_AGAIN':
+      return { ...state, userReLoggedIn: action.userReLoggedIn };
 
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   usersDispatchContext,
@@ -34,24 +34,12 @@ const Register: React.FC = () => {
   const userDispatch: usersDispatchContext = useUserDispatch();
   const appDispatch = useAppDispatch();
   const { classes } = useStyles();
-  // TODO!: Add this to context ???
-  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   const [email, setEmail] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  // TODO!: Make it better
-  useEffect(() => {
-    setIsSaveButtonDisabled(
-      email.length === 0 ||
-        password.length === 0 ||
-        confirmPassword.length === 0
-        ? true
-        : false,
-    );
-  }, [email, password]);
   const { mutate: register, isLoading } = useMutation(registerAPI, {
     onSuccess: (data) => {
       if (typeof data === 'object' && 'error' in data) {
@@ -170,7 +158,6 @@ const Register: React.FC = () => {
           className={classes.submitButton}
           loading={isLoading}
           uppercase
-          disabled={isSaveButtonDisabled}
         >
           Register
         </Button>

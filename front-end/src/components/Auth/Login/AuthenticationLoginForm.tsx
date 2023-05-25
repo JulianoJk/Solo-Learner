@@ -26,11 +26,19 @@ interface ILoginProps {
   hasBorder?: boolean;
   loginTitle?: string | React.ReactNode;
   showNotification?: boolean;
+  sessionExpiredAuth?: boolean;
 }
 
 const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
-  const { login } = useLogin({ navigateTo: '/profile' });
-  const { hasBorder, switchToRegister, children, loginTitle } = props;
+  const {
+    hasBorder,
+    switchToRegister,
+    children,
+    loginTitle,
+    sessionExpiredAuth,
+  } = props;
+  const { login } = useLogin({ navigateTo: '/profile', sessionExpiredAuth });
+
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
 
@@ -49,6 +57,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
           ? 'Password should include at least 6 characters'
           : null,
     },
+    validateInputOnChange: true,
   });
 
   return (

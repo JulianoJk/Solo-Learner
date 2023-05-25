@@ -1,12 +1,13 @@
 import { createStyles, Avatar, Text, Group } from '@mantine/core';
 import { IconCalendarHeart } from '@tabler/icons-react';
+import SettingsComponent from '../Settings/Settings.component';
 
 const useStyles = createStyles((theme) => ({
   icon: {
     color:
       theme.colorScheme === 'dark'
         ? theme.colors.dark[3]
-        : theme.colors.gray[5],
+        : theme.colors.gray[1],
   },
 
   name: {
@@ -47,12 +48,14 @@ export function UserInfoIcons({
               size="1rem"
               className={classes.icon}
             />
-            <Text fz="md" c="dimmed">
+            <Text fz="sm" c="dimmed">
               Member since: {displayDateJoined}!
             </Text>
           </Group>
         </div>
       </Group>
+      <button></button>
+      <SettingsComponent />
     </div>
   );
 }

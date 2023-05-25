@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   IUserInfoContext,
@@ -49,8 +49,6 @@ const Login: React.FC<ILoginProps> = (props) => {
   const [password, setPassword] = useState<string>('');
   const userDispatch: usersDispatchContext = useUserDispatch();
   const appDispatch = useAppDispatch();
-  // TODO!: Add this to context ???
-  const [isSaveButtonDisabled, setIsSaveButtonDisabled] = useState(true);
 
   const navigateTo =
     props.pathToNavigateAfterLogin !== undefined
@@ -112,12 +110,6 @@ const Login: React.FC<ILoginProps> = (props) => {
       return;
     }
   };
-  // TODO!: Make it better
-  useEffect(() => {
-    setIsSaveButtonDisabled(
-      email.length === 0 || password.length === 0 ? true : false,
-    );
-  }, [email, password]);
   return (
     <Box
       sx={{ maxWidth: 600 }}
@@ -160,7 +152,6 @@ const Login: React.FC<ILoginProps> = (props) => {
           className={classes.submitButton}
           loading={isLoading}
           uppercase
-          disabled={isSaveButtonDisabled}
         >
           Login
         </Button>

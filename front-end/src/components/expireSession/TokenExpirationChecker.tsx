@@ -11,7 +11,7 @@ import { useAppDispatch, AppState } from '../../context/AppContext';
 import AuthenticationLoginForm from '../Auth/Login/AuthenticationLoginForm';
 
 const TokenExpirationChecker = () => {
-  const { isSessionExpired } = AppState();
+  const { isSessionExpired, userReLoggedIn } = AppState();
   const appDispatch = useAppDispatch();
   const [openedModal, handlers] = useDisclosure(false);
   const { pathname } = useLocation(); // <-- get current location being accessed
@@ -21,10 +21,9 @@ const TokenExpirationChecker = () => {
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
     if (token) {
-      // const decoded: any = jwtDecode(token);
+      const decoded: any = jwtDecode(token);
 
-      // const isExpired = decoded.exp < Date.now() / 1000;
-      const isExpired = true;
+      const isExpired = decoded.exp < Date.now() / 1000;
 
       if (isUserLoggedIn() === true && isExpired) {
         appDispatch({
@@ -58,7 +57,7 @@ const TokenExpirationChecker = () => {
     navigate('/');
   };
 
-  if (isSessionExpired) {
+  if (isSessionExpired && userReLoggedIn === false) {
     return (
       <Modal
         transitionProps={{
@@ -85,6 +84,7 @@ const TokenExpirationChecker = () => {
           switchToRegister={false}
           pathToNavigateAfterLogin={pathname}
           refreshPageAfterLogin={true}
+          sessionExpiredAuth={true}
           loginTitle={
             <Text size="lg" weight={650} ta="center">
               Session expired.

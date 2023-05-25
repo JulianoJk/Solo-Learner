@@ -8,7 +8,7 @@ import {
 import { IconSun, IconMoonStars } from '@tabler/icons-react';
 import { useLocalStorage } from '@mantine/hooks';
 
-const ModeTheme = () => {
+const ModeThemeButtonSmall = () => {
   const theme = useMantineTheme();
 
   const { toggleColorScheme } = useMantineColorScheme();
@@ -55,4 +55,4 @@ const ModeTheme = () => {
   );
 };
 
-export default ModeTheme;
+export default ModeThemeButtonSmall;

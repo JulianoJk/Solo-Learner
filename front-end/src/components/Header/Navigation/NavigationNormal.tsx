@@ -36,7 +36,7 @@ import {
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
 import { useAppDispatch } from '../../../context/AppContext';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
-import ModeTheme from '../../../Styles/ModeTheme';
+import ModeThemeButtonSmall from '../../../Styles/ModeThemeButtonSmall';
 import SettingsComponent from '../../Pages/Settings/Settings.component';
 
 const NavigationNormal: React.FC = () => {
@@ -87,7 +87,7 @@ const NavigationNormal: React.FC = () => {
   return (
     <Header height={90} p="md" className={classes.headerRoot}>
       <Group position="right">
-        <ModeTheme />
+        <ModeThemeButtonSmall />
 
         <Anchor
           onClick={() => {

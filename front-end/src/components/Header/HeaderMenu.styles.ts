@@ -62,12 +62,6 @@ export const useStyles = createStyles((theme) => ({
       display: 'none',
     },
   },
-
-  hiddenDesktop: {
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
-    },
-  },
   headerRoot: {
     backgroundImage:
       theme.colorScheme === 'light'
@@ -79,5 +73,19 @@ export const useStyles = createStyles((theme) => ({
         ? `2px solid #7FAAE0`
         : `1px solid ${theme.colors.dark[5]}`,
     marginBottom: 20,
+  },
+  user: {
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+    borderRadius: theme.radius.sm,
+    transition: 'background-color 100ms ease',
+
+    '&:hover': {
+      backgroundColor:
+        theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+    },
+  },
+  userActive: {
+    backgroundColor: theme.colorScheme === 'dark' ? '#8CB6EA' : '#7FAAE0',
   },
 }));

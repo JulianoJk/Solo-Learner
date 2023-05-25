@@ -12,6 +12,7 @@ interface ILoginMutationProps {
   refreshPageAfterLogin?: boolean;
   showNotification?: boolean;
   navigateTo: string;
+  sessionExpiredAuth?: boolean;
 }
 interface ILoginMutationState {
   login: (email: string, password: string) => void;
@@ -22,7 +23,12 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
-  const { refreshPageAfterLogin, navigateTo, showNotification } = props;
+  const {
+    refreshPageAfterLogin,
+    navigateTo,
+    showNotification,
+    sessionExpiredAuth,
+  } = props;
   const { mutate, isLoading } = useMutation<
     IUserInfoContext | IApiError,
     unknown,
@@ -50,7 +56,14 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
 
           refreshPageAfterLogin === true ? window.location.reload() : '';
           userDispatch({ type: 'SET_USER', user: user });
+          sessionExpiredAuth
+            ? appDispatch({
+                type: 'SET_USER_LOGGED_IN_AGAIN',
+                userReLoggedIn: true,
+              })
+            : '';
           navigate(navigateTo);
+
           showNotification === false ? (
             <></>
           ) : (
