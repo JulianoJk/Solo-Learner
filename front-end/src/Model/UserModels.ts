@@ -8,6 +8,8 @@ export interface IUserInfoContext {
   createdAt?: Date | string;
   isTeacher?: boolean;
   email?: string;
+  isAdmin?: boolean;
+  status?: string;
 }
 export interface IApiMessageResponse {
   message: string;

@@ -13,6 +13,7 @@ const defaultState: StateInterface = {
     token: '',
     id: undefined,
     email: undefined,
+    isAdmin: false,
   },
 };
 

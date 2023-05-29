@@ -41,8 +41,11 @@ public class LoginUser
             {
                 UserDataAccess usernameDataAccess = new UserDataAccess();
                 string username = usernameDataAccess.GetUsername(email);
+                // Get the isAdmin value from the database for this user
+                var db = new Database();
+                bool isAdmin = db.GetIsAdminFromDatabase(email);
                 // Generate a JWT token
-                string token = JwtUtils.GenerateJwt(username, email, isTeacher);
+                string token = JwtUtils.GenerateJwt(username, email, isTeacher, isAdmin);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     // Return a successful response with a 200 status code

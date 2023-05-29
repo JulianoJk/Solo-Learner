@@ -8,20 +8,23 @@ import {
   PasswordInput,
   Modal,
 } from '@mantine/core';
-import { useAppDispatch } from '../../../../context/AppContext';
+import { useAppDispatch } from '../../../../../context/AppContext';
 import { useState } from 'react';
-import { notificationAlert } from '../../../notifications/NotificationAlert';
+import { notificationAlert } from '../../../../notifications/NotificationAlert';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { deleteAccountAPI } from '../../../api/api';
-import { useUserDispatch } from '../../../../context/UserContext';
+import { deleteAccountAPI } from '../../../../api/api';
+import { useUserDispatch } from '../../../../../context/UserContext';
 import {
   IconLock,
   IconEye,
   IconEyeOff,
   IconMoodSad,
 } from '@tabler/icons-react';
-import { IApiError, IApiMessageResponse } from '../../../../Model/UserModels';
+import {
+  IApiError,
+  IApiMessageResponse,
+} from '../../../../../Model/UserModels';
 
 export default function MantineDemo() {
   const navigate: NavigateFunction = useNavigate();

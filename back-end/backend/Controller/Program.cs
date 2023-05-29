@@ -10,10 +10,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(
         "AllowAll",
-        corsPolicyBuilder =>
-        {
-            corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-        }
+        corsPolicyBuilder => corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
     );
 });
 
@@ -68,7 +65,7 @@ app.MapPost(
     "/users/login",
     (HttpContext context) =>
     {
-        LoginUser loginUser = new LoginUser();
+        LoginUser loginUser = new();
         loginUser.HandleLoginRequest(context);
         return Task.CompletedTask;
     }
@@ -78,7 +75,7 @@ app.MapPost(
     "/users/register",
     (HttpContext context) =>
     {
-        RegisterUser registerUser = new RegisterUser();
+        RegisterUser registerUser = new();
         registerUser.HandleRegistrationRequest(context);
         return Task.CompletedTask;
     }
@@ -130,8 +127,27 @@ app.MapPut(
 
         if (isValidJwt)
         {
-            ProfileController profileController = new ProfileController();
+            ProfileController profileController = new();
             await profileController.ChangeUsernameAsync(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+app.MapGet(
+    "/admin/dashboard",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        System.Console.WriteLine(JwtUtils.GetUserIsAdmin(context));
+        if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
+        {
+            AdminController adminController = new AdminController();
+            await adminController.GetDashboard(context);
         }
         else
         {

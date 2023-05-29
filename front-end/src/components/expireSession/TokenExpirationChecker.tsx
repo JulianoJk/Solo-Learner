@@ -16,6 +16,7 @@ const TokenExpirationChecker = () => {
   const [openedModal, handlers] = useDisclosure(false);
   const { pathname } = useLocation(); // <-- get current location being accessed
   const userDispatch = useUserDispatch();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ const TokenExpirationChecker = () => {
     if (checkIfPageIsReload()) {
       const localStorageToken = localStorage.getItem('jwtToken');
       const decoded: IUserInfoContext = jwtDecode(localStorageToken as string);
+
       if (localStorageToken !== null) {
         const decodedUser: IUserInfoContext = {
           id: decoded.id,
@@ -46,6 +48,7 @@ const TokenExpirationChecker = () => {
           token: localStorageToken,
           isTeacher: decoded.isTeacher,
           email: decoded.email,
+          isAdmin: decoded.isAdmin,
         };
         userDispatch({ type: 'SET_USER', user: decodedUser });
       }

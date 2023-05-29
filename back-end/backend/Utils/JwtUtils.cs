@@ -16,9 +16,9 @@ public static class JwtUtils
         string authHeader = context.Request.Headers["Authorization"];
 
         // Check if the header is present and contains a valid JWT
-        if (authHeader != null && authHeader.StartsWith("Bearer "))
+        if (authHeader?.StartsWith("Bearer ") == true)
         {
-            string jwt = authHeader.Substring("Bearer ".Length);
+            string jwt = authHeader["Bearer ".Length..];
             if (ValidateJwt(jwt) && !IsJwtExpired(jwt))
             {
                 return true;
@@ -62,14 +62,19 @@ public static class JwtUtils
         return true;
     }
 
-    public static string GenerateJwt(string username, string email, bool isTeacher)
+    public static string GenerateJwt(string username, string email, bool isTeacher, bool isAdmin)
     {
         // Implement your user authentication logic here
         // ...
-        return GenerateSecurityToken(username, email, isTeacher);
+        return GenerateSecurityToken(username, email, isTeacher, isAdmin);
     }
 
-    private static string GenerateSecurityToken(string username, string email, bool isTeacher)
+    private static string GenerateSecurityToken(
+        string username,
+        string email,
+        bool isTeacher,
+        bool isAdmin
+    )
     {
         var id = GetUserIdFromDB(email);
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -85,6 +90,7 @@ public static class JwtUtils
                     new Claim("username", username),
                     new Claim(ClaimTypes.Email, email),
                     new Claim("isTeacher", isTeacher.ToString()),
+                    new Claim("isAdmin", isAdmin.ToString()), // Add the isAdmin claim here
                     new Claim("id", id.ToString())
                 }
             ),
@@ -175,5 +181,34 @@ public static class JwtUtils
             }
         }
         return id;
+    }
+
+    public static bool GetUserIsAdmin(HttpContext context)
+    {
+        return GetUserIsAdminFromJwt(context);
+    }
+
+    private static bool GetUserIsAdminFromJwt(HttpContext context)
+    {
+        if (authenticateJwt(context))
+        {
+            string authHeader = context.Request.Headers["Authorization"];
+            string jwt = authHeader.Substring("Bearer ".Length);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var token = tokenHandler.ReadJwtToken(jwt);
+                var isAdminClaim = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
+                if (isAdminClaim != null)
+                {
+                    return bool.Parse(isAdminClaim.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating hash: {ex.Message}");
+            }
+        }
+        return false;
     }
 }

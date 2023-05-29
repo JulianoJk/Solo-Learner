@@ -1,45 +1,45 @@
-import { Box, Button, Modal, TextInput, Title } from '@mantine/core';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import DeleteAccount from './DeleteAccount/DeleteAccount';
-import UploadProfileComponent from './profileImageSettings/UploadProfile.component';
-import { useStyles } from './Settings.styles';
-import { useAppDispatch, AppState } from '../../../context/AppContext';
-import { useUserState } from '../../../context/UserContext';
-// import { IUserInfoContext } from '../../../Model/UserModels';
-import ChangePasswordSetting from './ChangePasswordSetting';
-import { ChangeUsernameSetting } from './ChangeUsernameSetting';
-// import { isUndefinedOrNullString } from '../../../lib/dist';
+import { SettingsHeader } from './settingsHeader/SettingsHeader.component';
+import { Modal, SimpleGrid, Tabs, TextInput, Title } from '@mantine/core';
+import { AppState, useAppDispatch } from '../../../context/AppContext';
+import { ChangeUsernameSetting } from './TempOther/ChangeUsernameSetting';
+import { IconMail } from '@tabler/icons-react';
 
-const SettingsComponent = () => {
-  const { classes } = useStyles();
-  const appDispatch = useAppDispatch();
+function Settings() {
   const { isUserSettingsOpen } = AppState();
-  const { user } = useUserState();
+  const appDispatch = useAppDispatch();
 
-  const handleSaveChanges = () => {
-    // handle API call and any necessary state updates here
-    appDispatch({
-      type: 'SETTINGS_SAVE_BUTTON_CLICKED',
-      saveButtonClicked: true,
-    });
-  };
+  const data = [
+    {
+      link: '/about',
+      label: 'Features',
+    },
+    {
+      link: '/pricing',
+      label: 'Pricing',
+    },
+    {
+      link: '/learn',
+      label: 'Learn',
+    },
+    {
+      link: '/community',
+      label: 'Community',
+    },
+  ];
+
   return (
     <>
       <Modal
-        opened={isUserSettingsOpen}
-        transitionProps={{
-          transition: 'fade',
-          duration: 600,
-          timingFunction: 'ease',
-        }}
+        title={<Title order={3}>Settings</Title>}
+        size="300em"
         overlayProps={{
           opacity: 0.55,
           blur: 4,
         }}
-        // opened={true}
-        centered
         withCloseButton={true}
-        size="80em"
+        opened={isUserSettingsOpen}
         onClose={() =>
           appDispatch({
             type: 'SET_USER_SETTINGS_MODAL',
@@ -47,27 +47,25 @@ const SettingsComponent = () => {
           })
         }
       >
-        <Box mx="auto" className={classes.formContainer}>
-          <Title>Settings</Title>
-          <UploadProfileComponent />
-          <DeleteAccount />
-          <TextInput
-            placeholder={user.email}
-            label="Email"
-            variant="filled"
-            disabled
-            withAsterisk
-          />
-          <ChangeUsernameSetting />
+        <Tabs defaultValue="profile">
+          <Tabs.List>
+            <Tabs.Tab value="profile" color="teal">
+              Profile
+            </Tabs.Tab>
+            <Tabs.Tab value="account">Account</Tabs.Tab>
+          </Tabs.List>
 
-          <ChangePasswordSetting />
-          <Button radius="md" type="submit" onClick={handleSaveChanges}>
-            Save changes
-          </Button>
-        </Box>
+          <Tabs.Panel value="profile">
+            <SimpleGrid cols={2}>
+              <ChangeUsernameSetting></ChangeUsernameSetting>
+              <TextInput icon={<IconMail />} type="text" autoComplete="on" />
+            </SimpleGrid>
+          </Tabs.Panel>
+          <Tabs.Panel value="account">Second account panel</Tabs.Panel>
+        </Tabs>
       </Modal>
     </>
   );
-};
+}
 
-export default SettingsComponent;
+export default Settings;

@@ -1,6 +1,5 @@
 import { createStyles, Avatar, Text, Group } from '@mantine/core';
 import { IconCalendarHeart } from '@tabler/icons-react';
-import SettingsComponent from '../Settings/Settings.component';
 
 const useStyles = createStyles((theme) => ({
   icon: {
@@ -54,8 +53,6 @@ export function UserInfoIcons({
           </Group>
         </div>
       </Group>
-      <button></button>
-      <SettingsComponent />
     </div>
   );
 }

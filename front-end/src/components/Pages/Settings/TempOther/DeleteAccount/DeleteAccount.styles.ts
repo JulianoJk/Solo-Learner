@@ -1,5 +1,5 @@
 import { createStyles } from '@mantine/core';
-import { ERROR_DARK_COLOR } from '../../../../Theme/Styles';
+import { ERROR_DARK_COLOR } from '../../../../../Theme/Styles';
 
 export const useStyles = createStyles((theme) => ({
   buttonContainer: {

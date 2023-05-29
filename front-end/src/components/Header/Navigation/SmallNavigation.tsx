@@ -12,7 +12,6 @@ import { isUserLoggedIn, saveProfileImageAfterReload } from '../../../lib/dist';
 import { IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import { useAppDispatch } from '../../../context/AppContext';
-import SettingsComponent from '../../Pages/Settings/Settings.component';
 
 const SmallNavigation: React.FC = () => {
   const navigate = useNavigate();
@@ -185,7 +184,6 @@ const SmallNavigation: React.FC = () => {
           </Menu>
         )}
       </Group>
-      <SettingsComponent />
     </Header>
   );
 };

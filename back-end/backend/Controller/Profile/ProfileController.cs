@@ -44,6 +44,7 @@ public class ProfileController
         // Create a response object with the username and role information
         var response = new
         {
+            status = "success",
             username = user.Username,
             isTeacher = user.IsTeacher,
             createdAt = user.CreatedAt

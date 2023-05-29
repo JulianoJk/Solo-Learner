@@ -14,16 +14,16 @@ import { FileRejection } from 'react-dropzone';
 import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
-} from '../../../../context/AccountSettingsContext';
-import { saveProfileImageAfterReload } from '../../../../lib/dist';
-import { useUserState } from '../../../../context/UserContext';
-import { sendImageToServerAPI } from '../../../api/api';
+} from '../../../../../context/AccountSettingsContext';
+import { saveProfileImageAfterReload } from '../../../../../lib/dist';
+import { useUserState } from '../../../../../context/UserContext';
+import { sendImageToServerAPI } from '../../../../api/api';
 import { IconPhoto, IconX, IconUpload } from '@tabler/icons-react';
 import {
   COMMON_WHITE,
   LIGHTER_GRAY,
   LIGHT_NAVY,
-} from '../../../../Theme/Styles';
+} from '../../../../../Theme/Styles';
 import { IconAlertCircle } from '@tabler/icons-react';
 import MyImageCrop from './imageCrop/imageCropper';
 import { showNotification } from '@mantine/notifications';

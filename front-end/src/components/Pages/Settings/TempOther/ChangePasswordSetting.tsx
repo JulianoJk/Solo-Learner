@@ -8,7 +8,7 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import { hasLength, useForm } from '@mantine/form';
-import { useStyles } from './Settings.styles';
+import { useStyles } from '../Settings.styles';
 import { useDisclosure } from '@mantine/hooks';
 const ChangePasswordSetting = () => {
   const { classes } = useStyles();

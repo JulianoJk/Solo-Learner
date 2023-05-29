@@ -15,8 +15,8 @@ import {
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 // import SmallNavigation from './components/Header/Navigation/SmallNavigation';
-import DeleteAccount from './components/Pages/Settings/DeleteAccount/DeleteAccount';
-import { checkIfPageIsReload, isUserLoggedIn } from '../src/lib/dist';
+import DeleteAccount from './components/Pages/Settings/TempOther/DeleteAccount/DeleteAccount';
+import { checkIfPageIsReload, isUserLoggedIn } from './lib/dist';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
 import { AppContextProvider } from './context/AppContext';
 import { useEffect, useState } from 'react';
@@ -29,13 +29,16 @@ import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
 import HeaderMenu from './components/Header/HeaderMenu.component';
-import NotFound from './components/Pages/pageNotFound/NotFound.component';
+import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
+import Settings from './components/Pages/Settings/Settings.component';
+import AdminDashboard from './components/admin/AdminDashboard.component';
 
 const App = () => {
   const queryClient = new QueryClient();
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  // const isAdminPath = window.location.pathname.includes('/admin');
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
@@ -90,7 +93,11 @@ const App = () => {
                 <Notifications />
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
-                    <AppShell padding="md" header={<HeaderMenu />}>
+                    <AppShell
+                      padding="md"
+                      // navbar={<>{isAdminPath ? <NavBar /> : <></>}</>}
+                      header={<HeaderMenu />}
+                    >
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route
@@ -106,9 +113,9 @@ const App = () => {
                           path="/register"
                           element={<AuthenticationRegisterForm />}
                         />
-
                         <Route path="/home" element={<Home />} />
                         <Route path="/profile" element={<Profile />} />
+                        <Route path="/settings" element={<Settings />} />
                         <Route
                           path="/delete-account"
                           element={<DeleteAccount />}
@@ -129,6 +136,11 @@ const App = () => {
                         <Route
                           path="/learning-units/exercises"
                           element={<Exercises />}
+                        />
+
+                        <Route
+                          path="/admin/dashboard"
+                          element={<AdminDashboard />}
                         />
 
                         <Route

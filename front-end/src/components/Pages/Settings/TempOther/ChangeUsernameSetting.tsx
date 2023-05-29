@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { profileAPI, updateUsernameAPI } from '../../api/api';
+import { profileAPI, updateUsernameAPI } from '../../../api/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useUserDispatch, useUserState } from '../../../context/UserContext';
-import { useAppDispatch, AppState } from '../../../context/AppContext';
-import { IUserInfoContext } from '../../../Model/UserModels';
+import { useUserDispatch, useUserState } from '../../../../context/UserContext';
+import { useAppDispatch, AppState } from '../../../../context/AppContext';
+import { IUserInfoContext } from '../../../../Model/UserModels';
 import { TextInput } from '@mantine/core';
-import { notificationAlert } from '../../notifications/NotificationAlert';
+import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
-import { useStyles } from './Settings.styles';
-import { isUndefinedOrNullString } from '../../../lib/dist';
+import { useStyles } from '../Settings.styles';
+import { isUndefinedOrNullString } from '../../../../lib/dist';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();

@@ -29,7 +29,6 @@ import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import SettingsComponent from '../Pages/Settings/Settings.component';
 
 const HeaderMegaMenu = () => {
   const { classes, cx } = useStyles();
@@ -60,6 +59,7 @@ const HeaderMegaMenu = () => {
     });
   }, [pathname]);
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
+  console.log(user.isAdmin);
 
   return (
     <Box pb={120}>
@@ -117,6 +117,24 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
+                    {user.isAdmin && (
+                      <>
+                        <Menu.Label>Admin</Menu.Label>
+                        <Menu.Item
+                          icon={<IconHome size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/admin/dashboard')}
+                        >
+                          Admin dashboard
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/profile')}
+                        >
+                          Admin dashboard temp
+                        </Menu.Item>
+                      </>
+                    )}
+
                     <Menu.Label>Main Navigation</Menu.Label>
                     <Menu.Item
                       icon={<IconHome size="0.9rem" stroke={1.5} />}
@@ -135,6 +153,7 @@ const HeaderMegaMenu = () => {
                     <Menu.Item
                       icon={<IconSettings size="0.9rem" stroke={1.5} />}
                       onClick={() => {
+                        navigateUserTo('/settings');
                         appDisp({
                           type: 'SET_USER_SETTINGS_MODAL',
                           isUserSettingsOpen: true,
@@ -205,7 +224,6 @@ const HeaderMegaMenu = () => {
           )}
         </Group>
       </Header>
-      <SettingsComponent />
     </Box>
   );
 };

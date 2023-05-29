@@ -8,7 +8,7 @@ import {
   SimpleGrid,
   rem,
 } from '@mantine/core';
-import NotFoundImage from '../../../images/NotFount';
+import NotFoundImage from '../../../../images/NotFount';
 import { useNavigate } from 'react-router-dom';
 
 const useStyles = createStyles((theme) => ({

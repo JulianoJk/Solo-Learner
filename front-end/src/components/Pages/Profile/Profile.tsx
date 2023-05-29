@@ -3,86 +3,81 @@ import { useQuery } from '@tanstack/react-query';
 import { useUserState } from '../../../context/UserContext';
 import { IUserInfoContext } from '../../../Model/UserModels';
 import { profileAPI } from '../../api/api';
-// import { Avatar } from '@mantine/core';
-import { isUndefinedOrNullString } from '../../../lib/dist';
+
 import { UserInfoIcons } from './UserInfo.component';
+import InstructorProfileCard from '../instructorProfileCard/InstructorProfileCard.component';
+import { Box, Loader, Stack, Title } from '@mantine/core';
+import { upperFirst } from '@mantine/hooks';
+import ServerError from '../Error/serverError/ServerError.component';
 
 const Profile: React.FC = () => {
   const { user } = useUserState();
-  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
-  const { data: userProfileData } = useQuery(
-    ['getProfileItems', hasToken],
+
+  const {
+    data: userProfileData,
+    isLoading,
+    isError,
+  } = useQuery(
+    ['getProfileItems', user.token],
     async () => {
-      if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
+      if (user.token) {
+        const data: IUserInfoContext | undefined = await profileAPI(user.token);
         return data;
       }
+      throw new Error('No token found');
     },
     {
-      enabled: true,
+      enabled: !!user.token,
       refetchOnWindowFocus: true,
     },
   );
-  const displayUsername = isUndefinedOrNullString(userProfileData?.username)
-    ? (user.username as string)
-    : (userProfileData?.username as string);
-  const displayDateJoined = isUndefinedOrNullString(
-    userProfileData?.createdAt as string,
-  )
-    ? null
-    : userProfileData?.createdAt;
-  const userRole = user.isTeacher === true ? 'Teacher' : 'Student';
 
-  // var b;
-  // useEffect(() => {
-  //   if (user.id !== undefined) {
-  //     b = profileImageAPI(user.id);
-  //   }
-  // });
+  if (isError || !userProfileData || userProfileData.status !== 'success') {
+    return (
+      <ServerError errorTitle={'Error loading profile...'} errorCode={401} />
+    );
+  }
 
-  // <>
-  //   {isLoading ? (
-  //     <Stack align="center">
-  //       <div>
-  //         <Loader size={400} />
-  //       </div>
-  //       <Title>Loading...</Title>
-  //     </Stack>
-  //   ) : (
-  //     <div>
-  //       <Avatar
-  //         className={classes.profileImage}
-  //         radius={200}
-  //         size={300}
-  //         color={'cyan'}
-  //         variant="filled"
-  //         alt="profile-image"
-  //         src={
-  //           !isUndefinedOrNullString(userProfileImage)
-  //             ? userProfileImage
-  //             : ''
-  //         }
-  //       />
-  //       <h1> Welcome Back: {user.username}!</h1>
-  //       <h2>Date joined:{userProfileData}</h2>
-  //     </div>
-  //   )}
-  // </>
+  const displayUsername = userProfileData?.username || user.username;
+  const displayDateJoined = userProfileData?.createdAt;
+  const userRole = user.isTeacher ? 'Teacher' : 'Student';
 
   const data = {
     avatar: '',
     role: userRole,
-    userName: displayUsername,
+    userName: upperFirst(displayUsername as string),
     displayDateJoined: displayDateJoined,
   };
+  const instructionData = {
+    avatar: '',
+    name: 'Jane Fingerlicker',
+    email: 'randomEmail@me.io',
+    job: 'Art director',
+  };
+
   return (
     <div>
-      {/* <Avatar radius="xl" color="indigo" /> */}
-      <UserInfoIcons {...data}></UserInfoIcons>
-      {/* <Avatar radius="xl" color="indigo" src={
-        !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
-      } /> */}
-      {/* <img src={b} /> */}
+      {isLoading ? (
+        <Stack align="center">
+          <div>
+            <Loader color="teal" size={400} />
+          </div>
+          <Title>Loading...</Title>
+        </Stack>
+      ) : (
+        <>
+          <UserInfoIcons {...data}></UserInfoIcons>
+          <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+            <Title order={3}>Your Amazing Instructor &#10024;</Title>
+            <InstructorProfileCard
+              avatar={instructionData.avatar}
+              name={instructionData.name}
+              email={instructionData.email}
+              job={instructionData.job}
+            />
+          </Box>
+        </>
+      )}
     </div>
   );
 };

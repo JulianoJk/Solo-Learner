@@ -37,7 +37,6 @@ import { useAccountSettingsDispatch } from '../../../context/AccountSettingsCont
 import { useAppDispatch } from '../../../context/AppContext';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import ModeThemeButtonSmall from '../../../Styles/ModeThemeButtonSmall';
-import SettingsComponent from '../../Pages/Settings/Settings.component';
 
 const NavigationNormal: React.FC = () => {
   const [documentTitle, setDocumentTitle] = useState('');
@@ -204,7 +203,6 @@ const NavigationNormal: React.FC = () => {
           </>
         )}
       </Group>
-      <SettingsComponent />
     </Header>
   );
 };

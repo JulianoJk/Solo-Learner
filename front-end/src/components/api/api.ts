@@ -100,7 +100,22 @@ export const profileAPI = async (
     return;
   }
 };
-
+export const adminDashboardAPI = async (token: string) => {
+  try {
+    const response = await fetch(URL + 'admin/dashboard', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
 export const saveProfileImageAPI = async ({
   token,
   email,

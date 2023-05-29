@@ -6,12 +6,14 @@ import Theory from '../LearningUnits/Theory/Theory';
 import Vocabulary from '../LearningUnits/Vocabulary/Vocabulary';
 import { useStyles } from './Home.styles';
 import LearningUnits from '../LearningUnits/LearningUnits';
-import { SettingsHeader } from '../Settings/SettingsHeader.component';
+import { SettingsHeader } from '../Settings/settingsHeader/SettingsHeader.component';
+import { DemoHome } from './DemoHome';
 
 const Home: React.FC = () => {
   const { classes } = useStyles();
 
-  return <LearningUnits />;
+  // return <LearningUnits />;
+  return <DemoHome />;
 };
 
 export default Home;

@@ -29,8 +29,20 @@ public class AuthenticationUtils
         bool isTeacher
     )
     {
+        // Retrieve the isAdmin flag from the database
+        bool isAdmin = db.GetIsAdminFromDatabase(email);
+
         // Initialize the database connection
-        db.InitializeDatabaseConnection(isRegister, email, username, password, salt, isTeacher);
+        db.InitializeDatabaseConnection(
+            isRegister,
+            email,
+            username,
+            password,
+            salt,
+            isTeacher,
+            isAdmin
+        );
+
         if (!isRegister)
         {
             CheckPasswordForLogin(email, password);

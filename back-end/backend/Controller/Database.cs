@@ -28,7 +28,8 @@ namespace backend
             string? username,
             string password,
             byte[] salt,
-            bool isTeacher
+            bool isTeacher,
+            bool isAdmin
         )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
@@ -55,10 +56,11 @@ namespace backend
                                     username,
                                     password,
                                     salt,
-                                    isTeacher
+                                    isTeacher,
+                                    isAdmin
                                 );
                                 AreCredentialsCorrect = true;
-                                MessageToUser = "Registration From database!";
+                                MessageToUser = "Registration successful!";
                             }
                         }
                         catch (MySqlException ex)
@@ -90,11 +92,12 @@ namespace backend
             string username,
             string password,
             byte[] salt,
-            bool isTeacher
+            bool isTeacher,
+            bool isAdmin
         )
         {
             MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email, username, password, salt, isTeacher) VALUES (@email, @username, @password, @salt, @isTeacher)",
+                "INSERT INTO users (email, username, password, salt, isTeacher, isAdmin) VALUES (@email, @username, @password, @salt, @isTeacher, @isAdmin)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
@@ -102,6 +105,7 @@ namespace backend
             command.Parameters.AddWithValue("@password", password);
             command.Parameters.AddWithValue("@salt", salt);
             command.Parameters.AddWithValue("@isTeacher", isTeacher);
+            command.Parameters.AddWithValue("@isAdmin", isAdmin);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
             // Set AreCredentialsCorrect to true if the data was successfully saved to the database
@@ -193,6 +197,21 @@ namespace backend
             finally
             {
                 await connection.CloseAsync();
+            }
+        }
+
+        public bool GetIsAdminFromDatabase(string email)
+        {
+            using (var connection = new MySqlConnection(connectionString))
+            {
+                connection.Open();
+                var command = new MySqlCommand(
+                    "SELECT isAdmin FROM users WHERE email = @email",
+                    connection
+                );
+                command.Parameters.AddWithValue("@email", email);
+                var isAdmin = command.ExecuteScalar();
+                return isAdmin != null && Convert.ToBoolean(isAdmin);
             }
         }
     }

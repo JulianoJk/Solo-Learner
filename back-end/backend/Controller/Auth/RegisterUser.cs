@@ -48,7 +48,7 @@ public class RegisterUser
             // Hash the password
             byte[] hash = _authenticator.GenerateHash(password, salt);
 
-            if (salt != null && salt.Length > 0)
+            if (salt?.Length > 0)
             {
                 // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
                 var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
@@ -62,7 +62,7 @@ public class RegisterUser
                 if (AreCredentialsCorrect)
                 {
                     // Generate a JWT token
-                    string token = JwtUtils.GenerateJwt(username, email, isTeacher);
+                    string token = JwtUtils.GenerateJwt(username, email, isTeacher, false);
 
                     // Check if the token was generated
                     if (!string.IsNullOrWhiteSpace(token))
