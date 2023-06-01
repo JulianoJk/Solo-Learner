@@ -1,3 +1,4 @@
+import { DefaultMantineColor } from '@mantine/core';
 import { usersDispatchContext } from '../Model/UserModels';
 
 export const isUndefinedOrNullString = (object: string | undefined | null) => {
@@ -65,3 +66,24 @@ export const parseJwt = (token: string) =>
   JSON.parse(
     b64DecodeUnicode(token.split('.')[1].replace('-', '+').replace('_', '/')),
   );
+export const getRandomColor = (): DefaultMantineColor => {
+  const colors: DefaultMantineColor[] = [
+    'dark',
+    'gray',
+    'red',
+    'pink',
+    'grape',
+    'violet',
+    'indigo',
+    'blue',
+    'cyan',
+    'green',
+    'lime',
+    'yellow',
+    'orange',
+    'teal',
+  ];
+
+  const randomIndex = Math.floor(Math.random() * colors.length);
+  return colors[randomIndex];
+};

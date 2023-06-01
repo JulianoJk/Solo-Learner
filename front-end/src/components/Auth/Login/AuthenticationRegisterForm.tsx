@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { useForm } from '@mantine/form';
 import {
@@ -20,7 +19,18 @@ import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtonsUnavailable } from '../SocialButtonsUnavailable';
 
-const AuthenticationLoginForm: React.FC = () => {
+interface IRegisterProps {
+  children?: React.ReactNode;
+  switchToLogin?: boolean;
+  pathToNavigateAfterRegister?: string;
+  refreshPageAfterRegister?: boolean;
+  hasBorder?: boolean;
+  registerTitle?: string | React.ReactNode;
+  showNotification?: boolean;
+}
+
+const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
+  const { hasBorder, switchToLogin, children, registerTitle } = props;
   const { register } = useRegister();
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
@@ -28,7 +38,7 @@ const AuthenticationLoginForm: React.FC = () => {
   const form = useForm({
     initialValues: {
       email: '',
-      name: '',
+      username: '',
       password: '',
       confirmPassword: '',
       terms: true,
@@ -41,7 +51,7 @@ const AuthenticationLoginForm: React.FC = () => {
           ? 'Password should include at least 6 characters'
           : null,
       confirmPassword: (value, values) => {
-        value !== values.password ? 'Passwords did not match' : null;
+        return value !== values.password ? 'Passwords did not match' : null;
       },
     },
     validateInputOnChange: true,
@@ -49,9 +59,12 @@ const AuthenticationLoginForm: React.FC = () => {
 
   return (
     <Center maw={600} mx="auto">
-      <Paper radius="md" p="xl" withBorder>
+      <Paper radius="md" p="xl" withBorder={hasBorder}>
         <Text size="lg" weight={500} ta="center">
-          Welcome to Solo Learn, register with
+          {registerTitle === undefined ||
+          (typeof registerTitle === 'string' && registerTitle.length === 0)
+            ? 'Welcome to Solo Learn, register with'
+            : registerTitle}
         </Text>
 
         <SocialButtonsUnavailable />
@@ -64,8 +77,8 @@ const AuthenticationLoginForm: React.FC = () => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            const { email, name, password, confirmPassword } = value;
-            // register({ email, username, password, confirmPassword });
+            const { email, username, password, confirmPassword } = value;
+            register({ email, username, password, confirmPassword });
           })}
         >
           <Stack>
@@ -80,11 +93,13 @@ const AuthenticationLoginForm: React.FC = () => {
               error={form.errors.email && 'Invalid email'}
               radius="md"
             />
+
             <TextInput
               label="Name"
               placeholder="Name"
               {...form.getInputProps('name')}
             />
+
             <PasswordInput
               withAsterisk
               label="Password"
@@ -99,6 +114,7 @@ const AuthenticationLoginForm: React.FC = () => {
               }
               radius="md"
             />
+
             <PasswordInput
               withAsterisk
               label="Confirm password"
@@ -107,7 +123,7 @@ const AuthenticationLoginForm: React.FC = () => {
               onChange={(event) =>
                 form.setFieldValue('confirmPassword', event.currentTarget.value)
               }
-              error={form.errors.confirmPassword && 'Password do not match'}
+              error={form.errors.confirmPassword && 'Passwords do not match'}
               radius="md"
             />
 
@@ -121,29 +137,33 @@ const AuthenticationLoginForm: React.FC = () => {
           </Stack>
 
           <Group position="apart" mt="xl">
-            <Anchor
-              component="button"
-              type="button"
-              color="dimmed"
-              onClick={() => navigate('/login')}
-              size="xs"
-            >
-              <>
+            {switchToLogin ? (
+              <Anchor
+                component="button"
+                type="button"
+                color="dimmed"
+                onClick={() => navigate('/login')}
+                size="xs"
+              >
                 Already have an account?
                 <Text c="blue" span>
                   &nbsp;Login
                 </Text>
-              </>
-            </Anchor>
+              </Anchor>
+            ) : (
+              children
+            )}
+
             <Button type="submit" radius="xl">
               Register
             </Button>
           </Group>
         </form>
-        {/*Display error message if any*/}
+        {/* Display error message if any */}
         <AlertComponent />
       </Paper>
     </Center>
   );
 };
-export default AuthenticationLoginForm;
+
+export default AuthenticationRegisterForm;

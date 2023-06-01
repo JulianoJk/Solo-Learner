@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { createStyles, Navbar, getStylesRef, rem } from '@mantine/core';
+import { createStyles, Navbar, getStylesRef, rem, Anchor } from '@mantine/core';
 import {
-  IconBellRinging,
   IconFingerprint,
   IconKey,
   IconSettings,
@@ -10,7 +9,10 @@ import {
   IconReceipt2,
   IconSwitchHorizontal,
   IconLogout,
+  IconUserCog,
 } from '@tabler/icons-react';
+import { useAppDispatch } from '../../context/AppContext';
+import { useMediaQuery } from '@mantine/hooks';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -82,18 +84,20 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const data = [
-  { link: '', label: 'Notifications', icon: IconBellRinging },
-  { link: '', label: 'Billing', icon: IconReceipt2 },
-  { link: '', label: 'Security', icon: IconFingerprint },
-  { link: '', label: 'SSH Keys', icon: IconKey },
-  { link: '', label: 'Databases', icon: IconDatabaseImport },
-  { link: '', label: 'Authentication', icon: Icon2fa },
-  { link: '', label: 'Other Settings', icon: IconSettings },
+  { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
+  { link: 'billing', label: 'Billing', icon: IconReceipt2 },
+  { link: 'security', label: 'Security', icon: IconFingerprint },
+  { link: 'SSH', label: 'SSH Keys', icon: IconKey },
+  { link: 'Databases', label: 'Databases', icon: IconDatabaseImport },
+  { link: 'Authentication', label: 'Authentication', icon: Icon2fa },
+  { link: 'settings', label: 'Other Settings', icon: IconSettings },
 ];
 
 export function NavBar() {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('Billing');
+  const appDispatch = useAppDispatch();
+  const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
 
   const links = data.map((item) => (
     <a
@@ -104,37 +108,57 @@ export function NavBar() {
       key={item.label}
       onClick={(event) => {
         event.preventDefault();
+        appDispatch({
+          type: 'SET_ACTIVE_ADMIN_NAV',
+          selectedAdminNavbar: item.link,
+        });
         setActive(item.label);
       }}
+      style={{ fontSize: isMobile ? '0.6rem' : '1rem' }} // adjust the values as needed
     >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
+      {isMobile ? null : (
+        <item.icon className={classes.linkIcon} stroke={1.5} />
+      )}
       <span>{item.label}</span>
     </a>
   ));
 
   return (
-    <Navbar height={'100vh'} width={{ sm: 300 }} p="md">
+    <Navbar
+      height={'100vh'}
+      width={{
+        // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
+        sm: 300,
+
+        // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
+        lg: 400,
+
+        // When other breakpoints do not match base width is used, defaults to 100%
+        base: 100,
+      }}
+      p="md"
+    >
       <Navbar.Section grow>{links}</Navbar.Section>
 
       {/* TODO!: ADD IMAGE FOR THE ADMIN ETC */}
       <Navbar.Section className={classes.footer}>
-        <a
+        <Anchor
           href="#"
           className={classes.link}
           onClick={(event) => event.preventDefault()}
         >
           <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
           <span>Change account</span>
-        </a>
+        </Anchor>
 
-        <a
+        <Anchor
           href="#"
           className={classes.link}
           onClick={(event) => event.preventDefault()}
         >
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
-        </a>
+        </Anchor>
       </Navbar.Section>
     </Navbar>
   );

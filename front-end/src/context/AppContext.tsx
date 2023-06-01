@@ -9,6 +9,7 @@ interface IAppStateContext {
   isSessionExpired: boolean;
   saveButtonClicked: boolean;
   userReLoggedIn: boolean;
+  selectedAdminNavbar?: string;
 }
 
 // Default state fot the Application context
@@ -20,6 +21,7 @@ const defaultState: IAppStateContext = {
   isSessionExpired: false,
   saveButtonClicked: false,
   userReLoggedIn: false,
+  selectedAdminNavbar: 'userManagment',
 };
 type TApplicationAction =
   | {
@@ -49,6 +51,10 @@ type TApplicationAction =
   | {
       type: 'SET_USER_LOGGED_IN_AGAIN';
       userReLoggedIn: boolean;
+    }
+  | {
+      type: 'SET_ACTIVE_ADMIN_NAV';
+      selectedAdminNavbar: string;
     }
   | {
       type: 'RESET_ERROR_MESSAGE';
@@ -82,6 +88,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, saveButtonClicked: action.saveButtonClicked };
     case 'SET_USER_LOGGED_IN_AGAIN':
       return { ...state, userReLoggedIn: action.userReLoggedIn };
+    case 'SET_ACTIVE_ADMIN_NAV':
+      return { ...state, selectedAdminNavbar: action.selectedAdminNavbar };
 
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };

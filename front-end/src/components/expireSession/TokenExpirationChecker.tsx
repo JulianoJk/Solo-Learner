@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 import { Button, Center, Modal, Title, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { checkIfPageIsReload, isUserLoggedIn } from '../../lib/dist';
-// import Login from '../Auth/Login/Login';
+
 import { useDisclosure } from '@mantine/hooks';
 import { useUserDispatch } from '../../context/UserContext';
 import { IUserInfoContext } from '../../Model/UserModels';
@@ -25,6 +25,8 @@ const TokenExpirationChecker = () => {
       const decoded: any = jwtDecode(token);
 
       const isExpired = decoded.exp < Date.now() / 1000;
+      // set the last visited path in local storage
+      localStorage.setItem('lastVisitedPath', location.pathname);
 
       if (isUserLoggedIn() === true && isExpired) {
         appDispatch({

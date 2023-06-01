@@ -67,7 +67,7 @@ export interface IAuthCredentials {
   password?: string | undefined;
   passwordRepeat?: string | undefined;
 }
-interface User {
+export interface User {
   id: number;
   email: string;
   username: string;
@@ -76,6 +76,7 @@ interface User {
   isTeacher: boolean;
   createdAt: string;
   updatedAt: string;
+  avatar?: string;
 }
 
 export interface GetUsersListResponse {

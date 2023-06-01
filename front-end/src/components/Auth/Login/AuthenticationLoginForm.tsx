@@ -37,8 +37,10 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-  const { login } = useLogin({ navigateTo: '/profile', sessionExpiredAuth });
-
+  const { login } = useLogin({
+    navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
+    sessionExpiredAuth,
+  });
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
 
