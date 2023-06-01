@@ -8,7 +8,7 @@ export interface IUserInfoContext {
   createdAt?: Date | string;
   isTeacher?: boolean;
   email?: string;
-  isAdmin?: boolean;
+  isAdmin?: any;
   status?: string;
 }
 export interface IApiMessageResponse {
@@ -66,4 +66,19 @@ export interface IAuthCredentials {
   username?: string | undefined;
   password?: string | undefined;
   passwordRepeat?: string | undefined;
+}
+interface User {
+  id: number;
+  email: string;
+  username: string;
+  isAdmin: boolean;
+  password: null;
+  isTeacher: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface GetUsersListResponse {
+  status: string;
+  users: User[];
 }

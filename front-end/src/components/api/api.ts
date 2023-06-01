@@ -1,4 +1,5 @@
 import {
+  GetUsersListResponse,
   IApiError,
   IApiMessageResponse,
   IUserInfoContext,
@@ -234,5 +235,40 @@ export const updateUsernameAPI = async ({
         message: 'Something went wrong. Please try again later.',
       },
     } as IApiError;
+  }
+};
+export const authenticateAPI = async (token: string) => {
+  try {
+    const response = await fetch(URL + 'users/checkToken', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+export const adminGetAllUsersAPI = async (
+  token: string,
+): Promise<GetUsersListResponse | undefined> => {
+  try {
+    const response = await fetch(URL + 'admin/users/all/list', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data: GetUsersListResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
   }
 };

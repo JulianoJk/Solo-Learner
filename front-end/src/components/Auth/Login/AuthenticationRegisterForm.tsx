@@ -65,13 +65,6 @@ const AuthenticationLoginForm: React.FC = () => {
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
             const { email, name, password, confirmPassword } = value;
-            console.log(
-              '🚀 ~ file: AuthenticationRegisterForm.tsx:73 ~ onSubmit={form.onSubmit ~ email, username, password, confirmPassword:',
-              email,
-              name,
-              password,
-              confirmPassword,
-            );
             // register({ email, username, password, confirmPassword });
           })}
         >

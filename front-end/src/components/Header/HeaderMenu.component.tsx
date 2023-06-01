@@ -8,6 +8,7 @@ import {
   Menu,
   UnstyledButton,
   Avatar,
+  Skeleton,
 } from '@mantine/core';
 import { upperFirst, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
@@ -24,11 +25,17 @@ import {
   IconUserEdit,
 } from '@tabler/icons-react';
 import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
-import { capitalString, isUserLoggedIn } from '../../lib/dist';
+import {
+  capitalString,
+  isUndefinedOrNullString,
+  isUserLoggedIn,
+} from '../../lib/dist';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
+import { authenticateAPI } from '../api/api';
+import { useQuery } from '@tanstack/react-query';
 
 const HeaderMegaMenu = () => {
   const { classes, cx } = useStyles();
@@ -46,6 +53,19 @@ const HeaderMegaMenu = () => {
   const navigateUserTo = (path: string) => {
     navigate(path);
   };
+  const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
+
+  const { isLoading, data } = useQuery(
+    ['authenticateUser', userToken],
+    async () => {
+      if (user.token) {
+        const data = await authenticateAPI(user.token);
+        return data;
+      }
+      throw new Error('No token found');
+    },
+    { enabled: !!user.token },
+  );
   useDocumentTitle(documentTitle);
   useEffect(() => {
     const titles = capitalString(pathname.replace('/', ''));
@@ -59,7 +79,19 @@ const HeaderMegaMenu = () => {
     });
   }, [pathname]);
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
-  console.log(user.isAdmin);
+  useEffect(() => {
+    if (data) {
+      userDispatch({
+        type: 'SET_USER',
+        user: {
+          username: data.username,
+          email: data.email,
+          isAdmin: data.isAdmin,
+          token: user.token,
+        },
+      });
+    }
+  }, [data]);
 
   return (
     <Box pb={120}>
@@ -117,24 +149,31 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {user.isAdmin && (
+                    {user && user.isAdmin === true ? (
                       <>
                         <Menu.Label>Admin</Menu.Label>
                         <Menu.Item
-                          icon={<IconHome size="0.9rem" stroke={1.5} />}
-                          onClick={() => navigateUserTo('/admin/dashboard')}
-                        >
-                          Admin dashboard
-                        </Menu.Item>
-                        <Menu.Item
                           icon={<IconUser size="0.9rem" stroke={1.5} />}
-                          onClick={() => navigateUserTo('/profile')}
+                          onClick={() => navigateUserTo('/admin/dashboard')}
                         >
                           Admin dashboard temp
                         </Menu.Item>
+                        <Menu.Item
+                          disabled={isLoading}
+                          icon={
+                            isLoading ? (
+                              <IconHome size="0.9rem" stroke={1.5} />
+                            ) : null
+                          }
+                        >
+                          {isLoading ? (
+                            <Skeleton height={28} mt={6} radius="sm" />
+                          ) : (
+                            'Admin menu item'
+                          )}
+                        </Menu.Item>
                       </>
-                    )}
-
+                    ) : null}
                     <Menu.Label>Main Navigation</Menu.Label>
                     <Menu.Item
                       icon={<IconHome size="0.9rem" stroke={1.5} />}

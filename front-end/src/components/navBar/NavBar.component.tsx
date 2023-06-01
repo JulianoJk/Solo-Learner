@@ -113,7 +113,7 @@ export function NavBar() {
   ));
 
   return (
-    <Navbar height={700} width={{ sm: 300 }} p="md">
+    <Navbar height={'100vh'} width={{ sm: 300 }} p="md">
       <Navbar.Section grow>{links}</Navbar.Section>
 
       {/* TODO!: ADD IMAGE FOR THE ADMIN ETC */}

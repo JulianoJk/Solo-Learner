@@ -3,7 +3,7 @@ import { useUserState } from '../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI } from '../api/api';
 import { NavBar } from '../navBar/NavBar.component';
-import { Loader } from '@mantine/core';
+import { Loader, Stack, Title } from '@mantine/core';
 import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 
 const AdminDashboard = () => {
@@ -39,7 +39,13 @@ const AdminDashboard = () => {
   }
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <Stack align="center">
+        <Loader color="teal" size={400} />
+
+        <Title>Loading...</Title>
+      </Stack>
+    );
   }
 
   if (isError || !isSuccess) {

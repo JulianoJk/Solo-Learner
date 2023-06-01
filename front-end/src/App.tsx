@@ -69,6 +69,7 @@ const App = () => {
               },
 
               body: {
+                overflow: 'auto',
                 backgroundImage:
                   theme.colorScheme === 'light'
                     ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"

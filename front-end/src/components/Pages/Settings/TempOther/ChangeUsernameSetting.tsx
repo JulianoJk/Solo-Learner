@@ -31,7 +31,6 @@ export const ChangeUsernameSetting = () => {
     },
     {
       enabled: true,
-      refetchOnWindowFocus: true,
       onSuccess: (data) => {
         const displayUsername: string = isUndefinedOrNullString(data?.username)
           ? (user.username as string)

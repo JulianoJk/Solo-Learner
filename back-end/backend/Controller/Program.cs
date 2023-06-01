@@ -60,14 +60,35 @@ app.MapGet(
         }
     }
 );
+app.MapGet(
+    "/users/checkToken",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            var response = new { status = "success" };
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+
+// Existing routes and authentication setup
 
 app.MapPost(
     "/users/login",
-    (HttpContext context) =>
+    async (HttpContext context) =>
     {
-        LoginUser loginUser = new();
-        loginUser.HandleLoginRequest(context);
-        return Task.CompletedTask;
+        LoginUser loginUser = new LoginUser();
+        await loginUser.HandleLoginRequest(context);
     }
 );
 
@@ -148,6 +169,24 @@ app.MapGet(
         {
             AdminController adminController = new AdminController();
             await adminController.GetDashboard(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+app.MapGet(
+    "/admin/users/all/list",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
+        {
+            AdminController adminController = new AdminController();
+            await adminController.GetUsers(context);
         }
         else
         {

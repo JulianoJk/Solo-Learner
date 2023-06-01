@@ -66,14 +66,19 @@ public static class JwtUtils
     {
         // Implement your user authentication logic here
         // ...
-        return GenerateSecurityToken(username, email, isTeacher, isAdmin);
+        return GenerateSecurityToken(
+            username,
+            email,
+            isTeacher.ToString().ToLower(),
+            isAdmin.ToString().ToLower()
+        );
     }
 
     private static string GenerateSecurityToken(
         string username,
         string email,
-        bool isTeacher,
-        bool isAdmin
+        string isTeacher,
+        string isAdmin
     )
     {
         var id = GetUserIdFromDB(email);
@@ -89,8 +94,8 @@ public static class JwtUtils
                 {
                     new Claim("username", username),
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("isTeacher", isTeacher.ToString()),
-                    new Claim("isAdmin", isAdmin.ToString()), // Add the isAdmin claim here
+                    new Claim("isTeacher", isTeacher), // Pass the lowercase string here
+                    new Claim("isAdmin", isAdmin), // Pass the lowercase string here
                     new Claim("id", id.ToString())
                 }
             ),

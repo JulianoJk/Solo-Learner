@@ -1,5 +1,6 @@
 using MySql.Data.MySqlClient;
 using backend;
+using backend.Models;
 
 namespace backend
 {

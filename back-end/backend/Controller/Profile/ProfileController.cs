@@ -1,6 +1,7 @@
 using backend;
 using MySql.Data.MySqlClient;
 using System.Text.Json;
+using backend.Models;
 
 public class ProfileController
 {
