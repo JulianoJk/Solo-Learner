@@ -196,5 +196,14 @@ app.MapGet(
         }
     }
 );
+app.MapPost(
+    "/users/activity",
+    (HttpContext context) =>
+    {
+        RegisterUser registerUser = new();
+        registerUser.HandleRegistrationRequest(context);
+        return Task.CompletedTask;
+    }
+);
 
 app.Run();

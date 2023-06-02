@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { createStyles, Navbar, getStylesRef, rem, Anchor } from '@mantine/core';
+import {
+  createStyles,
+  Navbar,
+  getStylesRef,
+  rem,
+  Anchor,
+  useMantineTheme,
+} from '@mantine/core';
 import {
   IconFingerprint,
   IconKey,
@@ -21,6 +28,9 @@ const useStyles = createStyles((theme) => ({
     borderBottom: `${rem(1)} solid ${
       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
     }`,
+  },
+  body: {
+    background: 'red',
   },
 
   footer: {
@@ -98,7 +108,7 @@ export function NavBar() {
   const [active, setActive] = useState('User Managment');
   const appDispatch = useAppDispatch();
   const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
-
+  const theme = useMantineTheme();
   const links = data.map((item) => (
     <a
       className={cx(classes.link, {
@@ -125,13 +135,21 @@ export function NavBar() {
 
   return (
     <Navbar
+      styles={{
+        root: {
+          backgroundImage:
+            theme.colorScheme === 'light'
+              ? theme.fn.linearGradient(7, '#f8bbd09e', '#64b4f694') //OR "#4CAF50", "#2196F3"
+              : theme.fn.linearGradient(7, '#303233'),
+        },
+      }}
       height={'100vh'}
       width={{
         // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
-        sm: 300,
+        sm: 200,
 
         // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
-        lg: 400,
+        lg: 300,
 
         // When other breakpoints do not match base width is used, defaults to 100%
         base: 100,

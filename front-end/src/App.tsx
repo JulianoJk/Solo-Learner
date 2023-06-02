@@ -33,7 +33,7 @@ import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
 import Settings from './components/Pages/Settings/Settings.component';
-import AdminDashboard from './components/admin/AdminDashboard.component';
+import Admin from './components/admin/Admin.component';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -139,10 +139,7 @@ const App = () => {
                           element={<Exercises />}
                         />
 
-                        <Route
-                          path="/admin/dashboard"
-                          element={<AdminDashboard />}
-                        />
+                        <Route path="/admin/dashboard" element={<Admin />} />
 
                         <Route
                           path="/*"

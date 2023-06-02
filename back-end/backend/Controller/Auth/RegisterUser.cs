@@ -36,10 +36,22 @@ public class RegisterUser
 
         if (IsValidEmail(email) && ArePasswordsEqual(password, confirmPassword))
         {
-            // If username is null, use the email or whatever is before @ as the default username
             if (string.IsNullOrWhiteSpace(username))
             {
-                username = GetDefaultUsername(email);
+                // Generate a unique username
+                username = GenerateUniqueUsername(email);
+
+                if (username == null)
+                {
+                    // Return an error response with a 409 status code
+                    var response = new
+                    {
+                        error = new { message = "Unable to generate a unique username." }
+                    };
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    await context.Response.WriteAsJsonAsync(response);
+                    return;
+                }
             }
 
             // Generate a salt
@@ -182,5 +194,24 @@ public class RegisterUser
             Console.WriteLine($"Error generating salt: {ex.Message}");
             return null;
         }
+    }
+
+    private string GenerateUniqueUsername(string email)
+    {
+        string username = GetDefaultUsername(email);
+        int number = 1;
+
+        // Check if the username already exists in the database
+        bool isUsernameTaken = _authenticator.IsUsernameTaken(username);
+
+        // Append a number to the username until it becomes unique
+        while (isUsernameTaken)
+        {
+            username = $"{GetDefaultUsername(email)}{number}";
+            isUsernameTaken = _authenticator.IsUsernameTaken(username);
+            number++;
+        }
+
+        return username;
     }
 }

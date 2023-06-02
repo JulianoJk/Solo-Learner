@@ -97,7 +97,7 @@ const HeaderMegaMenu = () => {
   }, [data]);
 
   return (
-    <Box pb={120}>
+    <Box>
       <Header height={60} px="md" className={classes.headerRoot}>
         <Group position="apart" sx={{ height: '100%' }}>
           <Box

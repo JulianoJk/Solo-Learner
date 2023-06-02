@@ -117,4 +117,29 @@ public class AuthenticationUtils
             }
         }
     }
+
+    public bool IsUsernameTaken(string username)
+    {
+        MySqlConnection connection = new MySqlConnection(connectionString);
+        try
+        {
+            connection.Open();
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT COUNT(*) FROM users WHERE username = @username",
+                connection
+            );
+            command.Parameters.AddWithValue("@username", username);
+            int count = Convert.ToInt32(command.ExecuteScalar());
+            return count > 0;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+            return true; // Assume the username is taken in case of an error
+        }
+        finally
+        {
+            connection.Close();
+        }
+    }
 }

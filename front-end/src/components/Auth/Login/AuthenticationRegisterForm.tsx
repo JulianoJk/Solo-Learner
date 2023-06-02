@@ -41,7 +41,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
       username: '',
       password: '',
       confirmPassword: '',
-      terms: true,
+      terms: false,
     },
 
     validate: {

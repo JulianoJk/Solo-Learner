@@ -112,7 +112,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
   ));
 
   return (
-    <ScrollArea h={'60vh'}>
+    <ScrollArea h={'88vh'}>
       <TextInput
         placeholder="Search by any field"
         mb="md"

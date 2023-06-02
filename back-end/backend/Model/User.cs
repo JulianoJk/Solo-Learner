@@ -12,5 +12,6 @@ namespace backend.Models
         public bool IsTeacher { get; set; }
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
+        public DateTime LastActive { get; set; }
     }
 }

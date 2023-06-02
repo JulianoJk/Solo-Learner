@@ -5,6 +5,13 @@ using backend.Models;
 
 public class ProfileController
 {
+    private readonly AuthenticationUtils _authenticator;
+
+    public ProfileController()
+    {
+        _authenticator = new AuthenticationUtils();
+    }
+
     // Method to retrieve a user's data from the database based on their email
     public async Task<User?> GetUserFromDatabase(string email)
     {
@@ -94,7 +101,17 @@ public class ProfileController
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync("Email and new username cannot be empty.");
         }
+        // Check if the username is already taken
+        bool isUsernameTaken = _authenticator.IsUsernameTaken(newUsername);
 
+        if (isUsernameTaken)
+        {
+            // Return an error response with a 409 status code
+            var response = new { error = new { message = "Username is already taken." } };
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(response);
+            return;
+        }
         try
         {
             await connection.OpenAsync();
