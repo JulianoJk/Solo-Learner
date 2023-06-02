@@ -23,10 +23,9 @@ namespace backend
             {
                 await connection.OpenAsync();
                 MySqlCommand command = new MySqlCommand(
-                    $"UPDATE users SET lastActive = @lastActive WHERE email = @email",
+                    $"UPDATE users SET lastActive = CONVERT_TZ(NOW(), @@session.time_zone, '+03:00') WHERE email = @email",
                     connection
                 );
-                command.Parameters.AddWithValue("@lastActive", DateTime.UtcNow);
                 command.Parameters.AddWithValue("@email", email);
                 await command.ExecuteNonQueryAsync();
             }
@@ -42,16 +41,8 @@ namespace backend
 
         public async Task GetLastActive(HttpContext context)
         {
+            string email = JwtUtils.GetUserEmailFromJwt(context);
             // Read the request body
-            string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
-
-            // Deserialize the request body into a User object
-            var userModel = JsonSerializer.Deserialize<User>(
-                requestBody,
-                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
-            );
-
-            string email = userModel.Email;
 
             await UpdateLastActive(email);
 

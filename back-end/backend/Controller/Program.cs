@@ -69,9 +69,8 @@ app.MapGet(
 
         if (isValidJwt)
         {
-            var response = new { status = "success" };
-            context.Response.StatusCode = StatusCodes.Status200OK;
-            await context.Response.WriteAsJsonAsync(response);
+            UserRepository userRepository = new UserRepository();
+            await userRepository.GetLastActive(context);
         }
         else
         {
@@ -188,25 +187,6 @@ app.MapGet(
         {
             AdminController adminController = new AdminController();
             await adminController.GetUsers(context);
-        }
-        else
-        {
-            var response = new { error = new { message = "Unauthorized" } };
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsJsonAsync(response);
-        }
-    }
-);
-app.MapPost(
-    "/users/activity",
-    async (HttpContext context) =>
-    {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
-
-        if (isValidJwt)
-        {
-            UserRepository userRepository = new UserRepository();
-            await userRepository.GetLastActive(context);
         }
         else
         {

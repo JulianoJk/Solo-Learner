@@ -142,4 +142,9 @@ public class AuthenticationUtils
             connection.Close();
         }
     }
+
+    internal string GetUserEmailFromJwt(HttpContext context)
+    {
+        throw new NotImplementedException();
+    }
 }
