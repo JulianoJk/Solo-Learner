@@ -1,30 +1,22 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useUserState } from '../../../context/UserContext';
-import { IUserInfoContext } from '../../../Model/UserModels';
-import { profileAPI } from '../../api/api';
 
 import { UserInfoIcons } from './UserInfo.component';
 import InstructorProfileCard from '../instructorProfileCard/InstructorProfileCard.component';
 import { Box, Loader, Stack, Title } from '@mantine/core';
 import { upperFirst } from '@mantine/hooks';
 import NotFound from '../Error/pageNotFound/NotFound.component';
+import { useGetProfile } from '../../hooks/useGetProfile';
 
 const Profile: React.FC = () => {
   const { user } = useUserState();
-
   const {
     data: userProfileData,
     isLoading,
     isError,
     isFetched,
-  } = useQuery(['getProfileItems', user.token ?? ''], async () => {
-    if (user.token) {
-      const data: IUserInfoContext | undefined = await profileAPI(user.token);
-      return data;
-    }
-    throw new Error('No token found');
-  });
+  } = useGetProfile(user.token);
+
   if (isLoading) {
     return (
       <Stack align="center">

@@ -95,7 +95,7 @@ const data = [
 
 export function NavBar() {
   const { classes, cx } = useStyles();
-  const [active, setActive] = useState('Billing');
+  const [active, setActive] = useState('User Managment');
   const appDispatch = useAppDispatch();
   const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
 

@@ -98,7 +98,6 @@ const NavigationNormal: React.FC = () => {
 
         {isUserLoggedIn() ? (
           <>
-            {/* <TokenExpirationChecker /> */}
             <Button
               component={Link}
               to="/home"

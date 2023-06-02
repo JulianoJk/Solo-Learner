@@ -19,12 +19,14 @@ public class ProfileController
         {
             reader.Read();
             bool isTeacher = (bool)reader["isTeacher"];
+            bool IsAdmin = (bool)reader["isAdmin"];
 
             User user = new User
             {
                 Id = (int)reader["id"],
                 Username = (string)reader["username"],
                 IsTeacher = isTeacher,
+                IsAdmin = IsAdmin,
                 CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
             };
             reader.Close();
@@ -48,7 +50,8 @@ public class ProfileController
             status = "success",
             username = user.Username,
             isTeacher = user.IsTeacher,
-            createdAt = user.CreatedAt
+            isAdmin = user.IsAdmin,
+            createdAt = user.CreatedAt,
         };
 
         // Set the response status code and return the response object as JSON

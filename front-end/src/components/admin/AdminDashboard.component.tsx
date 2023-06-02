@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useUserState } from '../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
@@ -14,9 +14,6 @@ import { AppState } from '../../context/AppContext';
 const AdminDashboard = () => {
   const { user } = useUserState();
   const { selectedAdminNavbar } = AppState();
-  useEffect(() => {
-    console.log('selectedAdminNavbar', selectedAdminNavbar);
-  }, [selectedAdminNavbar]);
   const [isDashBoardSuccess, setIsDashBoardSuccess] = useState(false);
   const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
 

@@ -36,6 +36,7 @@ import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
 import { authenticateAPI } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
+import { useGetProfile } from '../hooks/useGetProfile';
 
 const HeaderMegaMenu = () => {
   const { classes, cx } = useStyles();
@@ -45,6 +46,8 @@ const HeaderMegaMenu = () => {
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { user } = useUserState();
+  const { data: profileData } = useGetProfile(user.token);
+
   const navigate: NavigateFunction = useNavigate();
   const logOut = () => {
     userDispatch({ type: 'RESET_STATE' });
@@ -131,7 +134,7 @@ const HeaderMegaMenu = () => {
                           src={
                             'https://avatars.githubusercontent.com/u/47204253?v=4'
                           }
-                          alt={user.username ?? 'learner'}
+                          alt={profileData?.username ?? 'learner'}
                           radius="xl"
                           size={20}
                         />
@@ -142,21 +145,58 @@ const HeaderMegaMenu = () => {
                           sx={{ lineHeight: 1 }}
                           mr={3}
                         >
-                          {upperFirst(user.username ?? 'learner')}
+                          {upperFirst(profileData?.username ?? 'learner')}
                         </Text>
                         <IconChevronDown size={rem(12)} stroke={1.5} />
                       </Group>
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {user && user.isAdmin === true ? (
+                    {!profileData?.isAdmin ? (
+                      <>
+                        <Menu.Label>Main Navigation</Menu.Label>
+                        <Menu.Item
+                          icon={<IconHome size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/home')}
+                        >
+                          Home
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/profile')}
+                        >
+                          Profile
+                        </Menu.Item>
+                        <Menu.Label>Settings</Menu.Label>
+
+                        <Menu.Item
+                          icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                          onClick={() => {
+                            navigateUserTo('/settings');
+                            appDisp({
+                              type: 'SET_USER_SETTINGS_MODAL',
+                              isUserSettingsOpen: true,
+                            });
+                          }}
+                        >
+                          Account settings
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                          onClick={() => logOut()}
+                          color="red"
+                        >
+                          log out
+                        </Menu.Item>
+                      </>
+                    ) : (
                       <>
                         <Menu.Label>Admin</Menu.Label>
                         <Menu.Item
                           icon={<IconUser size="0.9rem" stroke={1.5} />}
                           onClick={() => navigateUserTo('/admin/dashboard')}
                         >
-                          Admin dashboard temp
+                          Admin settings
                         </Menu.Item>
                         <Menu.Item
                           disabled={isLoading}
@@ -172,42 +212,41 @@ const HeaderMegaMenu = () => {
                             'Admin menu item'
                           )}
                         </Menu.Item>
+                        <Menu.Label>Main Navigation</Menu.Label>
+                        <Menu.Item
+                          icon={<IconHome size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/home')}
+                        >
+                          Home
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          onClick={() => navigateUserTo('/profile')}
+                        >
+                          Profile
+                        </Menu.Item>
+                        <Menu.Label>Settings</Menu.Label>
+                        <Menu.Item
+                          icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                          onClick={() => {
+                            navigateUserTo('/settings');
+                            appDisp({
+                              type: 'SET_USER_SETTINGS_MODAL',
+                              isUserSettingsOpen: true,
+                            });
+                          }}
+                        >
+                          Account settings
+                        </Menu.Item>
+                        <Menu.Item
+                          icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                          onClick={() => logOut()}
+                          color="red"
+                        >
+                          log out
+                        </Menu.Item>
                       </>
-                    ) : null}
-                    <Menu.Label>Main Navigation</Menu.Label>
-                    <Menu.Item
-                      icon={<IconHome size="0.9rem" stroke={1.5} />}
-                      onClick={() => navigateUserTo('/home')}
-                    >
-                      Home
-                    </Menu.Item>
-                    <Menu.Item
-                      icon={<IconUser size="0.9rem" stroke={1.5} />}
-                      onClick={() => navigateUserTo('/profile')}
-                    >
-                      Profile
-                    </Menu.Item>
-                    <Menu.Label>Settings</Menu.Label>
-
-                    <Menu.Item
-                      icon={<IconSettings size="0.9rem" stroke={1.5} />}
-                      onClick={() => {
-                        navigateUserTo('/settings');
-                        appDisp({
-                          type: 'SET_USER_SETTINGS_MODAL',
-                          isUserSettingsOpen: true,
-                        });
-                      }}
-                    >
-                      Account settings
-                    </Menu.Item>
-                    <Menu.Item
-                      icon={<IconLogout size="0.9rem" stroke={1.5} />}
-                      onClick={() => logOut()}
-                      color="red"
-                    >
-                      log out
-                    </Menu.Item>
+                    )}
                   </Menu.Dropdown>
                 </Menu>
               </Group>
