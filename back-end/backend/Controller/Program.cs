@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using backend;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -198,11 +199,21 @@ app.MapGet(
 );
 app.MapPost(
     "/users/activity",
-    (HttpContext context) =>
+    async (HttpContext context) =>
     {
-        RegisterUser registerUser = new();
-        registerUser.HandleRegistrationRequest(context);
-        return Task.CompletedTask;
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            UserRepository userRepository = new UserRepository();
+            await userRepository.GetLastActive(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
     }
 );
 

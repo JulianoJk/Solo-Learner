@@ -12,6 +12,8 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      TZ: "Europe/Athens" # Add this line
+
     volumes:
       - ./back-end/database/data:/var/lib/mysql
       - ./back-end/database:/docker-entrypoint-initdb.d

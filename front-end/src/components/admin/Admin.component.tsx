@@ -129,7 +129,6 @@ const Admin = () => {
   ) {
     return <NotFound navigationPath={'/home'} />;
   }
-  
 
   const renderComponentToDisplay = () => {
     switch (selectedAdminNavbar) {
