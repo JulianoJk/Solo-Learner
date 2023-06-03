@@ -16,7 +16,7 @@ public class RegisterUser
         _authenticator = new AuthenticationUtils();
     }
 
-    public async void HandleRegistrationRequest(HttpContext context)
+    public async Task HandleRegistrationRequest(HttpContext context)
     {
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
@@ -87,10 +87,14 @@ public class RegisterUser
                     else
                     {
                         // Return an error response with a 500(Internal Server Error) status code
+                        var response = new
+                        {
+                            status = "error",
+                            data = new { message = "Internal Server Error." },
+                            issue = new { issue = "JWT token not generated." }
+                        };
                         context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                        await context.Response.WriteAsJsonAsync(
-                            "Internal Server Error. JWT token not generated."
-                        );
+                        await context.Response.WriteAsJsonAsync(response);
                     }
                 }
                 else
@@ -104,23 +108,39 @@ public class RegisterUser
             else
             {
                 // Return an error response with a 500(Internal Server Error) status code
+                var response = new
+                {
+                    status = "error",
+                    data = new { message = "Internal Server Error." },
+                    issue = new { issue = "Salt not generated" }
+                };
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsJsonAsync(
-                    "Internal Server Error.{Salt not generated}"
-                );
+                await context.Response.WriteAsJsonAsync(response);
             }
         }
         else if (!IsValidEmail(email))
         {
             // Return an error response with a 400(Bad Request) status code
+            var response = new
+            {
+                status = "error",
+                data = new { message = "Invalid email address" },
+                issue = new { issue = "email" }
+            };
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsJsonAsync("Invalid email address.");
+            await context.Response.WriteAsJsonAsync(response);
         }
         else if (!ArePasswordsEqual(password, confirmPassword))
         {
             // Return an error response with a 400(Bad Request) status code
+            var response = new
+            {
+                status = "error",
+                data = new { message = "The passwords do not match." },
+                issue = new { issue = "confirmPassword" }
+            };
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsJsonAsync("The passwords do not match.");
+            await context.Response.WriteAsJsonAsync(response);
         }
     }
 

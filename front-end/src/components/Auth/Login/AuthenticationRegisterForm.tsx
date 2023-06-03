@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
-import { useForm } from '@mantine/form';
+import { hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import {
   TextInput,
   PasswordInput,
@@ -31,7 +32,7 @@ interface IRegisterProps {
 
 const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
   const { hasBorder, switchToLogin, children, registerTitle } = props;
-  const { register } = useRegister();
+  const { register, isLoading: isRegisterLoading } = useRegister();
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
 
@@ -45,18 +46,13 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-      password: (val) =>
-        val.length <= 6
-          ? 'Password should include at least 6 characters'
-          : null,
-      confirmPassword: (value, values) => {
-        return value !== values.password ? 'Passwords did not match' : null;
-      },
+      email: isEmail('Invalid email'),
+      password: hasLength({ min: 6 }, 'Value must be 6 or more'),
+      confirmPassword: isNotEmpty('You must accept terms of use'),
+      terms: isNotEmpty('You must accept terms of use'),
     },
     validateInputOnChange: true,
   });
-
   return (
     <Center maw={600} mx="auto">
       <Paper radius="md" p="xl" withBorder={hasBorder}>
@@ -66,7 +62,6 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             ? 'Welcome to Solo Learn, register with'
             : registerTitle}
         </Text>
-
         <SocialButtonsUnavailable />
         <Divider
           label="Or continue with email"
@@ -95,9 +90,12 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             />
 
             <TextInput
-              label="Name"
-              placeholder="Name"
-              {...form.getInputProps('name')}
+              label="Username (optional)"
+              description="You can change it later"
+              // q: in css, how can I make a text to be italics?
+              descriptionProps={{ color: 'dimmed', size: 'xs' }}
+              placeholder="Username"
+              {...form.getInputProps('username')}
             />
 
             <PasswordInput
@@ -130,6 +128,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             <Checkbox
               label="I accept terms and conditions"
               checked={form.values.terms}
+              error={form.errors.terms && 'You must accept terms of use'}
               onChange={(event) =>
                 form.setFieldValue('terms', event.currentTarget.checked)
               }
@@ -154,7 +153,12 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
               children
             )}
 
-            <Button type="submit" radius="xl">
+            <Button
+              type="submit"
+              radius="xl"
+              loading={isRegisterLoading}
+              color="green"
+            >
               Register
             </Button>
           </Group>
