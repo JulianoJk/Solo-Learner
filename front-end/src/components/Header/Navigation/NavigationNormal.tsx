@@ -26,7 +26,7 @@ import {
   isUserLoggedIn,
   saveProfileImageAfterReload,
   checkIfPageIsReload,
-} from '../../../lib/dist';
+} from '../../../utils/utils';
 import { useEffect, useState } from 'react';
 import {
   useClickOutside,

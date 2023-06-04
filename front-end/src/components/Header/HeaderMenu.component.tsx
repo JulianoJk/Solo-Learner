@@ -29,7 +29,7 @@ import {
   capitalString,
   isUndefinedOrNullString,
   isUserLoggedIn,
-} from '../../lib/dist';
+} from '../../utils/utils';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
@@ -95,6 +95,7 @@ const HeaderMegaMenu = () => {
       });
     }
   }, [data]);
+  console.log(user.username);
 
   return (
     <Box>
@@ -163,7 +164,9 @@ const HeaderMegaMenu = () => {
                         </Menu.Item>
                         <Menu.Item
                           icon={<IconUser size="0.9rem" stroke={1.5} />}
-                          onClick={() => navigateUserTo('/profile')}
+                          onClick={() =>
+                            navigateUserTo(`/profile/${user.username}`)
+                          }
                         >
                           Profile
                         </Menu.Item>
@@ -221,7 +224,9 @@ const HeaderMegaMenu = () => {
                         </Menu.Item>
                         <Menu.Item
                           icon={<IconUser size="0.9rem" stroke={1.5} />}
-                          onClick={() => navigateUserTo('/profile')}
+                          onClick={() =>
+                            navigateUserTo(`/profile/${user.username}`)
+                          }
                         >
                           Profile
                         </Menu.Item>

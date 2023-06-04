@@ -19,27 +19,14 @@ interface UsersTableProps {
 
 const roleColors: Record<string, string> = {
   student: 'blue',
-  Admin: 'cyan',
-  teacher: 'pink',
+  admin: 'pink',
+  teacher: 'cyan',
+  'admin/teacher': 'orange',
 };
 
 export function UsersTable({ data }: UsersTableProps) {
   const theme = useMantineTheme();
-  const renderRole = (role: string) => {
-    switch (role) {
-      case 'student':
-        return 'Student';
-        break;
-      case 'teacher':
-        return 'Teacher';
-        break;
-      case 'admin':
-        return 'Admin';
-        break;
-      default:
-        return 'student';
-    }
-  };
+
   const rows = data.map((item) => (
     <tr key={item.username}>
       <td>
@@ -54,7 +41,7 @@ export function UsersTable({ data }: UsersTableProps) {
       <td>
         <Badge
           color={roleColors[getJob(item.isAdmin, item.isTeacher)]}
-          variant={theme.colorScheme === 'dark' ? 'light' : 'outline'}
+          variant={theme.colorScheme === 'dark' ? 'light' : 'filled'}
         >
           {getJob(item.isAdmin, item.isTeacher)}
         </Badge>
@@ -65,8 +52,8 @@ export function UsersTable({ data }: UsersTableProps) {
         </Anchor>
       </td>
       <td>
-        <Text fz="sm" c="dimmed">
-          {item.createdAt}
+        <Text fz="sm" c={theme.colorScheme === 'dark' ? 'dimmed' : ''}>
+          {item.formattedLastActive}
         </Text>
       </td>
       <td>
@@ -84,14 +71,28 @@ export function UsersTable({ data }: UsersTableProps) {
 
   return (
     <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="sm">
+      <Table
+        sx={{ minWidth: 800 }}
+        verticalSpacing="sm"
+        striped={theme.colorScheme === 'dark' ? true : false}
+        highlightOnHover
+        withBorder
+        withColumnBorders
+      >
         <thead>
           <tr>
             <th>Employee</th>
             <th>Job title</th>
             <th>Email</th>
-            <th>Phone</th>
-            <th />
+            <th>
+              <Text>
+                Last active <br />
+                <Text sx={{ fontSize: 7.5, paddingTop: 2 }}>
+                  (YY-MM-DD HH-MM)
+                </Text>
+              </Text>
+            </th>
+            <th>Edit</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>
@@ -101,12 +102,12 @@ export function UsersTable({ data }: UsersTableProps) {
 }
 function getJob(isAdmin: boolean, isTeacher: boolean) {
   if (isAdmin && isTeacher) {
-    return 'Admin/Teacher';
+    return 'admin/teacher';
   } else if (isAdmin) {
-    return 'Admin';
+    return 'admin';
   } else if (isTeacher) {
-    return 'Teacher';
+    return 'teacher';
   } else {
-    return 'Student';
+    return 'student';
   }
 }

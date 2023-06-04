@@ -11,6 +11,10 @@ import { User } from '../../Model/UserModels';
 import { NavBar } from '../navBar/NavBar.component';
 import { AppState } from '../../context/AppContext';
 import { UsersTable } from './userManagment/AdminDashBoard';
+import {
+  LastActiveFormat,
+  formatLastActive,
+} from '../../utils/formattedLastActive';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -45,7 +49,6 @@ const Admin = () => {
     const randomIndex = Math.floor(Math.random() * avatarData.length);
     return avatarData[randomIndex].avatar;
   };
-
   const { isLoading: isAdminDashBoardLoading, isError: isAdminDashBoardError } =
     useQuery(
       ['getAdminDashboardItems', user.token],
@@ -79,7 +82,7 @@ const Admin = () => {
       if (user.token) {
         const data = await adminGetAllUsersAPI(user.token);
         if (data?.status === 'success') {
-          setAllUsersList(data.users);
+          setAllUsersList(formatLastActive(data.users, LastActiveFormat.FULL));
         }
         return data;
       }
@@ -94,7 +97,9 @@ const Admin = () => {
             ...user,
             avatar: getRandomAvatar(),
           }));
-          setAllUsersList(updatedUsers);
+          setAllUsersList(
+            formatLastActive(updatedUsers, LastActiveFormat.CUSTOM),
+          );
           setIsAllUsersSuccess(true);
         } else {
           setIsAllUsersSuccess(false);
@@ -106,7 +111,6 @@ const Admin = () => {
       },
     },
   );
-
   if (!user.token) {
     return <NotFound navigationPath={'/'} />;
   }

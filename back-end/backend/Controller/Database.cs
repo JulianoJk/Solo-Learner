@@ -47,7 +47,7 @@ namespace backend
                             if (CheckIfEmailExists(connection, email))
                             {
                                 AreCredentialsCorrect = false;
-                                MessageToUser = "Email already exists.";
+                                MessageToUser = "Invalid email address or password.";
                             }
                             else
                             {

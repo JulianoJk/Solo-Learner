@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Button, Center, Modal, Title, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { checkIfPageIsReload, isUserLoggedIn } from '../../lib/dist';
+import { checkIfPageIsReload, isUserLoggedIn } from '../../utils/utils';
 
 import { useDisclosure } from '@mantine/hooks';
 import { useUserDispatch } from '../../context/UserContext';

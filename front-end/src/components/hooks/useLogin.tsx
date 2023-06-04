@@ -3,7 +3,7 @@ import { useAppDispatch } from '../../context/AppContext';
 import { useUserDispatch } from '../../context/UserContext';
 import { loginAPI } from '../api/api';
 import { useNavigate } from 'react-router-dom';
-import { isUndefinedOrNullString } from '../../lib/dist';
+import { isUndefinedOrNullString } from '../../utils/utils';
 import { IApiError, IUserInfoContext } from '../../Model/UserModels';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck } from '@tabler/icons-react';

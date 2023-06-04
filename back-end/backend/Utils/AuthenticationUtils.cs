@@ -118,33 +118,51 @@ public class AuthenticationUtils
         }
     }
 
-    public bool IsUsernameTaken(string username)
+    public Tuple<bool, string> IsUsernameTaken(string username)
     {
         MySqlConnection connection = new MySqlConnection(connectionString);
+        string uniqueUsername = username;
+        int counter = 1;
+
         try
         {
             connection.Open();
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT COUNT(*) FROM users WHERE username = @username",
-                connection
-            );
-            command.Parameters.AddWithValue("@username", username);
-            int count = Convert.ToInt32(command.ExecuteScalar());
-            return count > 0;
+
+            while (true) // we will break this loop from inside
+            {
+                MySqlCommand command = new MySqlCommand(
+                    $"SELECT COUNT(*) FROM users WHERE username = @username",
+                    connection
+                );
+
+                command.Parameters.AddWithValue("@username", uniqueUsername);
+                int count = Convert.ToInt32(command.ExecuteScalar());
+
+                if (count > 0) // if username is taken
+                {
+                    uniqueUsername = $"{username}{counter}"; // add counter to username
+                    counter++; // increment counter for next possible iteration
+                }
+                else
+                {
+                    break; // if username is not taken, break the loop
+                }
+            }
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex.Message);
-            return true; // Assume the username is taken in case of an error
+            // Here, you might want to do error handling,
+            // e.g., throw an exception or return a value indicating an error
         }
         finally
         {
             connection.Close();
         }
-    }
 
-    internal string GetUserEmailFromJwt(HttpContext context)
-    {
-        throw new NotImplementedException();
+        if (counter == 1) // original username was not taken
+            return Tuple.Create(false, "");
+
+        return Tuple.Create(true, uniqueUsername); // username was taken, return the new one
     }
 }

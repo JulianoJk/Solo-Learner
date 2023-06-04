@@ -23,7 +23,7 @@ public class AdminController
             await connection.OpenAsync();
 
             MySqlCommand command = new MySqlCommand(
-                "SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at FROM users",
+                "SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive FROM users",
                 connection
             );
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -40,7 +40,8 @@ public class AdminController
                     IsAdmin = reader.GetBoolean("isAdmin"),
                     IsTeacher = reader.GetBoolean("isTeacher"),
                     CreatedAt = reader.GetDateTime("created_at").ToString("yyyy-MM-dd"),
-                    UpdatedAt = reader.GetDateTime("updated_at").ToString("yyyy-MM-dd")
+                    UpdatedAt = reader.GetDateTime("updated_at").ToString("yyyy-MM-dd"),
+                    LastActive = reader.GetDateTime("lastActive")
                 };
 
                 users.Add(user);

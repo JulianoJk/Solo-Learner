@@ -8,7 +8,10 @@ import { useClickOutside } from '@mantine/hooks';
 import React, { useEffect } from 'react';
 import { IconHome } from '@tabler/icons-react';
 import { useAccountSettingsDispatch } from '../../../context/AccountSettingsContext';
-import { isUserLoggedIn, saveProfileImageAfterReload } from '../../../lib/dist';
+import {
+  isUserLoggedIn,
+  saveProfileImageAfterReload,
+} from '../../../utils/utils';
 import { IconSettings, IconTrash, IconUser } from '@tabler/icons-react';
 // import TokenExpirationChecker from '../../expireSession/TokenExpirationChecker';
 import { useAppDispatch } from '../../../context/AppContext';

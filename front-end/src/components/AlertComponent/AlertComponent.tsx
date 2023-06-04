@@ -3,7 +3,7 @@ import { Alert, Center, Text, useMantineTheme } from '@mantine/core';
 import { IconAlertCircleFilled } from '@tabler/icons-react';
 
 import { useStyles } from './Alert.styles';
-import { isUndefinedOrNullString } from '../../lib/dist';
+import { isUndefinedOrNullString } from '../../utils/utils';
 import { AppState } from '../../context/AppContext';
 
 export const AlertComponent: React.FC = () => {

@@ -102,9 +102,9 @@ public class ProfileController
             await context.Response.WriteAsJsonAsync("Email and new username cannot be empty.");
         }
         // Check if the username is already taken
-        bool isUsernameTaken = _authenticator.IsUsernameTaken(newUsername);
+        var (isTaken, uniqueUsername) = _authenticator.IsUsernameTaken(newUsername);
 
-        if (isUsernameTaken)
+        if (isTaken)
         {
             // Return an error response with a 409 status code
             var response = new { error = new { message = "Username is already taken." } };
@@ -112,6 +112,7 @@ public class ProfileController
             await context.Response.WriteAsJsonAsync(response);
             return;
         }
+
         try
         {
             await connection.OpenAsync();

@@ -15,7 +15,7 @@ import {
   useAccountSettingsDispatch,
   useAccountSettingsState,
 } from '../../../../../context/AccountSettingsContext';
-import { saveProfileImageAfterReload } from '../../../../../lib/dist';
+import { saveProfileImageAfterReload } from '../../../../../utils/utils';
 import { useUserState } from '../../../../../context/UserContext';
 import { sendImageToServerAPI } from '../../../../api/api';
 import { IconPhoto, IconX, IconUpload } from '@tabler/icons-react';

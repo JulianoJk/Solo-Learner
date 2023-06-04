@@ -77,6 +77,10 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   avatar?: string;
+  lastActive: string;
+  lastActiveDate?: string;
+  lastActiveTime?: string;
+  formattedLastActive?: string; // New property for formatted last active
 }
 
 export interface GetUsersListResponse {

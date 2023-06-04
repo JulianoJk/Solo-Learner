@@ -16,7 +16,7 @@ import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 // import SmallNavigation from './components/Header/Navigation/SmallNavigation';
 import DeleteAccount from './components/Pages/Settings/TempOther/DeleteAccount/DeleteAccount';
-import { checkIfPageIsReload, isUserLoggedIn } from './lib/dist';
+import { checkIfPageIsReload, isUserLoggedIn } from './utils/utils';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
 import { AppContextProvider } from './context/AppContext';
 import { useEffect, useState } from 'react';
@@ -115,7 +115,10 @@ const App = () => {
                           element={<AuthenticationRegisterForm />}
                         />
                         <Route path="/home" element={<Home />} />
-                        <Route path="/profile" element={<Profile />} />
+                        <Route
+                          path="/profile/:lastname"
+                          element={<Profile />}
+                        />
                         <Route path="/settings" element={<Settings />} />
                         <Route
                           path="/delete-account"

@@ -8,7 +8,7 @@ import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
 import { useStyles } from '../Settings.styles';
-import { isUndefinedOrNullString } from '../../../../lib/dist';
+import { isUndefinedOrNullString } from '../../../../utils/utils';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();

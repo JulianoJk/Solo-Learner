@@ -20,7 +20,7 @@ import {
 } from '@tabler/icons-react';
 import { keys } from '@mantine/utils';
 import { User } from '../../../../Model/UserModels';
-import { getRandomColor } from '../../../../lib/dist';
+import { getRandomColor } from '../../../../utils/utils';
 
 interface TableSortProps {
   data: User[];

@@ -38,15 +38,40 @@ public class RegisterUser
         {
             if (string.IsNullOrWhiteSpace(username))
             {
-                // Generate a unique username
-                username = GenerateUniqueUsername(email);
+                // Generate a unique username based on the email
+                username = GetDefaultUsername(email);
 
                 if (username == null)
                 {
                     // Return an error response with a 409 status code
                     var response = new
                     {
-                        error = new { message = "Unable to generate a unique username." }
+                        error = new { message = "Unable to generate a unique username." },
+                        status = "error"
+                    };
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    await context.Response.WriteAsJsonAsync(response);
+                    return;
+                }
+
+                var (isTaken, newUsername) = _authenticator.IsUsernameTaken(username);
+                for (int counter = 1; isTaken; counter++)
+                {
+                    // Append a counter to the username and check if it is taken
+                    username = $"{username}{counter}";
+                    (isTaken, newUsername) = _authenticator.IsUsernameTaken(username);
+                }
+            }
+            else
+            {
+                var (isTaken, newUsername) = _authenticator.IsUsernameTaken(username);
+                if (isTaken)
+                {
+                    // Return an error response with a 409 status code
+                    var response = new
+                    {
+                        error = new { message = "Username is already taken." },
+                        status = "error"
                     };
                     context.Response.StatusCode = StatusCodes.Status409Conflict;
                     await context.Response.WriteAsJsonAsync(response);
@@ -144,7 +169,7 @@ public class RegisterUser
         }
     }
 
-    private bool IsValidEmail(string email)
+    private static bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
         {
@@ -152,7 +177,7 @@ public class RegisterUser
             return false;
         }
 
-        if (!email.Contains("@"))
+        if (!email.Contains('@'))
         {
             // If email does not contain an '@' character, it is not valid
             return false;
@@ -173,7 +198,7 @@ public class RegisterUser
             return false;
         }
 
-        if (!domain.Contains("."))
+        if (!domain.Contains('.'))
         {
             // If the domain part of the email does not contain a '.' character, it is not valid
             return false;
@@ -182,7 +207,7 @@ public class RegisterUser
         return true;
     }
 
-    private bool ArePasswordsEqual(string password, string confirmPassword)
+    private static bool ArePasswordsEqual(string password, string confirmPassword)
     {
         if (string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(confirmPassword))
         {
@@ -193,45 +218,25 @@ public class RegisterUser
         return password == confirmPassword;
     }
 
-    private string GetDefaultUsername(string email)
+    private static string GetDefaultUsername(string email)
     {
         var emailParts = email.Split('@');
 
         return emailParts[0];
     }
 
-    private byte[] GenerateSalt()
+    private byte[]? GenerateSalt()
     {
-        byte[] salt = new byte[64];
+        _ = new byte[64];
 
         try
         {
-            salt = RandomNumberGenerator.GetBytes(64);
-            return salt;
+            return RandomNumberGenerator.GetBytes(64);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error generating salt: {ex.Message}");
             return null;
         }
-    }
-
-    private string GenerateUniqueUsername(string email)
-    {
-        string username = GetDefaultUsername(email);
-        int number = 1;
-
-        // Check if the username already exists in the database
-        bool isUsernameTaken = _authenticator.IsUsernameTaken(username);
-
-        // Append a number to the username until it becomes unique
-        while (isUsernameTaken)
-        {
-            username = $"{GetDefaultUsername(email)}{number}";
-            isUsernameTaken = _authenticator.IsUsernameTaken(username);
-            number++;
-        }
-
-        return username;
     }
 }
