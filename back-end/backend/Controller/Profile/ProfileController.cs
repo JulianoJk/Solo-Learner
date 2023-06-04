@@ -13,11 +13,11 @@ public class ProfileController
     }
 
     // Method to retrieve a user's data from the database based on their email
-    public async Task<User?> GetUserFromDatabase(string email)
+    public async Task<User?> GetUserFromDatabaseByUsername(string username)
     {
         MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
         MySqlCommand command = new MySqlCommand(
-            $"SELECT * FROM users WHERE email = '{email}'",
+            $"SELECT * FROM users WHERE username = '{username}'",
             connection
         );
         await connection.OpenAsync();
@@ -43,13 +43,24 @@ public class ProfileController
         return null;
     }
 
-    public async Task GetProfile(HttpContext context)
+    public async Task GetProfile(HttpContext context, string username)
     {
-        // Retrieve the user ID from the JWT
-        var userId = JwtUtils.GetUserEmailFromJwt(context);
+        // Check if JWT is valid
+        if (!JwtUtils.authenticateJwt(context))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync("Unauthorized.");
+            return;
+        }
 
         // Retrieve the user information from the database
-        var user = await GetUserFromDatabase(userId);
+        var user = await GetUserFromDatabaseByUsername(username);
+        if (user == null)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync("User not found.");
+            return;
+        }
 
         // Create a response object with the username and role information
         var response = new
@@ -106,6 +117,7 @@ public class ProfileController
 
         if (isTaken)
         {
+            Console.WriteLine();
             // Return an error response with a 409 status code
             var response = new { error = new { message = "Username is already taken." } };
             context.Response.StatusCode = StatusCodes.Status409Conflict;
