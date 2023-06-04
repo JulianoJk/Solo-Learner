@@ -9,6 +9,7 @@ import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
 import { useStyles } from '../Settings.styles';
 import { isUndefinedOrNullString } from '../../../../utils/utils';
+import { useLocation } from 'react-router-dom';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();
@@ -20,12 +21,18 @@ export const ChangeUsernameSetting = () => {
 
   const email: string = user.email as string;
   const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
-
+  const { pathname } = useLocation();
+  const path = pathname;
+  const parts = path.split('/');
+  const usernameFromPath = parts[parts.length - 1];
   useQuery(
     ['getSettingsItems', hasToken],
     async () => {
       if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasToken);
+        const data: IUserInfoContext | undefined = await profileAPI(
+          usernameFromPath,
+          hasToken,
+        );
         return data;
       }
     },

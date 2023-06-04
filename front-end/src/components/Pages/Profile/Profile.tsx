@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { useUserState } from '../../../context/UserContext';
 
@@ -8,14 +9,18 @@ import { upperFirst } from '@mantine/hooks';
 import NotFound from '../Error/pageNotFound/NotFound.component';
 import { useGetProfile } from '../../hooks/useGetProfile';
 
+import { useParams } from 'react-router-dom';
+
 const Profile: React.FC = () => {
   const { user } = useUserState();
+  const { username: UsernameFromPath } = useParams<{ username: string }>();
+
   const {
     data: userProfileData,
     isLoading,
     isError,
     isFetched,
-  } = useGetProfile(user.token);
+  } = useGetProfile(UsernameFromPath as string, user.token);
 
   if (isLoading) {
     return (
@@ -33,9 +38,10 @@ const Profile: React.FC = () => {
     return <NotFound navigationPath={'/'} />;
   }
 
-  const displayUsername = userProfileData?.username || user.username;
+  const displayUsername = userProfileData?.username;
+
   const displayDateJoined = userProfileData?.createdAt;
-  const userRole = user.isTeacher ? 'Teacher' : 'Student';
+  const userRole = userProfileData?.isTeacher ? 'Teacher' : 'Student';
 
   const data = {
     avatar: '',
@@ -53,7 +59,7 @@ const Profile: React.FC = () => {
   return (
     <>
       <UserInfoIcons {...data}></UserInfoIcons>
-      <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+      {/* <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
         <Title order={4} align="center">
           Your Amazing Instructor &#10024;
         </Title>
@@ -63,7 +69,7 @@ const Profile: React.FC = () => {
           email={instructionData.email}
           job={instructionData.job}
         />
-      </Box>
+      </Box> */}
     </>
   );
 };

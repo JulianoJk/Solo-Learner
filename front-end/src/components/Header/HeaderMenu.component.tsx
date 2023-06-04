@@ -24,7 +24,12 @@ import {
   IconUser,
   IconUserEdit,
 } from '@tabler/icons-react';
-import { NavigateFunction, useLocation, useNavigate } from 'react-router-dom';
+import {
+  NavigateFunction,
+  useLocation,
+  useNavigate,
+  useParams,
+} from 'react-router-dom';
 import {
   capitalString,
   isUndefinedOrNullString,
@@ -46,7 +51,14 @@ const HeaderMegaMenu = () => {
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const { user } = useUserState();
-  const { data: profileData } = useGetProfile(user.token);
+  const { username: UsernameFromPath } = useParams<{ username: string }>();
+
+  const { data: profileData } = useGetProfile(
+    (UsernameFromPath === undefined
+      ? user.username
+      : UsernameFromPath) as string,
+    user.token,
+  );
 
   const navigate: NavigateFunction = useNavigate();
   const logOut = () => {
@@ -95,7 +107,6 @@ const HeaderMegaMenu = () => {
       });
     }
   }, [data]);
-  console.log(user.username);
 
   return (
     <Box>

@@ -83,24 +83,6 @@ export const registerAPI = async ({
   }
 };
 
-export const profileAPI = async (
-  token: string,
-): Promise<IUserInfoContext | undefined> => {
-  try {
-    const response = await fetch(URL + 'users/profile', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data: IUserInfoContext = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return;
-  }
-};
 export const adminDashboardAPI = async (token: string) => {
   try {
     const response = await fetch(URL + 'admin/dashboard', {
@@ -266,6 +248,54 @@ export const adminGetAllUsersAPI = async (
       },
     });
     const data: GetUsersListResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+// export const getUsernameAPI = async (
+//   username: string,
+//   token: string,
+// ): Promise<IUserInfoContext | IApiError> => {
+//   try {
+//     const response = await fetch(`${URL}profile/testme/${username}`, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     if (!response.ok) {
+//       const errorData: IApiError = await response.json();
+//       return errorData;
+//     }
+
+//     const data: IUserInfoContext = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error(error);
+//     return {
+//       error: {
+//         message: 'Something went wrong. Please try again later.',
+//       },
+//     } as IApiError;
+//   }
+// };
+export const profileAPI = async (
+  username: string,
+  token: string,
+): Promise<IUserInfoContext | undefined> => {
+  try {
+    const response = await fetch(`${URL}profile/testme/${username}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data: IUserInfoContext = await response.json();
     return data;
   } catch (error) {
     console.error(error);

@@ -10,7 +10,7 @@ import { useUserState } from '../../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { authenticateAPI } from '../../api/api';
 import NotFound from '../Error/pageNotFound/NotFound.component';
-import { Loader, Stack, Title } from '@mantine/core';
+import { Button, Loader, Stack, Title } from '@mantine/core';
 
 const Home: React.FC = () => {
   const { classes } = useStyles();

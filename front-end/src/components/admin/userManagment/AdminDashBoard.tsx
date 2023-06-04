@@ -9,9 +9,11 @@ import {
   Anchor,
   ScrollArea,
   useMantineTheme,
+  UnstyledButton,
 } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { User } from '../../../Model/UserModels';
+import { useNavigate } from 'react-router-dom';
 
 interface UsersTableProps {
   data: User[];
@@ -26,15 +28,21 @@ const roleColors: Record<string, string> = {
 
 export function UsersTable({ data }: UsersTableProps) {
   const theme = useMantineTheme();
-
+  const navigate = useNavigate();
   const rows = data.map((item) => (
     <tr key={item.username}>
       <td>
         <Group spacing="sm">
           <Avatar size={30} src={item.avatar} radius={30} />
-          <Text fz="sm" fw={500}>
+          <UnstyledButton
+            fz="sm"
+            fw={500}
+            onClick={() => {
+              navigate(`/profile/${item.username}`);
+            }}
+          >
             {item.username}
-          </Text>
+          </UnstyledButton>
         </Group>
       </td>
 

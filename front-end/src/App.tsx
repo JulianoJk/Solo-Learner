@@ -116,9 +116,10 @@ const App = () => {
                         />
                         <Route path="/home" element={<Home />} />
                         <Route
-                          path="/profile/:lastname"
+                          path="/profile/:username"
                           element={<Profile />}
                         />
+
                         <Route path="/settings" element={<Settings />} />
                         <Route
                           path="/delete-account"

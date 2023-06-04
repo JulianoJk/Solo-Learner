@@ -146,7 +146,7 @@ const Admin = () => {
                   : theme.fn.linearGradient(7, '#303233'),
             }}
           >
-            <StudentmanagmentTable data={allUsersList}></StudentmanagmentTable>
+            <UsersTable data={allUsersList} />
           </Box>
         );
         break;
@@ -160,7 +160,7 @@ const Admin = () => {
                   : theme.fn.linearGradient(7, '#303233'),
             }}
           >
-            <UsersTable data={allUsersList} />
+            <StudentmanagmentTable data={allUsersList}></StudentmanagmentTable>
           </Box>
         );
         break;
