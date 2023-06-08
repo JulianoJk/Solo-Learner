@@ -240,4 +240,24 @@ app.MapGet(
     }
 );
 
+app.MapGet(
+    "/user/current_user",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt)
+        {
+            UserRepository userRepository = new UserRepository();
+            await userRepository.GetCurrentUser(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+
 app.Run();

@@ -50,5 +50,51 @@ namespace backend
             context.Response.StatusCode = StatusCodes.Status200OK;
             await context.Response.WriteAsJsonAsync(response);
         }
+
+        public async Task GetCurrentUser(HttpContext context)
+        {
+            string email = JwtUtils.GetUserEmailFromJwt(context);
+
+            var response = new
+            {
+                status = "success",
+                data = await GetCurrentUserFromDatabase(email)
+            };
+
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+
+        protected async Task<User?> GetCurrentUserFromDatabase(string email)
+        {
+            MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+            MySqlCommand command = new MySqlCommand(
+                $"SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive FROM users WHERE email = '{email}'",
+                connection
+            );
+
+            await connection.OpenAsync();
+            MySqlDataReader reader = command.ExecuteReader();
+            if (reader.HasRows)
+            {
+                reader.Read();
+                bool isTeacher = (bool)reader["isTeacher"];
+                bool IsAdmin = (bool)reader["isAdmin"];
+
+                User user = new User
+                {
+                    Id = (int)reader["id"],
+                    Email = (string)reader["email"],
+                    Username = (string)reader["username"],
+                    IsTeacher = isTeacher,
+                    IsAdmin = IsAdmin,
+                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
+                };
+                reader.Close();
+                return user;
+            }
+            reader.Close();
+            return null;
+        }
     }
 }
