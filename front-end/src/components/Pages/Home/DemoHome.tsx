@@ -66,6 +66,7 @@ export function DemoHome() {
       component="a"
       href="#"
       className={classes.card}
+      draggable={false}
     >
       <AspectRatio ratio={1920 / 1080}>
         <Image src={article.image} />

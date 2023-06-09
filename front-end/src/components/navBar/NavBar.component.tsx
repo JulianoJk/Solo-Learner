@@ -15,7 +15,6 @@ import {
   IconDatabaseImport,
   IconReceipt2,
   IconSwitchHorizontal,
-  IconLogout,
   IconUserCog,
 } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
@@ -110,7 +109,8 @@ export function NavBar() {
   const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
   const theme = useMantineTheme();
   const links = data.map((item) => (
-    <a
+    <Anchor
+      draggable={false}
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
@@ -130,7 +130,7 @@ export function NavBar() {
         <item.icon className={classes.linkIcon} stroke={1.5} />
       )}
       <span>{item.label}</span>
-    </a>
+    </Anchor>
   ));
 
   return (
@@ -161,21 +161,13 @@ export function NavBar() {
       {/* TODO!: ADD IMAGE FOR THE ADMIN ETC */}
       <Navbar.Section className={classes.footer}>
         <Anchor
+          draggable={false}
           href="#"
           className={classes.link}
           onClick={(event) => event.preventDefault()}
         >
           <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
           <span>Change account</span>
-        </Anchor>
-
-        <Anchor
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
         </Anchor>
       </Navbar.Section>
     </Navbar>
