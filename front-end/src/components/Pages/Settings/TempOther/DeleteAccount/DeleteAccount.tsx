@@ -67,10 +67,6 @@ export default function MantineDemo() {
           errorAlertMessage: data.error.message,
         });
       } else {
-        appDispatch({
-          type: 'SET_USER_SETTINGS_MODAL',
-          isUserSettingsOpen: false,
-        });
         logOut(data.message);
       }
     },

@@ -14,7 +14,6 @@ import {
   Icon2fa,
   IconDatabaseImport,
   IconReceipt2,
-  IconSwitchHorizontal,
   IconUserCog,
 } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
@@ -102,7 +101,7 @@ const data = [
   { link: 'settings', label: 'Other Settings', icon: IconSettings },
 ];
 
-export function NavBar() {
+export function AdminNavBar() {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('User Managment');
   const appDispatch = useAppDispatch();
@@ -157,19 +156,6 @@ export function NavBar() {
       p="md"
     >
       <Navbar.Section grow>{links}</Navbar.Section>
-
-      {/* TODO!: ADD IMAGE FOR THE ADMIN ETC */}
-      <Navbar.Section className={classes.footer}>
-        <Anchor
-          draggable={false}
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </Anchor>
-      </Navbar.Section>
     </Navbar>
   );
 }

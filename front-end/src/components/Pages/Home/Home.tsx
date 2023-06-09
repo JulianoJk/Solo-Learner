@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
+import { ReactSVG } from 'react-svg';
 
-import { DemoHome } from './DemoHome';
+// import { DemoHome } from './DemoHome';
 import { useUserState } from '../../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { authenticateAPI } from '../../api/api';
 import NotFound from '../Error/pageNotFound/NotFound.component';
-import { Loader, Stack, Title } from '@mantine/core';
-
+import { Box, Center, Image, Loader, Stack, Title } from '@mantine/core';
+import Modules from './DemoHome';
+import Forbitten from '../../../images/Forbitten.svg';
 const Home: React.FC = () => {
   const { user } = useUserState();
   const {
@@ -22,14 +25,6 @@ const Home: React.FC = () => {
     throw new Error('No token found');
   });
 
-  if (isLoading) {
-    return (
-      <Stack align="center">
-        <Loader color="teal" size={400} />
-        <Title>Loading...</Title>
-      </Stack>
-    );
-  }
   if (
     isFetched &&
     (isError || !userStatus || userStatus.status !== 'success')
@@ -37,19 +32,7 @@ const Home: React.FC = () => {
     return <NotFound navigationPath={'/'} />;
   }
 
-  return (
-    <>
-      {isLoading ? (
-        <Stack align="center">
-          <Loader color="teal" size={400} />
-
-          <Title>Loading...</Title>
-        </Stack>
-      ) : (
-        <DemoHome />
-      )}
-    </>
-  );
+  return <Modules isLoading={isLoading} />;
 };
 
 export default Home;

@@ -8,7 +8,7 @@ import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 
 import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
 import { User } from '../../Model/UserModels';
-import { NavBar } from '../navBar/NavBar.component';
+import { AdminNavBar } from '../navBar/AdminNavBar.component';
 import { AppState } from '../../context/AppContext';
 import { UsersTable } from './userManagment/AdminDashBoard';
 import {
@@ -170,7 +170,7 @@ const Admin = () => {
   };
   return (
     <Box>
-      <NavBar />
+      <AdminNavBar />
       {renderComponentToDisplay()}
     </Box>
   );

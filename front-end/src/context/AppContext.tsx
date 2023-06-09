@@ -37,10 +37,6 @@ type TApplicationAction =
       errorAlertMessage: string;
     }
   | {
-      type: 'SET_USER_SETTINGS_MODAL';
-      isUserSettingsOpen: boolean;
-    }
-  | {
       type: 'SET_SESSION_TOKEN_EXPIRED';
       isSessionExpired: boolean;
     }
@@ -80,8 +76,6 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, appTheme: action.appTheme };
     case 'SET_ERROR_ALERT_MESSAGE':
       return { ...state, errorAlertMessage: action.errorAlertMessage };
-    case 'SET_USER_SETTINGS_MODAL':
-      return { ...state, isUserSettingsOpen: action.isUserSettingsOpen };
     case 'SET_SESSION_TOKEN_EXPIRED':
       return { ...state, isSessionExpired: action.isSessionExpired };
     case 'SETTINGS_SAVE_BUTTON_CLICKED':

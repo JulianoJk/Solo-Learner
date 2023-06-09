@@ -51,10 +51,6 @@ export const ChangeUsernameSetting = () => {
     if (saveButtonClicked) {
       const userToken = user.token;
       updateUsernameMutation({ token: userToken, email, newUsername });
-      appDispatch({
-        type: 'SET_USER_SETTINGS_MODAL',
-        isUserSettingsOpen: false,
-      });
     }
     appDispatch({
       type: 'SETTINGS_SAVE_BUTTON_CLICKED',

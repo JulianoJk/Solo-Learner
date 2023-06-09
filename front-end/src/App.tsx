@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Home from './components/Pages/Home/Home';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
@@ -32,6 +33,7 @@ import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Vocabulary from './images/Vocabulary';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Index from './components/Pages/Index/Index';
+import ForbiddenPage from './components/Pages/Error/forbidden/Forbidden.component';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -96,6 +98,7 @@ const App = () => {
                       padding="md"
                       // navbar={<>{isAdminPath ? <NavBar /> : <></>}</>}
                       header={<HeaderMenu />}
+                      // footer={<FooterPage />}
                     >
                       <Routes>
                         {/* <Route path="/" element={<Index />} /> */}
@@ -152,6 +155,7 @@ const App = () => {
                               navigationPath={isUserLoggedIn() ? '/home' : '/'}
                               statusNumber={404}
                             />
+                            // <ForbiddenPage navigationPath={''} />
                           }
                         />
                       </Routes>

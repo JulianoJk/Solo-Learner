@@ -215,10 +215,6 @@ const HeaderMegaMenu = () => {
                           icon={<IconSettings size="0.9rem" stroke={1.5} />}
                           onClick={() => {
                             navigateUserTo('/settings');
-                            appDisp({
-                              type: 'SET_USER_SETTINGS_MODAL',
-                              isUserSettingsOpen: true,
-                            });
                           }}
                         >
                           Account settings
@@ -240,20 +236,7 @@ const HeaderMegaMenu = () => {
                         >
                           Admin settings
                         </Menu.Item>
-                        <Menu.Item
-                          disabled={isLoading}
-                          icon={
-                            isLoading ? (
-                              <IconHome size="0.9rem" stroke={1.5} />
-                            ) : null
-                          }
-                        >
-                          {isLoading ? (
-                            <Skeleton height={28} mt={6} radius="sm" />
-                          ) : (
-                            'Admin menu item'
-                          )}
-                        </Menu.Item>
+
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
                           icon={<IconHome size="0.9rem" stroke={1.5} />}
@@ -274,10 +257,6 @@ const HeaderMegaMenu = () => {
                           icon={<IconSettings size="0.9rem" stroke={1.5} />}
                           onClick={() => {
                             navigateUserTo('/settings');
-                            appDisp({
-                              type: 'SET_USER_SETTINGS_MODAL',
-                              isUserSettingsOpen: true,
-                            });
                           }}
                         >
                           Account settings
