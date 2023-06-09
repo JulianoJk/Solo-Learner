@@ -1,4 +1,3 @@
-// import Index from './components/Pages/Index/Index';
 import Home from './components/Pages/Home/Home';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
@@ -22,7 +21,6 @@ import {
   AvatarDefaultProps,
   ButtonDefaultProps,
 } from './Styles/DefaultPropsStyles.styles';
-
 import HeaderMenu from './components/Header/HeaderMenu.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
@@ -33,7 +31,7 @@ import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Vocabulary from './images/Vocabulary';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
-import DemoIndex from './components/Pages/Index/DemoIndex';
+import Index from './components/Pages/Index/Index';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -101,7 +99,7 @@ const App = () => {
                     >
                       <Routes>
                         {/* <Route path="/" element={<Index />} /> */}
-                        <Route path="/" element={<DemoIndex />} />
+                        <Route path="/" element={<Index />} />
                         <Route
                           path="/login"
                           element={
