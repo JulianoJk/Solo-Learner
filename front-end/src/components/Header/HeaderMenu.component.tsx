@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Header,
   Group,
@@ -9,8 +10,15 @@ import {
   UnstyledButton,
   Avatar,
   Skeleton,
+  Drawer,
+  ScrollArea,
+  Divider,
+  Center,
+  Collapse,
+  Burger,
+  Anchor,
 } from '@mantine/core';
-import { upperFirst, useDocumentTitle } from '@mantine/hooks';
+import { upperFirst, useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
 import { useStyles } from './HeaderMenu.styles';
 import ModeThemeButtonSmall from '../../Styles/ModeThemeButtonSmall';
@@ -45,18 +53,18 @@ import { User } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 
 const HeaderMegaMenu = () => {
-  const { classes, cx } = useStyles();
+  const { classes, cx, theme } = useStyles();
   const userDispatch = useUserDispatch();
   const appDisp = useAppDispatch();
   const { pathname } = useLocation();
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>();
-
   const { user } = useUserState();
-
   const { username: UsernameFromPath } = useParams<{ username: string }>();
-
+  const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+    useDisclosure(false);
+  const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const navigate: NavigateFunction = useNavigate();
   const logOut = () => {
     userDispatch({ type: 'RESET_STATE' });
@@ -110,10 +118,6 @@ const HeaderMegaMenu = () => {
         user.token,
       );
     }
-  }, [pathname]);
-
-  useDocumentTitle(documentTitle);
-  useEffect(() => {
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
       setDocumentTitle(titles + ' - Solo Learner');
@@ -124,20 +128,22 @@ const HeaderMegaMenu = () => {
       type: 'RESET_ERROR_MESSAGE',
     });
   }, [pathname]);
+  // TODO!: Add this to the useEffect above
+  useDocumentTitle(documentTitle);
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
 
   return (
     <Box>
       <Header height={60} px="md" className={classes.headerRoot}>
         <Group position="apart" sx={{ height: '100%' }}>
-          <Box
-            sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
-            onClick={() => navigateUserTo(logoNavigation)}
-          >
-            <LogoImage />
-          </Box>
           {isUserLoggedIn() ? (
             <>
+              <Box
+                sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                onClick={() => navigateUserTo(logoNavigation)}
+              >
+                <LogoImage />
+              </Box>
               <ModeThemeButtonSmall />
               <Group>
                 <TokenExpirationChecker />
@@ -291,51 +297,151 @@ const HeaderMegaMenu = () => {
             </>
           ) : (
             <>
-              <Group sx={{ height: '100%' }} spacing={0}>
-                <Button
-                  leftIcon={<IconHome size={16} />}
-                  radius="sm"
-                  onClick={() => navigateUserTo('/')}
-                  color="cyan"
-                  variant="subtle"
-                  className={classes.link}
-                >
-                  Home
-                </Button>
+              <Box pb={120}>
+                <Header height={60} px="md" className={classes.headerRoot}>
+                  <Group position="apart" sx={{ height: '100%' }}>
+                    <Box
+                      sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                      onClick={() => navigateUserTo(logoNavigation)}
+                    >
+                      <LogoImage />
+                    </Box>
+                    <Group
+                      sx={{ height: '100%' }}
+                      spacing={14}
+                      className={classes.hiddenMobile}
+                    >
+                      <ModeThemeButtonSmall />
+                      <Button
+                        leftIcon={<IconHome size={16} />}
+                        radius="sm"
+                        onClick={() => navigateUserTo('/')}
+                        color="cyan"
+                        variant="subtle"
+                        className={classes.link}
+                      >
+                        Home
+                      </Button>
 
-                <Button
-                  leftIcon={<IconInfoCircle size={16} />}
-                  radius="sm"
-                  onClick={() => navigateUserTo('/')}
-                  color="cyan"
-                  variant="subtle"
-                  className={classes.link}
+                      <Button
+                        leftIcon={<IconInfoCircle size={16} />}
+                        radius="sm"
+                        onClick={() => navigateUserTo('/')}
+                        color="cyan"
+                        variant="subtle"
+                        className={classes.link}
+                      >
+                        About
+                      </Button>
+                    </Group>
+
+                    <Group className={classes.hiddenMobile}>
+                      <Button
+                        leftIcon={<IconLogin size={16} />}
+                        variant="filled"
+                        color="violet"
+                        radius="sm"
+                        onClick={() => navigateUserTo('/login')}
+                      >
+                        <Text fz="md" color="white">
+                          Log in
+                        </Text>
+                      </Button>
+                      <Button
+                        leftIcon={<IconUserEdit size={16} />}
+                        radius="sm"
+                        onClick={() => navigateUserTo('/register')}
+                        color="cyan"
+                      >
+                        Sign up
+                      </Button>
+                    </Group>
+
+                    <Burger
+                      opened={drawerOpened}
+                      onClick={toggleDrawer}
+                      className={classes.hiddenDesktop}
+                    />
+                  </Group>
+                </Header>
+
+                <Drawer
+                  opened={drawerOpened}
+                  onClose={closeDrawer}
+                  size="100%"
+                  padding="md"
+                  title="Solo Learner"
+                  className={classes.hiddenDesktop}
+                  zIndex={1000000}
                 >
-                  About
-                </Button>
-                <ModeThemeButtonSmall />
-              </Group>
-              <Group>
-                <Button
-                  leftIcon={<IconLogin size={16} />}
-                  variant="filled"
-                  color="violet"
-                  radius="sm"
-                  onClick={() => navigateUserTo('/login')}
-                >
-                  <Text fz="md" color="white">
-                    Log in
-                  </Text>
-                </Button>
-                <Button
-                  leftIcon={<IconUserEdit size={16} />}
-                  radius="sm"
-                  onClick={() => navigateUserTo('/register')}
-                  color="cyan"
-                >
-                  Sign up
-                </Button>
-              </Group>
+                  <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
+                    <Divider
+                      my="sm"
+                      color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
+                    />
+
+                    <Button
+                      leftIcon={<IconHome size={16} />}
+                      radius="sm"
+                      onClick={() => {
+                        closeDrawer();
+                        navigateUserTo('/');
+                      }}
+                      color="cyan"
+                      variant="subtle"
+                      className={classes.link}
+                    >
+                      Home
+                    </Button>
+
+                    <Button
+                      leftIcon={<IconInfoCircle size={16} />}
+                      radius="sm"
+                      onClick={() => {
+                        closeDrawer();
+                        navigateUserTo('/');
+                      }}
+                      color="cyan"
+                      variant="subtle"
+                      className={classes.link}
+                    >
+                      About
+                    </Button>
+                    <Divider
+                      my="sm"
+                      color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
+                    />
+
+                    <Group position="center" grow pb="xl" px="md">
+                      <Button
+                        leftIcon={<IconLogin size={16} />}
+                        variant="filled"
+                        color="violet"
+                        radius="sm"
+                        onClick={() => {
+                          closeDrawer();
+                          navigateUserTo('/login');
+                        }}
+                      >
+                        <Text fz="md" color="white">
+                          Log in
+                        </Text>
+                      </Button>
+                      <Button
+                        leftIcon={<IconUserEdit size={16} />}
+                        radius="sm"
+                        onClick={() => {
+                          closeDrawer();
+                          navigateUserTo('/register');
+                        }}
+                        color="cyan"
+                      >
+                        Sign up
+                      </Button>
+                    </Group>
+                  </ScrollArea>
+                </Drawer>
+              </Box>
             </>
           )}
         </Group>

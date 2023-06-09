@@ -88,4 +88,9 @@ export const useStyles = createStyles((theme) => ({
   userActive: {
     backgroundColor: theme.colorScheme === 'dark' ? '#8CB6EA' : '#7FAAE0',
   },
+  hiddenDesktop: {
+    [theme.fn.largerThan('sm')]: {
+      display: 'none',
+    },
+  },
 }));

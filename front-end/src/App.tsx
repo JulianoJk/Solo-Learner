@@ -1,4 +1,4 @@
-import Index from './components/Pages/Index/Index';
+// import Index from './components/Pages/Index/Index';
 import Home from './components/Pages/Home/Home';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
@@ -33,6 +33,7 @@ import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Vocabulary from './images/Vocabulary';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
+import DemoIndex from './components/Pages/Index/DemoIndex';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -99,7 +100,8 @@ const App = () => {
                       header={<HeaderMenu />}
                     >
                       <Routes>
-                        <Route path="/" element={<Index />} />
+                        {/* <Route path="/" element={<Index />} /> */}
+                        <Route path="/" element={<DemoIndex />} />
                         <Route
                           path="/login"
                           element={
