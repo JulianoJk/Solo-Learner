@@ -1,21 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import Grammar from '../LearningUnits/Grammar/Grammar';
-import Theory from '../LearningUnits/Theory/Theory';
-import Vocabulary from '../LearningUnits/Vocabulary/Vocabulary';
-import { useStyles } from './Home.styles';
 import { DemoHome } from './DemoHome';
 import { useUserState } from '../../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { authenticateAPI } from '../../api/api';
 import NotFound from '../Error/pageNotFound/NotFound.component';
-import { Button, Loader, Stack, Title } from '@mantine/core';
+import { Loader, Stack, Title } from '@mantine/core';
 
 const Home: React.FC = () => {
-  const { classes } = useStyles();
   const { user } = useUserState();
-
   const {
     data: userStatus,
     isLoading,
@@ -33,7 +26,6 @@ const Home: React.FC = () => {
     return (
       <Stack align="center">
         <Loader color="teal" size={400} />
-
         <Title>Loading...</Title>
       </Stack>
     );
@@ -62,8 +54,7 @@ const Home: React.FC = () => {
 
 export default Home;
 
-{
-  /*   
+/*   
   return (
     <>
       {isLoading ? (
@@ -92,4 +83,3 @@ export default Home;
   );
 };
 export default Profile; */
-}

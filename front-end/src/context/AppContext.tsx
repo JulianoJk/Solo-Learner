@@ -90,7 +90,6 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, userReLoggedIn: action.userReLoggedIn };
     case 'SET_ACTIVE_ADMIN_NAV':
       return { ...state, selectedAdminNavbar: action.selectedAdminNavbar };
-
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }

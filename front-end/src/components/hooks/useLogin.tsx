@@ -43,7 +43,6 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
         });
       } else {
         const hasToken = !isUndefinedOrNullString(data?.token);
-
         if (!hasToken) {
           appDispatch({
             type: 'SET_ERROR_ALERT_MESSAGE',
@@ -53,7 +52,6 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
           const user: IUserInfoContext = {
             token: data?.token,
           };
-
           refreshPageAfterLogin === true ? window.location.reload() : '';
           userDispatch({ type: 'SET_USER', user: user });
           sessionExpiredAuth
@@ -63,7 +61,6 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
               })
             : '';
           navigate(sessionExpiredAuth ? navigateTo : '/home');
-
           showNotification === false ? (
             <></>
           ) : (
@@ -82,7 +79,6 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const login = (email: string, password: string) => {
     mutate({ email, password });
   };
-
   return {
     login,
     isLoading,

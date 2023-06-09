@@ -39,8 +39,9 @@ import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import { authenticateAPI } from '../api/api';
+import { authenticateAPI, getCurrentUser } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
+import { User } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 
 const HeaderMegaMenu = () => {
@@ -50,15 +51,11 @@ const HeaderMegaMenu = () => {
   const { pathname } = useLocation();
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const { user } = useUserState();
-  const { username: UsernameFromPath } = useParams<{ username: string }>();
+  const [currentUser, setCurrentUser] = useState<User>();
 
-  const { data: profileData } = useGetProfile(
-    (UsernameFromPath === undefined
-      ? user.username
-      : UsernameFromPath) as string,
-    user.token,
-  );
+  const { user } = useUserState();
+
+  const { username: UsernameFromPath } = useParams<{ username: string }>();
 
   const navigate: NavigateFunction = useNavigate();
   const logOut = () => {
@@ -70,7 +67,7 @@ const HeaderMegaMenu = () => {
   };
   const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
 
-  const { isLoading, data } = useQuery(
+  const { isLoading } = useQuery(
     ['authenticateUser', userToken],
     async () => {
       if (user.token) {
@@ -81,6 +78,40 @@ const HeaderMegaMenu = () => {
     },
     { enabled: !!user.token },
   );
+
+  const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
+    useQuery(
+      ['getCurrentUser', userToken],
+      async () => {
+        if (user.token) {
+          const data = await getCurrentUser(user.token);
+          return data;
+        }
+        throw new Error('No token found');
+      },
+      {
+        onSuccess: (data) => {
+          if (data?.status === 'success') {
+            setCurrentUser(data.data);
+          }
+        },
+        enabled: !!user.token,
+      },
+    );
+
+  useEffect(() => {
+    if (pathname === '/profile') {
+      useGetProfile(
+        (UsernameFromPath === undefined
+          ? currentUser?.username !== undefined
+            ? user.username
+            : ''
+          : UsernameFromPath) as string,
+        user.token,
+      );
+    }
+  }, [pathname]);
+
   useDocumentTitle(documentTitle);
   useEffect(() => {
     const titles = capitalString(pathname.replace('/', ''));
@@ -94,19 +125,6 @@ const HeaderMegaMenu = () => {
     });
   }, [pathname]);
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
-  useEffect(() => {
-    if (data) {
-      userDispatch({
-        type: 'SET_USER',
-        user: {
-          username: data.username,
-          email: data.email,
-          isAdmin: data.isAdmin,
-          token: user.token,
-        },
-      });
-    }
-  }, [data]);
 
   return (
     <Box>
@@ -123,6 +141,8 @@ const HeaderMegaMenu = () => {
               <ModeThemeButtonSmall />
               <Group>
                 <TokenExpirationChecker />
+                {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
+                {isCurrentUserLoading ? <></> : <></>}
                 <Menu
                   width={260}
                   position="bottom-end"
@@ -146,7 +166,7 @@ const HeaderMegaMenu = () => {
                           src={
                             'https://avatars.githubusercontent.com/u/47204253?v=4'
                           }
-                          alt={profileData?.username ?? 'learner'}
+                          alt={currentUser?.username ?? 'learner'}
                           radius="xl"
                           size={20}
                         />
@@ -157,14 +177,16 @@ const HeaderMegaMenu = () => {
                           sx={{ lineHeight: 1 }}
                           mr={3}
                         >
-                          {upperFirst(profileData?.username ?? 'learner')}
+                          {isLoading === false && isCurrentUserFetched
+                            ? upperFirst(currentUser?.username as string)
+                            : 'learner'}
                         </Text>
                         <IconChevronDown size={rem(12)} stroke={1.5} />
                       </Group>
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {!profileData?.isAdmin ? (
+                    {!currentUser?.isAdmin ? (
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item

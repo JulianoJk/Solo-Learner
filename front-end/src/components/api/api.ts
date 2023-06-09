@@ -302,3 +302,19 @@ export const profileAPI = async (
     return;
   }
 };
+export const getCurrentUser = async (token: string) => {
+  try {
+    const response = await fetch(URL + 'user/current_user', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
