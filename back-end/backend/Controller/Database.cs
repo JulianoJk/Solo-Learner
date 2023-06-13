@@ -30,7 +30,8 @@ namespace backend
             string password,
             byte[] salt,
             bool isTeacher,
-            bool isAdmin
+            bool isAdmin,
+            bool isStudent
         )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
@@ -58,7 +59,8 @@ namespace backend
                                     password,
                                     salt,
                                     isTeacher,
-                                    isAdmin
+                                    isAdmin,
+                                    isStudent
                                 );
                                 AreCredentialsCorrect = true;
                                 MessageToUser = "Registration successful!";
@@ -94,11 +96,12 @@ namespace backend
             string password,
             byte[] salt,
             bool isTeacher,
-            bool isAdmin
+            bool isAdmin,
+            bool isStudent
         )
         {
             MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email, username, password, salt, isTeacher, isAdmin) VALUES (@email, @username, @password, @salt, @isTeacher, @isAdmin)",
+                "INSERT INTO users (email, username, password, salt, isTeacher, isAdmin, isStudent) VALUES (@email, @username, @password, @salt, @isTeacher, @isAdmin, @isStudent)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
@@ -107,6 +110,7 @@ namespace backend
             command.Parameters.AddWithValue("@salt", salt);
             command.Parameters.AddWithValue("@isTeacher", isTeacher);
             command.Parameters.AddWithValue("@isAdmin", isAdmin);
+            command.Parameters.AddWithValue("@isStudent", isStudent);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
             // Set AreCredentialsCorrect to true if the data was successfully saved to the database

@@ -33,6 +33,7 @@ public class RegisterUser
         string password = registerModel.Password;
         string confirmPassword = registerModel.ConfirmPassword;
         bool isTeacher = IsTeacherEnv.Value.Contains(email);
+        bool isStudent = true; // Set isStudent to true
 
         if (IsValidEmail(email) && ArePasswordsEqual(password, confirmPassword))
         {
@@ -94,7 +95,8 @@ public class RegisterUser
                     email,
                     Convert.ToBase64String(hash),
                     salt,
-                    isTeacher
+                    isTeacher,
+                    isStudent
                 );
                 if (AreCredentialsCorrect)
                 {

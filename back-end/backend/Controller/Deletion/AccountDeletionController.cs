@@ -51,7 +51,8 @@ public class AccountDeletionController
             email,
             password,
             null,
-            isTeacher
+            isTeacher,
+            false
         );
 
         if (!areCredentialsCorrect || userEmailFromJWT != email)

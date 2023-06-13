@@ -3,6 +3,7 @@ CREATE DATABASE IF NOT EXISTS solo_learner;
 
 -- Use the db you created
 USE solo_learner;
+
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(255) NOT NULL,
@@ -11,30 +12,30 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` VARCHAR(255) NOT NULL,
   `salt` VARBINARY(255) NOT NULL,
   `isTeacher` BOOLEAN NOT NULL DEFAULT FALSE,
-  `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
+  `isStudent` BOOLEAN NOT NULL DEFAULT FALSE,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `lastActive` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  FOREIGN KEY (`teacherId`) REFERENCES `users`(`id`) ON DELETE CASCADE
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `teachers` (
-  `teacherId` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `teacherId` INT(11) NOT NULL,
   `studentCount` INT(11) DEFAULT 0,
-  PRIMARY KEY (`teacherId`),
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`teacherId`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `students` (
-  `userId` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `userId` INT(11) NOT NULL,
   `teacherId` INT(11),
-  PRIMARY KEY (`userId`),
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`teacherId`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 
 -- Trigger to automatically add teacher to teachers table
 DELIMITER //
@@ -66,7 +67,8 @@ CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users`
 FOR EACH ROW
 BEGIN
     IF NEW.isStudent = TRUE THEN
-        INSERT INTO `students` (userId, teacherId) VALUES (NEW.id, NEW.teacherId);
+        INSERT INTO `students` (userId) VALUES (NEW.id);
+        UPDATE `teachers` SET `studentCount` = `studentCount` + 1 WHERE `teacherId` = NEW.id;
     END IF;
 END //
 DELIMITER ;
@@ -77,12 +79,16 @@ CREATE TRIGGER `update_student_trigger` AFTER UPDATE ON `users`
 FOR EACH ROW
 BEGIN
     IF NEW.isStudent = TRUE AND OLD.isStudent = FALSE THEN
-        INSERT INTO `students` (userId, teacherId) VALUES (NEW.id, NEW.teacherId);
+        INSERT INTO `students` (userId) VALUES (NEW.id);
+        UPDATE `teachers` SET `studentCount` = `studentCount` + 1 WHERE `teacherId` = NEW.id;
     ELSEIF NEW.isStudent = FALSE AND OLD.isStudent = TRUE THEN
         DELETE FROM `students` WHERE `userId` = NEW.id;
+        UPDATE `teachers` SET `studentCount` = `studentCount` - 1 WHERE `teacherId` = NEW.id;
     END IF;
 END //
 DELIMITER ;
+
+
 
 -- Trigger to automatically update studentCount in teachers table
 DELIMITER //

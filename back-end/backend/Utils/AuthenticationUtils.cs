@@ -26,7 +26,8 @@ public class AuthenticationUtils
         string email,
         string password,
         byte[]? salt,
-        bool isTeacher
+        bool isTeacher,
+        bool isStudent
     )
     {
         // Retrieve the isAdmin flag from the database
@@ -40,6 +41,7 @@ public class AuthenticationUtils
             password,
             salt,
             isTeacher,
+            isStudent,
             isAdmin
         );
 
