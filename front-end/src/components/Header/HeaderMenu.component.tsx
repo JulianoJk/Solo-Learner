@@ -121,7 +121,9 @@ const HeaderMegaMenu = () => {
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
       setDocumentTitle(titles + ' - Solo Learner');
-    } else {
+    } else if (pathname.includes('/admin')) {
+      setDocumentTitle('Admin - Solo Learner');
+    } else if (pathname === '/') {
       setDocumentTitle('Solo Learner');
     }
     appDisp({

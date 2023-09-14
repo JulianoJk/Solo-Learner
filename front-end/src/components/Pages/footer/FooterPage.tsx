@@ -16,7 +16,7 @@ const FooterPage = () => {
       <Container className={classes.inner}>
         <Box sx={{ width: 70, height: 60, marginTop: '0.4rem' }}>
           <LogoImage />
-        </Box>{' '}
+        </Box>
         <Group spacing={0} className={classes.links} position="right" noWrap>
           <ActionIcon size="lg">
             <IconBrandTwitter size="1.05rem" stroke={1.5} />

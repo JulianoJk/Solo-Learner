@@ -94,12 +94,7 @@ const App = () => {
                 <Notifications />
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
-                    <AppShell
-                      padding="md"
-                      // navbar={<>{isAdminPath ? <NavBar /> : <></>}</>}
-                      header={<HeaderMenu />}
-                      // footer={<FooterPage />}
-                    >
+                    <AppShell padding="md" header={<HeaderMenu />}>
                       <Routes>
                         {/* <Route path="/" element={<Index />} /> */}
                         <Route path="/" element={<Index />} />
