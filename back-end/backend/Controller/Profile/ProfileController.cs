@@ -15,11 +15,9 @@ public class ProfileController
     // Method to retrieve a user's data from the database based on their email
     public async Task<User?> GetUserFromDatabaseByUsername(string username)
     {
-        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
-        MySqlCommand command = new MySqlCommand(
-            $"SELECT * FROM users WHERE username = '{username}'",
-            connection
-        );
+        MySqlConnection connection = new(ConnectionString.Value);
+        MySqlCommand command =
+            new($"SELECT * FROM users WHERE username = '{username}'", connection);
         await connection.OpenAsync();
         MySqlDataReader reader = command.ExecuteReader();
         if (reader.HasRows)
@@ -28,14 +26,15 @@ public class ProfileController
             bool isTeacher = (bool)reader["isTeacher"];
             bool IsAdmin = (bool)reader["isAdmin"];
 
-            User user = new User
-            {
-                Id = (int)reader["id"],
-                Username = (string)reader["username"],
-                IsTeacher = isTeacher,
-                IsAdmin = IsAdmin,
-                CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
-            };
+            User user =
+                new()
+                {
+                    Id = (int)reader["id"],
+                    Username = (string)reader["username"],
+                    IsTeacher = isTeacher,
+                    IsAdmin = IsAdmin,
+                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
+                };
             reader.Close();
             return user;
         }
@@ -62,15 +61,31 @@ public class ProfileController
             return;
         }
 
-        // Create a response object with the username and role information
-        var response = new
+        object response;
+
+        if (user.IsTeacher)
         {
-            status = "success",
-            username = user.Username,
-            isTeacher = user.IsTeacher,
-            isAdmin = user.IsAdmin,
-            createdAt = user.CreatedAt,
-        };
+            var teacherInfo = await GetTeacherInfoByStudentId(user.Id);
+            if (teacherInfo == null)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                await context.Response.WriteAsJsonAsync("Teacher not found.");
+                return;
+            }
+
+            // Create a response object with the username, role and teacher's information
+            response = new
+            {
+                status = "success",
+                user,
+                teacher = new { teacherInfo }
+            };
+        }
+        else
+        {
+            // Create a response object with the user information
+            response = new { status = "success", user };
+        }
 
         // Set the response status code and return the response object as JSON
         context.Response.StatusCode = StatusCodes.Status200OK;
@@ -84,7 +99,7 @@ public class ProfileController
 
     private async Task UpdateUsernameByEmailAsync(HttpContext context)
     {
-        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+        MySqlConnection connection = new(ConnectionString.Value);
 
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
@@ -177,5 +192,104 @@ public class ProfileController
         {
             await connection.CloseAsync();
         }
+    }
+
+    public async Task GetTeacherInfoForStudentByUsernameAsync(HttpContext context, string username)
+    {
+        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+
+        await connection.OpenAsync();
+
+        MySqlCommand command = new MySqlCommand(
+            $"SELECT id, isStudent FROM users WHERE username = '{username}'",
+            connection
+        );
+        MySqlDataReader reader = command.ExecuteReader();
+        if (!reader.HasRows)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync("User not found.");
+            return;
+        }
+
+        await reader.ReadAsync();
+        bool isStudent = (bool)reader["isStudent"];
+        int userId = (int)reader["id"];
+        reader.Close();
+
+        if (!isStudent)
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync("User is not a student.");
+            return;
+        }
+
+        command = new MySqlCommand(
+            $"SELECT teacherId FROM students WHERE userId = {userId}",
+            connection
+        );
+        reader = command.ExecuteReader();
+        if (!reader.HasRows)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync("No teacher found for student.");
+            return;
+        }
+
+        await reader.ReadAsync();
+        int teacherId = (int)reader["teacherId"];
+        reader.Close();
+
+        command = new MySqlCommand(
+            $"SELECT username, email FROM users WHERE id = {teacherId}",
+            connection
+        );
+        reader = command.ExecuteReader();
+        if (!reader.HasRows)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync("Teacher not found.");
+            return;
+        }
+
+        await reader.ReadAsync();
+        var teacher = new
+        {
+            Username = (string)reader["username"],
+            Email = (string)reader["email"]
+        };
+
+        context.Response.StatusCode = StatusCodes.Status200OK;
+        await context.Response.WriteAsJsonAsync(teacher);
+    }
+
+    public async Task<List<User>> GetTeacherInfoByStudentId(int studentId)
+    {
+        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+        MySqlCommand command = new MySqlCommand(
+            "SELECT * FROM `users` WHERE isTeacher=1",
+            connection
+        );
+
+        await connection.OpenAsync();
+        MySqlDataReader reader = command.ExecuteReader();
+        List<User> teachers = new List<User>();
+        while (reader.Read())
+        {
+            User teacher = new User
+            {
+                Id = (int)reader["id"],
+                Username = (string)reader["username"],
+                Email = (string)reader["email"],
+                IsTeacher = (bool)reader["isTeacher"],
+                IsAdmin = (bool)reader["isAdmin"],
+                CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
+                UpdatedAt = ((DateTime)reader["updated_at"]).ToString("yy-MM-dd"),
+                LastActive = (DateTime)reader["last_active"]
+            };
+            teachers.Add(teacher);
+        }
+        reader.Close();
+        return teachers;
     }
 }
