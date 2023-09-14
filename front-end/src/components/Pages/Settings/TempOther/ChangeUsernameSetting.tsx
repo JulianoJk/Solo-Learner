@@ -3,7 +3,10 @@ import { profileAPI, updateUsernameAPI } from '../../../api/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
 import { useAppDispatch, AppState } from '../../../../context/AppContext';
-import { IUserInfoContext } from '../../../../Model/UserModels';
+import {
+  IUserInfoContext,
+  UserContextState,
+} from '../../../../Model/UserModels';
 import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
@@ -29,7 +32,7 @@ export const ChangeUsernameSetting = () => {
     ['getSettingsItems', hasToken],
     async () => {
       if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(
+        const data: UserContextState | undefined = await profileAPI(
           usernameFromPath,
           hasToken,
         );
@@ -39,9 +42,11 @@ export const ChangeUsernameSetting = () => {
     {
       enabled: true,
       onSuccess: (data) => {
-        const displayUsername: string = isUndefinedOrNullString(data?.username)
+        const displayUsername: string = isUndefinedOrNullString(
+          data?.user.username,
+        )
           ? (user.username as string)
-          : (data?.username as string);
+          : (data?.user.username as string);
         setNewUsername(displayUsername);
       },
     },

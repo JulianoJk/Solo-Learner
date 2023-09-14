@@ -30,9 +30,9 @@ const Profile: React.FC = () => {
   ) {
     return <NotFound navigationPath={'/'} />;
   }
-  const displayUsername = userProfileData?.username;
-  const displayDateJoined = userProfileData?.createdAt;
-  const userRole = userProfileData?.isTeacher ? 'Teacher' : 'Student';
+  const displayUsername = userProfileData?.user.username;
+  const displayDateJoined = userProfileData?.user.createdAt;
+  const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
   const data = {
     avatar: '',
     role: userRole,
@@ -45,7 +45,7 @@ const Profile: React.FC = () => {
     email: 'randomEmail@me.io',
     job: 'Art director',
   };
-  const hasTeacher = userProfileData?.isTeacher;
+  const hasTeacher = userProfileData?.user.isTeacher;
 
   return (
     <>
