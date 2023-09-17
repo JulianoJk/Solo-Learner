@@ -146,8 +146,8 @@ const HeaderMegaMenu = () => {
               >
                 <LogoImage />
               </Box>
-              <ModeThemeButtonSmall />
               <Group>
+                <ModeThemeButtonSmall />
                 <TokenExpirationChecker />
                 {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
                 {isCurrentUserLoading ? <></> : <></>}
@@ -292,7 +292,6 @@ const HeaderMegaMenu = () => {
                       spacing={14}
                       className={classes.hiddenMobile}
                     >
-                      <ModeThemeButtonSmall />
                       <Button
                         leftIcon={<IconHome size={16} />}
                         radius="sm"

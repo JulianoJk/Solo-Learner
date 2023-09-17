@@ -57,7 +57,7 @@ public class ProfileController
         if (user == null)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
-            await context.Response.WriteAsJsonAsync("User not found.");
+            await context.Response.WriteAsJsonAsync(new { error = "User not found." });
             return;
         }
 
@@ -69,11 +69,11 @@ public class ProfileController
             if (teacherInfo == null)
             {
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsJsonAsync("Teacher not found.");
+                await context.Response.WriteAsJsonAsync(new { error = "Teacher not found." });
                 return;
             }
 
-            // Create a response object with the username, role and teacher's information
+            // Create a response object with the username, role, and teacher's information
             response = new
             {
                 status = "success",
@@ -267,7 +267,7 @@ public class ProfileController
     {
         MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
         MySqlCommand command = new MySqlCommand(
-            "SELECT * FROM `users` WHERE isTeacher=1",
+            "SELECT * FROM `users` WHERE isTeacher = 1",
             connection
         );
 
@@ -285,7 +285,7 @@ public class ProfileController
                 IsAdmin = (bool)reader["isAdmin"],
                 CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
                 UpdatedAt = ((DateTime)reader["updated_at"]).ToString("yy-MM-dd"),
-                LastActive = (DateTime)reader["last_active"]
+                LastActive = (DateTime)reader["lastActive"]
             };
             teachers.Add(teacher);
         }
