@@ -9,7 +9,6 @@ export interface IUserInfoContext {
   isTeacher?: boolean;
   email?: string;
   isAdmin?: any;
-  status?: string;
 }
 export interface IApiMessageResponse {
   message: string;
@@ -23,8 +22,9 @@ export interface IApiError {
 export interface IUserAccountContext {
   profileImage: string;
 }
-export interface StateInterface {
+export interface UserContextState {
   user: IUserInfoContext;
+  status: string;
 }
 // Type for the action for the context
 export type TUserAction =

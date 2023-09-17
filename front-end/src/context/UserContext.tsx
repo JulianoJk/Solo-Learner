@@ -2,12 +2,13 @@ import React, { useContext, useReducer } from 'react';
 import {
   usersDispatchContext,
   IChildrenProvider,
-  StateInterface,
+  UserContextState,
   TUserAction,
 } from '../Model/UserModels';
 
 // Default state fot the user context
-const defaultState: StateInterface = {
+const defaultState: UserContextState = {
+  status: '',
   user: {
     username: undefined,
     token: '',
@@ -17,7 +18,7 @@ const defaultState: StateInterface = {
   },
 };
 
-const UserStateContext = React.createContext<StateInterface | undefined>(
+const UserStateContext = React.createContext<UserContextState | undefined>(
   undefined,
 );
 UserStateContext.displayName = 'UserStateContext';
@@ -26,7 +27,7 @@ const UserDispatchContext = React.createContext<
 >(undefined);
 
 // Reducer function
-const appReducer = (state: StateInterface, action: TUserAction) => {
+const appReducer = (state: UserContextState, action: TUserAction) => {
   switch (action.type) {
     case 'SET_USER':
       // Clear any previous data
@@ -56,7 +57,7 @@ const UserContextProvider = ({ children }: IChildrenProvider) => {
   );
 };
 // Pass the state of the user
-const useUserState = (): StateInterface => {
+const useUserState = (): UserContextState => {
   const context = useContext(UserStateContext);
   if (context === undefined) {
     throw new Error('useUserState must be used within UserDispatchContext');

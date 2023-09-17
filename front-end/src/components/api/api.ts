@@ -3,6 +3,7 @@ import {
   IApiError,
   IApiMessageResponse,
   IUserInfoContext,
+  UserContextState,
 } from '../../Model/UserModels';
 const URL: string = 'http://localhost:3001/';
 export const loginAPI = async ({
@@ -286,7 +287,7 @@ export const adminGetAllUsersAPI = async (
 export const profileAPI = async (
   username: string,
   token: string,
-): Promise<IUserInfoContext | undefined> => {
+): Promise<UserContextState | undefined> => {
   try {
     const response = await fetch(`${URL}profile/testme/${username}`, {
       method: 'GET',
@@ -295,7 +296,7 @@ export const profileAPI = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    const data: IUserInfoContext = await response.json();
+    const data: UserContextState = await response.json();
     return data;
   } catch (error) {
     console.error(error);

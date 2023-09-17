@@ -8,7 +8,6 @@ import {
   Anchor,
   ScrollArea,
   useMantineTheme,
-  UnstyledButton,
 } from '@mantine/core';
 import { IconPencil, IconTrash } from '@tabler/icons-react';
 import { User } from '../../../Model/UserModels';
@@ -33,15 +32,15 @@ export function UsersTable({ data }: UsersTableProps) {
       <td>
         <Group spacing="sm">
           <Avatar size={30} src={item.avatar} radius={30} />
-          <UnstyledButton
-            fz="sm"
-            fw={500}
+          <Anchor
+            component="button"
+            size="sm"
             onClick={() => {
               navigate(`/profile/${item.username}`);
             }}
           >
             {item.username}
-          </UnstyledButton>
+          </Anchor>
         </Group>
       </td>
 

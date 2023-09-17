@@ -1,11 +1,12 @@
 import React from 'react';
 import { useUserState } from '../../../context/UserContext';
 import { UserInfoIcons } from './UserInfo.component';
-import { Loader, Stack, Title } from '@mantine/core';
+import { Box, Loader, Stack, Title } from '@mantine/core';
 import { upperFirst } from '@mantine/hooks';
 import NotFound from '../Error/pageNotFound/NotFound.component';
 import { useGetProfile } from '../../hooks/useGetProfile';
 import { useParams } from 'react-router-dom';
+import InstructorProfileCard from '../instructorProfileCard/InstructorProfileCard.component';
 const Profile: React.FC = () => {
   const { user } = useUserState();
   const { username: UsernameFromPath } = useParams<{ username: string }>();
@@ -29,35 +30,41 @@ const Profile: React.FC = () => {
   ) {
     return <NotFound navigationPath={'/'} />;
   }
-  const displayUsername = userProfileData?.username;
-  const displayDateJoined = userProfileData?.createdAt;
-  const userRole = userProfileData?.isTeacher ? 'Teacher' : 'Student';
+  const displayUsername = userProfileData?.user.username;
+  const displayDateJoined = userProfileData?.user.createdAt;
+  const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
   const data = {
     avatar: '',
     role: userRole,
     userName: upperFirst(displayUsername as string),
     displayDateJoined: displayDateJoined,
   };
-  // const instructionData = {
-  //   avatar: '',
-  //   name: 'Jane Fingerlicker',
-  //   email: 'randomEmail@me.io',
-  //   job: 'Art director',
-  // };
+  const instructionData = {
+    avatar: '',
+    name: 'Jane Fingerlicker',
+    email: 'randomEmail@me.io',
+    job: 'Art director',
+  };
+  const hasTeacher = userProfileData?.user.isTeacher;
+
   return (
     <>
       <UserInfoIcons {...data} />
-      {/* <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
-        <Title order={4} align="center">
-          Your Amazing Instructor &#10024;
-        </Title>
-        <InstructorProfileCard
-          avatar={instructionData.avatar}
-          name={instructionData.name}
-          email={instructionData.email}
-          job={instructionData.job}
-        />
-      </Box> */}
+      {hasTeacher ? (
+        <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+          <Title order={4} align="center">
+            Your Amazing Instructor &#10024;
+          </Title>
+          <InstructorProfileCard
+            avatar={instructionData.avatar}
+            name={instructionData.name}
+            email={instructionData.email}
+            job={instructionData.job}
+          />
+        </Box>
+      ) : (
+        <></>
+      )}
     </>
   );
 };
