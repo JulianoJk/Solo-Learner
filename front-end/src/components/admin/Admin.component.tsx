@@ -15,6 +15,7 @@ import {
   LastActiveFormat,
   formatLastActive,
 } from '../../utils/formattedLastActive';
+import AuthenticationRegisterForm from '../Auth/Login/AuthenticationRegisterForm';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -149,7 +150,7 @@ const Admin = () => {
             <UsersTable data={allUsersList} />
           </Box>
         );
-        break;
+
       case 'billing':
         return (
           <Box
@@ -163,7 +164,24 @@ const Admin = () => {
             <StudentmanagmentTable data={allUsersList}></StudentmanagmentTable>
           </Box>
         );
-        break;
+      case 'addNewUser':
+        return (
+          <Box
+            sx={{
+              backgroundImage:
+                theme.colorScheme === 'light'
+                  ? theme.fn.linearGradient(7, '#64b4f655') //OR "#4CAF50", "#2196F3"
+                  : theme.fn.linearGradient(7, '#303233'),
+            }}
+          >
+            <AuthenticationRegisterForm
+              hasBorder={false}
+              registerTitle={'Add New User'}
+              switchToLogin={false}
+              refreshPageAfterRegister={false}
+            ></AuthenticationRegisterForm>
+          </Box>
+        );
       default:
         break;
     }

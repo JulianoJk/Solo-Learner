@@ -93,7 +93,7 @@ const useStyles = createStyles((theme) => ({
 
 const data = [
   { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
-  { link: 'AddNewUser', label: 'Add New User', icon: IconUserPlus },
+  { link: 'addNewUser', label: 'Add New User', icon: IconUserPlus },
   { link: 'billing', label: 'Billing', icon: IconReceipt2 },
   { link: 'SSH', label: 'SSH Keys', icon: IconKey },
   { link: 'Databases', label: 'Databases', icon: IconDatabaseImport },

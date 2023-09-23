@@ -151,6 +151,38 @@ export const deleteAccountAPI = async ({
     } as IApiError;
   }
 };
+export const adminDeleteUserAccount = async ({
+  token,
+  Id,
+}: any): Promise<IApiMessageResponse | IApiError> => {
+  try {
+    const response = await fetch(URL + `admin/dashboard/delete_user`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: JSON.stringify({
+        token: token,
+        id: Id.toString(),
+      }),
+    });
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
+
+    const data: IApiMessageResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
+  }
+};
 
 export const getProfileImageAPI = async (
   id: string,

@@ -8,10 +8,31 @@ import {
   Anchor,
   ScrollArea,
   useMantineTheme,
+  Menu,
+  rem,
 } from '@mantine/core';
-import { IconPencil, IconTrash } from '@tabler/icons-react';
-import { User } from '../../../Model/UserModels';
+import {
+  IconDots,
+  IconMessages,
+  IconMoodSad,
+  IconNote,
+  IconPencil,
+  IconReportAnalytics,
+  IconTrash,
+} from '@tabler/icons-react';
+import {
+  IApiError,
+  IApiMessageResponse,
+  User,
+} from '../../../Model/UserModels';
 import { useNavigate } from 'react-router-dom';
+
+import { modals } from '@mantine/modals';
+import { useMutation } from '@tanstack/react-query';
+import { useAppDispatch } from '../../../context/AppContext';
+import { notificationAlert } from '../../notifications/NotificationAlert';
+import { adminDeleteUserAccount } from '../../api/api';
+import { useUserState } from '../../../context/UserContext';
 
 interface UsersTableProps {
   data: User[];
@@ -27,6 +48,61 @@ const roleColors: Record<string, string> = {
 export function UsersTable({ data }: UsersTableProps) {
   const theme = useMantineTheme();
   const navigate = useNavigate();
+  const { user: AdminUser } = useUserState();
+  const appDispatch = useAppDispatch();
+  const handleEditButton = () => {
+    // TODO!: Add edit user modal
+    console.log('user.id');
+  };
+  const { mutate: deleteAccount } = useMutation(adminDeleteUserAccount, {
+    onSuccess: (data: IApiMessageResponse | IApiError) => {
+      if (typeof data === 'object' && 'error' in data) {
+        // handle the error case
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: data.error.message,
+        });
+      } else {
+        notificationAlert({
+          title: 'Account Deleted.',
+          message: data.message,
+          iconColor: 'red',
+          closeAfter: 5000,
+          icon: <IconMoodSad color="yellow" size={18} />,
+        });
+        window.location.reload();
+      }
+    },
+  });
+
+  const handleDeleteUser = (user: User) => {
+    modals.openConfirmModal({
+      title: 'You are about to delete a user',
+
+      children: (
+        <Text size="lg">
+          {`Are you sure you want to delete `}
+          <i>
+            <b style={{ textDecoration: 'underline' }}>{user.username}</b>
+          </i>
+          {`? This action is irreversible`}
+        </Text>
+      ),
+      labels: { confirm: 'Confirm', cancel: 'Cancel' },
+      onConfirm: () => {
+        const requestData = {
+          token: AdminUser.token,
+          Id: user.id,
+        };
+
+        deleteAccount(requestData);
+      },
+      closeOnCancel: true,
+      closeOnConfirm: true,
+      confirmProps: { color: 'red' },
+    });
+  };
+
   const rows = data.map((item) => (
     <tr key={item.username}>
       <td>
@@ -64,12 +140,71 @@ export function UsersTable({ data }: UsersTableProps) {
       </td>
       <td>
         <Group spacing={0} position="right">
-          <ActionIcon>
+          <ActionIcon onClick={handleEditButton}>
             <IconPencil size="1rem" stroke={1.5} />
           </ActionIcon>
-          <ActionIcon color="red">
-            <IconTrash size="1rem" stroke={1.5} />
-          </ActionIcon>
+          <Menu
+            transitionProps={{ transition: 'pop' }}
+            withArrow
+            position="bottom-end"
+            withinPortal
+          >
+            <Menu.Target>
+              <ActionIcon variant="subtle" color="gray">
+                <IconDots
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item
+                disabled
+                icon={
+                  <IconMessages
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+              >
+                Send message
+              </Menu.Item>
+              <Menu.Item
+                disabled
+                icon={
+                  <IconNote
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+              >
+                Add note
+              </Menu.Item>
+              <Menu.Item
+                disabled
+                icon={
+                  <IconReportAnalytics
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+              >
+                Analytics
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => handleDeleteUser(item)}
+                icon={
+                  <IconTrash
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+                color="red"
+              >
+                Delete user
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Group>
       </td>
     </tr>

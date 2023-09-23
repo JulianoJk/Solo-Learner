@@ -109,7 +109,15 @@ const App = () => {
                         />
                         <Route
                           path="/register"
-                          element={<AuthenticationRegisterForm />}
+                          element={
+                            <AuthenticationRegisterForm
+                              displaySocialButtons
+                              hasBorder
+                              switchToLogin
+                              showNotification
+                              refreshPageAfterRegister
+                            />
+                          }
                         />
                         <Route path="/home" element={<Home />} />
                         <Route
