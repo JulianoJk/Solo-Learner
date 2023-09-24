@@ -26,13 +26,13 @@ import {
   User,
 } from '../../../Model/UserModels';
 import { useNavigate } from 'react-router-dom';
-
 import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../context/AppContext';
 import { notificationAlert } from '../../notifications/NotificationAlert';
 import { adminDeleteUserAccount } from '../../api/api';
 import { useUserState } from '../../../context/UserContext';
+import { useState } from 'react';
 
 interface UsersTableProps {
   data: User[];
@@ -45,15 +45,19 @@ const roleColors: Record<string, string> = {
   'admin/teacher': 'orange',
 };
 
-export function UsersTable({ data }: UsersTableProps) {
+const UsersTable = ({ data }: UsersTableProps) => {
   const theme = useMantineTheme();
   const navigate = useNavigate();
   const { user: AdminUser } = useUserState();
   const appDispatch = useAppDispatch();
+  const [allUsers, setAllUsers] = useState(data);
+  const [currentSelectedUser, setCurrentSelectedUser] = useState<number>();
+
   const handleEditButton = () => {
     // TODO!: Add edit user modal
     console.log('user.id');
   };
+
   const { mutate: deleteAccount } = useMutation(adminDeleteUserAccount, {
     onSuccess: (data: IApiMessageResponse | IApiError) => {
       if (typeof data === 'object' && 'error' in data) {
@@ -63,6 +67,8 @@ export function UsersTable({ data }: UsersTableProps) {
           errorAlertMessage: data.error.message,
         });
       } else {
+        setAllUsers(allUsers.filter((user) => user.id !== currentSelectedUser));
+
         notificationAlert({
           title: 'Account Deleted.',
           message: data.message,
@@ -70,12 +76,12 @@ export function UsersTable({ data }: UsersTableProps) {
           closeAfter: 5000,
           icon: <IconMoodSad color="yellow" size={18} />,
         });
-        window.location.reload();
       }
     },
   });
 
   const handleDeleteUser = (user: User) => {
+    setCurrentSelectedUser(user.id);
     modals.openConfirmModal({
       title: 'You are about to delete a user',
 
@@ -94,7 +100,6 @@ export function UsersTable({ data }: UsersTableProps) {
           token: AdminUser.token,
           Id: user.id,
         };
-
         deleteAccount(requestData);
       },
       closeOnCancel: true,
@@ -103,7 +108,7 @@ export function UsersTable({ data }: UsersTableProps) {
     });
   };
 
-  const rows = data.map((item) => (
+  const rows = allUsers.map((item) => (
     <tr key={item.username}>
       <td>
         <Group spacing="sm">
@@ -240,7 +245,7 @@ export function UsersTable({ data }: UsersTableProps) {
       </Table>
     </ScrollArea>
   );
-}
+};
 function getJob(isAdmin: boolean, isTeacher: boolean) {
   if (isAdmin && isTeacher) {
     return 'admin/teacher';
@@ -252,3 +257,4 @@ function getJob(isAdmin: boolean, isTeacher: boolean) {
     return 'student';
   }
 }
+export default UsersTable;
