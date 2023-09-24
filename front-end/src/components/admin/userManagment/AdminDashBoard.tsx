@@ -11,6 +11,7 @@ import {
   Menu,
   rem,
   Center,
+  TextInput,
 } from '@mantine/core';
 import {
   IconDots,
@@ -19,6 +20,7 @@ import {
   IconNote,
   IconPencil,
   IconReportAnalytics,
+  IconSearch,
   IconTrash,
 } from '@tabler/icons-react';
 import {
@@ -33,7 +35,7 @@ import { useAppDispatch } from '../../../context/AppContext';
 import { notificationAlert } from '../../notifications/NotificationAlert';
 import { adminDeleteUserAccount } from '../../api/api';
 import { useUserState } from '../../../context/UserContext';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 interface UsersTableProps {
   data: User[];
@@ -55,7 +57,19 @@ const UsersTable = ({ data }: UsersTableProps) => {
   const [currentSelectedUser, setCurrentSelectedUser] = useState<
     number | undefined
   >();
+  const [search, setSearch] = useState('');
 
+  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+    setSearch(value);
+
+    const filteredUsers = data.filter(
+      (user) =>
+        user.username.toLowerCase().includes(value.toLowerCase()) ||
+        user.email.toLowerCase().includes(value.toLowerCase()),
+    );
+    setAllUsers(filteredUsers);
+  };
   const handleEditButton = () => {
     // TODO!: Add edit user modal
     console.log('user.id');
@@ -241,6 +255,13 @@ const UsersTable = ({ data }: UsersTableProps) => {
 
   return (
     <ScrollArea>
+      <TextInput
+        placeholder="Search by username or email"
+        mb="md"
+        icon={<IconSearch size={20} />}
+        value={search}
+        onChange={handleSearchChange}
+      />
       <Table
         sx={{ minWidth: 800 }}
         verticalSpacing="sm"
