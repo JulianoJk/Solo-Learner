@@ -1,81 +1,73 @@
 import {
-  createStyles,
   SimpleGrid,
   Card,
   Image,
   Text,
   Container,
   AspectRatio,
+  Skeleton,
 } from '@mantine/core';
+import { useStyles } from './Home.styles';
+import Theory from '../../../images/theory.jpeg';
+import GrammarIcon from '../../../images/grammar.jpeg';
+import TestImage from '../../../images/testsImage.jpg';
+import Dictionary from '../../../images/vocabulary.jpeg';
+import React from 'react';
 
 const mockdata = [
   {
-    title: 'Top 10 places to visit in Norway this summer',
-    image:
-      'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    date: 'August 18, 2022',
+    title: 'Theory',
+    image: Theory,
+    details: 'Comprehensive lessons on English language fundamentals',
   },
   {
-    title: 'Best forests to visit in North America',
-    image:
-      'https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    date: 'August 27, 2022',
+    title: 'Grammar',
+    image: GrammarIcon,
+    details: 'Interactive lessons focusing on English grammatical rules',
   },
   {
-    title: 'Hawaii beaches review: better than you think',
-    image:
-      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    date: 'September 9, 2022',
+    title: 'Tests',
+    image: TestImage,
+    details: 'Quizzes and assessments to test English proficiency',
   },
   {
-    title: 'Mountains at night: 12 best locations to enjoy the view',
-    image:
-      'https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    date: 'September 12, 2022',
+    title: 'Vocabulary',
+    image: Dictionary,
+    details: 'Lessons and exercises to expand English vocabulary.',
   },
 ];
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    transition: 'transform 150ms ease, box-shadow 150ms ease',
-
-    '&:hover': {
-      transform: 'scale(1.01)',
-      boxShadow: theme.shadows.md,
-    },
-  },
-
-  title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-    fontWeight: 600,
-  },
-}));
-
-export function DemoHome() {
-  const { classes, theme } = useStyles();
-
+interface DemoHomeProps {
+  isLoading: boolean;
+}
+const Modules: React.FC<DemoHomeProps> = (props) => {
+  const { classes } = useStyles();
+  const { isLoading } = props;
   const cards = mockdata.map((article) => (
     <Card
       key={article.title}
       p="md"
       radius="md"
-      sx={{
-        backgroundColor: 'transparent',
-        border: `10px solid ${theme.fn.darken('inherit', 0.5)}`,
-      }}
       component="a"
-      href="#"
-      className={classes.card}
+      className={classes.cardLoaded}
+      draggable={false}
+      sx={{ cursor: 'pointer' }}
+      onClick={() => console.log(article.title)}
     >
-      <AspectRatio ratio={1920 / 1080}>
-        <Image src={article.image} />
-      </AspectRatio>
-      <Text color="dimmed" size="xs" transform="uppercase" weight={700} mt="md">
-        {article.date}
-      </Text>
-      <Text className={classes.title} mt={5}>
-        {article.title}
-      </Text>
+      <Skeleton visible={isLoading}>
+        <AspectRatio ratio={1920 / 1080}>
+          <Image src={article.image} draggable={false} />
+        </AspectRatio>
+      </Skeleton>
+      <Skeleton visible={isLoading} height={16} mt={6} radius="xl">
+        <Text color="dimmed" size="xs" transform="initial" weight={700} mt="md">
+          {article.details}
+        </Text>
+      </Skeleton>
+      <Skeleton visible={isLoading} height={12} mt={6} width="70%" radius="xl">
+        <Text className={classes.title} mt={5}>
+          {article.title}
+        </Text>
+      </Skeleton>
     </Card>
   ));
 
@@ -86,4 +78,5 @@ export function DemoHome() {
       </SimpleGrid>
     </Container>
   );
-}
+};
+export default Modules;

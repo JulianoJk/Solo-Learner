@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   createStyles,
   Container,
@@ -10,7 +9,7 @@ import {
 } from '@mantine/core';
 import NotFoundImage from '../../../../images/NotFount';
 import { useNavigate } from 'react-router-dom';
-
+import React from 'react';
 const useStyles = createStyles((theme) => ({
   root: {
     paddingTop: rem(80),

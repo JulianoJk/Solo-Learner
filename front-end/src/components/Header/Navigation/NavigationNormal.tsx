@@ -136,15 +136,7 @@ const NavigationNormal: React.FC = () => {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Item
-                  icon={<IconSettings size={14} />}
-                  onClick={() => {
-                    appDisp({
-                      type: 'SET_USER_SETTINGS_MODAL',
-                      isUserSettingsOpen: true,
-                    });
-                  }}
-                >
+                <Menu.Item icon={<IconSettings size={14} />}>
                   Settings
                 </Menu.Item>
                 <Menu.Divider />

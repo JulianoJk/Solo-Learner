@@ -1,8 +1,7 @@
-import Index from './components/Pages/Index/Index';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Home from './components/Pages/Home/Home';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-// import NavigationNormal from './components/Header/Navigation/NavigationNormal';
 import { UserContextProvider } from './context/UserContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -14,7 +13,6 @@ import {
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-// import SmallNavigation from './components/Header/Navigation/SmallNavigation';
 import DeleteAccount from './components/Pages/Settings/TempOther/DeleteAccount/DeleteAccount';
 import { checkIfPageIsReload, isUserLoggedIn } from './utils/utils';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
@@ -24,16 +22,18 @@ import {
   AvatarDefaultProps,
   ButtonDefaultProps,
 } from './Styles/DefaultPropsStyles.styles';
-import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
-import Theory from './components/Pages/LearningUnits/Theory/Theory';
-import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
-import Vocabulary from './components/Pages/LearningUnits/Vocabulary/Vocabulary';
 import HeaderMenu from './components/Header/HeaderMenu.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
 import Settings from './components/Pages/Settings/Settings.component';
 import Admin from './components/admin/Admin.component';
+import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
+import Theory from './components/Pages/LearningUnits/Theory/Theory';
+import Vocabulary from './images/Vocabulary';
+import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
+import Index from './components/Pages/Index/Index';
+import ForbiddenPage from './components/Pages/Error/forbidden/Forbidden.component';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -94,12 +94,9 @@ const App = () => {
                 <Notifications />
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
-                    <AppShell
-                      padding="md"
-                      // navbar={<>{isAdminPath ? <NavBar /> : <></>}</>}
-                      header={<HeaderMenu />}
-                    >
+                    <AppShell padding="md" header={<HeaderMenu />}>
                       <Routes>
+                        {/* <Route path="/" element={<Index />} /> */}
                         <Route path="/" element={<Index />} />
                         <Route
                           path="/login"
@@ -112,7 +109,15 @@ const App = () => {
                         />
                         <Route
                           path="/register"
-                          element={<AuthenticationRegisterForm />}
+                          element={
+                            <AuthenticationRegisterForm
+                              displaySocialButtons
+                              hasBorder
+                              switchToLogin
+                              showNotification
+                              refreshPageAfterRegister
+                            />
+                          }
                         />
                         <Route path="/home" element={<Home />} />
                         <Route
@@ -153,6 +158,7 @@ const App = () => {
                               navigationPath={isUserLoggedIn() ? '/home' : '/'}
                               statusNumber={404}
                             />
+                            // <ForbiddenPage navigationPath={''} />
                           }
                         />
                       </Routes>

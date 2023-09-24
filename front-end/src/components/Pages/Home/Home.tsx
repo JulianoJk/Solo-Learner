@@ -1,21 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { ReactSVG } from 'react-svg';
 
-import Grammar from '../LearningUnits/Grammar/Grammar';
-import Theory from '../LearningUnits/Theory/Theory';
-import Vocabulary from '../LearningUnits/Vocabulary/Vocabulary';
-import { useStyles } from './Home.styles';
-import { DemoHome } from './DemoHome';
+// import { DemoHome } from './DemoHome';
 import { useUserState } from '../../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { authenticateAPI } from '../../api/api';
 import NotFound from '../Error/pageNotFound/NotFound.component';
-import { Button, Loader, Stack, Title } from '@mantine/core';
-
+import { Box, Center, Image, Loader, Stack, Title } from '@mantine/core';
+import Modules from './DemoHome';
+import Forbitten from '../../../images/Forbitten.svg';
 const Home: React.FC = () => {
-  const { classes } = useStyles();
   const { user } = useUserState();
-
   const {
     data: userStatus,
     isLoading,
@@ -29,15 +25,6 @@ const Home: React.FC = () => {
     throw new Error('No token found');
   });
 
-  if (isLoading) {
-    return (
-      <Stack align="center">
-        <Loader color="teal" size={400} />
-
-        <Title>Loading...</Title>
-      </Stack>
-    );
-  }
   if (
     isFetched &&
     (isError || !userStatus || userStatus.status !== 'success')
@@ -45,25 +32,12 @@ const Home: React.FC = () => {
     return <NotFound navigationPath={'/'} />;
   }
 
-  return (
-    <>
-      {isLoading ? (
-        <Stack align="center">
-          <Loader color="teal" size={400} />
-
-          <Title>Loading...</Title>
-        </Stack>
-      ) : (
-        <DemoHome />
-      )}
-    </>
-  );
+  return <Modules isLoading={isLoading} />;
 };
 
 export default Home;
 
-{
-  /*   
+/*   
   return (
     <>
       {isLoading ? (
@@ -92,4 +66,3 @@ export default Home;
   );
 };
 export default Profile; */
-}

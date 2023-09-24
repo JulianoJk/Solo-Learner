@@ -8,15 +8,13 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {
-  IconFingerprint,
   IconKey,
   IconSettings,
   Icon2fa,
   IconDatabaseImport,
   IconReceipt2,
-  IconSwitchHorizontal,
-  IconLogout,
   IconUserCog,
+  IconUserPlus,
 } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
 import { useMediaQuery } from '@mantine/hooks';
@@ -95,22 +93,23 @@ const useStyles = createStyles((theme) => ({
 
 const data = [
   { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
+  { link: 'addNewUser', label: 'Add New User', icon: IconUserPlus },
   { link: 'billing', label: 'Billing', icon: IconReceipt2 },
-  { link: 'security', label: 'Security', icon: IconFingerprint },
   { link: 'SSH', label: 'SSH Keys', icon: IconKey },
   { link: 'Databases', label: 'Databases', icon: IconDatabaseImport },
   { link: 'Authentication', label: 'Authentication', icon: Icon2fa },
   { link: 'settings', label: 'Other Settings', icon: IconSettings },
 ];
 
-export function NavBar() {
+export function AdminNavBar() {
   const { classes, cx } = useStyles();
   const [active, setActive] = useState('User Managment');
   const appDispatch = useAppDispatch();
   const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
   const theme = useMantineTheme();
   const links = data.map((item) => (
-    <a
+    <Anchor
+      draggable={false}
       className={cx(classes.link, {
         [classes.linkActive]: item.label === active,
       })}
@@ -130,7 +129,7 @@ export function NavBar() {
         <item.icon className={classes.linkIcon} stroke={1.5} />
       )}
       <span>{item.label}</span>
-    </a>
+    </Anchor>
   ));
 
   return (
@@ -157,27 +156,6 @@ export function NavBar() {
       p="md"
     >
       <Navbar.Section grow>{links}</Navbar.Section>
-
-      {/* TODO!: ADD IMAGE FOR THE ADMIN ETC */}
-      <Navbar.Section className={classes.footer}>
-        <Anchor
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-          <span>Change account</span>
-        </Anchor>
-
-        <Anchor
-          href="#"
-          className={classes.link}
-          onClick={(event) => event.preventDefault()}
-        >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
-        </Anchor>
-      </Navbar.Section>
     </Navbar>
   );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from 'react';
 import { hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import {
@@ -28,10 +27,17 @@ interface IRegisterProps {
   hasBorder?: boolean;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
+  displaySocialButtons?: boolean;
 }
 
 const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
-  const { hasBorder, switchToLogin, children, registerTitle } = props;
+  const {
+    hasBorder,
+    switchToLogin,
+    children,
+    registerTitle,
+    displaySocialButtons,
+  } = props;
   const { register, isLoading: isRegisterLoading } = useRegister();
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
@@ -62,7 +68,8 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             ? 'Welcome to Solo Learn, register with'
             : registerTitle}
         </Text>
-        <SocialButtonsUnavailable />
+        {displaySocialButtons && <SocialButtonsUnavailable />}
+
         <Divider
           label="Or continue with email"
           labelPosition="center"

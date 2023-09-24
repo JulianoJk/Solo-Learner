@@ -165,7 +165,6 @@ app.MapGet(
     async (HttpContext context) =>
     {
         bool isValidJwt = JwtUtils.authenticateJwt(context);
-        System.Console.WriteLine(JwtUtils.GetUserIsAdmin(context));
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
             AdminController adminController = new AdminController();
@@ -188,6 +187,27 @@ app.MapGet(
         {
             AdminController adminController = new AdminController();
             await adminController.GetUsers(context);
+        }
+        else
+        {
+            var response = new { error = new { message = "Unauthorized" } };
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    }
+);
+
+app.MapDelete(
+    "/admin/dashboard/delete_user",
+    async (HttpContext context) =>
+    {
+        bool isValidJwt = JwtUtils.authenticateJwt(context);
+
+        if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
+        {
+            AdminAccountDeletionController adminAccountDeletion =
+                new AdminAccountDeletionController();
+            await adminAccountDeletion.InitAccountDeletion(context);
         }
         else
         {

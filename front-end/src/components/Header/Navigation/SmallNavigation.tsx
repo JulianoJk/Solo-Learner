@@ -102,14 +102,7 @@ const SmallNavigation: React.FC = () => {
                   </Center>
                 </Menu.Item>
                 <Menu.Divider />
-                <Menu.Item
-                  onClick={() =>
-                    appDisp({
-                      type: 'SET_USER_SETTINGS_MODAL',
-                      isUserSettingsOpen: true,
-                    })
-                  }
-                >
+                <Menu.Item>
                   <Center>
                     <IconSettings size={16} fontWeight={700} />
                     <Text weight={700} sx={{ paddingLeft: 5 }}>
