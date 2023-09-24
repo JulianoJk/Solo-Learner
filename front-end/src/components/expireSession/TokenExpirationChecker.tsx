@@ -1,59 +1,113 @@
-import React, {useEffect, useState} from 'react'
-import jwtDecode from 'jwt-decode'
-import {Modal} from '@mantine/core'
-import {useLocation} from 'react-router-dom'
-import {isUserLoggedIn} from '../../lib/dist'
-import Login from '../Auth/Login/Login'
-import {useDisclosure} from '@mantine/hooks'
+import React, { useEffect } from 'react';
+import jwtDecode from 'jwt-decode';
+import { Button, Center, Modal, Title, Text } from '@mantine/core';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { checkIfPageIsReload, isUserLoggedIn } from '../../utils/utils';
+
+import { useDisclosure } from '@mantine/hooks';
+import { useUserDispatch } from '../../context/UserContext';
+import { IUserInfoContext } from '../../Model/UserModels';
+import { useAppDispatch, AppState } from '../../context/AppContext';
+import AuthenticationLoginForm from '../Auth/Login/AuthenticationLoginForm';
+
 const TokenExpirationChecker = () => {
-  const [isExpired, setIsExpired] = useState<boolean>(false)
-  const [openedModal, handlers] = useDisclosure(false)
-  const location = useLocation() // <-- get current location being accessed
+  const { isSessionExpired, userReLoggedIn } = AppState();
+  const appDispatch = useAppDispatch();
+  const [openedModal, handlers] = useDisclosure(false);
+  const { pathname } = useLocation(); // <-- get current location being accessed
+  const userDispatch = useUserDispatch();
+
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken')
+    const token = localStorage.getItem('jwtToken');
     if (token) {
-      const decoded: any = jwtDecode(token)
-      const expirationTime = decoded.exp * 1000 // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)
-      const currentTime = Date.now()
-      if (isUserLoggedIn() === true && currentTime > expirationTime) {
-        setIsExpired(true)
-        handlers.open()
-      } else if (isUserLoggedIn() === true && currentTime < expirationTime) {
-        handlers.close()
+      const decoded: any = jwtDecode(token);
+
+      const isExpired = decoded.exp < Date.now() / 1000;
+      // set the last visited path in local storage
+      localStorage.setItem('lastVisitedPath', location.pathname);
+
+      if (isUserLoggedIn() === true && isExpired) {
+        appDispatch({
+          type: 'SET_SESSION_TOKEN_EXPIRED',
+          isSessionExpired: true,
+        });
+        handlers.open();
+      } else if (isUserLoggedIn() === true && !isExpired) {
+        handlers.close();
       }
     }
-  }, [])
 
-  if (isExpired) {
+    if (checkIfPageIsReload()) {
+      const localStorageToken = localStorage.getItem('jwtToken');
+      const decoded: IUserInfoContext = jwtDecode(localStorageToken as string);
+
+      if (localStorageToken !== null) {
+        const decodedUser: IUserInfoContext = {
+          id: decoded.id,
+          username: decoded.username,
+          token: localStorageToken,
+          isTeacher: decoded.isTeacher,
+          email: decoded.email,
+          isAdmin: decoded.isAdmin,
+        };
+        userDispatch({ type: 'SET_USER', user: decodedUser });
+      }
+    }
+  }, [checkIfPageIsReload, pathname]);
+
+  const logOut = () => {
+    userDispatch({ type: 'RESET_STATE' });
+    navigate('/');
+  };
+
+  if (isSessionExpired && userReLoggedIn === false) {
     return (
       <Modal
-        transition="fade"
+        transitionProps={{
+          transition: 'fade',
+          duration: 100,
+          timingFunction: 'ease',
+        }}
+        overlayProps={{
+          opacity: 0.55,
+          blur: 10,
+        }}
         centered
-        transitionDuration={600}
-        transitionTimingFunction="ease"
         opened={openedModal}
         onClose={() => {
-          return
+          return;
         }}
-        overlayBlur={4}
         withCloseButton={false}
       >
         <Center>
-          <Title size="md">
-            Session expired. Please log in again to continue!
-          </Title>
+          <Title size="md"></Title>
         </Center>
 
-        <Login
+        <AuthenticationLoginForm
           switchToRegister={false}
-          pathToNavigateAfterLogin={location.pathname}
+          pathToNavigateAfterLogin={pathname}
           refreshPageAfterLogin={true}
+          sessionExpiredAuth={true}
+          loginTitle={
+            <Text size="lg" weight={650} ta="center">
+              Session expired.
+              <br />
+              Please log in again to continue!
+            </Text>
+          }
+          children={
+            <Button onClick={logOut} color="red">
+              Logout
+            </Button>
+          }
         />
       </Modal>
-    )
+    );
   }
 
-  return null
-}
+  return null;
+};
 
-export default TokenExpirationChecker
+export default TokenExpirationChecker;

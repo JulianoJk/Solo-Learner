@@ -1,12 +1,12 @@
-import {showNotification} from '@mantine/notifications'
-import React from 'react'
+import { showNotification } from '@mantine/notifications';
+import React from 'react';
 interface INotificationAlert {
-  title: string
-  message: string
-  status?: string
-  icon?: React.ReactNode
-  iconColor?: string
-  closeAfter?: number
+  title: string;
+  message: string;
+  status?: string;
+  icon?: React.ReactNode;
+  iconColor?: string;
+  closeAfter?: number;
 }
 export const notificationAlert = (props: INotificationAlert) => {
   showNotification({
@@ -18,5 +18,5 @@ export const notificationAlert = (props: INotificationAlert) => {
     style: {
       minHeight: '7vh',
     },
-  })
-}
+  });
+};

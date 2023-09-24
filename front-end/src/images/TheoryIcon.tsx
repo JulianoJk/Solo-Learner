@@ -1,5 +1,5 @@
-import * as React from 'react'
-import {SVGProps} from 'react'
+import * as React from 'react';
+import { SVGProps } from 'react';
 
 const TheoryIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -101,6 +101,6 @@ const TheoryIcon = (props: SVGProps<SVGSVGElement>) => (
       d=" M213.954987,218.215546  C218.453033,213.055328 223.892654,212.619583 227.193558,216.932556  C229.732224,220.249557 229.732529,223.783203 227.033157,226.968826  C224.521057,229.933456 221.190796,230.892685 217.636978,229.024200  C213.350906,226.770721 211.981857,223.194153 213.954987,218.215546  z"
     />
   </svg>
-)
+);
 
-export default TheoryIcon
+export default TheoryIcon;

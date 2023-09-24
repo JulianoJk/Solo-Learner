@@ -1,43 +1,56 @@
-import React from 'react'
+import React from 'react';
 // *** State ***
 export interface IUserInfoContext {
-  message?: string
-  username?: string
-  token: string | undefined
-  id: string | undefined
-  dateJoined?: Date | string
+  message?: string;
+  username?: string;
+  token: string;
+  id?: string | undefined;
+  createdAt?: Date | string;
+  isTeacher?: boolean;
+  email?: string;
+  isAdmin?: any;
+}
+export interface IApiMessageResponse {
+  message: string;
+}
+
+export interface IApiError {
+  error: {
+    message: string;
+  };
 }
 export interface IUserAccountContext {
-  profileImage: string
+  profileImage: string;
 }
-export interface StateInterface {
-  user: IUserInfoContext
+export interface UserContextState {
+  user: IUserInfoContext;
+  status: string;
 }
 // Type for the action for the context
 export type TUserAction =
   | {
-      type: 'SET_USER'
-      user: IUserInfoContext
+      type: 'SET_USER';
+      user: IUserInfoContext;
     }
   | {
-      profileImage: string
-      type: 'SET_PROFILE_IMAGE'
+      profileImage: string;
+      type: 'SET_PROFILE_IMAGE';
     }
-  | ResetAction
+  | ResetAction;
 // Reset everything
 interface ResetAction {
-  type: 'RESET_STATE'
+  type: 'RESET_STATE';
 }
 
 // Interface for the ContextProvider children
 export interface IChildrenProvider {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 // *** Dispatch ***
 
 // Type for the dispatch reducer user
-export type usersDispatchContext = (action: TUserAction) => void
+export type usersDispatchContext = (action: TUserAction) => void;
 
 // An enum with all the types of actions to use in the registration useReduce
 export enum EActionTypes {
@@ -48,9 +61,29 @@ export enum EActionTypes {
 }
 // Interface the the registration
 export interface IAuthCredentials {
-  type?: EActionTypes
-  email?: string | undefined
-  username?: string | undefined
-  password?: string | undefined
-  passwordRepeat?: string | undefined
+  type?: EActionTypes;
+  email?: string | undefined;
+  username?: string | undefined;
+  password?: string | undefined;
+  passwordRepeat?: string | undefined;
+}
+export interface User {
+  id: number;
+  email: string;
+  username: string;
+  isAdmin: boolean;
+  password: null;
+  isTeacher: boolean;
+  createdAt: string;
+  updatedAt: string;
+  avatar?: string;
+  lastActive: string;
+  lastActiveDate?: string;
+  lastActiveTime?: string;
+  formattedLastActive?: string; // New property for formatted last active
+}
+
+export interface GetUsersListResponse {
+  status: string;
+  users: User[];
 }

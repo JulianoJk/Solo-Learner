@@ -1,6 +1,6 @@
-import {createStyles} from '@mantine/core'
-import {LIGHT_MENT} from '../../Theme/Styles'
-export const useStyles = createStyles(theme => ({
+import { createStyles } from '@mantine/core';
+
+export const useStyles = createStyles((theme) => ({
   formContainer: {
     borderWidth: '2px !important',
     borderRadius: 5,
@@ -12,6 +12,7 @@ export const useStyles = createStyles(theme => ({
       theme.colorScheme === 'light' ? `11px solid indigo` : `1px solid #343541`,
   },
   form: {
+    // width: '40em',
     padding: 10,
   },
   title: {
@@ -24,9 +25,6 @@ export const useStyles = createStyles(theme => ({
     display: 'inline-block',
     width: '100%',
     marginTop: 10,
-    '&:hover': {
-      backgroundColor: LIGHT_MENT,
-    },
   },
   inputLabels: {
     fontWeight: 700,
@@ -42,4 +40,4 @@ export const useStyles = createStyles(theme => ({
   imageContainer: {
     borderRadius: '50%',
   },
-}))
+}));
