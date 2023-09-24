@@ -10,7 +10,7 @@ import { StudentmanagmentTable } from './userManagment/studentManagment/Studentm
 import { User } from '../../Model/UserModels';
 import { AdminNavBar } from '../navBar/AdminNavBar.component';
 import { AppState } from '../../context/AppContext';
-import UsersTable  from './userManagment/AdminDashBoard';
+import UsersTable from './userManagment/AdminDashBoard';
 import {
   LastActiveFormat,
   formatLastActive,
