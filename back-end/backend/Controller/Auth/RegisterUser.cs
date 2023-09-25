@@ -190,6 +190,7 @@ public class RegisterUser
             // If email does not have exactly one '@' character, it is not valid
             return false;
         }
+
         var domain = emailParts[1];
 
         if (string.IsNullOrWhiteSpace(domain))
@@ -220,9 +221,16 @@ public class RegisterUser
 
     private static string GetDefaultUsername(string email)
     {
-        var emailParts = email.Split('@');
+        int atIndex = email.IndexOf('@');
 
-        return emailParts[0];
+        if (atIndex >= 0)
+        {
+            return email.Substring(0, atIndex);
+        }
+        else
+        {
+            return email;
+        }
     }
 
     private byte[]? GenerateSalt()
