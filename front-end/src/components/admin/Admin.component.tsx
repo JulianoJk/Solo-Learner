@@ -15,7 +15,7 @@ import {
   LastActiveFormat,
   formatLastActive,
 } from '../../utils/formattedLastActive';
-import AuthenticationRegisterForm from '../Auth/Login/AuthenticationRegisterForm';
+import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -164,7 +164,7 @@ const Admin = () => {
             <StudentmanagmentTable data={allUsersList}></StudentmanagmentTable>
           </Box>
         );
-      case 'addNewUser':
+      case 'register_new_user':
         return (
           <Box
             sx={{
@@ -174,12 +174,7 @@ const Admin = () => {
                   : theme.fn.linearGradient(7, '#303233'),
             }}
           >
-            <AuthenticationRegisterForm
-              hasBorder={false}
-              registerTitle={'Add New User'}
-              switchToLogin={false}
-              refreshPageAfterRegister={false}
-            ></AuthenticationRegisterForm>
+            <RegisterNewUser />
           </Box>
         );
       default:

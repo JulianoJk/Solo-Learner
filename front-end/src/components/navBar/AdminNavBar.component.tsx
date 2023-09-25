@@ -8,13 +8,13 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {
-  IconKey,
   IconSettings,
   Icon2fa,
   IconDatabaseImport,
   IconReceipt2,
   IconUserCog,
   IconUserPlus,
+  IconSchool,
 } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
 import { useMediaQuery } from '@mantine/hooks';
@@ -93,9 +93,9 @@ const useStyles = createStyles((theme) => ({
 
 const data = [
   { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
-  { link: 'addNewUser', label: 'Add New User', icon: IconUserPlus },
+  { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
+  { link: 'my_students', label: 'My Students', icon: IconSchool },
   { link: 'billing', label: 'Billing', icon: IconReceipt2 },
-  { link: 'SSH', label: 'SSH Keys', icon: IconKey },
   { link: 'Databases', label: 'Databases', icon: IconDatabaseImport },
   { link: 'Authentication', label: 'Authentication', icon: Icon2fa },
   { link: 'settings', label: 'Other Settings', icon: IconSettings },
