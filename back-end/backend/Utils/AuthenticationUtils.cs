@@ -23,6 +23,9 @@ public class AuthenticationUtils
     public (bool, string) AuthenticateUser(
         bool isRegister,
         string? username,
+        string firstName,
+        string lastName,
+        string gender,
         string email,
         string password,
         byte[]? salt,
@@ -36,6 +39,9 @@ public class AuthenticationUtils
         db.InitializeDatabaseConnection(
             isRegister,
             email,
+            firstName,
+            lastName,
+            gender,
             username,
             password,
             salt,

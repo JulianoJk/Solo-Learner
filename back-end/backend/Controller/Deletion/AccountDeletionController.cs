@@ -48,6 +48,9 @@ public class AccountDeletionController
         var (areCredentialsCorrect, messageToUser) = _authenticationUtils.AuthenticateUser(
             false,
             null,
+            null,
+            null,
+            null,
             email,
             password,
             null,

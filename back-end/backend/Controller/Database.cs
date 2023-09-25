@@ -26,6 +26,9 @@ namespace backend
         public void InitializeDatabaseConnection(
             bool isRegister,
             string email,
+            string firstName,
+            string lastName,
+            string gender,
             string? username,
             string password,
             byte[] salt,
@@ -54,6 +57,9 @@ namespace backend
                                 saveToDatabase(
                                     connection,
                                     email,
+                                    firstName,
+                                    lastName,
+                                    gender,
                                     username,
                                     password,
                                     salt,
@@ -90,6 +96,9 @@ namespace backend
         public void saveToDatabase(
             MySqlConnection connection,
             string email,
+            string firstName,
+            string lastName,
+            string gender,
             string username,
             string password,
             byte[] salt,
@@ -98,10 +107,13 @@ namespace backend
         )
         {
             MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email, username, password, salt, isTeacher, isAdmin) VALUES (@email, @username, @password, @salt, @isTeacher, @isAdmin)",
+                "INSERT INTO users (email,firstName, lastName, gender, username, password, salt, isTeacher, isAdmin) VALUES (@email,@firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isAdmin)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
+            command.Parameters.AddWithValue("@firstName", firstName);
+            command.Parameters.AddWithValue("@lastName", lastName);
+            command.Parameters.AddWithValue("@gender", gender);
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
             command.Parameters.AddWithValue("@salt", salt);
