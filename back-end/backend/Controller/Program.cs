@@ -102,6 +102,50 @@ app.MapPost(
     }
 );
 
+// TODO!: Share client google token
+app.MapGet(
+    "/users/register/client-token",
+    (HttpContext context) =>
+    {
+        try
+        {
+            var googleClientId = GoogleClientIdEnv.Value;
+
+            if (string.IsNullOrEmpty(googleClientId))
+            {
+                // If GOOGLE_CLIENT_ID is not found or empty, return an error
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                return context.Response.WriteAsJsonAsync(
+                    new
+                    {
+                        status = "error",
+                        code = StatusCodes.Status500InternalServerError,
+                        message = "GOOGLE_CLIENT_ID not found in environment variables."
+                    }
+                );
+            }
+
+            // Return the GOOGLE_CLIENT_ID
+            return context.Response.WriteAsJsonAsync(
+                new { status = "completed", id = googleClientId }
+            );
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            return context.Response.WriteAsJsonAsync(
+                new
+                {
+                    status = "error",
+                    code = StatusCodes.Status500InternalServerError,
+                    message = ex.Message
+                }
+            );
+        }
+    }
+);
+
 // app.MapGet(
 //     "/users/profile",
 //     async (HttpContext context) =>
