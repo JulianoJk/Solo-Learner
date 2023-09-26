@@ -16,7 +16,8 @@ import { useLogin } from '../../hooks/useLogin';
 import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
-import { SocialButtonsUnavailable } from '../SocialButtonsUnavailable';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
+// import { useGetGoogleClientId } from '../../hooks/useGetGoogleClientId';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -37,6 +38,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
+
   const { login } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
@@ -72,7 +74,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
             : loginTitle}
         </Text>
 
-        <SocialButtonsUnavailable />
+        <SocialButtons disableFacebook />
 
         <Divider
           label="Or continue with email"

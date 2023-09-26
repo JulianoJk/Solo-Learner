@@ -351,3 +351,47 @@ export const getCurrentUser = async (token: string) => {
     return;
   }
 };
+export const getGoogleClientIdAPI = async () => {
+  try {
+    const response = await fetch(URL + 'api/auth/google-client-id', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Google Client ID');
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'completed' && data.id) {
+      return data.id; // Assuming the response contains 'id' for the Google Client ID.
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch Google Client ID');
+  }
+};
+export const postGoogleLogin = async (code: string) => {
+  try {
+    const response = await fetch('http://localhost:3001/auth/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        code,
+      }),
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
 import Home from './components/Pages/Home/Home';
 import Profile from './components/Pages/Profile/Profile';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
@@ -37,6 +39,8 @@ import ForbiddenPage from './components/Pages/Error/forbidden/Forbidden.componen
 
 const App = () => {
   const queryClient = new QueryClient();
+  const [clientId, setClientId] = useState('');
+
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
   // const isAdminPath = window.location.pathname.includes('/admin');
 
@@ -52,125 +56,133 @@ const App = () => {
       }
     }
   });
+  useEffect(() => {
+    const sessionStorageClientId = sessionStorage.getItem('clientId');
+    setClientId(sessionStorageClientId as string);
+  }, []);
 
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
-      <QueryClientProvider client={queryClient}>
-        <MantineProvider
-          withNormalizeCSS
-          withGlobalStyles
-          theme={{
-            globalStyles: (theme) => ({
-              '*, *::before, *::after': {
-                boxSizing: 'border-box',
+      <GoogleOAuthProvider clientId={clientId}>
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider
+            withNormalizeCSS
+            withGlobalStyles
+            theme={{
+              globalStyles: (theme) => ({
+                '*, *::before, *::after': {
+                  boxSizing: 'border-box',
+                },
+
+                body: {
+                  overflow: 'auto',
+                  backgroundImage:
+                    theme.colorScheme === 'light'
+                      ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"
+                      : theme.fn.linearGradient(7, '#1A1B1E'),
+                  color:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.dark[0]
+                      : theme.black,
+                  lineHeight: theme.lineHeight,
+                },
+              }),
+              components: {
+                Avatar: { defaultProps: AvatarDefaultProps },
+                Button: { defaultProps: ButtonDefaultProps },
               },
+              colorScheme,
+            }}
+          >
+            <AppContextProvider>
+              <ModalsProvider>
+                <BrowserRouter>
+                  <Notifications />
+                  <UserContextProvider>
+                    <AccountSettingsContextProvider>
+                      <AppShell padding="md" header={<HeaderMenu />}>
+                        <Routes>
+                          {/* <Route path="/" element={<Index />} /> */}
+                          <Route path="/" element={<Index />} />
+                          <Route
+                            path="/login"
+                            element={
+                              <AuthenticationLoginForm
+                                hasBorder={true}
+                                switchToRegister={true}
+                              />
+                            }
+                          />
+                          <Route
+                            path="/register"
+                            element={
+                              <AuthenticationRegisterForm
+                                displaySocialButtons
+                                hasBorder
+                                switchToLogin
+                                showNotification
+                                refreshPageAfterRegister
+                              />
+                            }
+                          />
+                          <Route path="/home" element={<Home />} />
+                          <Route
+                            path="/profile/:username"
+                            element={<Profile />}
+                          />
 
-              body: {
-                overflow: 'auto',
-                backgroundImage:
-                  theme.colorScheme === 'light'
-                    ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"
-                    : theme.fn.linearGradient(7, '#1A1B1E'),
-                color:
-                  theme.colorScheme === 'dark'
-                    ? theme.colors.dark[0]
-                    : theme.black,
-                lineHeight: theme.lineHeight,
-              },
-            }),
-            components: {
-              Avatar: { defaultProps: AvatarDefaultProps },
-              Button: { defaultProps: ButtonDefaultProps },
-            },
-            colorScheme,
-          }}
-        >
-          <AppContextProvider>
-            <ModalsProvider>
-              <BrowserRouter>
-                <Notifications />
-                <UserContextProvider>
-                  <AccountSettingsContextProvider>
-                    <AppShell padding="md" header={<HeaderMenu />}>
-                      <Routes>
-                        {/* <Route path="/" element={<Index />} /> */}
-                        <Route path="/" element={<Index />} />
-                        <Route
-                          path="/login"
-                          element={
-                            <AuthenticationLoginForm
-                              hasBorder={true}
-                              switchToRegister={true}
-                            />
-                          }
-                        />
-                        <Route
-                          path="/register"
-                          element={
-                            <AuthenticationRegisterForm
-                              displaySocialButtons
-                              hasBorder
-                              switchToLogin
-                              showNotification
-                              refreshPageAfterRegister
-                            />
-                          }
-                        />
-                        <Route path="/home" element={<Home />} />
-                        <Route
-                          path="/profile/:username"
-                          element={<Profile />}
-                        />
+                          <Route path="/settings" element={<Settings />} />
+                          <Route
+                            path="/delete-account"
+                            element={<DeleteAccount />}
+                          />
 
-                        <Route path="/settings" element={<Settings />} />
-                        <Route
-                          path="/delete-account"
-                          element={<DeleteAccount />}
-                        />
+                          <Route
+                            path="/learning-units/grammar"
+                            element={<Grammar />}
+                          />
+                          <Route
+                            path="/learning-units/theory"
+                            element={<Theory />}
+                          />
+                          <Route
+                            path="/learning-units/vocabulary"
+                            element={<Vocabulary />}
+                          />
+                          <Route
+                            path="/learning-units/exercises"
+                            element={<Exercises />}
+                          />
 
-                        <Route
-                          path="/learning-units/grammar"
-                          element={<Grammar />}
-                        />
-                        <Route
-                          path="/learning-units/theory"
-                          element={<Theory />}
-                        />
-                        <Route
-                          path="/learning-units/vocabulary"
-                          element={<Vocabulary />}
-                        />
-                        <Route
-                          path="/learning-units/exercises"
-                          element={<Exercises />}
-                        />
+                          <Route path="/admin/dashboard" element={<Admin />} />
 
-                        <Route path="/admin/dashboard" element={<Admin />} />
-
-                        <Route
-                          path="/*"
-                          // element={isUserLoggedIn() ? <Home /> : <Index />}
-                          element={
-                            <NotFound
-                              navigationPath={isUserLoggedIn() ? '/home' : '/'}
-                              statusNumber={404}
-                            />
-                            // <ForbiddenPage navigationPath={''} />
-                          }
-                        />
-                      </Routes>
-                    </AppShell>
-                  </AccountSettingsContextProvider>
-                </UserContextProvider>
-              </BrowserRouter>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </ModalsProvider>
-          </AppContextProvider>
-        </MantineProvider>
-      </QueryClientProvider>
+                          <Route
+                            path="/*"
+                            // element={isUserLoggedIn() ? <Home /> : <Index />}
+                            element={
+                              <NotFound
+                                navigationPath={
+                                  isUserLoggedIn() ? '/home' : '/'
+                                }
+                                statusNumber={404}
+                              />
+                              // <ForbiddenPage navigationPath={''} />
+                            }
+                          />
+                        </Routes>
+                      </AppShell>
+                    </AccountSettingsContextProvider>
+                  </UserContextProvider>
+                </BrowserRouter>
+                <ReactQueryDevtools initialIsOpen={false} />
+              </ModalsProvider>
+            </AppContextProvider>
+          </MantineProvider>
+        </QueryClientProvider>
+      </GoogleOAuthProvider>
     </ColorSchemeProvider>
   );
 };

@@ -17,7 +17,7 @@ import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
-import { SocialButtonsUnavailable } from '../SocialButtonsUnavailable';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
 
 interface IRegisterProps {
   children?: React.ReactNode;
@@ -68,7 +68,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             ? 'Welcome to Solo Learn, register with'
             : registerTitle}
         </Text>
-        {displaySocialButtons && <SocialButtonsUnavailable />}
+        {displaySocialButtons && <SocialButtons disableFacebook />}
 
         <Divider
           label="Or continue with email"

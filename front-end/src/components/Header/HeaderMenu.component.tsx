@@ -51,6 +51,7 @@ import { authenticateAPI, getCurrentUser } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
+import { useGetGoogleClientId } from '../hooks/useGetGoogleClientId';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -118,6 +119,7 @@ const HeaderMegaMenu = () => {
         user.token,
       );
     }
+
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
       setDocumentTitle(titles + ' - Solo Learner');
