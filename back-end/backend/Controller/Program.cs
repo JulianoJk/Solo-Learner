@@ -104,7 +104,7 @@ app.MapPost(
 
 // TODO!: Share client google token
 app.MapGet(
-    "/users/register/client-token",
+    "/api/auth/google-client-id",
     (HttpContext context) =>
     {
         try
