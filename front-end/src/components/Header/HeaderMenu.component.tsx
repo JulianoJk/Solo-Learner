@@ -9,14 +9,10 @@ import {
   Menu,
   UnstyledButton,
   Avatar,
-  Skeleton,
   Drawer,
   ScrollArea,
   Divider,
-  Center,
-  Collapse,
   Burger,
-  Anchor,
 } from '@mantine/core';
 import { upperFirst, useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
@@ -51,7 +47,6 @@ import { authenticateAPI, getCurrentUser } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
 import { User } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
-import { useGetGoogleClientId } from '../hooks/useGetGoogleClientId';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -62,6 +57,7 @@ const HeaderMegaMenu = () => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>();
   const { user } = useUserState();
+
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -74,6 +70,7 @@ const HeaderMegaMenu = () => {
   const navigateUserTo = (path: string) => {
     navigate(path);
   };
+
   const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
 
   const { isLoading } = useQuery(

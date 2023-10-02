@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Button,
   ButtonProps,
@@ -9,67 +8,40 @@ import {
 } from '@mantine/core';
 import { GoogleIcon } from './GoogleIcon';
 import { FacebookIcon } from './FacebookIcon';
-import { useGetGoogleClientId } from '../hooks/useGetGoogleClientId';
 import { useHover } from '@mantine/hooks';
-import { postGoogleLogin } from '../api/api';
-import { useGoogleLogin } from '@react-oauth/google';
+import { useGoogleAuth } from '../hooks/useGoogleAuth';
+import { AppState } from '../../context/AppContext';
 interface SocialButtonsProps extends ButtonProps {
   disableGoogle?: boolean;
   disableFacebook?: boolean;
 }
-
 export function GoogleButton(props: ButtonProps) {
-  const { data: clientId, isLoading } = useGetGoogleClientId();
-  console.log(
-    '🚀 ~ file: SocialButtons.tsx:23 ~ GoogleButton ~ clientId:',
-    clientId,
-  );
+  const loginUser = useGoogleAuth();
+  const { googleClientIsLoading } = AppState();
+  const handleGoogleLogin = async () => {
+    try {
+      const userData = await loginUser();
 
-  const login = useGoogleLogin({
-    onSuccess: async ({ code }: any) => {
-      try {
-        const response = await fetch('http://localhost:3001/auth/google', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            code,
-          }),
-        });
+      // TODO!: Handle the user data here, for example, you can redirect to a profile page
+      console.log('User data after Google login:', userData);
+    } catch (error) {
+      // Handle login error here
+      console.error('Google login error:', error);
+    }
+  };
 
-        const data = await response.json();
-        console.log(
-          '🚀 ~ file: SocialButtons.tsx:43 ~ onSuccess: ~ data:',
-          data,
-        );
-        return data;
-
-        // const { id_token } = response.data;
-
-        // Store the id_token in localStorage
-        // localStorage.setItem('id_token', id_token);
-
-        // console.log('id_token stored in localStorage:', id_token);
-      } catch (error) {
-        console.error('Login error:', error);
-      }
-    },
-    flow: 'auth-code',
-  });
-  // const login = () => {
-  //   console.log('login');
-  // };
   return (
     <>
       <Button
-        onClick={() => login()}
+        onClick={handleGoogleLogin}
         leftIcon={<GoogleIcon />}
-        loading={isLoading}
+        loading={googleClientIsLoading}
         variant="default"
         color="gray"
         {...props}
-      />
+      >
+        Sign in with Google
+      </Button>
     </>
   );
 }

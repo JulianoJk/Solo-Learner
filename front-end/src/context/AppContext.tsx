@@ -10,6 +10,7 @@ interface IAppStateContext {
   saveButtonClicked: boolean;
   userReLoggedIn: boolean;
   selectedAdminNavbar?: string;
+  googleClientIsLoading?: boolean;
 }
 
 // Default state fot the Application context
@@ -22,6 +23,7 @@ const defaultState: IAppStateContext = {
   saveButtonClicked: false,
   userReLoggedIn: false,
   selectedAdminNavbar: 'userManagment',
+  googleClientIsLoading: false,
 };
 type TApplicationAction =
   | {
@@ -51,6 +53,10 @@ type TApplicationAction =
   | {
       type: 'SET_ACTIVE_ADMIN_NAV';
       selectedAdminNavbar: string;
+    }
+  | {
+      type: 'SET_GOOGLE_CLIENT_ID_IS_LOADING';
+      googleClientIsLoading: boolean;
     }
   | {
       type: 'RESET_ERROR_MESSAGE';
@@ -84,6 +90,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, userReLoggedIn: action.userReLoggedIn };
     case 'SET_ACTIVE_ADMIN_NAV':
       return { ...state, selectedAdminNavbar: action.selectedAdminNavbar };
+    case 'SET_GOOGLE_CLIENT_ID_IS_LOADING':
+      return { ...state, googleClientIsLoading: action.googleClientIsLoading };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }

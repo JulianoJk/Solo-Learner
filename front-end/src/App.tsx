@@ -36,6 +36,7 @@ import Vocabulary from './images/Vocabulary';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import Index from './components/Pages/Index/Index';
 import ForbiddenPage from './components/Pages/Error/forbidden/Forbidden.component';
+import { getGoogleClientIdAPI } from './components/api/api';
 
 const App = () => {
   const queryClient = new QueryClient();
@@ -56,54 +57,64 @@ const App = () => {
       }
     }
   });
-  useEffect(() => {
-    const sessionStorageClientId = sessionStorage.getItem('clientId');
-    setClientId(sessionStorageClientId as string);
-  }, []);
 
+  useEffect(() => {
+    const fetchGoogleClientId = async () => {
+      try {
+        const clientId = await getGoogleClientIdAPI();
+        // Do something with the clientId, e.g., store it in state.
+        setClientId(clientId);
+      } catch (error) {
+        console.error('Failed to fetch Google Client ID:', error);
+        // Handle the error, e.g., show an error message.
+      }
+    };
+
+    fetchGoogleClientId();
+  });
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
       toggleColorScheme={toggleColorScheme}
     >
-      <GoogleOAuthProvider clientId={clientId}>
-        <QueryClientProvider client={queryClient}>
-          <MantineProvider
-            withNormalizeCSS
-            withGlobalStyles
-            theme={{
-              globalStyles: (theme) => ({
-                '*, *::before, *::after': {
-                  boxSizing: 'border-box',
-                },
-
-                body: {
-                  overflow: 'auto',
-                  backgroundImage:
-                    theme.colorScheme === 'light'
-                      ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"
-                      : theme.fn.linearGradient(7, '#1A1B1E'),
-                  color:
-                    theme.colorScheme === 'dark'
-                      ? theme.colors.dark[0]
-                      : theme.black,
-                  lineHeight: theme.lineHeight,
-                },
-              }),
-              components: {
-                Avatar: { defaultProps: AvatarDefaultProps },
-                Button: { defaultProps: ButtonDefaultProps },
+      <QueryClientProvider client={queryClient}>
+        <MantineProvider
+          withNormalizeCSS
+          withGlobalStyles
+          theme={{
+            globalStyles: (theme) => ({
+              '*, *::before, *::after': {
+                boxSizing: 'border-box',
               },
-              colorScheme,
-            }}
-          >
-            <AppContextProvider>
-              <ModalsProvider>
-                <BrowserRouter>
-                  <Notifications />
-                  <UserContextProvider>
-                    <AccountSettingsContextProvider>
-                      <AppShell padding="md" header={<HeaderMenu />}>
+
+              body: {
+                overflow: 'auto',
+                backgroundImage:
+                  theme.colorScheme === 'light'
+                    ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"
+                    : theme.fn.linearGradient(7, '#1A1B1E'),
+                color:
+                  theme.colorScheme === 'dark'
+                    ? theme.colors.dark[0]
+                    : theme.black,
+                lineHeight: theme.lineHeight,
+              },
+            }),
+            components: {
+              Avatar: { defaultProps: AvatarDefaultProps },
+              Button: { defaultProps: ButtonDefaultProps },
+            },
+            colorScheme,
+          }}
+        >
+          <AppContextProvider>
+            <ModalsProvider>
+              <BrowserRouter>
+                <Notifications />
+                <UserContextProvider>
+                  <AccountSettingsContextProvider>
+                    <AppShell padding="md" header={<HeaderMenu />}>
+                      <GoogleOAuthProvider clientId={clientId}>
                         <Routes>
                           {/* <Route path="/" element={<Index />} /> */}
                           <Route path="/" element={<Index />} />
@@ -111,8 +122,9 @@ const App = () => {
                             path="/login"
                             element={
                               <AuthenticationLoginForm
-                                hasBorder={true}
-                                switchToRegister={true}
+                                hasBorder
+                                switchToRegister
+                                showNotification
                               />
                             }
                           />
@@ -173,16 +185,16 @@ const App = () => {
                             }
                           />
                         </Routes>
-                      </AppShell>
-                    </AccountSettingsContextProvider>
-                  </UserContextProvider>
-                </BrowserRouter>
-                <ReactQueryDevtools initialIsOpen={false} />
-              </ModalsProvider>
-            </AppContextProvider>
-          </MantineProvider>
-        </QueryClientProvider>
-      </GoogleOAuthProvider>
+                      </GoogleOAuthProvider>
+                    </AppShell>
+                  </AccountSettingsContextProvider>
+                </UserContextProvider>
+              </BrowserRouter>
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ModalsProvider>
+          </AppContextProvider>
+        </MantineProvider>
+      </QueryClientProvider>
     </ColorSchemeProvider>
   );
 };
