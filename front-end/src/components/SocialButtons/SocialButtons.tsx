@@ -17,6 +17,7 @@ interface SocialButtonsProps extends ButtonProps {
 }
 export function GoogleButton(props: ButtonProps) {
   const loginUser = useGoogleAuth();
+  // TODO!: the loading is not set anywhere, so it will always be false. Fix it.
   const { googleClientIsLoading } = AppState();
   const handleGoogleLogin = async () => {
     try {
