@@ -1,27 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using backend;
-using System.Security.Claims;
-using System;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Auth.OAuth2.Requests;
-using Google.Apis.Auth.OAuth2.Responses;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,8 +79,6 @@ app.MapGet(
     }
 );
 
-// Existing routes and authentication setup
-
 app.MapPost(
     "/users/login",
     async (HttpContext context) =>
@@ -163,60 +141,57 @@ app.MapGet(
         }
     }
 );
-var clientId = "563283815960-enf7c098qsd0csoejb7q3fup352ci8gf.apps.googleusercontent.com";
-var clientSecret = "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";
-var redirectUri = "http://localhost:3000/api/auth/google"; // Use one of the allowed redirect URIs
 
 app.MapPost(
-    "/auth/google",
+    "/signin-google",
     async (HttpContext context) =>
     {
+        string code = null;
+        var googleClientId = GoogleClientIdEnv.Value;
+        var googleClientSecret = GoogleClientSecretEnv.Value;
+
+        if (context.Request.HasFormContentType)
+        {
+            var form = await context.Request.ReadFormAsync();
+            code = form["code"];
+        }
+
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(
+                new { error = "Missing or empty 'code' parameter in the request body." }
+            );
+            return;
+        }
+
         try
         {
-            // Extract the authorization code from the request
-            string code = context.Request.Form["code"];
-
-            // Exchange the code for access and refresh tokens
-            TokenResponse tokens = await ExchangeCodeForTokens(
-                code,
-                redirectUri,
-                clientId,
-                clientSecret
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                "https://oauth2.googleapis.com/token"
+            );
+            request.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    ["code"] = code,
+                    ["client_id"] = googleClientId,
+                    ["client_secret"] = googleClientSecret,
+                    ["redirect_uri"] = "postmessage",
+                    ["grant_type"] = "authorization_code"
+                }
             );
 
-            // Return the tokens as a JSON response
-            await context.Response.WriteAsJsonAsync(tokens);
-        }
-        catch (Exception ex)
-        {
-            // Handle any errors
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
-        }
-    }
-);
+            var response = await client.SendAsync(request);
+            var responseContent = await response.Content.ReadAsStringAsync();
 
-// Handle refreshing the access token
-app.MapPost(
-    "/auth/google/refresh-token",
-    async (HttpContext context) =>
-    {
-        try
-        {
-            // Extract the refresh token from the request body
-            string refreshToken = context.Request.Form["refreshToken"];
+            // Parse the JSON response
+            var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
+                Dictionary<string, string>
+            >(responseContent);
 
-            if (string.IsNullOrWhiteSpace(refreshToken))
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                return;
-            }
-
-            // Use the refresh token to obtain a new access token
-            var newAccessToken = await RefreshAccessToken(refreshToken, clientId, clientSecret);
-
-            // Respond with the new access token
-            await context.Response.WriteAsJsonAsync(newAccessToken);
+            await context.Response.WriteAsJsonAsync(responseDict);
         }
         catch (Exception ex)
         {
@@ -225,50 +200,6 @@ app.MapPost(
         }
     }
 );
-
-async Task<TokenResponse> ExchangeCodeForTokens(
-    string code,
-    string redirectUri,
-    string clientId,
-    string clientSecret
-)
-{
-    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(
-        new GoogleAuthorizationCodeFlow.Initializer
-        {
-            ClientSecrets = new ClientSecrets { ClientId = clientId, ClientSecret = clientSecret, },
-            Scopes = new[] { "openid", "email", "profile" },
-        }
-    );
-
-    TokenResponse token = await flow.ExchangeCodeForTokenAsync(code, redirectUri, clientSecret, CancellationToken.None);
-
-    return token;
-}
-
-async Task<TokenResponse> RefreshAccessToken(
-    string refreshToken,
-    string clientId,
-    string clientSecret
-)
-{
-    GoogleAuthorizationCodeFlow.Initializer initializer =
-        new GoogleAuthorizationCodeFlow.Initializer
-        {
-            ClientSecrets = new ClientSecrets { ClientId = clientId, ClientSecret = clientSecret, },
-        };
-
-    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow(initializer);
-    UserCredential credential = new UserCredential(
-        flow,
-        "user-id",
-        new TokenResponse { RefreshToken = refreshToken, }
-    );
-
-    await credential.RefreshTokenAsync(CancellationToken.None);
-
-    return credential.Token;
-}
 
 // app.MapGet(
 //     "/users/profile",

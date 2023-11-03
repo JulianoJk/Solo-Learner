@@ -26,22 +26,9 @@ namespace backend
             {
                 options.AddPolicy(
                     "AllowAll",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                    }
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }
                 );
             });
-            services
-                .AddAuthentication()
-                .AddGoogle(options =>
-                {
-                    IConfigurationSection googleAuthNSection = Configuration.GetSection(
-                        "Authentication:Google"
-                    );
-                    options.ClientId = googleAuthNSection["ClientId"];
-                    options.ClientSecret = googleAuthNSection["ClientSecret"];
-                });
 
             services.AddControllers();
 
@@ -80,20 +67,14 @@ namespace backend
             app.UseCors("AllowAll");
 
             app.Use(
-                async (context, next) =>
-                {
-                    await next();
-                }
+                async (context, next) => { await next(); }
             );
 
             app.UseAuthentication();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

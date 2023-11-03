@@ -4,14 +4,12 @@ export function useGoogleAuth() {
   return useGoogleLogin({
     onSuccess: async ({ code }: any) => {
       try {
-        const response = await fetch('http://localhost:3001/api/auth/google', {
+        const formData = new FormData();
+        formData.append('code', code);
+
+        const response = await fetch('http://localhost:3001/signin-google', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json', // Change the content type to application/json
-          },
-          body: JSON.stringify({
-            code,
-          }),
+          body: formData, // Send code as a form parameter
         });
 
         if (response.status === 200) {
