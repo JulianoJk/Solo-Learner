@@ -17,6 +17,11 @@ RUN dotnet add package Microsoft.IdentityModel.Tokens
 RUN dotnet add package Google.Apis.Auth --version 1.62.1
 # RUN dotnet add package BCrypt.Net-Next
 
+
+COPY user-secrets.json ./
+RUN dotnet user-secrets set "Authentication:Google:ClientId" "<client-id>"
+RUN dotnet user-secrets set "Authentication:Google:ClientSecret" "<client-secret>"
+
 COPY . ./
 RUN dotnet publish -c Release -o out
 
