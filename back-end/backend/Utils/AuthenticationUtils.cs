@@ -150,6 +150,7 @@ public class AuthenticationUtils
                 {
                     uniqueUsername = $"{username}{counter}"; // add counter to username
                     counter++; // increment counter for next possible iteration
+                    return Tuple.Create(true, uniqueUsername); // return the new username
                 }
                 else
                 {

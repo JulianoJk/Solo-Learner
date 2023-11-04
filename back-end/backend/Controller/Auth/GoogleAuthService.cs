@@ -80,7 +80,7 @@ public class GoogleAuthService
                     // await context.Response.WriteAsJsonAsync(responses);
 
                     RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser();
-                    await registerGoogleUser.HandleRegistrationRequest(context, jwtData);
+                    await registerGoogleUser.HandleRegistrationRequest(context, jwtData, userJwt);
                 }
             }
             else
