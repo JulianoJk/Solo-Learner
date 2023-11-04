@@ -22,6 +22,7 @@ public class AuthenticationUtils
 
     public (bool, string) AuthenticateUser(
         bool isRegister,
+        bool isGoogle,
         string? username,
         string firstName,
         string lastName,
@@ -38,6 +39,7 @@ public class AuthenticationUtils
         // Initialize the database connection
         db.InitializeDatabaseConnection(
             isRegister,
+            isGoogle,
             email,
             firstName,
             lastName,
@@ -89,7 +91,7 @@ public class AuthenticationUtils
     public (bool, string) CheckPasswordForLogin(string email, string password)
     {
         MySqlConnection connection = new MySqlConnection(connectionString);
-        byte[] salt = db.GetSaltFromDatabase(connection, email);
+        byte[]? salt = db.GetSaltFromDatabase(connection, email);
         bool found = false;
 
         if (salt == null)
@@ -171,4 +173,27 @@ public class AuthenticationUtils
 
         return Tuple.Create(true, uniqueUsername); // username was taken, return the new one
     }
+    public string? GetUserEmailFromGoogleId(string googleEmail)
+    {
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+
+            using (var command = new MySqlCommand("SELECT email FROM users WHERE email = @GoogleEmail", connection))
+            {
+                command.Parameters.AddWithValue("@GoogleEmail", googleEmail);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return reader.GetString("email");
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

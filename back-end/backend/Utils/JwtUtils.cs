@@ -216,4 +216,18 @@ public static class JwtUtils
         }
         return false;
     }
+    public static Dictionary<string, string> ExtractJwtData(string jwt)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.ReadJwtToken(jwt);
+        var jwtData = new Dictionary<string, string>();
+
+        foreach (var claim in token.Claims)
+        {
+            jwtData[claim.Type] = claim.Value;
+        }
+
+        return jwtData;
+    }
+
 }

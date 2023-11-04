@@ -30,6 +30,7 @@ public class LoginUser
             // Call AuthenticateUser method on the AuthenticationUtils instance with register=false
             var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
                 false,
+                false,
                 null,
                 null,
                 null,

@@ -144,6 +144,7 @@ public class RegisterUser
                 // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
                 var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
                     true,
+                    false,
                     username,
                     firstName,
                     lastName,

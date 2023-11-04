@@ -25,13 +25,14 @@ namespace backend
         // Method to initialize the database connection and perform registration or login based on 'isRegister' parameter
         public void InitializeDatabaseConnection(
             bool isRegister,
+            bool isGoogle,
             string email,
             string firstName,
             string lastName,
             string gender,
             string? username,
-            string password,
-            byte[] salt,
+            string? password,
+            byte[]? salt,
             bool isTeacher,
             bool isAdmin
         )
@@ -52,7 +53,7 @@ namespace backend
                                 AreCredentialsCorrect = false;
                                 MessageToUser = "Invalid email address or password.";
                             }
-                            else
+                            else if (!isGoogle)
                             {
                                 saveToDatabase(
                                     connection,
@@ -63,6 +64,23 @@ namespace backend
                                     username,
                                     password,
                                     salt,
+                                    isTeacher,
+                                    isAdmin
+                                );
+                                AreCredentialsCorrect = true;
+                                MessageToUser = "Registration successful!";
+                            }
+                            else
+                            {
+                                saveToDatabase(
+                                    connection,
+                                    email,
+                                    firstName,
+                                    lastName,
+                                    gender,
+                                    username,
+                                    "",
+                                    null,
                                     isTeacher,
                                     isAdmin
                                 );
@@ -101,7 +119,7 @@ namespace backend
             string gender,
             string username,
             string password,
-            byte[] salt,
+            byte[]? salt,
             bool isTeacher,
             bool isAdmin
         )
@@ -153,6 +171,7 @@ namespace backend
             object salt = command.ExecuteScalar();
             if (salt == null || salt == DBNull.Value)
             {
+                connection.Close();
                 return null;
             }
             else
@@ -173,6 +192,7 @@ namespace backend
             object password = command.ExecuteScalar();
             if (password == null || password == DBNull.Value)
             {
+                connection.Close();
                 return null;
             }
             else

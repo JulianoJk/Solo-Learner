@@ -56,7 +56,38 @@ public class GoogleAuthService
             var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
                 Dictionary<string, string>
             >(responseContent);
-            await context.Response.WriteAsJsonAsync(responseDict);
+            var userJwt = responseDict["id_token"];
+            var jwtData = JwtUtils.ExtractJwtData(userJwt);
+
+            // Get the email from the jwt data
+            if (jwtData.TryGetValue("email", out string userEmail))
+            {
+                string isUserRegistered = _authenticator.GetUserEmailFromGoogleId(userEmail);
+                if (isUserRegistered != null)
+                {
+                    string messageToUser = $"User with email {userEmail} is registered.";
+                    // You can proceed with further actions for registered users.
+                    // Return a successful response with a 200 status code
+                    var responses = new { messageToUser };
+                    context.Response.StatusCode = StatusCodes.Status200OK;
+                    await context.Response.WriteAsJsonAsync(responseDict);
+                }
+                else
+                {
+                    // string messageToUser = $"User with email {userEmail} is NOT registered.";
+                    // var responses = new { messageToUser };
+                    // context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    // await context.Response.WriteAsJsonAsync(responses);
+
+                    RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser();
+                    await registerGoogleUser.HandleRegistrationRequest(context, jwtData);
+                }
+            }
+            else
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(new { error = "Email not found in the JWT data." });
+            }
         }
         catch (Exception ex)
         {
