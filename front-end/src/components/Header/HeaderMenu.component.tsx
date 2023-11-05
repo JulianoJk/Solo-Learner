@@ -85,25 +85,25 @@ const HeaderMegaMenu = () => {
     { enabled: !!user.token },
   );
 
-  const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
-    useQuery(
-      ['getCurrentUser', userToken],
-      async () => {
-        if (user.token) {
-          const data = await getCurrentUser(user.token);
-          return data;
-        }
-        throw new Error('No token found');
-      },
-      {
-        onSuccess: (data) => {
-          if (data?.status === 'success') {
-            setCurrentUser(data.data);
-          }
-        },
-        enabled: !!user.token,
-      },
-    );
+  // const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
+  //   useQuery(
+  //     ['getCurrentUser', userToken],
+  //     async () => {
+  //       if (user.token) {
+  //         const data = await getCurrentUser();
+  //         return data;
+  //       }
+  //       throw new Error('No token found');
+  //     },
+  //     {
+  //       onSuccess: (data) => {
+  //         if (data?.status === 'success') {
+  //           setCurrentUser(data.data);
+  //         }
+  //       },
+  //       enabled: !!user.token,
+  //     },
+  //   );
 
   useEffect(() => {
     if (pathname === '/profile') {
@@ -149,7 +149,7 @@ const HeaderMegaMenu = () => {
                 <ModeThemeButtonSmall />
                 <TokenExpirationChecker />
                 {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
-                {isCurrentUserLoading ? <></> : <></>}
+                {/* {isCurrentUserLoading ? <></> : <></>} */}
                 <Menu
                   width={260}
                   position="bottom-end"
@@ -184,8 +184,9 @@ const HeaderMegaMenu = () => {
                           sx={{ lineHeight: 1 }}
                           mr={3}
                         >
-                          {isLoading === false && isCurrentUserFetched
-                            ? upperFirst(currentUser?.username as string)
+                          {isLoading === false
+                            ? // {isLoading === false && isCurrentUserFetched
+                              upperFirst(currentUser?.username as string)
                             : 'learner'}
                         </Text>
                         <IconChevronDown size={rem(12)} stroke={1.5} />

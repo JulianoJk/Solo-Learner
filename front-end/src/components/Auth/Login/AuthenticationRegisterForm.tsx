@@ -12,6 +12,7 @@ import {
   Stack,
   Center,
   Text,
+  Radio,
 } from '@mantine/core';
 import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
@@ -46,6 +47,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     initialValues: {
       email: '',
       username: '',
+      gender: '',
       password: '',
       confirmPassword: '',
       terms: false,
@@ -59,6 +61,8 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     },
     validateInputOnChange: true,
   });
+  console.log(form.values.gender);
+  
   return (
     <Center maw={600} mx="auto">
       <Paper radius="md" p="xl" withBorder={hasBorder}>
@@ -79,8 +83,8 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            const { email, username, password, confirmPassword } = value;
-            register({ email, username, password, confirmPassword });
+            const { email, username, gender,password, confirmPassword } = value;
+            register({ email, username,gender, password, confirmPassword });
           })}
         >
           <Stack>
@@ -131,7 +135,19 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
               error={form.errors.confirmPassword && 'Passwords do not match'}
               radius="md"
             />
+            <Radio.Group
+              name="gender"
+              label="Select gender"
+              withAsterisk
+              {...form.getInputProps('gender')}
 
+            >
+              <Group mt="xs">
+                <Radio value="male" label="Male" />
+                <Radio value="female" label="Female" />
+                <Radio value="other" label="Other" />
+              </Group>
+            </Radio.Group>
             <Checkbox
               label="I accept terms and conditions"
               checked={form.values.terms}

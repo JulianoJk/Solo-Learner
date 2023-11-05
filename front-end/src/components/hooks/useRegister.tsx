@@ -11,6 +11,7 @@ import { IconCheck } from '@tabler/icons-react';
 interface RegisterApiProps {
   email: string;
   username: string;
+  gender: string;
   password: string;
   confirmPassword: string;
 }
@@ -57,10 +58,11 @@ export const useRegister = (): IRegisterMutationState => {
   const register = ({
     email,
     username,
+    gender,
     password,
     confirmPassword,
   }: RegisterApiProps) => {
-    mutate({ email, username, password, confirmPassword });
+    mutate({ email, username, password, gender, confirmPassword });
   };
 
   return {

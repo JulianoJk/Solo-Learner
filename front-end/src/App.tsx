@@ -114,7 +114,12 @@ const App = () => {
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
                     <AppShell padding="md" header={<HeaderMenu />}>
-                      <GoogleOAuthProvider clientId={clientId}>
+                      {/* <GoogleOAuthProvider clientId={clientId}> */}
+                      <GoogleOAuthProvider
+                        clientId={
+                          '1000892995039-p5u6pu6h88nilovjnbts0m48mp4lbtqb.apps.googleusercontent.com'
+                        }
+                      >
                         <Routes>
                           {/* <Route path="/" element={<Index />} /> */}
                           <Route path="/" element={<Index />} />

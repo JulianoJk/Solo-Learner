@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using backend;
 using MySql.Data.MySqlClient;
+using Google.Apis.Auth;
 
 public static class JwtUtils
 {
@@ -23,8 +24,69 @@ public static class JwtUtils
             {
                 return true;
             }
+            else if (IsGoogleToken(jwt))
+            {
+                return ValidateGoogleToken(jwt);
+            }
         }
         return false;
+    }
+
+    private static bool IsGoogleToken(string token)
+    {
+        try
+        {
+            // Decode the token without validating it to inspect its claims
+            var handler = new JwtSecurityTokenHandler();
+            var tokenData = handler.ReadToken(token) as JwtSecurityToken;
+
+            // Check if the token has specific claims and audience (client ID) information
+            if (
+                tokenData != null
+                && tokenData.Payload.ContainsKey("sub")
+                && // Subject claim
+                tokenData.Payload.ContainsKey("iss")
+                && // Issuer claim
+                tokenData.Audiences != null
+                && tokenData.Audiences.Contains("your-client-id.apps.googleusercontent.com")
+            )
+            {
+                return true; // Token structure matches Google token
+            }
+        }
+        catch
+        {
+            // Token decoding or checks failed
+        }
+
+        return false; // Token is not a Google token
+    }
+
+    private static bool ValidateGoogleToken(string token)
+    {
+        try
+        {
+            GoogleJsonWebSignature.ValidationSettings validationSettings =
+                new GoogleJsonWebSignature.ValidationSettings();
+
+            // Set the client IDs to verify against. Replace with your own client IDs.
+            validationSettings.Audience = new List<string>
+            {
+                "your-client-id-1.apps.googleusercontent.com",
+                "your-client-id-2.apps.googleusercontent.com"
+            };
+
+            // Validate the token against the settings.
+            GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
+
+            // If validation succeeds, the token is valid.
+            return true;
+        }
+        catch (InvalidJwtException)
+        {
+            // The token is not a valid Google token.
+            return false;
+        }
     }
 
     public static bool IsJwtExpired(string jwt)
@@ -216,6 +278,7 @@ public static class JwtUtils
         }
         return false;
     }
+
     public static Dictionary<string, string> ExtractJwtData(string jwt)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -229,5 +292,4 @@ public static class JwtUtils
 
         return jwtData;
     }
-
 }

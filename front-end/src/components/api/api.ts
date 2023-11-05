@@ -45,11 +45,13 @@ export const loginAPI = async ({
 export const registerAPI = async ({
   email,
   username,
+  gender,
   password,
   confirmPassword,
 }: {
   email: string;
   username: string;
+  gender: string;
   password: string;
   confirmPassword: string;
 }): Promise<IUserInfoContext | IApiError> => {
@@ -62,6 +64,7 @@ export const registerAPI = async ({
       body: JSON.stringify({
         email,
         username,
+        gender,
         password,
         confirmPassword,
       }),
@@ -254,11 +257,12 @@ export const updateUsernameAPI = async ({
 };
 export const authenticateAPI = async (token: string) => {
   try {
+    console.log(token);
     const response = await fetch(URL + 'users/checkToken', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1ZjRiZjQ2ZTUyYjMxZDliNjI0OWY3MzA5YWQwMzM4NDAwNjgwY2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDAwODkyOTk1MDM5LXA1dTZwdTZoODhuaWxvdmpuYnRzMG00OG1wNGxidHFiLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAwMDg5Mjk5NTAzOS1wNXU2cHU2aDg4bmlsb3ZqbmJ0czBtNDhtcDRsYnRxYi5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwODEyNDA0MDY3MzAxODY5NTkxMCIsImVtYWlsIjoidHpvdWxpYW5vMTBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJabHFqMVpJYVFhSmd0RXNmWkhvNW1nIiwibmFtZSI6Ikp1bGlhbm8gSmlrYSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMNFYzMElUd0lOR3RPak1BenRITmxyeGtxYlp5ei0wN0xmREJiNVFHX3VxM0E9czk2LWMiLCJnaXZlbl9uYW1lIjoiSnVsaWFubyIsImZhbWlseV9uYW1lIjoiSmlrYSIsImxvY2FsZSI6ImVsIiwiaWF0IjoxNjk5MTM4ODY0LCJleHAiOjE2OTkxNDI0NjR9.gfhGfrGnV0KmUZXDfI84NFm6qXTsOZj-Bfxj_PDDI-g4yG1QVxGRcO66ga7XyCVJG3VmsT7c3aGwatPQZK_N9XxRPXqqEYT6P_--uGtsHBAwkBkuQunAbg9J__K7L9kbWEMOAjX353ltMm_czLFJOkLPDGey8q0ynYV8fGoosHc9j-sWO32Bsx6ASpZkVhd0FF7-0rGs3peoWzQupRSG5PI2aHuQ_WGCgP-h4lr1Xi9Et3pX0GLoB4IhXPQp0UKLaWKye1nmy99z92IIuTMb0ftwtUyQTUmZrL7MbKoJV2u0DepdRCrhHKYu3wgQath8uXMzulFQgY9J57-VZgJrrg`,
       },
     });
     const data = await response.json();
@@ -335,13 +339,13 @@ export const profileAPI = async (
     return;
   }
 };
-export const getCurrentUser = async (token: string) => {
+export const getCurrentUser = async () => {
   try {
     const response = await fetch(URL + 'user/current_user', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6ImY1ZjRiZjQ2ZTUyYjMxZDliNjI0OWY3MzA5YWQwMzM4NDAwNjgwY2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiIxMDAwODkyOTk1MDM5LXA1dTZwdTZoODhuaWxvdmpuYnRzMG00OG1wNGxidHFiLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiMTAwMDg5Mjk5NTAzOS1wNXU2cHU2aDg4bmlsb3ZqbmJ0czBtNDhtcDRsYnRxYi5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwODEyNDA0MDY3MzAxODY5NTkxMCIsImVtYWlsIjoidHpvdWxpYW5vMTBAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF0X2hhc2giOiJabHFqMVpJYVFhSmd0RXNmWkhvNW1nIiwibmFtZSI6Ikp1bGlhbm8gSmlrYSIsInBpY3R1cmUiOiJodHRwczovL2xoMy5nb29nbGV1c2VyY29udGVudC5jb20vYS9BQ2c4b2NMNFYzMElUd0lOR3RPak1BenRITmxyeGtxYlp5ei0wN0xmREJiNVFHX3VxM0E9czk2LWMiLCJnaXZlbl9uYW1lIjoiSnVsaWFubyIsImZhbWlseV9uYW1lIjoiSmlrYSIsImxvY2FsZSI6ImVsIiwiaWF0IjoxNjk5MTM4ODY0LCJleHAiOjE2OTkxNDI0NjR9.gfhGfrGnV0KmUZXDfI84NFm6qXTsOZj-Bfxj_PDDI-g4yG1QVxGRcO66ga7XyCVJG3VmsT7c3aGwatPQZK_N9XxRPXqqEYT6P_--uGtsHBAwkBkuQunAbg9J__K7L9kbWEMOAjX353ltMm_czLFJOkLPDGey8q0ynYV8fGoosHc9j-sWO32Bsx6ASpZkVhd0FF7-0rGs3peoWzQupRSG5PI2aHuQ_WGCgP-h4lr1Xi9Et3pX0GLoB4IhXPQp0UKLaWKye1nmy99z92IIuTMb0ftwtUyQTUmZrL7MbKoJV2u0DepdRCrhHKYu3wgQath8uXMzulFQgY9J57-VZgJrrg`,
       },
     });
     const data = await response.json();
