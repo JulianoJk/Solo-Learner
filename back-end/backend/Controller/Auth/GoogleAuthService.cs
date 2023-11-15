@@ -51,34 +51,29 @@ public class GoogleAuthService
 
             var response = await client.SendAsync(request);
             var responseContent = await response.Content.ReadAsStringAsync();
-
-            // Parse the JSON response
-            var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
-                Dictionary<string, string>
-            >(responseContent);
+            var responseDict =
+                Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
             var userJwt = responseDict["id_token"];
             var jwtData = JwtUtils.ExtractJwtData(userJwt);
 
-            // Get the email from the jwt data
             if (jwtData.TryGetValue("email", out string userEmail))
             {
                 string isUserRegistered = _authenticator.GetUserEmailFromGoogleId(userEmail);
                 if (isUserRegistered != null)
                 {
-                    string messageToUser = $"User with email {userEmail} is registered.";
-                    // You can proceed with further actions for registered users.
-                    // Return a successful response with a 200 status code
-                    var responses = new { messageToUser };
+                    // Retrieve additional user information from the database
+                    var additionalUserInfo = _authenticator.GetAdditionalUserInfoFromDb(userEmail);
+
+                    responseDict["messageToUser"] = $"User with email {userEmail} is registered.";
+                    responseDict["id"] = additionalUserInfo?.Id.ToString();
+                    responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
+                    responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
+
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsJsonAsync(responseDict);
                 }
                 else
                 {
-                    // string messageToUser = $"User with email {userEmail} is NOT registered.";
-                    // var responses = new { messageToUser };
-                    // context.Response.StatusCode = StatusCodes.Status404NotFound;
-                    // await context.Response.WriteAsJsonAsync(responses);
-
                     RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser();
                     await registerGoogleUser.HandleRegistrationRequest(context, jwtData, userJwt);
                 }

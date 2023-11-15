@@ -1,9 +1,5 @@
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using backend;
 using backend.Models;
 using MySql.Data.MySqlClient;
-using System.Text.Json;
 
 public class AdminController
 {

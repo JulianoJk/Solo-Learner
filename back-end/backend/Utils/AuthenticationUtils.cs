@@ -174,6 +174,7 @@ public class AuthenticationUtils
 
         return Tuple.Create(true, uniqueUsername); // username was taken, return the new one
     }
+
     public string? GetUserEmailFromGoogleId(string googleEmail)
     {
         using (var connection = new MySqlConnection(ConnectionString.Value))
@@ -197,4 +198,39 @@ public class AuthenticationUtils
         return null;
     }
 
+    public UserInfo GetAdditionalUserInfoFromDb(string userEmail)
+    {
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+
+            using (var command = new MySqlCommand("SELECT id, isTeacher, isAdmin FROM users WHERE email = @Email",
+                       connection))
+            {
+                command.Parameters.AddWithValue("@Email", userEmail);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new UserInfo
+                        {
+                            Id = reader.GetInt32("id"),
+                            IsTeacher = reader.GetBoolean("isTeacher"),
+                            IsAdmin = reader.GetBoolean("isAdmin")
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public class UserInfo
+    {
+        public int Id { get; set; }
+        public bool IsTeacher { get; set; }
+        public bool IsAdmin { get; set; }
+    }
 }

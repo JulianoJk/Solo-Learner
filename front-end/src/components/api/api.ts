@@ -257,7 +257,6 @@ export const updateUsernameAPI = async ({
 };
 export const authenticateAPI = async (token: string) => {
   try {
-    console.log(token);
     const response = await fetch(URL + 'users/checkToken', {
       method: 'GET',
       headers: {

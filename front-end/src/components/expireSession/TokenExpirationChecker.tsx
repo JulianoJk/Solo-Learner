@@ -46,7 +46,7 @@ const TokenExpirationChecker = () => {
       if (localStorageToken !== null) {
         const decodedUser: IUserInfoContext = {
           id: decoded.id,
-          username: decoded.username,
+          username: decoded.username || decoded.name,
           token: localStorageToken,
           isTeacher: decoded.isTeacher,
           email: decoded.email,
