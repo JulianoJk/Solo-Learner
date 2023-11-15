@@ -132,7 +132,10 @@ const HeaderMegaMenu = () => {
   // TODO!: Add this to the useEffect above
   useDocumentTitle(documentTitle);
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
-
+  const renderAvatar =
+    user.picture !== undefined
+      ? user.picture
+      : 'https://avatars.githubusercontent.com/u/47204253?v=4';
   return (
     <Box>
       <Header height={60} px="md" className={classes.headerRoot}>
@@ -170,12 +173,10 @@ const HeaderMegaMenu = () => {
                       <Group spacing={7}>
                         <Avatar
                           // TODO!: Change this
-                          src={
-                            'https://avatars.githubusercontent.com/u/47204253?v=4'
-                          }
+                          src={renderAvatar}
                           alt={currentUser?.username ?? 'learner'}
                           radius="xl"
-                          size={20}
+                          size={30}
                         />
                         <Text
                           className={classes.hiddenMobile}

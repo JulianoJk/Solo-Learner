@@ -1,25 +1,22 @@
-using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using backend;
 
 public class RegisterGoogleUser
 {
     private readonly AuthenticationUtils _authenticator;
+    private readonly Dictionary<string, string> _responseDict;
 
-    public RegisterGoogleUser()
+    public RegisterGoogleUser(Dictionary<string, string> responseDict)
     {
         _authenticator = new AuthenticationUtils();
+        _responseDict = responseDict;
     }
+
+    // Rest of the class remains unchanged...
 
     public async Task HandleRegistrationRequest(
         HttpContext context,
         Dictionary<string, string> jwtData,
-        string googleToken
+        string picture // Added parameter for picture
     )
     {
         string email = jwtData["email"];
@@ -44,13 +41,27 @@ public class RegisterGoogleUser
             email,
             null,
             null,
-            isTeacher
+            isTeacher,
+            picture // Pass the picture parameter
         );
+
+        // Add debugging statement
+        Console.WriteLine($"AuthenticateUser result: {AreCredentialsCorrect}");
+
         if (AreCredentialsCorrect)
         {
-            var response = new { messageToUser, googleToken };
+            // Get additional user info from the database
+            var additionalUserInfo = _authenticator.GetAdditionalUserInfoFromDb(email);
+
+            // Update the response dictionary with additional information
+            _responseDict["messageToUser"] = "Congratulations! Your account has been created!";
+            _responseDict["authMethod"] = "Successful registration!";
+            _responseDict["id"] = additionalUserInfo?.Id.ToString();
+            _responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
+            _responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
+
             context.Response.StatusCode = StatusCodes.Status200OK;
-            await context.Response.WriteAsJsonAsync(response);
+            await context.Response.WriteAsJsonAsync(_responseDict);
         }
         else
         {

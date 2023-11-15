@@ -25,6 +25,8 @@ public class ProfileController
             reader.Read();
             bool isTeacher = (bool)reader["isTeacher"];
             bool IsAdmin = (bool)reader["isAdmin"];
+            string picture = (string)reader["picture"];
+
 
             User user =
                 new()
@@ -33,11 +35,13 @@ public class ProfileController
                     Username = (string)reader["username"],
                     IsTeacher = isTeacher,
                     IsAdmin = IsAdmin,
-                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
+                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
+                    Picture = picture
                 };
             reader.Close();
             return user;
         }
+
         reader.Close();
         return null;
     }
@@ -127,6 +131,7 @@ public class ProfileController
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync("Email and new username cannot be empty.");
         }
+
         // Check if the username is already taken
         var (isTaken, uniqueUsername) = _authenticator.IsUsernameTaken(newUsername);
 
@@ -289,6 +294,7 @@ public class ProfileController
             };
             teachers.Add(teacher);
         }
+
         reader.Close();
         return teachers;
     }

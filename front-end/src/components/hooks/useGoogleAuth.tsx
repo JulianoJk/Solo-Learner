@@ -24,10 +24,6 @@ export function useGoogleAuth() {
         if (response.status === 200) {
           const data = await response.json();
           const token = data?.id_token || data?.googleToken;
-          console.log(
-            '🚀 ~ file: useGoogleAuth.tsx:27 ~ onSuccess: ~ token:',
-            token,
-          );
 
           if (typeof data === 'object' && 'error' in data) {
             appDispatch({
@@ -49,7 +45,7 @@ export function useGoogleAuth() {
 
               navigate('/home');
               notificationAlert({
-                title: 'Successful registration!',
+                title: data.authMethod ?? 'Welcome!',
                 message: 'Congratulations! Your account has been created. ',
                 icon: <IconCheck size={18} />,
                 iconColor: 'teal',

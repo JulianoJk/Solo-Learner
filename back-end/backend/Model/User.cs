@@ -13,5 +13,6 @@ namespace backend.Models
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
         public DateTime LastActive { get; set; }
+        public String Picture { get; set; }
     }
 }

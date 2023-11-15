@@ -10,6 +10,7 @@ export interface IUserInfoContext {
   isTeacher?: boolean;
   email?: string;
   isAdmin?: any;
+  picture?: string;
 }
 export interface IApiMessageResponse {
   message: string;

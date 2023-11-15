@@ -152,7 +152,8 @@ public class RegisterUser
                     email,
                     Convert.ToBase64String(hash),
                     salt,
-                    isTeacher
+                    isTeacher,
+                    null
                 );
                 if (AreCredentialsCorrect)
                 {

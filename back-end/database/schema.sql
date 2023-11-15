@@ -15,6 +15,7 @@ CREATE TABLE
         `isAdmin` BOOLEAN NOT NULL DEFAULT FALSE,
         `password` VARCHAR(50),
         `salt` VARBINARY(255),
+        `picture` VARCHAR(255),
         `isTeacher` BOOLEAN NOT NULL DEFAULT FALSE,
         `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

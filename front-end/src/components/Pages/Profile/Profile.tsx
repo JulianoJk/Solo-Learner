@@ -33,8 +33,9 @@ const Profile: React.FC = () => {
   const displayUsername = userProfileData?.user.username;
   const displayDateJoined = userProfileData?.user.createdAt;
   const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
+
   const data = {
-    avatar: '',
+    avatar: user.picture ?? '',
     role: userRole,
     userName: upperFirst(displayUsername as string),
     displayDateJoined: displayDateJoined,

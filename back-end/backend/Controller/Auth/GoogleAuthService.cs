@@ -51,8 +51,9 @@ public class GoogleAuthService
 
             var response = await client.SendAsync(request);
             var responseContent = await response.Content.ReadAsStringAsync();
-            var responseDict =
-                Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+            var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
+                Dictionary<string, string>
+            >(responseContent);
             var userJwt = responseDict["id_token"];
             var jwtData = JwtUtils.ExtractJwtData(userJwt);
 
@@ -64,7 +65,8 @@ public class GoogleAuthService
                     // Retrieve additional user information from the database
                     var additionalUserInfo = _authenticator.GetAdditionalUserInfoFromDb(userEmail);
 
-                    responseDict["messageToUser"] = $"User with email {userEmail} is registered.";
+                    responseDict["messageToUser"] = "Great to see you! You're all set to go! :)";
+                    responseDict["authMethod"] = "Login successful!";
                     responseDict["id"] = additionalUserInfo?.Id.ToString();
                     responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
                     responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
@@ -74,14 +76,21 @@ public class GoogleAuthService
                 }
                 else
                 {
-                    RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser();
-                    await registerGoogleUser.HandleRegistrationRequest(context, jwtData, userJwt);
+                    RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser(responseDict);
+                    // Pass the 'picture' from jwtData to HandleRegistrationRequest
+                    await registerGoogleUser.HandleRegistrationRequest(
+                        context,
+                        jwtData,
+                        jwtData["picture"]
+                    );
                 }
             }
             else
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsJsonAsync(new { error = "Email not found in the JWT data." });
+                await context.Response.WriteAsJsonAsync(
+                    new { error = "Email not found in the JWT data." }
+                );
             }
         }
         catch (Exception ex)

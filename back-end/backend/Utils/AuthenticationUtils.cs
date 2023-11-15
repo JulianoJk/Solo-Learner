@@ -30,7 +30,8 @@ public class AuthenticationUtils
         string email,
         string password,
         byte[]? salt,
-        bool isTeacher
+        bool isTeacher,
+        string? picture
     )
     {
         // Retrieve the isAdmin flag from the database
@@ -48,7 +49,8 @@ public class AuthenticationUtils
             password,
             salt,
             isTeacher,
-            isAdmin
+            isAdmin,
+            picture
         );
 
         if (!isRegister)
@@ -97,10 +99,11 @@ public class AuthenticationUtils
         if (salt == null)
         {
             MessageToUser = "Incorrect email or password.";
-
             return (found, MessageToUser);
         }
-        else
+
+        // If the authentication is done through Google, skip password checking
+        if (!string.IsNullOrWhiteSpace(password))
         {
             // Generate hash of the password using the retrieved salt
             byte[] hashedPassword = GenerateHash(password, salt);
@@ -113,17 +116,22 @@ public class AuthenticationUtils
             if (storedHashedPassword.SequenceEqual(hashedPassword))
             {
                 found = true;
-                MessageToUser = "Login Succesfull!";
-
-                return (found, MessageToUser);
+                MessageToUser = "Login Successful!";
             }
             else
             {
                 MessageToUser = "Incorrect email or password.";
-
-                return (false, MessageToUser);
             }
         }
+        else
+        {
+            // Handle Google authentication logic here, if needed
+            // You might want to set 'found' to true and customize the message
+            found = true;
+            MessageToUser = "Google Authentication Successful!";
+        }
+
+        return (found, MessageToUser);
     }
 
     public Tuple<bool, string> IsUsernameTaken(string username)
@@ -181,7 +189,12 @@ public class AuthenticationUtils
         {
             connection.Open();
 
-            using (var command = new MySqlCommand("SELECT email FROM users WHERE email = @GoogleEmail", connection))
+            using (
+                var command = new MySqlCommand(
+                    "SELECT email FROM users WHERE email = @GoogleEmail",
+                    connection
+                )
+            )
             {
                 command.Parameters.AddWithValue("@GoogleEmail", googleEmail);
 
@@ -204,8 +217,12 @@ public class AuthenticationUtils
         {
             connection.Open();
 
-            using (var command = new MySqlCommand("SELECT id, isTeacher, isAdmin FROM users WHERE email = @Email",
-                       connection))
+            using (
+                var command = new MySqlCommand(
+                    "SELECT id, isTeacher, isAdmin FROM users WHERE email = @Email",
+                    connection
+                )
+            )
             {
                 command.Parameters.AddWithValue("@Email", userEmail);
 

@@ -38,7 +38,8 @@ public class LoginUser
                 email,
                 password,
                 null,
-                isTeacher
+                isTeacher,
+                null
             );
 
             if (AreCredentialsCorrect)
