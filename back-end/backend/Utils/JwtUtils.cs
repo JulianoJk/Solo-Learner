@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -11,24 +8,39 @@ using Google.Apis.Auth;
 
 public static class JwtUtils
 {
-    public static bool authenticateJwt(HttpContext context)
+    private static bool CheckToken(string token)
     {
-        // Get the authorization header from the request
-        string authHeader = context.Request.Headers["Authorization"];
-
-        // Check if the header is present and contains a valid JWT
-        if (authHeader?.StartsWith("Bearer ") == true)
+        if (!IsJwtExpired(token))
         {
-            string jwt = authHeader["Bearer ".Length..];
-            if (ValidateJwt(jwt) && !IsJwtExpired(jwt))
+            if (IsGoogleToken(token))
             {
                 return true;
             }
-            else if (IsGoogleToken(jwt))
+            else if (ValidateJwt(token))
             {
-                return ValidateGoogleToken(jwt);
+                return true;
             }
         }
+
+        return false;
+    }
+
+    public static bool AuthenticateJwt(HttpContext context)
+    {
+        // Get the authorization header from the request
+        string authHeader = context.Request.Headers["Authorization"];
+        // Check if the header is present and contains a valid JWT
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+        {
+            string jwt = authHeader.Substring("Bearer ".Length);
+
+            if (CheckToken(jwt))
+            {
+                return true;
+            }
+        }
+
+
         return false;
     }
 
@@ -36,68 +48,51 @@ public static class JwtUtils
     {
         try
         {
-            // Decode the token without validating it to inspect its claims
-            var handler = new JwtSecurityTokenHandler();
-            var tokenData = handler.ReadToken(token) as JwtSecurityToken;
+            var payload = GoogleJsonWebSignature.ValidateAsync(token).Result;
 
             // Check if the token has specific claims and audience (client ID) information
             if (
-                tokenData != null
-                && tokenData.Payload.ContainsKey("sub")
-                && // Subject claim
-                tokenData.Payload.ContainsKey("iss")
-                && // Issuer claim
-                tokenData.Audiences != null
-                && tokenData.Audiences.Contains("your-client-id.apps.googleusercontent.com")
+                payload != null
+                && !string.IsNullOrEmpty(payload.Subject)
+                && !string.IsNullOrEmpty(payload.Issuer)
+                && payload.Audience != null
+                && payload.Issuer == "https://accounts.google.com"
+                && (string)payload.Audience == GoogleClientIdEnv.Value
             )
             {
                 return true; // Token structure matches Google token
             }
         }
-        catch
+        catch (InvalidJwtException)
         {
-            // Token decoding or checks failed
+            // The token is not a valid Google token.
         }
 
         return false; // Token is not a Google token
     }
 
-    private static bool ValidateGoogleToken(string token)
-    {
-        try
-        {
-            GoogleJsonWebSignature.ValidationSettings validationSettings =
-                new GoogleJsonWebSignature.ValidationSettings();
-
-            // Set the client IDs to verify against. Replace with your own client IDs.
-            validationSettings.Audience = new List<string>
-            {
-                "your-client-id-1.apps.googleusercontent.com",
-                "your-client-id-2.apps.googleusercontent.com"
-            };
-
-            // Validate the token against the settings.
-            GoogleJsonWebSignature.ValidateAsync(token, validationSettings);
-
-            // If validation succeeds, the token is valid.
-            return true;
-        }
-        catch (InvalidJwtException)
-        {
-            // The token is not a valid Google token.
-            return false;
-        }
-    }
-
-    public static bool IsJwtExpired(string jwt)
+    private static bool IsJwtExpired(string jwt)
     {
         // Decode the JWT
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.ReadJwtToken(jwt);
 
-        // Check if the "exp" claim is present and has a valid value
-        return token.ValidTo == null || token.ValidTo < DateTime.UtcNow;
+        // Check if the "exp" claim is present
+        if (token.Payload.TryGetValue("exp", out var expClaimValue) && expClaimValue is long expTimestamp)
+        {
+            // Convert the exp timestamp to DateTime in local time
+            var expDateTimeLocal = DateTimeOffset.FromUnixTimeSeconds(expTimestamp).LocalDateTime;
+            Console.WriteLine($"Token expiration date: {expDateTimeLocal}");
+            Console.WriteLine($"Current date: {DateTime.Now}");
+
+            // Check if the token has expired
+            return expDateTimeLocal < DateTime.Now;
+        }
+
+        // If "exp" claim is not present, consider the token as expired
+        return true;
     }
+
 
     private static bool ValidateJwt(string jwt)
     {
@@ -121,6 +116,8 @@ public static class JwtUtils
         {
             return false;
         }
+
+
         return true;
     }
 
@@ -146,7 +143,7 @@ public static class JwtUtils
         var id = GetUserIdFromDB(email);
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(JwtKey.Value);
-        var expires = DateTime.UtcNow.AddMinutes(
+        var expires = DateTime.Now.AddMinutes(
             int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRES_IN_MINUTES") ?? "20")
         );
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -166,6 +163,10 @@ public static class JwtUtils
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
             )
+            {
+                // Specify the algorithm as RS256
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            }
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
@@ -174,7 +175,7 @@ public static class JwtUtils
 
     public static string? GetUserEmailFromJwt(HttpContext context)
     {
-        if (authenticateJwt(context))
+        if (AuthenticateJwt(context))
         {
             string authHeader = context.Request.Headers["Authorization"];
             string jwt = authHeader.Substring("Bearer ".Length);
@@ -193,6 +194,7 @@ public static class JwtUtils
                 Console.WriteLine($"Error generating hash: {ex.Message}");
             }
         }
+
         return null;
     }
 
@@ -203,7 +205,7 @@ public static class JwtUtils
 
     private static bool GetIsTeacherFromJwt(HttpContext context)
     {
-        if (authenticateJwt(context))
+        if (AuthenticateJwt(context))
         {
             string authHeader = context.Request.Headers["Authorization"];
             string jwt = authHeader.Substring("Bearer ".Length);
@@ -222,6 +224,7 @@ public static class JwtUtils
                 Console.WriteLine($"Error generating hash: {ex.Message}");
             }
         }
+
         return false;
     }
 
@@ -247,6 +250,7 @@ public static class JwtUtils
                 id = Convert.ToInt32(result);
             }
         }
+
         return id;
     }
 
@@ -257,7 +261,7 @@ public static class JwtUtils
 
     private static bool GetUserIsAdminFromJwt(HttpContext context)
     {
-        if (authenticateJwt(context))
+        if (AuthenticateJwt(context))
         {
             string authHeader = context.Request.Headers["Authorization"];
             string jwt = authHeader.Substring("Bearer ".Length);
@@ -276,6 +280,7 @@ public static class JwtUtils
                 Console.WriteLine($"Error generating hash: {ex.Message}");
             }
         }
+
         return false;
     }
 

@@ -39,7 +39,7 @@ public class AdminAccountDeletionController
     }
 
     // Verify the JWT token and check if the user is an admin
-    bool isValidJwt = JwtUtils.authenticateJwt(context);
+    bool isValidJwt = JwtUtils.AuthenticateJwt(context);
     bool isAdmin = JwtUtils.GetUserIsAdmin(context);
 
     if (!isValidJwt || !isAdmin)

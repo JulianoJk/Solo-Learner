@@ -38,6 +38,7 @@ services:
       TEACHER_EMAIL: ${TEACHER_EMAIL}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      TZ: "Europe/Athens"  # Set the timezone for the backend service
     depends_on:
       - db
     networks:
@@ -65,3 +66,5 @@ services:
      volumes:
        - ./front-end:/usr/src/app/front_end
        - /usr/src/app/front-end/node_modules
+
+# delDocker docker-compose down && docker rmi solo-learner-backend && docker-compose up -d

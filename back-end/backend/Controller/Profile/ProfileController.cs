@@ -45,7 +45,7 @@ public class ProfileController
     public async Task GetProfile(HttpContext context, string username)
     {
         // Check if JWT is valid
-        if (!JwtUtils.authenticateJwt(context))
+        if (!JwtUtils.AuthenticateJwt(context))
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsJsonAsync("Unauthorized.");

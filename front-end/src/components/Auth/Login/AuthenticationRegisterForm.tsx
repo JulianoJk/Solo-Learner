@@ -62,7 +62,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     validateInputOnChange: true,
   });
   console.log(form.values.gender);
-  
+
   return (
     <Center maw={600} mx="auto">
       <Paper radius="md" p="xl" withBorder={hasBorder}>
@@ -83,8 +83,9 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            const { email, username, gender,password, confirmPassword } = value;
-            register({ email, username,gender, password, confirmPassword });
+            const { email, username, gender, password, confirmPassword } =
+              value;
+            register({ email, username, gender, password, confirmPassword });
           })}
         >
           <Stack>
@@ -140,7 +141,6 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
               label="Select gender"
               withAsterisk
               {...form.getInputProps('gender')}
-
             >
               <Group mt="xs">
                 <Radio value="male" label="Male" />

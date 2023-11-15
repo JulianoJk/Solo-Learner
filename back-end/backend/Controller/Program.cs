@@ -46,7 +46,7 @@ app.MapGet(
     "/",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
@@ -63,7 +63,7 @@ app.MapGet(
     "/users/checkToken",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
@@ -174,7 +174,7 @@ app.MapDelete(
     "/users/delete",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
@@ -194,7 +194,7 @@ app.MapPut(
     "/users/update/username",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
@@ -213,7 +213,7 @@ app.MapGet(
     "/admin/dashboard",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
             AdminController adminController = new AdminController();
@@ -231,7 +231,7 @@ app.MapGet(
     "/admin/users/all/list",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
             AdminController adminController = new AdminController();
@@ -250,7 +250,7 @@ app.MapDelete(
     "/admin/dashboard/delete_user",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
@@ -270,7 +270,7 @@ app.MapGet(
     "/users/profile",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
@@ -313,7 +313,7 @@ app.MapGet(
     "/user/current_user",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.authenticateJwt(context);
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
         if (isValidJwt)
         {
