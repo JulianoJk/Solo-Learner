@@ -12,17 +12,34 @@ public static class JwtUtils
     {
         if (!IsJwtExpired(token))
         {
-            if (IsGoogleToken(token))
+            if (HasGoogleIssuer(token) && IsGoogleToken(token))
             {
-                return true;
+                return true; // Token is from Google
             }
             else if (ValidateJwt(token))
             {
-                return true;
+                return true; // Token is validated using ValidateJwt
             }
         }
 
         return false;
+    }
+
+    private static bool HasGoogleIssuer(string token)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            // Check if the token has an issuer and it is from Google
+            return jwtToken?.Issuer == "https://accounts.google.com";
+        }
+        catch
+        {
+            // Handle exceptions if necessary
+            return false;
+        }
     }
 
     public static bool AuthenticateJwt(HttpContext context)
@@ -117,7 +134,6 @@ public static class JwtUtils
             return false;
         }
 
-
         return true;
     }
 
@@ -163,10 +179,6 @@ public static class JwtUtils
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
             )
-            {
-                // Specify the algorithm as RS256
-                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
-            }
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
