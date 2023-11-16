@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { GoogleOAuthProvider } from '@react-oauth/google';
-
-import Home from './components/Pages/Home/Home';
-import Profile from './components/Pages/Profile/Profile';
+import React, { useEffect, useState } from 'react';
+import jwtDecode from 'jwt-decode';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
-import { UserContextProvider } from './context/UserContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   AppShell,
   ColorScheme,
@@ -15,35 +10,43 @@ import {
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import DeleteAccount from './components/Pages/Settings/TempOther/DeleteAccount/DeleteAccount';
-import { checkIfPageIsReload, isUserLoggedIn } from './utils/utils';
-import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
-import { AppContextProvider } from './context/AppContext';
-import { useEffect, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import {
   AvatarDefaultProps,
   ButtonDefaultProps,
 } from './Styles/DefaultPropsStyles.styles';
 import HeaderMenu from './components/Header/HeaderMenu.component';
-import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
+
+import Admin from './components/admin/Admin.component';
+import { getGoogleClientIdAPI } from './components/api/api';
+import { checkIfPageIsReload, isUserLoggedIn } from './utils/utils';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
-import Settings from './components/Pages/Settings/Settings.component';
-import Admin from './components/admin/Admin.component';
+import Home from './components/Pages/Home/Home';
+import Index from './components/Pages/Index/Index';
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
+import Profile from './components/Pages/Profile/Profile';
+import Settings from './components/Pages/Settings/Settings.component';
+import DeleteAccount from './components/Pages/Settings/TempOther/DeleteAccount/DeleteAccount';
+
 import Vocabulary from './images/Vocabulary';
-import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
-import Index from './components/Pages/Index/Index';
-import ForbiddenPage from './components/Pages/Error/forbidden/Forbidden.component';
-import { getGoogleClientIdAPI } from './components/api/api';
+import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
+import { AppContextProvider } from './context/AppContext';
+import { UserContextProvider } from './context/UserContext';
+import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
+import TokenExpirationChecker from './components/expireSession/TokenExpirationChecker';
 
 const App = () => {
   const queryClient = new QueryClient();
   const [clientId, setClientId] = useState('');
 
   const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
-  // const isAdminPath = window.location.pathname.includes('/admin');
+  const [loadingClientId, setLoadingClientId] = useState(true);
 
   const toggleColorScheme = (value?: ColorScheme) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
@@ -56,22 +59,27 @@ const App = () => {
         toggleColorScheme(appThemes);
       }
     }
-  });
+  }, [window.location.pathname]);
 
   useEffect(() => {
     const fetchGoogleClientId = async () => {
       try {
-        const clientId = await getGoogleClientIdAPI();
-        // Do something with the clientId, e.g., store it in state.
-        setClientId(clientId);
+        const fetchedClientId = await getGoogleClientIdAPI();
+        setClientId(fetchedClientId);
       } catch (error) {
         console.error('Failed to fetch Google Client ID:', error);
-        // Handle the error, e.g., show an error message.
+      } finally {
+        setLoadingClientId(false);
       }
     };
 
     fetchGoogleClientId();
-  });
+  }, []);
+
+  if (loadingClientId) {
+    // Render a loading indicator or splash screen while fetching the client_id
+    return <div>Loading...</div>;
+  }
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -86,12 +94,11 @@ const App = () => {
               '*, *::before, *::after': {
                 boxSizing: 'border-box',
               },
-
               body: {
                 overflow: 'auto',
                 backgroundImage:
                   theme.colorScheme === 'light'
-                    ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6') //OR "#4CAF50", "#2196F3"
+                    ? theme.fn.linearGradient(7, '#F8BBD0', '#64B5F6')
                     : theme.fn.linearGradient(7, '#1A1B1E'),
                 color:
                   theme.colorScheme === 'dark'
@@ -114,14 +121,8 @@ const App = () => {
                 <UserContextProvider>
                   <AccountSettingsContextProvider>
                     <AppShell padding="md" header={<HeaderMenu />}>
-                      {/* <GoogleOAuthProvider clientId={clientId}> */}
-                      <GoogleOAuthProvider
-                        clientId={
-                          '1000892995039-p5u6pu6h88nilovjnbts0m48mp4lbtqb.apps.googleusercontent.com'
-                        }
-                      >
+                      <GoogleOAuthProvider clientId={clientId}>
                         <Routes>
-                          {/* <Route path="/" element={<Index />} /> */}
                           <Route path="/" element={<Index />} />
                           <Route
                             path="/login"
@@ -150,13 +151,11 @@ const App = () => {
                             path="/profile/:username"
                             element={<Profile />}
                           />
-
                           <Route path="/settings" element={<Settings />} />
                           <Route
                             path="/delete-account"
                             element={<DeleteAccount />}
                           />
-
                           <Route
                             path="/learning-units/grammar"
                             element={<Grammar />}
@@ -173,12 +172,13 @@ const App = () => {
                             path="/learning-units/exercises"
                             element={<Exercises />}
                           />
-
                           <Route path="/admin/dashboard" element={<Admin />} />
-
+                          <Route
+                            path="/token-expiration"
+                            element={<TokenExpirationChecker />}
+                          />
                           <Route
                             path="/*"
-                            // element={isUserLoggedIn() ? <Home /> : <Index />}
                             element={
                               <NotFound
                                 navigationPath={
@@ -186,7 +186,6 @@ const App = () => {
                                 }
                                 statusNumber={404}
                               />
-                              // <ForbiddenPage navigationPath={''} />
                             }
                           />
                         </Routes>

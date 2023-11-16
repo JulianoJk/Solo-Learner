@@ -27,6 +27,7 @@ export interface IUserAccountContext {
 export interface UserContextState {
   user: IUserInfoContext;
   status: string;
+  picture?: string;
 }
 // Type for the action for the context
 export type TUserAction =
@@ -37,6 +38,10 @@ export type TUserAction =
   | {
       profileImage: string;
       type: 'SET_PROFILE_IMAGE';
+    }
+  | {
+      picture: string;
+      type: 'SET_USER_PICTURE';
     }
   | ResetAction;
 // Reset everything

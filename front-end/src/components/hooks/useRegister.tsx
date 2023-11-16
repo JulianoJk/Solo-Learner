@@ -43,6 +43,11 @@ export const useRegister = (): IRegisterMutationState => {
             token: data?.token,
           };
           userDispatch({ type: 'SET_USER', user: user });
+          userDispatch({
+            type: 'SET_USER_PICTURE',
+            picture: data.picture ?? '',
+          });
+
           navigate('/home');
           notificationAlert({
             title: 'Successful registration!',

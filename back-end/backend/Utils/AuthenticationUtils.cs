@@ -219,7 +219,7 @@ public class AuthenticationUtils
 
             using (
                 var command = new MySqlCommand(
-                    "SELECT id, isTeacher, isAdmin FROM users WHERE email = @Email",
+                    "SELECT id, isTeacher, isAdmin, picture FROM users WHERE email = @Email",
                     connection
                 )
             )
@@ -234,7 +234,8 @@ public class AuthenticationUtils
                         {
                             Id = reader.GetInt32("id"),
                             IsTeacher = reader.GetBoolean("isTeacher"),
-                            IsAdmin = reader.GetBoolean("isAdmin")
+                            IsAdmin = reader.GetBoolean("isAdmin"),
+                            Picture = reader.GetString("picture")
                         };
                     }
                 }
@@ -249,5 +250,6 @@ public class AuthenticationUtils
         public int Id { get; set; }
         public bool IsTeacher { get; set; }
         public bool IsAdmin { get; set; }
+        public string Picture { get; set; }
     }
 }

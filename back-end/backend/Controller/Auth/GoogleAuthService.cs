@@ -70,6 +70,8 @@ public class GoogleAuthService
                     responseDict["id"] = additionalUserInfo?.Id.ToString();
                     responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
                     responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
+                    responseDict["picture"] = additionalUserInfo?.Picture;
+
 
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsJsonAsync(responseDict);

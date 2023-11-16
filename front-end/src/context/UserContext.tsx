@@ -16,6 +16,7 @@ const defaultState: UserContextState = {
     email: undefined,
     isAdmin: false,
   },
+  picture: '',
 };
 
 const UserStateContext = React.createContext<UserContextState | undefined>(
@@ -35,6 +36,11 @@ const appReducer = (state: UserContextState, action: TUserAction) => {
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem('jwtToken', action.user.token);
       return { ...state, user: action.user };
+    case 'SET_USER_PICTURE':
+      localStorage.removeItem('userPicture');
+      // Save user to localStorage to persist keeping logged after refreshing the page
+      localStorage.setItem('userPicture', action.picture);
+      return { ...state, picture: action.picture };
     case 'RESET_STATE':
       // Clear user from localStorage
       localStorage.removeItem('user');

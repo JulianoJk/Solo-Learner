@@ -21,6 +21,7 @@ const TokenExpirationChecker = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
+    const userPicture = localStorage.getItem('userPicture');
     if (token) {
       const decoded: any = jwtDecode(token);
 
@@ -51,9 +52,9 @@ const TokenExpirationChecker = () => {
           isTeacher: decoded.isTeacher,
           email: decoded.email,
           isAdmin: decoded.isAdmin,
-          picture: decoded.picture,
         };
         userDispatch({ type: 'SET_USER', user: decodedUser });
+        userDispatch({ type: 'SET_USER_PICTURE', picture: userPicture ?? '' });
       }
     }
   }, [checkIfPageIsReload, pathname]);

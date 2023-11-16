@@ -54,6 +54,11 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
           };
           refreshPageAfterLogin === true ? window.location.reload() : '';
           userDispatch({ type: 'SET_USER', user: user });
+          userDispatch({
+            type: 'SET_USER_PICTURE',
+            picture: data.picture ?? '',
+          });
+
           sessionExpiredAuth
             ? appDispatch({
                 type: 'SET_USER_LOGGED_IN_AGAIN',

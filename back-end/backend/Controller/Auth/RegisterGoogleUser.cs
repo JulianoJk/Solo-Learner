@@ -59,6 +59,7 @@ public class RegisterGoogleUser
             _responseDict["id"] = additionalUserInfo?.Id.ToString();
             _responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
             _responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
+            _responseDict["picture"] = additionalUserInfo?.Picture.ToString();
 
             context.Response.StatusCode = StatusCodes.Status200OK;
             await context.Response.WriteAsJsonAsync(_responseDict);

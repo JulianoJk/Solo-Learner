@@ -56,7 +56,7 @@ const HeaderMegaMenu = () => {
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>();
-  const { user } = useUserState();
+  const { user, picture } = useUserState();
 
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -84,27 +84,6 @@ const HeaderMegaMenu = () => {
     },
     { enabled: !!user.token },
   );
-
-  // const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
-  //   useQuery(
-  //     ['getCurrentUser', userToken],
-  //     async () => {
-  //       if (user.token) {
-  //         const data = await getCurrentUser();
-  //         return data;
-  //       }
-  //       throw new Error('No token found');
-  //     },
-  //     {
-  //       onSuccess: (data) => {
-  //         if (data?.status === 'success') {
-  //           setCurrentUser(data.data);
-  //         }
-  //       },
-  //       enabled: !!user.token,
-  //     },
-  //   );
-
   useEffect(() => {
     if (pathname === '/profile') {
       useGetProfile(
@@ -131,10 +110,11 @@ const HeaderMegaMenu = () => {
   }, [pathname]);
   // TODO!: Add this to the useEffect above
   useDocumentTitle(documentTitle);
+
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
   const renderAvatar =
-    user.picture !== undefined
-      ? user.picture
+    picture !== undefined
+      ? picture
       : 'https://avatars.githubusercontent.com/u/47204253?v=4';
   return (
     <Box>
@@ -150,7 +130,6 @@ const HeaderMegaMenu = () => {
               </Box>
               <Group>
                 <ModeThemeButtonSmall />
-                <TokenExpirationChecker />
                 {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
                 {/* {isCurrentUserLoading ? <></> : <></>} */}
                 <Menu
@@ -195,7 +174,7 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {!currentUser?.isAdmin ? (
+                    {currentUser?.isAdmin ? (
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
