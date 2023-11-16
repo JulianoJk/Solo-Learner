@@ -11,6 +11,7 @@ interface IAppStateContext {
   userReLoggedIn: boolean;
   selectedAdminNavbar?: string;
   googleClientIsLoading?: boolean;
+  isAuthLoading?: boolean;
 }
 
 // Default state fot the Application context
@@ -24,6 +25,7 @@ const defaultState: IAppStateContext = {
   userReLoggedIn: false,
   selectedAdminNavbar: 'userManagment',
   googleClientIsLoading: false,
+  isAuthLoading: false,
 };
 type TApplicationAction =
   | {
@@ -59,6 +61,10 @@ type TApplicationAction =
       googleClientIsLoading: boolean;
     }
   | {
+      type: 'SET_AUTH_IS_LOADING';
+      isAuthLoading: boolean;
+    }
+  | {
       type: 'RESET_ERROR_MESSAGE';
     };
 
@@ -92,6 +98,8 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, selectedAdminNavbar: action.selectedAdminNavbar };
     case 'SET_GOOGLE_CLIENT_ID_IS_LOADING':
       return { ...state, googleClientIsLoading: action.googleClientIsLoading };
+    case 'SET_AUTH_IS_LOADING':
+      return { ...state, isAuthLoading: action.isAuthLoading };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }

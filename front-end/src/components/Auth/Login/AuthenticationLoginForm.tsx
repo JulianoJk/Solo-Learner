@@ -11,13 +11,15 @@ import {
   Stack,
   Center,
   Text,
+  Loader,
+  Title,
 } from '@mantine/core';
 import { useLogin } from '../../hooks/useLogin';
 import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
-// import { useGetGoogleClientId } from '../../hooks/useGetGoogleClientId';
+import { AppState } from '../../../context/AppContext';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -38,7 +40,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-
+  const { isAuthLoading } = AppState();
   const { login } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
@@ -66,83 +68,91 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
 
   return (
     <Center maw={600} mx="auto">
-      <Paper radius="md" p="xl" withBorder={hasBorder}>
-        <Text size="lg" weight={500} ta="center">
-          {loginTitle === undefined ||
-          (typeof loginTitle === 'string' && loginTitle.length === 0)
-            ? 'Welcome to Solo Learn, login with'
-            : loginTitle}
-        </Text>
+      {isAuthLoading ? (
+        <Stack align="center">
+          <Loader color="teal" size={400} />
 
-        <SocialButtons disableFacebook />
+          <Title>Loading...</Title>
+        </Stack>
+      ) : (
+        <Paper radius="md" p="xl" withBorder={hasBorder}>
+          <Text size="lg" weight={500} ta="center">
+            {loginTitle === undefined ||
+            (typeof loginTitle === 'string' && loginTitle.length === 0)
+              ? 'Welcome to Solo Learn, login with'
+              : loginTitle}
+          </Text>
 
-        <Divider
-          label="Or continue with email"
-          labelPosition="center"
-          my="lg"
-        />
+          <SocialButtons disableFacebook />
 
-        <form
-          className={classes.form}
-          onSubmit={form.onSubmit((value) => {
-            const { email, password } = value;
-            login(email, password);
-          })}
-        >
-          <Stack>
-            <TextInput
-              withAsterisk
-              label="Email"
-              placeholder="name@example.com"
-              value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue('email', event.currentTarget.value)
-              }
-              error={form.errors.email && 'Invalid email'}
-              radius="md"
-            />
+          <Divider
+            label="Or continue with email"
+            labelPosition="center"
+            my="lg"
+          />
 
-            <PasswordInput
-              withAsterisk
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue('password', event.currentTarget.value)
-              }
-              error={
-                form.errors.password &&
-                'Password should include at least 6 characters'
-              }
-              radius="md"
-            />
-          </Stack>
-          <Group position="apart" mt="xl">
-            {switchToRegister ? (
-              <Anchor
-                component="button"
-                type="button"
-                color="dimmed"
-                onClick={() => navigate('/register')}
-                size="xs"
-              >
-                Don't have an account?
-                <Text c="blue" span>
-                  &nbsp;Register
-                </Text>
-              </Anchor>
-            ) : (
-              children
-            )}
+          <form
+            className={classes.form}
+            onSubmit={form.onSubmit((value) => {
+              const { email, password } = value;
+              login(email, password);
+            })}
+          >
+            <Stack>
+              <TextInput
+                withAsterisk
+                label="Email"
+                placeholder="name@example.com"
+                value={form.values.email}
+                onChange={(event) =>
+                  form.setFieldValue('email', event.currentTarget.value)
+                }
+                error={form.errors.email && 'Invalid email'}
+                radius="md"
+              />
 
-            <Button type="submit" radius="xl" color="cyan">
-              Login
-            </Button>
-          </Group>
-        </form>
-        {/*Display error message if any*/}
-        <AlertComponent />
-      </Paper>
+              <PasswordInput
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                value={form.values.password}
+                onChange={(event) =>
+                  form.setFieldValue('password', event.currentTarget.value)
+                }
+                error={
+                  form.errors.password &&
+                  'Password should include at least 6 characters'
+                }
+                radius="md"
+              />
+            </Stack>
+            <Group position="apart" mt="xl">
+              {switchToRegister ? (
+                <Anchor
+                  component="button"
+                  type="button"
+                  color="dimmed"
+                  onClick={() => navigate('/register')}
+                  size="xs"
+                >
+                  Don't have an account?
+                  <Text c="blue" span>
+                    &nbsp;Register
+                  </Text>
+                </Anchor>
+              ) : (
+                children
+              )}
+
+              <Button type="submit" radius="xl" color="cyan">
+                Login
+              </Button>
+            </Group>
+          </form>
+          {/*Display error message if any*/}
+          <AlertComponent />
+        </Paper>
+      )}
     </Center>
   );
 };
