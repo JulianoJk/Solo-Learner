@@ -149,12 +149,7 @@ public static class JwtUtils
         );
     }
 
-    private static string GenerateSecurityToken(
-        string username,
-        string email,
-        string isTeacher,
-        string isAdmin
-    )
+    private static string GenerateSecurityToken(string username, string email, string isTeacher, string isAdmin)
     {
         var id = GetUserIdFromDB(email);
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -162,26 +157,31 @@ public static class JwtUtils
         var expires = DateTime.Now.AddMinutes(
             int.Parse(Environment.GetEnvironmentVariable("JWT_EXPIRES_IN_MINUTES") ?? "20")
         );
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(
-                new Claim[]
-                {
-                    new Claim("username", username),
-                    new Claim(ClaimTypes.Email, email),
-                    new Claim("isTeacher", isTeacher), // Pass the lowercase string here
-                    new Claim("isAdmin", isAdmin), // Pass the lowercase string here
-                    new Claim("id", id.ToString())
-                }
-            ),
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("username", username),
+                new Claim(ClaimTypes.Email, email),
+                new Claim("isTeacher", isTeacher), // Pass the lowercase string here
+                new Claim("isAdmin", isAdmin), // Pass the lowercase string here
+                new Claim("id", id.ToString())
+            }),
             Expires = expires,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
             )
         };
+
+        // Create and sign the token
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
+
+        // Log the generated token for debugging
+        Console.WriteLine($"Generated JWT: {jwtToken}");
+
         return jwtToken;
     }
 
