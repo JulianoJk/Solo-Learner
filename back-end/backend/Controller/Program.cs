@@ -21,18 +21,23 @@ builder.Services
     })
     .AddJwtBearer(options =>
     {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "localhost",
-            ValidAudience = "localhost",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey.Value)),
-            ClockSkew = TimeSpan.Zero
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(JwtKey.Value)
+            ),
+            ValidateIssuer = true,
+            ValidIssuer = "http://localhost:3001",
+            ValidateAudience = true,
+            ValidAudience = "http://localhost:3000",
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromMinutes(5) // Set a reasonable clock skew
         };
     });
+
 
 builder.Services.AddAuthorization();
 

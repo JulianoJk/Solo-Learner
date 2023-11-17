@@ -39,7 +39,7 @@ namespace backend
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.ASCII.GetBytes(Configuration["Jwt:Secret"])
+                            Encoding.ASCII.GetBytes(Configuration[JwtKey.Value])
                         ),
                         ValidateIssuer = true,
                         ValidIssuer = "http://localhost:3001",

@@ -57,7 +57,6 @@ public static class JwtUtils
             }
         }
 
-
         return false;
     }
 
@@ -95,7 +94,10 @@ public static class JwtUtils
         var token = tokenHandler.ReadJwtToken(jwt);
 
         // Check if the "exp" claim is present
-        if (token.Payload.TryGetValue("exp", out var expClaimValue) && expClaimValue is long expTimestamp)
+        if (
+            token.Payload.TryGetValue("exp", out var expClaimValue)
+            && expClaimValue is long expTimestamp
+        )
         {
             // Convert the exp timestamp to DateTime in local time
             var expDateTimeLocal = DateTimeOffset.FromUnixTimeSeconds(expTimestamp).LocalDateTime;
@@ -109,7 +111,6 @@ public static class JwtUtils
         // If "exp" claim is not present, consider the token as expired
         return true;
     }
-
 
     private static bool ValidateJwt(string jwt)
     {
@@ -149,7 +150,12 @@ public static class JwtUtils
         );
     }
 
-    private static string GenerateSecurityToken(string username, string email, string isTeacher, string isAdmin)
+    private static string GenerateSecurityToken(
+        string username,
+        string email,
+        string isTeacher,
+        string isAdmin
+    )
     {
         var id = GetUserIdFromDB(email);
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -160,19 +166,24 @@ public static class JwtUtils
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("username", username),
-                new Claim(ClaimTypes.Email, email),
-                new Claim("isTeacher", isTeacher), // Pass the lowercase string here
-                new Claim("isAdmin", isAdmin), // Pass the lowercase string here
-                new Claim("id", id.ToString())
-            }),
-            Expires = expires,
+            Subject = new ClaimsIdentity(
+                new Claim[]
+                {
+                    new Claim("username", username),
+                    new Claim(ClaimTypes.Email, email),
+                    new Claim("isTeacher", isTeacher), // Pass the lowercase string here
+                    new Claim("isAdmin", isAdmin), // Pass the lowercase string here
+                    new Claim("id", id.ToString()),
+                    new Claim(ClaimTypes.Role, "admin"),
+                }
+            ),
+            Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
-            )
+            ),
+            Issuer = "http://localhost:3001", // Set your issuer URL here
+            Audience = "http://localhost:3000",
         };
 
         // Create and sign the token
