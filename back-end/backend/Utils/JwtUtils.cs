@@ -177,7 +177,7 @@ public static class JwtUtils
                     new Claim(ClaimTypes.Role, "admin"),
                 }
             ),
-            Expires = DateTime.UtcNow.AddHours(1),
+            Expires = DateTime.Now.AddHours(1),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
