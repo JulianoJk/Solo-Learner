@@ -11,7 +11,6 @@ public class RegisterGoogleUser
         _responseDict = responseDict;
     }
 
-    // Rest of the class remains unchanged...
 
     public async Task HandleRegistrationRequest(
         HttpContext context,
@@ -20,8 +19,8 @@ public class RegisterGoogleUser
     )
     {
         string email = jwtData["email"];
-        string firstName = jwtData["given_name"];
-        string lastName = jwtData["family_name"];
+        string firstName = jwtData.TryGetValue("given_name", out string givenName) ? givenName : null;
+        string lastName = jwtData.TryGetValue("family_name", out string familyName) ? familyName : null;
         string username = jwtData["name"];
         bool isTeacher = IsTeacherEnv.Value.Contains(email);
         var (isTaken, newUsername) = _authenticator.IsUsernameTaken(username);

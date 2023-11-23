@@ -391,7 +391,7 @@ export const postGoogleLogin = async (code: string) => {
 
     const data = await response.json();
 
-    return data;
+    return { data, response };
   } catch (error) {
     console.error(error);
     return;

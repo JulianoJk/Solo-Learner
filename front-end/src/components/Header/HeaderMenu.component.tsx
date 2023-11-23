@@ -58,6 +58,11 @@ const HeaderMegaMenu = () => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>();
   const { user, picture } = useUserState();
+  console.log(
+    '🚀 ~ file: HeaderMenu.component.tsx:61 ~ user, picture:',
+    user,
+    picture,
+  );
 
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -186,10 +191,11 @@ const HeaderMegaMenu = () => {
                       <Group spacing={7}>
                         <Avatar
                           // TODO!: Change this
-                          src={renderAvatar}
+                          src={picture}
                           alt={currentUser?.username ?? 'learner'}
                           radius="xl"
                           size={30}
+                          imageProps={{ referrerPolicy: 'no-referrer' }}
                         />
                         <Text
                           className={classes.hiddenMobile}

@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useGoogleLogin } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
 import { useUserDispatch } from '../../context/UserContext';
 import { useAppDispatch } from '../../context/AppContext';
 import { isUndefinedOrNullString } from '../../utils/utils';
 import { notificationAlert } from '../notifications/NotificationAlert';
-import { IconCheck } from '@tabler/icons-react';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { postGoogleLogin } from '../api/api';
 
 export function useGoogleAuth() {
@@ -12,15 +13,24 @@ export function useGoogleAuth() {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
 
-  const handleGoogleAuthError = (error: any) => {
+  const handleGoogleAuthError = (
+    statusCode?: string | number,
+    statusText?: string,
+  ) => {
     appDispatch({
       type: 'SET_AUTH_IS_LOADING',
       isAuthLoading: false,
     });
-    console.error('Login error:', error);
-    appDispatch({
-      type: 'SET_ERROR_ALERT_MESSAGE',
-      errorAlertMessage: error.error.message || 'Something went wrong...',
+
+    notificationAlert({
+      // title: error ?? "Uh oh! Something's not right...",
+      title: statusCode?.toString() ?? "Uh oh! Something's not right...",
+      message:
+        statusText ??
+        'Please try again. If the problem persists, contact support. ',
+      icon: <IconX size={18} />,
+      iconColor: 'red',
+      closeAfter: 10000,
     });
   };
 
@@ -31,11 +41,12 @@ export function useGoogleAuth() {
     });
     const hasToken = isUndefinedOrNullString(token);
     if (hasToken) {
-      handleGoogleAuthError({ message: 'Something went wrong...' });
+      handleGoogleAuthError('Something went wrong...');
     } else {
       const user = {
         token: token,
       };
+
       userDispatch({ type: 'SET_USER', user });
       userDispatch({
         type: 'SET_USER_PICTURE',
@@ -61,12 +72,18 @@ export function useGoogleAuth() {
       try {
         const googleUserInfo = await postGoogleLogin(code);
 
-        const token = googleUserInfo?.id_token || googleUserInfo?.googleToken;
-
-        if (typeof googleUserInfo === 'object' && 'error' in googleUserInfo) {
-          handleGoogleAuthError(googleUserInfo.error.message);
+        if (
+          googleUserInfo?.response?.status !== undefined &&
+          googleUserInfo.response.status === 200
+        ) {
+          handleGoogleAuthSuccess(
+            googleUserInfo?.data?.id_token,
+            googleUserInfo.data,
+          );
         } else {
-          handleGoogleAuthSuccess(token, googleUserInfo);
+          const statusCodeError = `Error status code: ${googleUserInfo?.response?.status}`;
+          const statusTextError = `${googleUserInfo?.response?.statusText}. Try again or contact support.`;
+          handleGoogleAuthError(statusCodeError, statusTextError);
         }
 
         return googleUserInfo;
