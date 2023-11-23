@@ -36,6 +36,7 @@ import {
 } from 'react-router-dom';
 import {
   capitalString,
+  checkTokenValidity,
   isUndefinedOrNullString,
   isUserLoggedIn,
 } from '../../utils/utils';
@@ -72,6 +73,18 @@ const HeaderMegaMenu = () => {
   };
 
   const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
+  const isTokenExpired = checkTokenValidity(userToken);
+
+  const checkToken = () => {
+    if (userToken) {
+      localStorage.setItem('lastVisitedPath', location.pathname);
+
+      if (isUserLoggedIn() && isTokenExpired) {
+        navigate('/token-expiration');
+        //
+      }
+    }
+  };
 
   const { isLoading } = useQuery(
     ['authenticateUser', userToken],
@@ -84,7 +97,28 @@ const HeaderMegaMenu = () => {
     },
     { enabled: !!user.token },
   );
+  const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
+    useQuery(
+      ['getCurrentUser', userToken],
+      async () => {
+        if (user.token) {
+          const data = await getCurrentUser(user.token);
+          return data;
+        }
+        throw new Error('No token found');
+      },
+      {
+        onSuccess: (data) => {
+          if (data?.status === 'success') {
+            setCurrentUser(data.data);
+          }
+        },
+        enabled: !!user.token,
+      },
+    );
+
   useEffect(() => {
+    checkToken();
     if (pathname === '/profile') {
       useGetProfile(
         (UsernameFromPath === undefined
