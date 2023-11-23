@@ -5,104 +5,78 @@ import { useAppDispatch } from '../../context/AppContext';
 import { isUndefinedOrNullString } from '../../utils/utils';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck } from '@tabler/icons-react';
-import { useEffect, useRef, useState } from 'react';
+import { postGoogleLogin } from '../api/api';
 
 export function useGoogleAuth() {
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
 
-  const isMounted = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      isMounted.current = false;
-    };
-  }, []);
-
   const handleGoogleAuthError = (error: any) => {
-    if (isMounted.current) {
-      setLoading(false);
-      console.error('Login error:', error);
-      appDispatch({
-        type: 'SET_ERROR_ALERT_MESSAGE',
-        errorAlertMessage: error.error.message || 'Something went wrong...',
-      });
-    }
+    appDispatch({
+      type: 'SET_AUTH_IS_LOADING',
+      isAuthLoading: false,
+    });
+    console.error('Login error:', error);
+    appDispatch({
+      type: 'SET_ERROR_ALERT_MESSAGE',
+      errorAlertMessage: error.error.message || 'Something went wrong...',
+    });
   };
 
   const handleGoogleAuthSuccess = (token: string, data: any) => {
-    if (isMounted.current) {
-      setLoading(false);
-      const hasToken = isUndefinedOrNullString(token);
-      if (hasToken) {
-        handleGoogleAuthError({ message: 'Something went wrong...' });
-      } else {
-        const user = {
-          token: token,
-        };
-        userDispatch({ type: 'SET_USER', user });
-        userDispatch({
-          type: 'SET_USER_PICTURE',
-          picture: data.picture,
-        });
+    appDispatch({
+      type: 'SET_AUTH_IS_LOADING',
+      isAuthLoading: false,
+    });
+    const hasToken = isUndefinedOrNullString(token);
+    if (hasToken) {
+      handleGoogleAuthError({ message: 'Something went wrong...' });
+    } else {
+      const user = {
+        token: token,
+      };
+      userDispatch({ type: 'SET_USER', user });
+      userDispatch({
+        type: 'SET_USER_PICTURE',
+        picture: data.picture,
+      });
 
-        navigate('/home');
-        notificationAlert({
-          title: data.authMethod ?? 'Welcome!',
-          message: 'Congratulations! Your account has been created. ',
-          icon: <IconCheck size={18} />,
-          iconColor: 'teal',
-        });
-      }
+      navigate('/home');
+      notificationAlert({
+        title: data.authMethod ?? 'Welcome!',
+        message: 'Congratulations! Your account has been created. ',
+        icon: <IconCheck size={18} />,
+        iconColor: 'teal',
+      });
     }
   };
 
   const login = useGoogleLogin({
     onSuccess: async ({ code }) => {
+      appDispatch({
+        type: 'SET_AUTH_IS_LOADING',
+        isAuthLoading: true,
+      });
       try {
-        if (!isMounted.current) return;
+        const googleUserInfo = await postGoogleLogin(code);
 
-        const formData = new FormData();
-        formData.append('code', code);
+        const token = googleUserInfo?.id_token || googleUserInfo?.googleToken;
 
-        const response = await fetch('http://localhost:3001/signin-google', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!isMounted.current) return;
-
-        if (response.status === 200) {
-          const data = await response.json();
-          const token = data?.id_token || data?.googleToken;
-
-          if (typeof data === 'object' && 'error' in data) {
-            handleGoogleAuthError(data.error.message);
-          } else {
-            handleGoogleAuthSuccess(token, data);
-          }
-
-          return data;
+        if (typeof googleUserInfo === 'object' && 'error' in googleUserInfo) {
+          handleGoogleAuthError(googleUserInfo.error.message);
         } else {
-          console.error('Authentication failed:', response.statusText);
-          throw new Error('Authentication failed');
+          handleGoogleAuthSuccess(token, googleUserInfo);
         }
+
+        return googleUserInfo;
       } catch (error: any) {
-        if (isMounted.current) {
-          handleGoogleAuthError(error);
-          throw error;
-        }
+        handleGoogleAuthError(error);
+        throw error;
       }
     },
     flow: 'auth-code',
   });
-  useEffect(() => {
-    appDispatch({
-      type: 'SET_AUTH_IS_LOADING',
-      isAuthLoading: loading,
-    });
-  }, [loading, appDispatch]);
+
   return { login };
 }

@@ -381,17 +381,16 @@ export const getGoogleClientIdAPI = async () => {
 };
 export const postGoogleLogin = async (code: string) => {
   try {
-    const response = await fetch('http://localhost:3001/auth/google', {
+    const formData = new FormData();
+    formData.append('code', code);
+
+    const response = await fetch('http://localhost:3001/signin-google', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        code,
-      }),
+      body: formData,
     });
 
     const data = await response.json();
+
     return data;
   } catch (error) {
     console.error(error);

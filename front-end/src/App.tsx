@@ -61,6 +61,17 @@ const App = () => {
     }
   }, [window.location.pathname]);
 
+  const handleSessionExpired = async () => {
+    try {
+      const fetchedClientId = await getGoogleClientIdAPI();
+      setClientId(fetchedClientId);
+    } catch (error) {
+      console.error('Failed to fetch Google Client ID:', error);
+    } finally {
+      setLoadingClientId(false);
+    }
+  };
+
   useEffect(() => {
     const fetchGoogleClientId = async () => {
       try {
@@ -80,6 +91,7 @@ const App = () => {
     // Render a loading indicator or splash screen while fetching the client_id
     return <div>Loading...</div>;
   }
+
   return (
     <ColorSchemeProvider
       colorScheme={colorScheme}
@@ -175,7 +187,11 @@ const App = () => {
                           <Route path="/admin/dashboard" element={<Admin />} />
                           <Route
                             path="/token-expiration"
-                            element={<TokenExpirationChecker />}
+                            element={
+                              <TokenExpirationChecker
+                                onSessionExpired={handleSessionExpired}
+                              />
+                            }
                           />
                           <Route
                             path="/*"

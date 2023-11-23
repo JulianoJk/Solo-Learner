@@ -65,6 +65,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
                 userReLoggedIn: true,
               })
             : '';
+
           navigate(sessionExpiredAuth ? navigateTo : '/home');
           showNotification === false ? (
             <></>
