@@ -320,4 +320,28 @@ public static class JwtUtils
 
         return jwtData;
     }
+
+    public static bool IsUserLoggedIn(HttpContext context, out string navigateUser)
+    {
+        navigateUser = string.Empty;
+
+        // Get the authorization header from the request
+        string authHeader = context.Request.Headers["Authorization"];
+
+        // Check if the header is present and contains a valid JWT
+        if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
+        {
+            string jwt = authHeader.Substring("Bearer ".Length);
+
+            if (CheckToken(jwt))
+            {
+                // User is logged in
+                navigateUser = "/home"; // Customize the navigation path as needed
+                return true;
+            }
+        }
+
+        // User is not logged in
+        return false;
+    }
 }

@@ -8,6 +8,12 @@ const useStyles = createStyles((theme) => ({
         ? theme.colors.dark[3]
         : theme.colors.gray[1],
   },
+  description: {
+    color:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[3] + ' !important'
+        : theme.colors.gray[1] + ' !important',
+  },
 
   name: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -47,7 +53,7 @@ export function UserInfoIcons({
               size="1rem"
               className={classes.icon}
             />
-            <Text fz="sm" c="dimmed">
+            <Text fz="sm" fw={500} className={classes.description}>
               Member since: {displayDateJoined}!
             </Text>
           </Group>

@@ -397,3 +397,27 @@ export const postGoogleLogin = async (code: string) => {
     return;
   }
 };
+export const indexPage = async (
+  token?: string,
+): Promise<UserContextState | undefined> => {
+  try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${URL}`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data: UserContextState = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};

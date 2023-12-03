@@ -64,6 +64,7 @@ export function useGoogleAuth() {
   };
 
   const login = useGoogleLogin({
+    select_account: true,
     onSuccess: async ({ code }) => {
       appDispatch({
         type: 'SET_AUTH_IS_LOADING',

@@ -129,7 +129,6 @@ const RegisterNewUser = () => {
     // const res = await newReportAPI(updatedValues);
     // res.status === 'success' ? setIsSuccess(true) : setErrorResponse(res.data);
     // form.reset();
-    console.log(values);
   };
 
   return (
@@ -179,7 +178,6 @@ const RegisterNewUser = () => {
                 description="Press space for more options"
                 withAsterisk
                 onChange={(event: any) => {
-                  console.log(event.target.value.toString());
                   form.setFieldValue('time', event.target.value.toString());
                 }}
               />

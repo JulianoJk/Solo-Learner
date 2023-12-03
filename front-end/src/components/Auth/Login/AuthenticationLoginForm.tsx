@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from '@mantine/form';
 import {
   TextInput,
@@ -20,6 +20,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AppState } from '../../../context/AppContext';
+import { indexPage } from '../../api/api';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -47,6 +48,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
   });
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const form = useForm({
     initialValues: {
@@ -65,10 +67,39 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     },
     validateInputOnChange: true,
   });
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      console.log('HElloasdas');
 
+      try {
+        // Retrieve the JWT token from local storage
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        // If the token is present, pass it to the authentication function
+        if (jwtToken) {
+          const response: any = await indexPage(jwtToken);
+
+          // If the user is logged in, navigate to the specified path
+          if (response && response.navigateUser) {
+            navigate(response.navigateUser);
+          }
+        } else {
+          // Token is not present, continue with loading
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to check authentication:', error);
+      } finally {
+        // Set loading to false once authentication check is complete
+        setLoading(false);
+      }
+    };
+
+    checkAuthentication();
+  }, [navigate]);
   return (
     <Center maw={600} mx="auto">
-      {isAuthLoading ? (
+      {isAuthLoading || loading ? (
         <Stack align="center">
           <Loader color="teal" size={400} />
 

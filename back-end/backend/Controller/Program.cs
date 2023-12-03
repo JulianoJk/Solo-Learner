@@ -51,19 +51,34 @@ app.MapGet(
     "/",
     async (HttpContext context) =>
     {
-        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
+        string navigateUser;
 
-        if (isValidJwt)
+        if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
         {
-            await context.Response.WriteAsync("This is index route!");
+            // User is logged in
+            context.Response.StatusCode = StatusCodes.Status200OK;
+
+            // Include additional property for navigation
+            var response = new
+            {
+                status = "success",
+                message = "User is logged in.",
+                navigateUser = navigateUser
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
         }
         else
         {
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync("Unauthorized.");
+            // User is not logged in
+            var response = new { status = "success", message = "User is NOT LOGGED IN" };
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            await context.Response.WriteAsJsonAsync(response);
         }
     }
 );
+
+
 app.MapGet(
     "/users/checkToken",
     async (HttpContext context) =>
@@ -84,24 +99,59 @@ app.MapGet(
     }
 );
 
-app.MapPost(
-    "/users/login",
-    async (HttpContext context) =>
+app.MapPost("/users/login", async context =>
+{
+    string navigateUser;
+
+    if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
     {
+        // User is already logged in
+        context.Response.StatusCode = StatusCodes.Status200OK;
+
+        // Include additional property for navigation
+        var response = new
+        {
+            status = "success",
+            message = "User is already logged in.",
+            navigateUser = navigateUser
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
+    }
+    else
+    {
+        // User is not logged in, handle login logic
         LoginUser loginUser = new LoginUser();
         await loginUser.HandleLoginRequest(context);
     }
-);
+});
 
-app.MapPost(
-    "/users/register",
-    (HttpContext context) =>
+app.MapPost("/users/register", async context =>
+{
+    string navigateUser;
+
+    if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
     {
-        RegisterUser registerUser = new();
-        registerUser.HandleRegistrationRequest(context);
-        return Task.CompletedTask;
+        // User is already logged in
+        context.Response.StatusCode = StatusCodes.Status200OK;
+
+        // Include additional property for navigation
+        var response = new
+        {
+            status = "success",
+            message = "User is already logged in.",
+            navigateUser = navigateUser
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
     }
-);
+    else
+    {
+        // User is not logged in, handle registration logic
+        RegisterUser registerUser = new RegisterUser();
+        await registerUser.HandleRegistrationRequest(context);
+    }
+});
 
 // TODO!: Share client google token
 app.MapGet(

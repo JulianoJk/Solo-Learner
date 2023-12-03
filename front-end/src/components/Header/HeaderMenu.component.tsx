@@ -36,9 +36,11 @@ import {
 } from 'react-router-dom';
 import {
   capitalString,
+  checkIfPageIsReload,
   checkTokenValidity,
   isUndefinedOrNullString,
   isUserLoggedIn,
+  saveProfileImageAfterReload,
 } from '../../utils/utils';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
@@ -46,8 +48,9 @@ import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
 import { authenticateAPI, getCurrentUser } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
-import { User } from '../../Model/UserModels';
+import { IUserInfoContext, User } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
+import jwtDecode from 'jwt-decode';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -58,12 +61,6 @@ const HeaderMegaMenu = () => {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [currentUser, setCurrentUser] = useState<User>();
   const { user, picture } = useUserState();
-  console.log(
-    '🚀 ~ file: HeaderMenu.component.tsx:61 ~ user, picture:',
-    user,
-    picture,
-  );
-
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -86,12 +83,11 @@ const HeaderMegaMenu = () => {
 
       if (isUserLoggedIn() && isTokenExpired) {
         navigate('/token-expiration');
-        //
       }
     }
   };
 
-  const { isLoading } = useQuery(
+  const { isLoading, data: authanticateUser } = useQuery(
     ['authenticateUser', userToken],
     async () => {
       if (user.token) {
@@ -102,25 +98,30 @@ const HeaderMegaMenu = () => {
     },
     { enabled: !!user.token },
   );
-  const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
-    useQuery(
-      ['getCurrentUser', userToken],
-      async () => {
-        if (user.token) {
-          const data = await getCurrentUser(user.token);
-          return data;
+
+  const {
+    isFetched: isCurrentUserFetched,
+    isLoading: isCurrentUserLoading,
+    data,
+  } = useQuery(
+    ['getCurrentUser', userToken],
+    async () => {
+      if (user.token) {
+        const data = await getCurrentUser(user.token);
+        return data;
+      }
+      throw new Error('No token found');
+    },
+    {
+      onSuccess: (data) => {
+        if (data?.status === 'success') {
+          setCurrentUser(data.data);
         }
-        throw new Error('No token found');
       },
-      {
-        onSuccess: (data) => {
-          if (data?.status === 'success') {
-            setCurrentUser(data.data);
-          }
-        },
-        enabled: !!user.token,
-      },
-    );
+      enabled: !!user.token,
+    },
+  );
+  console.log(data);
 
   useEffect(() => {
     checkToken();
@@ -155,12 +156,19 @@ const HeaderMegaMenu = () => {
     picture !== undefined
       ? picture
       : 'https://avatars.githubusercontent.com/u/47204253?v=4';
+  console.log(currentUser?.isAdmin);
+
   return (
     <Box>
       <Header height={60} px="md" className={classes.headerRoot}>
         <Group position="apart" sx={{ height: '100%' }}>
           {isUserLoggedIn() ? (
             <>
+              <TokenExpirationChecker
+                onSessionExpired={function (): void {
+                  throw new Error('Function not implemented.');
+                }}
+              ></TokenExpirationChecker>
               <Box
                 sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
                 onClick={() => navigateUserTo(logoNavigation)}
@@ -214,7 +222,7 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {currentUser?.isAdmin ? (
+                    {!currentUser?.isAdmin ? (
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item

@@ -27,7 +27,7 @@ import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
 import Home from './components/Pages/Home/Home';
-import Index from './components/Pages/Index/Index';
+import IndexPage from './components/Pages/Index/IndexPage';
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
 import Profile from './components/Pages/Profile/Profile';
@@ -91,6 +91,100 @@ const App = () => {
     // Render a loading indicator or splash screen while fetching the client_id
     return <div>Loading...</div>;
   }
+  const filterRoutes = () => {
+    const commonRoutes = [
+      <Route key="/" path="/" element={<IndexPage />} />,
+      <Route
+        key="/login"
+        path="/login"
+        element={
+          <AuthenticationLoginForm
+            hasBorder
+            switchToRegister
+            showNotification
+          />
+        }
+      />,
+      <Route
+        key="/register"
+        path="/register"
+        element={
+          <AuthenticationRegisterForm
+            displaySocialButtons
+            hasBorder
+            switchToLogin
+            showNotification
+            refreshPageAfterRegister
+          />
+        }
+      />,
+    ];
+
+    if (isUserLoggedIn()) {
+      const protectedRoutes = [
+        <Route key="/home" path="/home" element={<Home />} />,
+        <Route
+          key="/profile/:username"
+          path="/profile/:username"
+          element={<Profile />}
+        />,
+        <Route key="/settings" path="/settings" element={<Settings />} />,
+        <Route
+          key="/delete-account"
+          path="/delete-account"
+          element={<DeleteAccount />}
+        />,
+        <Route
+          key="/learning-units/grammar"
+          path="/learning-units/grammar"
+          element={<Grammar />}
+        />,
+        <Route
+          key="/learning-units/theory"
+          path="/learning-units/theory"
+          element={<Theory />}
+        />,
+        <Route
+          key="/learning-units/vocabulary"
+          path="/learning-units/vocabulary"
+          element={<Vocabulary />}
+        />,
+        <Route
+          key="/learning-units/exercises"
+          path="/learning-units/exercises"
+          element={<Exercises />}
+        />,
+        <Route
+          key="/admin/dashboard"
+          path="/admin/dashboard"
+          element={<Admin />}
+        />,
+        <Route
+          key="/token-expiration"
+          path="/token-expiration"
+          element={
+            <TokenExpirationChecker onSessionExpired={handleSessionExpired} />
+          }
+        />,
+      ];
+
+      return [...commonRoutes, ...protectedRoutes];
+    } else {
+      return [
+        ...commonRoutes,
+        <Route
+          key="/not-found"
+          path="/*"
+          element={
+            <NotFound
+              navigationPath={isUserLoggedIn() ? '/home' : '/'}
+              statusNumber={404}
+            />
+          }
+        />,
+      ];
+    }
+  };
 
   return (
     <ColorSchemeProvider
@@ -134,77 +228,7 @@ const App = () => {
                   <AccountSettingsContextProvider>
                     <AppShell padding="md" header={<HeaderMenu />}>
                       <GoogleOAuthProvider clientId={clientId}>
-                        <Routes>
-                          <Route path="/" element={<Index />} />
-                          <Route
-                            path="/login"
-                            element={
-                              <AuthenticationLoginForm
-                                hasBorder
-                                switchToRegister
-                                showNotification
-                              />
-                            }
-                          />
-                          <Route
-                            path="/register"
-                            element={
-                              <AuthenticationRegisterForm
-                                displaySocialButtons
-                                hasBorder
-                                switchToLogin
-                                showNotification
-                                refreshPageAfterRegister
-                              />
-                            }
-                          />
-                          <Route path="/home" element={<Home />} />
-                          <Route
-                            path="/profile/:username"
-                            element={<Profile />}
-                          />
-                          <Route path="/settings" element={<Settings />} />
-                          <Route
-                            path="/delete-account"
-                            element={<DeleteAccount />}
-                          />
-                          <Route
-                            path="/learning-units/grammar"
-                            element={<Grammar />}
-                          />
-                          <Route
-                            path="/learning-units/theory"
-                            element={<Theory />}
-                          />
-                          <Route
-                            path="/learning-units/vocabulary"
-                            element={<Vocabulary />}
-                          />
-                          <Route
-                            path="/learning-units/exercises"
-                            element={<Exercises />}
-                          />
-                          <Route path="/admin/dashboard" element={<Admin />} />
-                          <Route
-                            path="/token-expiration"
-                            element={
-                              <TokenExpirationChecker
-                                onSessionExpired={handleSessionExpired}
-                              />
-                            }
-                          />
-                          <Route
-                            path="/*"
-                            element={
-                              <NotFound
-                                navigationPath={
-                                  isUserLoggedIn() ? '/home' : '/'
-                                }
-                                statusNumber={404}
-                              />
-                            }
-                          />
-                        </Routes>
+                        <Routes>{filterRoutes()}</Routes>
                       </GoogleOAuthProvider>
                     </AppShell>
                   </AccountSettingsContextProvider>
