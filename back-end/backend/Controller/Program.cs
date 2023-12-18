@@ -152,6 +152,29 @@ app.MapPost("/users/register", async context =>
         await registerUser.HandleRegistrationRequest(context);
     }
 });
+app.MapPost("/admin/dashboard/register-new-user", async context =>
+{
+    if (JwtUtils.IsUserLoggedIn(context, out _))
+    {
+        // User is already logged in
+        context.Response.StatusCode = StatusCodes.Status200OK;
+
+        // Include additional property for navigation
+        var response = new
+        {
+            status = "success",
+            message = "User is already logged in.",
+        };
+
+        await context.Response.WriteAsJsonAsync(response);
+    }
+    else
+    {
+        // User is not logged in, handle registration logic
+        RegisterUser registerUser = new RegisterUser();
+        await registerUser.HandleRegistrationRequest(context);
+    }
+});
 
 // TODO!: Share client google token
 app.MapGet(
@@ -269,6 +292,8 @@ app.MapGet(
     async (HttpContext context) =>
     {
         bool isValidJwt = JwtUtils.AuthenticateJwt(context);
+        Console.WriteLine("isValidJwt: " + isValidJwt);
+        Console.WriteLine("JwtUtils.GetUserIsAdmin(context): " + JwtUtils.GetUserIsAdmin(context));
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
             AdminController adminController = new AdminController();

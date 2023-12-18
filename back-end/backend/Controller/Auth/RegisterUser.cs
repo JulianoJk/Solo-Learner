@@ -41,8 +41,14 @@ public class RegisterUser
         {
             if (string.IsNullOrWhiteSpace(username))
             {
+                if (registerModel.isTeacher)
+                {
+                    isTeacher = registerModel.isTeacher;
+                }
+
                 // Generate a unique username based on the email
                 username = GetDefaultUsername(email);
+
 
                 if (username == null)
                 {

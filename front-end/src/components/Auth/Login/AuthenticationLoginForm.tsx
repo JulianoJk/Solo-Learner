@@ -26,7 +26,6 @@ interface ILoginProps {
   children?: React.ReactNode;
   switchToRegister?: boolean;
   pathToNavigateAfterLogin?: string;
-  refreshPageAfterLogin?: boolean;
   hasBorder?: boolean;
   loginTitle?: string | React.ReactNode;
   showNotification?: boolean;

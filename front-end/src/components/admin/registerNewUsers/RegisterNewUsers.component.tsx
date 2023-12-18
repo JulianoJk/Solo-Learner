@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { useForm } from '@mantine/form';
 import { DateInput, TimeInput } from '@mantine/dates';
 import { useDisclosure } from '@mantine/hooks';
+import AuthenticationRegisterForm from '../../Auth/Login/AuthenticationRegisterForm';
 
 const RegisterNewUser = () => {
   const [isOtherClicked, toogleIsOtherClicked] = useDisclosure(false);
@@ -134,7 +135,7 @@ const RegisterNewUser = () => {
   return (
     <Center>
       <Card sx={{ width: 1100, border: '1px solid black' }}>
-        <ScrollArea h={600}>
+        {/* <ScrollArea h={600}>
           <form onSubmit={form.onSubmit(onReportSubmit)}>
             <Box>
               <Title
@@ -470,7 +471,14 @@ const RegisterNewUser = () => {
               </Button>
             </Group>
           </form>
-        </ScrollArea>
+        </ScrollArea> */}
+        <AuthenticationRegisterForm
+          registerTitle={'Register new users'}
+          switchToLogin={false}
+          displaySocialButtons={false}
+          showNotification={true}
+          isAdminRegister={true}
+        ></AuthenticationRegisterForm>
       </Card>
     </Center>
   );

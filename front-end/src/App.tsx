@@ -114,7 +114,7 @@ const App = () => {
             hasBorder
             switchToLogin
             showNotification
-            refreshPageAfterRegister
+            isAdminRegister={false}
           />
         }
       />,

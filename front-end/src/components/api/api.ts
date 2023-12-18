@@ -86,6 +86,50 @@ export const registerAPI = async ({
     } as IApiError;
   }
 };
+export const adminRegisterUserAPI = async ({
+  email,
+  username,
+  gender,
+  password,
+  confirmPassword,
+}: {
+  email: string;
+  username: string;
+  gender: string;
+  password: string;
+  confirmPassword: string;
+}): Promise<IUserInfoContext | IApiError> => {
+  try {
+    const response = await fetch(`${URL}admin/dashboard/register-new-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        username,
+        gender,
+        password,
+        confirmPassword,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
+
+    const data: IUserInfoContext = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
+  }
+};
 
 export const adminDashboardAPI = async (token: string) => {
   try {

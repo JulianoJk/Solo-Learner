@@ -23,12 +23,12 @@ import { SocialButtons } from '../../SocialButtons/SocialButtons';
 interface IRegisterProps {
   children?: React.ReactNode;
   switchToLogin?: boolean;
-  pathToNavigateAfterRegister?: string;
-  refreshPageAfterRegister?: boolean;
   hasBorder?: boolean;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
   displaySocialButtons?: boolean;
+
+  isAdminRegister?: boolean;
 }
 
 const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
@@ -38,8 +38,11 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     children,
     registerTitle,
     displaySocialButtons,
+
+    isAdminRegister,
   } = props;
-  const { register, isLoading: isRegisterLoading } = useRegister();
+  const { register, isLoading: isRegisterLoading } =
+    useRegister(isAdminRegister);
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
 
@@ -50,18 +53,19 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
       gender: '',
       password: '',
       confirmPassword: '',
-      terms: false,
+      terms: isAdminRegister ? true : false,
     },
 
     validate: {
       email: isEmail('Invalid email'),
       password: hasLength({ min: 6 }, 'Value must be 6 or more'),
       confirmPassword: isNotEmpty('You must accept terms of use'),
-      terms: isNotEmpty('You must accept terms of use'),
+      terms: isAdminRegister
+        ? undefined
+        : isNotEmpty('You must accept terms of use'),
     },
     validateInputOnChange: true,
   });
-  console.log(form.values.gender);
 
   return (
     <Center maw={600} mx="auto">
@@ -72,13 +76,16 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             ? 'Welcome to Solo Learn, register with'
             : registerTitle}
         </Text>
-        {displaySocialButtons && <SocialButtons disableFacebook />}
-
-        <Divider
-          label="Or continue with email"
-          labelPosition="center"
-          my="lg"
-        />
+        {displaySocialButtons && (
+          <>
+            <SocialButtons disableFacebook />
+            <Divider
+              label="Or continue with email"
+              labelPosition="center"
+              my="lg"
+            />
+          </>
+        )}
 
         <form
           className={classes.form}
@@ -148,14 +155,16 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
                 <Radio value="other" label="Other" />
               </Group>
             </Radio.Group>
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              error={form.errors.terms && 'You must accept terms of use'}
-              onChange={(event) =>
-                form.setFieldValue('terms', event.currentTarget.checked)
-              }
-            />
+            {!isAdminRegister && (
+              <Checkbox
+                label="I accept terms and conditions"
+                checked={form.values.terms}
+                error={form.errors.terms && 'You must accept terms of use'}
+                onChange={(event) =>
+                  form.setFieldValue('terms', event.currentTarget.checked)
+                }
+              />
+            )}
           </Stack>
 
           <Group position="apart" mt="xl">

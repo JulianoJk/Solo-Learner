@@ -35,6 +35,7 @@ export function useGoogleAuth() {
   };
 
   const handleGoogleAuthSuccess = (token: string, data: any) => {
+    window.location.reload();
     appDispatch({
       type: 'SET_AUTH_IS_LOADING',
       isAuthLoading: false,

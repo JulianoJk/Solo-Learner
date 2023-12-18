@@ -159,7 +159,6 @@ const TokenExpirationChecker: React.FC<TokenExpirationCheckerProps> = ({
         <AuthenticationLoginForm
           switchToRegister={false}
           pathToNavigateAfterLogin={pathname}
-          refreshPageAfterLogin={true}
           sessionExpiredAuth={true}
           loginTitle={
             <Text size="lg" weight={650} ta="center">

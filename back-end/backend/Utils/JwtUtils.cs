@@ -368,8 +368,8 @@ public static class JwtUtils
 
         return jwtData;
     }
-
-    public static bool IsUserLoggedIn(HttpContext context, out string navigateUser)
+    
+    public static bool IsUserLoggedIn(HttpContext context, out string? navigateUser)
     {
         navigateUser = string.Empty;
 
