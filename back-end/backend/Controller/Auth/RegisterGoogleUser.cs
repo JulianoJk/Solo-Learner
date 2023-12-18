@@ -44,8 +44,6 @@ public class RegisterGoogleUser
             picture // Pass the picture parameter
         );
 
-        // Add debugging statement
-        Console.WriteLine($"AuthenticateUser result: {AreCredentialsCorrect}");
 
         if (AreCredentialsCorrect)
         {

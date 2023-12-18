@@ -24,9 +24,12 @@ public class ProfileController
         {
             reader.Read();
             bool isTeacher = (bool)reader["isTeacher"];
-            bool IsAdmin = (bool)reader["isAdmin"];
-            string picture = (string)reader["picture"];
 
+            // Check for DBNull before casting isAdmin
+            bool isAdmin = DBNull.Value.Equals(reader["isAdmin"]) ? false : (bool)reader["isAdmin"];
+
+            // Check for DBNull before casting picture
+            string picture = DBNull.Value.Equals(reader["picture"]) ? string.Empty : (string)reader["picture"];
 
             User user =
                 new()
@@ -34,7 +37,7 @@ public class ProfileController
                     Id = (int)reader["id"],
                     Username = (string)reader["username"],
                     IsTeacher = isTeacher,
-                    IsAdmin = IsAdmin,
+                    IsAdmin = isAdmin,
                     CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
                     Picture = picture
                 };
@@ -45,6 +48,7 @@ public class ProfileController
         reader.Close();
         return null;
     }
+
 
     public async Task GetProfile(HttpContext context, string username)
     {

@@ -101,9 +101,6 @@ public static class JwtUtils
         {
             // Convert the exp timestamp to DateTime in local time
             var expDateTimeLocal = DateTimeOffset.FromUnixTimeSeconds(expTimestamp).LocalDateTime;
-            Console.WriteLine($"Token expiration date: {expDateTimeLocal}");
-            Console.WriteLine($"Current date: {DateTime.Now}");
-
             // Check if the token has expired
             return expDateTimeLocal < DateTime.Now;
         }
@@ -291,11 +288,21 @@ public static class JwtUtils
             var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                var token = tokenHandler.ReadJwtToken(jwt);
-                var isAdminClaim = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
-                if (isAdminClaim != null)
+                if (IsGoogleToken(jwt))
                 {
-                    return bool.Parse(isAdminClaim.Value);
+                    var userEmail = GetUserEmailFromGoogleJwt(jwt);
+                    var isAdmin = GetUserIsAdminFromDb(userEmail);
+
+                    return isAdmin ?? false; // Return the role from the database or default to false
+                }
+                else
+                {
+                    var token = tokenHandler.ReadJwtToken(jwt);
+                    var isAdminClaim = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
+                    if (isAdminClaim != null)
+                    {
+                        return bool.Parse(isAdminClaim.Value);
+                    }
                 }
             }
             catch (Exception ex)
@@ -305,6 +312,47 @@ public static class JwtUtils
         }
 
         return false;
+    }
+
+    private static string GetUserEmailFromGoogleJwt(string jwt)
+    {
+        try
+        {
+            var payload = GoogleJsonWebSignature.ValidateAsync(jwt).Result;
+            return payload?.Email;
+        }
+        catch (InvalidJwtException)
+        {
+            // The token is not a valid Google token.
+        }
+
+        return null;
+    }
+
+    private static bool? GetUserIsAdminFromDb(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+        {
+            return null; // Invalid email or unable to retrieve it
+        }
+
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+            using var command = new MySqlCommand(
+                "SELECT isAdmin FROM users WHERE email=@Email",
+                connection
+            );
+            command.Parameters.AddWithValue("@Email", email);
+            var result = command.ExecuteScalar();
+
+            if (result != null && result != DBNull.Value)
+            {
+                return Convert.ToBoolean(result);
+            }
+        }
+
+        return null; // User not found or isAdmin is NULL in the database
     }
 
     public static Dictionary<string, string> ExtractJwtData(string jwt)
