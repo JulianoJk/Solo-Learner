@@ -41,12 +41,25 @@ public class AdminAccountDeletionController
         // Verify the JWT token and check if the user is an admin
         bool isValidJwt = JwtUtils.AuthenticateJwt(context);
         bool isAdmin = JwtUtils.GetUserIsAdmin(context);
+        int? currentUserId = JwtUtils.GetUserId(JwtUtils.GetUserEmailFromJwt(context));
 
-        if (!isValidJwt || !isAdmin)
+        if (!isValidJwt || !isAdmin || userIdInt == currentUserId)
         {
             // Return an error response with a 401 (Unauthorized) status code
             var response = new { error = new { message = "Unauthorized" } };
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(response);
+            return;
+        }
+
+        // Check if the account being deleted is an admin
+        bool isAccountAdmin = _database.GetIsAdminFromDatabase(userIdInt.ToString());
+
+        if (isAccountAdmin)
+        {
+            // Return an error response with a 403 (Forbidden) status code
+            var response = new { error = new { message = "Cannot delete an admin account." } };
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
             await context.Response.WriteAsJsonAsync(response);
             return;
         }

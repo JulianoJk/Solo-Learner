@@ -27,7 +27,7 @@ interface IRegisterProps {
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
   displaySocialButtons?: boolean;
-
+  adminRefetchUserList?: () => void;
   isAdminRegister?: boolean;
 }
 
@@ -90,6 +90,9 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
+            isAdminRegister &&
+              props.adminRefetchUserList &&
+              props.adminRefetchUserList();
             const { email, username, gender, password, confirmPassword } =
               value;
             register({ email, username, gender, password, confirmPassword });

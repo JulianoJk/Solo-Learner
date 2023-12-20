@@ -77,6 +77,7 @@ const Admin = () => {
   const {
     isLoading: isAdminGetAllUsersLoading,
     isError: isAdminGetAllUsersError,
+    refetch: refetchAllUsersForDashboard,
   } = useQuery(
     ['adminGetAllUsersAPI', user.token],
     async () => {
@@ -174,7 +175,7 @@ const Admin = () => {
                   : theme.fn.linearGradient(7, '#303233'),
             }}
           >
-            <RegisterNewUser />
+            <RegisterNewUser refetchUserList={refetchAllUsersForDashboard} />
           </Box>
         );
       default:
