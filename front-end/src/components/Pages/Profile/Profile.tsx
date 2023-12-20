@@ -35,13 +35,13 @@ const Profile: React.FC = () => {
   const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
 
   const data = {
-    avatar: userProfileData?.user.picture ?? '',
+    picture: userProfileData?.user.picture ?? '',
     role: userRole,
     userName: upperFirst(displayUsername as string),
     displayDateJoined: displayDateJoined,
   };
   const instructionData = {
-    avatar: '',
+    picture: '',
     name: 'Jane Fingerlicker',
     email: 'randomEmail@me.io',
     job: 'Art director',
@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
             Your Amazing Instructor &#10024;
           </Title>
           <InstructorProfileCard
-            avatar={instructionData.avatar}
+            picture={instructionData.picture}
             name={instructionData.name}
             email={instructionData.email}
             job={instructionData.job}

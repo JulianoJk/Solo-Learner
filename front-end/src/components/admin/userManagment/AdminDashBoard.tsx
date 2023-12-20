@@ -152,6 +152,7 @@ const UsersTable = ({ data }: UsersTableProps) => {
       });
     }
   };
+  console.log(allUsers.map((user) => user));
 
   const rows = allUsers
     .filter((user) => user.id !== currentUser?.data?.id)
@@ -159,7 +160,7 @@ const UsersTable = ({ data }: UsersTableProps) => {
       <tr key={item.username}>
         <td>
           <Group spacing="sm">
-            <Avatar size={30} src={item.avatar} radius={30} />
+            <Avatar size={30} src={item.picture} radius={30} />
             <Anchor
               component="button"
               size="sm"

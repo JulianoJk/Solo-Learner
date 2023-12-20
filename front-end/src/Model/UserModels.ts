@@ -83,7 +83,7 @@ export interface User {
   isTeacher: boolean;
   createdAt: string;
   updatedAt: string;
-  avatar?: string;
+  picture?: string;
   lastActive: string;
   lastActiveDate?: string;
   lastActiveTime?: string;

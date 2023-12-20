@@ -42,7 +42,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
         <Group spacing="sm">
           <Avatar
             size={40}
-            src={row.avatar}
+            src={row.picture}
             radius={40}
             color={getRandomColor()}
           />
