@@ -89,7 +89,10 @@ export interface User {
   lastActiveTime?: string;
   formattedLastActive?: string; // New property for formatted last active
 }
-
+export interface fetchUserList {
+  status: string;
+  data: User;
+}
 export interface GetUsersListResponse {
   status: string;
   users: User[];

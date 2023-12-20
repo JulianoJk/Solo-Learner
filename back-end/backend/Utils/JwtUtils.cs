@@ -1,6 +1,7 @@
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using backend;
 using MySql.Data.MySqlClient;
@@ -12,18 +13,37 @@ public static class JwtUtils
     {
         if (!IsJwtExpired(token))
         {
+            if (HasServerIssuer(token) && ValidateJwt(token))
+            {
+                return true; // Token is validated using ValidateJwt
+            }
+
             if (HasGoogleIssuer(token) && IsGoogleToken(token))
             {
                 return true; // Token is from Google
-            }
-            else if (ValidateJwt(token))
-            {
-                return true; // Token is validated using ValidateJwt
             }
         }
 
         return false;
     }
+
+    private static bool HasServerIssuer(string token)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            // Check if the token has an issuer and it is from your server
+            return jwtToken?.Issuer == "http://localhost:3001"; // Update with your server's issuer
+        }
+        catch
+        {
+            // Handle exceptions if necessary
+            return false;
+        }
+    }
+
 
     private static bool HasGoogleIssuer(string token)
     {
@@ -135,6 +155,7 @@ public static class JwtUtils
         return true;
     }
 
+
     public static string GenerateJwt(string username, string email, bool isTeacher, bool isAdmin)
     {
         // Implement your user authentication logic here
@@ -182,14 +203,8 @@ public static class JwtUtils
             Issuer = "http://localhost:3001", // Set your issuer URL here
             Audience = "http://localhost:3000",
         };
-
-        // Create and sign the token
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
-
-        // Log the generated token for debugging
-        Console.WriteLine($"Generated JWT: {jwtToken}");
-
         return jwtToken;
     }
 
@@ -288,21 +303,11 @@ public static class JwtUtils
             var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                if (IsGoogleToken(jwt))
+                var token = tokenHandler.ReadJwtToken(jwt);
+                var isUserAdmin = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
+                if (isUserAdmin != null)
                 {
-                    var userEmail = GetUserEmailFromGoogleJwt(jwt);
-                    var isAdmin = GetUserIsAdminFromDb(userEmail);
-
-                    return isAdmin ?? false; // Return the role from the database or default to false
-                }
-                else
-                {
-                    var token = tokenHandler.ReadJwtToken(jwt);
-                    var isAdminClaim = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
-                    if (isAdminClaim != null)
-                    {
-                        return bool.Parse(isAdminClaim.Value);
-                    }
+                    return bool.Parse(isUserAdmin.Value);
                 }
             }
             catch (Exception ex)
@@ -313,6 +318,7 @@ public static class JwtUtils
 
         return false;
     }
+
 
     private static string GetUserEmailFromGoogleJwt(string jwt)
     {
@@ -368,7 +374,7 @@ public static class JwtUtils
 
         return jwtData;
     }
-    
+
     public static bool IsUserLoggedIn(HttpContext context, out string? navigateUser)
     {
         navigateUser = string.Empty;

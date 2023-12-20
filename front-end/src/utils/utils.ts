@@ -95,10 +95,8 @@ export const checkTokenValidity = (token: string | null): boolean => {
     // If token is falsy (null or undefined)
     return false;
   }
-
   try {
     const decoded: any = jwtDecode(token);
-
     const isExpired = decoded.exp < Date.now() / 1000;
     return isExpired;
   } catch (error) {

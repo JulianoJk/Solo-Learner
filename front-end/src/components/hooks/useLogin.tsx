@@ -46,7 +46,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
           const user: IUserInfoContext = {
             token: data?.token,
           };
-          window.location.reload();
+          // window.location.reload();
           userDispatch({ type: 'SET_USER', user: user });
           userDispatch({
             type: 'SET_USER_PICTURE',

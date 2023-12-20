@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Avatar,
   Badge,
@@ -27,15 +28,17 @@ import {
   IApiError,
   IApiMessageResponse,
   User,
+  fetchUserList,
 } from '../../../Model/UserModels';
 import { useNavigate } from 'react-router-dom';
 import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../context/AppContext';
 import { notificationAlert } from '../../notifications/NotificationAlert';
-import { adminDeleteUserAccount } from '../../api/api';
+import { adminDeleteUserAccount, getCurrentUser } from '../../api/api';
 import { useUserState } from '../../../context/UserContext';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useGetCurrentUser } from '../../hooks/useGetCurrentUser';
 
 interface UsersTableProps {
   data: User[];
@@ -54,10 +57,13 @@ const UsersTable = ({ data }: UsersTableProps) => {
   const { user: AdminUser } = useUserState();
   const appDispatch = useAppDispatch();
   const [allUsers, setAllUsers] = useState(data);
+  const [currentUser, setCurrentUser] = useState<fetchUserList>();
+
   const [currentSelectedUser, setCurrentSelectedUser] = useState<
     number | undefined
   >();
   const [search, setSearch] = useState('');
+  // const { isLoading: isCurrentUserLoading } = useQuery(
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -72,9 +78,12 @@ const UsersTable = ({ data }: UsersTableProps) => {
   };
   const handleEditButton = () => {
     // TODO!: Add edit user modal
-    console.log('user.id');
+    // console.log('user.id');
   };
-
+  const currentFetchedUser = useGetCurrentUser(AdminUser.token);
+  useEffect(() => {
+    setCurrentUser(currentFetchedUser?.data);
+  }, [currentFetchedUser.isFetched]);
   const { mutate: deleteAccount } = useMutation(adminDeleteUserAccount, {
     onSuccess: (data: IApiMessageResponse | IApiError) => {
       if (typeof data === 'object' && 'error' in data) {
@@ -96,15 +105,15 @@ const UsersTable = ({ data }: UsersTableProps) => {
       }
     },
   });
-  const isCurrentUser = (user: User) => {
-    if (AdminUser.id === undefined) return false;
+  // const isCurrentUser = (user: User) => {
+  //   if (AdminUser.id === undefined) return false;
 
-    if (user.id === parseInt(AdminUser.id)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  //   if (user.id === parseInt(AdminUser.id)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
   const handleDeleteUser = (user: User) => {
     if (user.id !== undefined) {
       setCurrentSelectedUser(user.id);
@@ -145,7 +154,7 @@ const UsersTable = ({ data }: UsersTableProps) => {
   };
 
   const rows = allUsers
-    .filter((item) => !isCurrentUser(item))
+    .filter((user) => user.id !== currentUser?.data?.id)
     .map((item) => (
       <tr key={item.username}>
         <td>

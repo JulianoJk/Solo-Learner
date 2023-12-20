@@ -141,7 +141,6 @@ public class ProfileController
 
         if (isTaken)
         {
-            Console.WriteLine();
             // Return an error response with a 409 status code
             var response = new { error = new { message = "Username is already taken." } };
             context.Response.StatusCode = StatusCodes.Status409Conflict;

@@ -68,8 +68,6 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
   });
   useEffect(() => {
     const checkAuthentication = async () => {
-      console.log('HElloasdas');
-
       try {
         // Retrieve the JWT token from local storage
         const jwtToken = localStorage.getItem('jwtToken');

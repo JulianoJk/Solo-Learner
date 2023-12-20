@@ -26,9 +26,7 @@ builder.Services
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.ASCII.GetBytes(JwtKey.Value)
-            ),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtKey.Value)),
             ValidateIssuer = true,
             ValidIssuer = "http://localhost:3001",
             ValidateAudience = true,
@@ -37,7 +35,6 @@ builder.Services
             ClockSkew = TimeSpan.FromMinutes(5) // Set a reasonable clock skew
         };
     });
-
 
 builder.Services.AddAuthorization();
 
@@ -78,7 +75,6 @@ app.MapGet(
     }
 );
 
-
 app.MapGet(
     "/users/checkToken",
     async (HttpContext context) =>
@@ -99,82 +95,87 @@ app.MapGet(
     }
 );
 
-app.MapPost("/users/login", async context =>
-{
-    string navigateUser;
-
-    if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
+app.MapPost(
+    "/users/login",
+    async context =>
     {
-        // User is already logged in
-        context.Response.StatusCode = StatusCodes.Status200OK;
+        string navigateUser;
 
-        // Include additional property for navigation
-        var response = new
+        if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
         {
-            status = "success",
-            message = "User is already logged in.",
-            navigateUser = navigateUser
-        };
+            // User is already logged in
+            context.Response.StatusCode = StatusCodes.Status200OK;
 
-        await context.Response.WriteAsJsonAsync(response);
-    }
-    else
-    {
-        // User is not logged in, handle login logic
-        LoginUser loginUser = new LoginUser();
-        await loginUser.HandleLoginRequest(context);
-    }
-});
+            // Include additional property for navigation
+            var response = new
+            {
+                status = "success",
+                message = "User is already logged in.",
+                navigateUser = navigateUser
+            };
 
-app.MapPost("/users/register", async context =>
-{
-    string navigateUser;
-
-    if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
-    {
-        // User is already logged in
-        context.Response.StatusCode = StatusCodes.Status200OK;
-
-        // Include additional property for navigation
-        var response = new
+            await context.Response.WriteAsJsonAsync(response);
+        }
+        else
         {
-            status = "success",
-            message = "User is already logged in.",
-            navigateUser = navigateUser
-        };
-
-        await context.Response.WriteAsJsonAsync(response);
+            // User is not logged in, handle login logic
+            LoginUser loginUser = new LoginUser();
+            await loginUser.HandleLoginRequest(context);
+        }
     }
-    else
-    {
-        // User is not logged in, handle registration logic
-        RegisterUser registerUser = new RegisterUser();
-        await registerUser.HandleRegistrationRequest(context);
-    }
-});
-app.MapPost("/admin/dashboard/register-new-user", async context =>
-{
-    if (JwtUtils.IsUserLoggedIn(context, out _))
-    {
-        // User is already logged in
-        context.Response.StatusCode = StatusCodes.Status200OK;
+);
 
-        // Include additional property for navigation
-        var response = new
+app.MapPost(
+    "/users/register",
+    async context =>
+    {
+        string navigateUser;
+
+        if (JwtUtils.IsUserLoggedIn(context, out navigateUser))
         {
-            status = "success",
-            message = "User is already logged in.",
-        };
+            // User is already logged in
+            context.Response.StatusCode = StatusCodes.Status200OK;
 
-        await context.Response.WriteAsJsonAsync(response);
+            // Include additional property for navigation
+            var response = new
+            {
+                status = "success",
+                message = "User is already logged in.",
+                navigateUser = navigateUser
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+        else
+        {
+            // User is not logged in, handle registration logic
+            RegisterUser registerUser = new RegisterUser();
+            await registerUser.HandleRegistrationRequest(context);
+        }
     }
-    else
+);
+app.MapPost(
+    "/admin/dashboard/register-new-user",
+    async context =>
     {
-        // User is not logged in, handle registration logic
-        RegisterUser registerUser = new RegisterUser();
-        await registerUser.HandleRegistrationRequest(context);
+        if (JwtUtils.IsUserLoggedIn(context, out _))
+        {
+            // User is already logged in
+            context.Response.StatusCode = StatusCodes.Status200OK;
+
+            // Include additional property for navigation
+            var response = new { status = "success", message = "User is already logged in.", };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+        else
+        {
+            // User is not logged in, handle registration logic
+            RegisterUser registerUser = new RegisterUser();
+            await registerUser.HandleRegistrationRequest(context);
+        }
     }
-});
+);
 
 // TODO!: Share client google token
 app.MapGet(
@@ -292,8 +293,6 @@ app.MapGet(
     async (HttpContext context) =>
     {
         bool isValidJwt = JwtUtils.AuthenticateJwt(context);
-        Console.WriteLine("isValidJwt: " + isValidJwt);
-        Console.WriteLine("JwtUtils.GetUserIsAdmin(context): " + JwtUtils.GetUserIsAdmin(context));
         if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
         {
             AdminController adminController = new AdminController();

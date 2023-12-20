@@ -46,11 +46,12 @@ import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import { authenticateAPI, getCurrentUser } from '../api/api';
+import { authenticateAPI } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
-import { IUserInfoContext, User } from '../../Model/UserModels';
+import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 import jwtDecode from 'jwt-decode';
+import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -59,7 +60,7 @@ const HeaderMegaMenu = () => {
   const { pathname } = useLocation();
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User>();
+  const [currentUser, setCurrentUser] = useState<fetchUserList>();
   const { user, picture } = useUserState();
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
@@ -76,6 +77,10 @@ const HeaderMegaMenu = () => {
 
   const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
   const isTokenExpired = checkTokenValidity(userToken);
+  const currentFetchedUser = useGetCurrentUser(userToken);
+  useEffect(() => {
+    setCurrentUser(currentFetchedUser?.data);
+  }, [currentFetchedUser.isFetched]);
 
   const checkToken = () => {
     if (userToken) {
@@ -99,36 +104,13 @@ const HeaderMegaMenu = () => {
     { enabled: !!user.token },
   );
 
-  const {
-    isFetched: isCurrentUserFetched,
-    isLoading: isCurrentUserLoading,
-    data,
-  } = useQuery(
-    ['getCurrentUser', userToken],
-    async () => {
-      if (user.token) {
-        const data = await getCurrentUser(user.token);
-        return data;
-      }
-      throw new Error('No token found');
-    },
-    {
-      onSuccess: (data) => {
-        if (data?.status === 'success') {
-          setCurrentUser(data.data);
-        }
-      },
-      enabled: !!user.token,
-    },
-  );
-  console.log(data);
-
   useEffect(() => {
     checkToken();
+
     if (pathname === '/profile') {
       useGetProfile(
         (UsernameFromPath === undefined
-          ? currentUser?.username !== undefined
+          ? currentUser?.data?.username !== undefined
             ? user.username
             : ''
           : UsernameFromPath) as string,
@@ -156,7 +138,6 @@ const HeaderMegaMenu = () => {
     picture !== undefined
       ? picture
       : 'https://avatars.githubusercontent.com/u/47204253?v=4';
-  console.log(currentUser?.isAdmin);
 
   return (
     <Box>
@@ -200,7 +181,7 @@ const HeaderMegaMenu = () => {
                         <Avatar
                           // TODO!: Change this
                           src={picture}
-                          alt={currentUser?.username ?? 'learner'}
+                          alt={currentUser?.data?.username ?? 'learner'}
                           radius="xl"
                           size={30}
                           imageProps={{ referrerPolicy: 'no-referrer' }}
@@ -214,7 +195,7 @@ const HeaderMegaMenu = () => {
                         >
                           {isLoading === false
                             ? // {isLoading === false && isCurrentUserFetched
-                              upperFirst(currentUser?.username as string)
+                              upperFirst(currentUser?.data?.username as string)
                             : 'learner'}
                         </Text>
                         <IconChevronDown size={rem(12)} stroke={1.5} />
@@ -222,7 +203,7 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {!currentUser?.isAdmin ? (
+                    {!currentUser?.data?.isAdmin ? (
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
@@ -244,7 +225,8 @@ const HeaderMegaMenu = () => {
                         <Menu.Item
                           icon={<IconSettings size="0.9rem" stroke={1.5} />}
                           onClick={() => {
-                            navigateUserTo('/settings');
+                            // navigateUserTo('/settings');
+                            useGetCurrentUser(user.token);
                           }}
                         >
                           Account settings
