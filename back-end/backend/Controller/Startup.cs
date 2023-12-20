@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Text;
 
 namespace backend
@@ -24,10 +22,7 @@ namespace backend
             {
                 options.AddPolicy(
                     "AllowAll",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-                    }
+                    builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }
                 );
             });
 
@@ -44,16 +39,18 @@ namespace backend
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.ASCII.GetBytes(Configuration["Jwt:Secret"])
+                            Encoding.ASCII.GetBytes(Configuration[JwtKey.Value])
                         ),
                         ValidateIssuer = true,
-                        ValidIssuer = "localhost", // Replace with your issuer
+                        ValidIssuer = "http://localhost:3001",
                         ValidateAudience = true,
-                        ValidAudience = "my-api", // Replace with your audience
+                        ValidAudience = "http://localhost:3000",
                         ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero // Set clock skew to zero to require exp claim
+                        ClockSkew = TimeSpan.FromMinutes(5) // Set a reasonable clock skew
                     };
                 });
+
+            services.AddAuthorization();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -67,21 +64,11 @@ namespace backend
 
             app.UseCors("AllowAll");
 
-            app.Use(
-                async (context, next) =>
-                {
-                    await next();
-                }
-            );
-
             app.UseAuthentication();
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

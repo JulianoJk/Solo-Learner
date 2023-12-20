@@ -19,6 +19,7 @@
     "@mantine/spotlight": "^6.0.8",
     "@mantine/tiptap": "^6.0.8",
     "@noxyseras/react-ui-components": "^0.2.2",
+    "@react-oauth/google": "^0.11.1",
     "@tabler/icons-react": "^2.17.0",
     "@tanstack/react-query": "^4.10.3",
     "@tanstack/react-query-devtools": "^4.11.0",

@@ -9,7 +9,6 @@ import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck } from '@tabler/icons-react';
 
 interface ILoginMutationProps {
-  refreshPageAfterLogin?: boolean;
   showNotification?: boolean;
   navigateTo: string;
   sessionExpiredAuth?: boolean;
@@ -23,12 +22,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
-  const {
-    refreshPageAfterLogin,
-    navigateTo,
-    showNotification,
-    sessionExpiredAuth,
-  } = props;
+  const { navigateTo, showNotification, sessionExpiredAuth } = props;
   const { mutate, isLoading } = useMutation<
     IUserInfoContext | IApiError,
     unknown,
@@ -52,14 +46,20 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
           const user: IUserInfoContext = {
             token: data?.token,
           };
-          refreshPageAfterLogin === true ? window.location.reload() : '';
+          // window.location.reload();
           userDispatch({ type: 'SET_USER', user: user });
+          userDispatch({
+            type: 'SET_USER_PICTURE',
+            picture: data.picture ?? '',
+          });
+
           sessionExpiredAuth
             ? appDispatch({
                 type: 'SET_USER_LOGGED_IN_AGAIN',
                 userReLoggedIn: true,
               })
             : '';
+
           navigate(sessionExpiredAuth ? navigateTo : '/home');
           showNotification === false ? (
             <></>

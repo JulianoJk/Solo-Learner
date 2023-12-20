@@ -24,32 +24,6 @@ const Admin = () => {
   const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
   const [allUsersList, setAllUsersList] = useState<User[]>([]);
   const theme = useMantineTheme();
-  const avatarData = [
-    {
-      avatar:
-        'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-    {
-      avatar:
-        'https://images.unsplash.com/photo-1586297135537-94bc9ba060aa?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-    {
-      avatar:
-        'https://images.unsplash.com/photo-1632922267756-9b71242b1592?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-    {
-      avatar:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-    {
-      avatar:
-        'https://images.unsplash.com/photo-1630841539293-bd20634c5d72?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-  ];
-  const getRandomAvatar = () => {
-    const randomIndex = Math.floor(Math.random() * avatarData.length);
-    return avatarData[randomIndex].avatar;
-  };
   const { isLoading: isAdminDashBoardLoading, isError: isAdminDashBoardError } =
     useQuery(
       ['getAdminDashboardItems', user.token],
@@ -77,6 +51,7 @@ const Admin = () => {
   const {
     isLoading: isAdminGetAllUsersLoading,
     isError: isAdminGetAllUsersError,
+    refetch: refetchAllUsersForDashboard,
   } = useQuery(
     ['adminGetAllUsersAPI', user.token],
     async () => {
@@ -93,13 +68,11 @@ const Admin = () => {
     {
       enabled: !!user.token,
       onSuccess: (data) => {
+        
         if (data?.status === 'success') {
-          const updatedUsers = data.users.map((user) => ({
-            ...user,
-            avatar: getRandomAvatar(),
-          }));
+          console.log(data.users);
           setAllUsersList(
-            formatLastActive(updatedUsers, LastActiveFormat.CUSTOM),
+            formatLastActive(data.users, LastActiveFormat.CUSTOM),
           );
           setIsAllUsersSuccess(true);
         } else {
@@ -174,7 +147,7 @@ const Admin = () => {
                   : theme.fn.linearGradient(7, '#303233'),
             }}
           >
-            <RegisterNewUser />
+            <RegisterNewUser refetchUserList={refetchAllUsersForDashboard} />
           </Box>
         );
       default:

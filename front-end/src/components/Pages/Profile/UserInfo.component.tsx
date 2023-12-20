@@ -8,6 +8,12 @@ const useStyles = createStyles((theme) => ({
         ? theme.colors.dark[3]
         : theme.colors.gray[1],
   },
+  description: {
+    color:
+      theme.colorScheme === 'dark'
+        ? theme.colors.dark[3] + ' !important'
+        : theme.colors.gray[1] + ' !important',
+  },
 
   name: {
     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
@@ -15,14 +21,14 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface UserInfoIconsProps {
-  avatar: string;
+  picture: string;
   userName: string;
   role: string;
   displayDateJoined: string | Date | null | undefined;
 }
 
 export function UserInfoIcons({
-  avatar,
+  picture,
   userName,
   role,
   displayDateJoined,
@@ -31,7 +37,7 @@ export function UserInfoIcons({
   return (
     <div>
       <Group noWrap>
-        <Avatar src={avatar} size={94} radius="md" />
+        <Avatar src={picture} size={94} radius="md" />
         <div>
           <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
             {role}
@@ -47,7 +53,7 @@ export function UserInfoIcons({
               size="1rem"
               className={classes.icon}
             />
-            <Text fz="sm" c="dimmed">
+            <Text fz="sm" fw={500} className={classes.description}>
               Member since: {displayDateJoined}!
             </Text>
           </Group>

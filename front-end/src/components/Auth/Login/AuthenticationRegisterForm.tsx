@@ -12,22 +12,23 @@ import {
   Stack,
   Center,
   Text,
+  Radio,
 } from '@mantine/core';
 import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
-import { SocialButtonsUnavailable } from '../SocialButtonsUnavailable';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
 
 interface IRegisterProps {
   children?: React.ReactNode;
   switchToLogin?: boolean;
-  pathToNavigateAfterRegister?: string;
-  refreshPageAfterRegister?: boolean;
   hasBorder?: boolean;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
   displaySocialButtons?: boolean;
+  adminRefetchUserList?: () => void;
+  isAdminRegister?: boolean;
 }
 
 const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
@@ -37,8 +38,11 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     children,
     registerTitle,
     displaySocialButtons,
+
+    isAdminRegister,
   } = props;
-  const { register, isLoading: isRegisterLoading } = useRegister();
+  const { register, isLoading: isRegisterLoading } =
+    useRegister(isAdminRegister);
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
 
@@ -46,19 +50,23 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     initialValues: {
       email: '',
       username: '',
+      gender: '',
       password: '',
       confirmPassword: '',
-      terms: false,
+      terms: isAdminRegister ? true : false,
     },
 
     validate: {
       email: isEmail('Invalid email'),
       password: hasLength({ min: 6 }, 'Value must be 6 or more'),
       confirmPassword: isNotEmpty('You must accept terms of use'),
-      terms: isNotEmpty('You must accept terms of use'),
+      terms: isAdminRegister
+        ? undefined
+        : isNotEmpty('You must accept terms of use'),
     },
     validateInputOnChange: true,
   });
+
   return (
     <Center maw={600} mx="auto">
       <Paper radius="md" p="xl" withBorder={hasBorder}>
@@ -68,19 +76,26 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
             ? 'Welcome to Solo Learn, register with'
             : registerTitle}
         </Text>
-        {displaySocialButtons && <SocialButtonsUnavailable />}
-
-        <Divider
-          label="Or continue with email"
-          labelPosition="center"
-          my="lg"
-        />
+        {displaySocialButtons && (
+          <>
+            <SocialButtons disableFacebook />
+            <Divider
+              label="Or continue with email"
+              labelPosition="center"
+              my="lg"
+            />
+          </>
+        )}
 
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            const { email, username, password, confirmPassword } = value;
-            register({ email, username, password, confirmPassword });
+            isAdminRegister &&
+              props.adminRefetchUserList &&
+              props.adminRefetchUserList();
+            const { email, username, gender, password, confirmPassword } =
+              value;
+            register({ email, username, gender, password, confirmPassword });
           })}
         >
           <Stack>
@@ -131,15 +146,28 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
               error={form.errors.confirmPassword && 'Passwords do not match'}
               radius="md"
             />
-
-            <Checkbox
-              label="I accept terms and conditions"
-              checked={form.values.terms}
-              error={form.errors.terms && 'You must accept terms of use'}
-              onChange={(event) =>
-                form.setFieldValue('terms', event.currentTarget.checked)
-              }
-            />
+            <Radio.Group
+              name="gender"
+              label="Select gender"
+              withAsterisk
+              {...form.getInputProps('gender')}
+            >
+              <Group mt="xs">
+                <Radio value="male" label="Male" />
+                <Radio value="female" label="Female" />
+                <Radio value="other" label="Other" />
+              </Group>
+            </Radio.Group>
+            {!isAdminRegister && (
+              <Checkbox
+                label="I accept terms and conditions"
+                checked={form.values.terms}
+                error={form.errors.terms && 'You must accept terms of use'}
+                onChange={(event) =>
+                  form.setFieldValue('terms', event.currentTarget.checked)
+                }
+              />
+            )}
           </Stack>
 
           <Group position="apart" mt="xl">

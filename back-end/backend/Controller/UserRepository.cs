@@ -65,7 +65,7 @@ namespace backend
             await context.Response.WriteAsJsonAsync(response);
         }
 
-        protected async Task<User?> GetCurrentUserFromDatabase(string email)
+        protected async Task<CurrentUser?> GetCurrentUserFromDatabase(string email)
         {
             MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
             MySqlCommand command = new MySqlCommand(
@@ -81,7 +81,7 @@ namespace backend
                 bool isTeacher = (bool)reader["isTeacher"];
                 bool IsAdmin = (bool)reader["isAdmin"];
 
-                User user = new User
+                CurrentUser currentUser = new CurrentUser
                 {
                     Id = (int)reader["id"],
                     Email = (string)reader["email"],
@@ -91,8 +91,9 @@ namespace backend
                     CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
                 };
                 reader.Close();
-                return user;
+                return currentUser;
             }
+
             reader.Close();
             return null;
         }

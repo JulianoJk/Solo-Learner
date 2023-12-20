@@ -17,13 +17,19 @@ const Home: React.FC = () => {
     isLoading,
     isError,
     isFetched,
-  } = useQuery(['authenticateUser', user.token], async () => {
-    if (user.token) {
-      const data = await authenticateAPI(user.token);
-      return data;
-    }
-    throw new Error('No token found');
-  });
+  } = useQuery(
+    ['authenticateUser', user.token],
+    async () => {
+      if (user.token) {
+        const data = await authenticateAPI(user.token);
+        return data;
+      }
+      throw new Error('No token found');
+    },
+    {
+      enabled: !!user.token.trim(),
+    },
+  );
 
   if (
     isFetched &&
