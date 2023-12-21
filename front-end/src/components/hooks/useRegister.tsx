@@ -22,6 +22,7 @@ interface IRegisterMutationState {
 
 export const useRegister = (
   isAdminRegister?: boolean,
+  adminRefetchUserList?: () => void,
 ): IRegisterMutationState => {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
@@ -36,6 +37,11 @@ export const useRegister = (
             errorAlertMessage: data.error.message,
           });
         } else if (isAdminRegister) {
+          userDispatch({
+            type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING',
+            isAllUsersAdminDashboardLoading: isLoading,
+          });
+          adminRefetchUserList && adminRefetchUserList();
           notificationAlert({
             title: 'Successful registration!',
             message: 'Congratulations! User was registered! ',

@@ -31,21 +31,21 @@ interface IRegisterProps {
   isAdminRegister?: boolean;
 }
 
-const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
-  const {
-    hasBorder,
-    switchToLogin,
-    children,
-    registerTitle,
-    displaySocialButtons,
-
+const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
+  hasBorder,
+  switchToLogin,
+  children,
+  registerTitle,
+  displaySocialButtons,
+  adminRefetchUserList,
+  isAdminRegister,
+}) => {
+  const { register, isLoading: isRegisterLoading } = useRegister(
     isAdminRegister,
-  } = props;
-  const { register, isLoading: isRegisterLoading } =
-    useRegister(isAdminRegister);
+    adminRefetchUserList,
+  );
   const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
-
   const form = useForm({
     initialValues: {
       email: '',
@@ -66,7 +66,6 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
     },
     validateInputOnChange: true,
   });
-
   return (
     <Center maw={600} mx="auto">
       <Paper radius="md" p="xl" withBorder={hasBorder}>
@@ -90,9 +89,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = (props) => {
         <form
           className={classes.form}
           onSubmit={form.onSubmit((value) => {
-            isAdminRegister &&
-              props.adminRefetchUserList &&
-              props.adminRefetchUserList();
+            isAdminRegister && adminRefetchUserList && adminRefetchUserList();
             const { email, username, gender, password, confirmPassword } =
               value;
             register({ email, username, gender, password, confirmPassword });

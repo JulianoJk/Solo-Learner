@@ -103,3 +103,14 @@ export const checkTokenValidity = (token: string | null): boolean => {
     return false;
   }
 };
+export function getJob(isAdmin: boolean, isTeacher: boolean) {
+  if (isAdmin && isTeacher) {
+    return 'admin/teacher';
+  } else if (isAdmin) {
+    return 'admin';
+  } else if (isTeacher) {
+    return 'teacher';
+  } else {
+    return 'student';
+  }
+}

@@ -1,159 +1,90 @@
-import React, { useState } from 'react';
-import { useUserState } from '../../context/UserContext';
+import React, { useEffect, useState } from 'react';
+import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
-// import { NavBar } from '../navBar/NavBar.component';
-import { Box, Loader, Stack, Title, useMantineTheme } from '@mantine/core';
+import { Box } from '@mantine/core';
 import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
-
 import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
-import { User } from '../../Model/UserModels';
 import { AdminNavBar } from '../navBar/AdminNavBar.component';
-import { AppState } from '../../context/AppContext';
 import UsersTable from './userManagment/AdminDashBoard';
+import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
+import { AppState } from '../../context/AppContext';
 import {
   LastActiveFormat,
   formatLastActive,
 } from '../../utils/formattedLastActive';
-import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 
 const Admin = () => {
   const { user } = useUserState();
   const { selectedAdminNavbar } = AppState();
-  const [isDashBoardSuccess, setIsDashBoardSuccess] = useState(false);
+  const userDispatch = useUserDispatch();
+
   const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
-  const [allUsersList, setAllUsersList] = useState<User[]>([]);
-  const theme = useMantineTheme();
-  const { isLoading: isAdminDashBoardLoading, isError: isAdminDashBoardError } =
-    useQuery(
-      ['getAdminDashboardItems', user.token],
-      async () => {
-        if (user.token) {
-          const data = await adminDashboardAPI(user.token);
-          return data;
-        }
-        throw new Error('No token found');
-      },
-      {
-        enabled: !!user.token,
-        onSuccess: (data) => {
-          if (data?.status === 'success') {
-            setIsDashBoardSuccess(true);
-          } else {
-            setIsDashBoardSuccess(false);
-          }
-        },
-        onError: () => {
-          setIsDashBoardSuccess(false);
-        },
-      },
-    );
-  const {
-    isLoading: isAdminGetAllUsersLoading,
-    isError: isAdminGetAllUsersError,
-    refetch: refetchAllUsersForDashboard,
-  } = useQuery(
+
+  const { data: adminDashboardData, isLoading: isAdminLoading } = useQuery(
+    ['getAdminDashboardItems', user.token],
+    async () => {
+      if (!user.token) throw new Error('No token found');
+      const data = await adminDashboardAPI(user.token);
+      if (data?.status === 'success') {
+        setIsAllUsersSuccess(true);
+      } else {
+        setIsAllUsersSuccess(false);
+      }
+      return data;
+    },
+    { enabled: !!user.token },
+  );
+
+  const { refetch: refetchAllUsers } = useQuery(
     ['adminGetAllUsersAPI', user.token],
     async () => {
-      if (user.token) {
-        const data = await adminGetAllUsersAPI(user.token);
-        if (data?.status === 'success') {
-          setAllUsersList(formatLastActive(data.users, LastActiveFormat.FULL));
-        }
-        return data;
-      }
-      throw new Error('No token found');
-    },
-
-    {
-      enabled: !!user.token,
-      onSuccess: (data) => {
-        
-        if (data?.status === 'success') {
-          console.log(data.users);
-          setAllUsersList(
-            formatLastActive(data.users, LastActiveFormat.CUSTOM),
-          );
-          setIsAllUsersSuccess(true);
-        } else {
-          setIsAllUsersSuccess(false);
-        }
-      },
-
-      onError: () => {
+      if (!user.token) throw new Error('No token found');
+      const data = await adminGetAllUsersAPI(user.token);
+      if (data?.status === 'success') {
+        userDispatch({ type: 'REMOVE_ALL_ADMIN_DASHBOARD_USERS' });
+        userDispatch({
+          type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
+          allUsersAdminDashboard: formatLastActive(
+            data.users,
+            LastActiveFormat.CUSTOM,
+          ),
+        });
+        setIsAllUsersSuccess(true);
+      } else {
         setIsAllUsersSuccess(false);
-      },
+      }
+      return data;
     },
+    { enabled: !!user.token },
   );
-  if (!user.token) {
-    return <NotFound navigationPath={'/'} />;
-  }
 
-  if (isAdminDashBoardLoading || isAdminGetAllUsersLoading) {
-    return (
-      <Stack align="center">
-        <Loader color="teal" size={400} />
+  useEffect(() => {
+    userDispatch({
+      type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING',
+      isAllUsersAdminDashboardLoading: isAdminLoading,
+    });
+  }, [isAdminLoading]);
 
-        <Title>Loading...</Title>
-      </Stack>
-    );
-  }
+  if (!user.token) return <NotFound navigationPath={'/'} />;
 
-  if (
-    isAdminGetAllUsersError ||
-    isAdminDashBoardError ||
-    !isDashBoardSuccess ||
-    !isAllUsersSuccess
-  ) {
+  if (isAdminLoading || adminDashboardData?.isError || !isAllUsersSuccess) {
     return <NotFound navigationPath={'/home'} />;
   }
 
   const renderComponentToDisplay = () => {
     switch (selectedAdminNavbar) {
       case 'userManagment':
-        return (
-          <Box
-            sx={{
-              backgroundImage:
-                theme.colorScheme === 'light'
-                  ? theme.fn.linearGradient(7, '#64b4f655') //OR "#4CAF50", "#2196F3"
-                  : theme.fn.linearGradient(7, '#303233'),
-            }}
-          >
-            <UsersTable data={allUsersList} />
-          </Box>
-        );
-
+        return <UsersTable />;
       case 'billing':
-        return (
-          <Box
-            sx={{
-              backgroundImage:
-                theme.colorScheme === 'light'
-                  ? theme.fn.linearGradient(7, '#64b4f655') //OR "#4CAF50", "#2196F3"
-                  : theme.fn.linearGradient(7, '#303233'),
-            }}
-          >
-            <StudentmanagmentTable data={allUsersList}></StudentmanagmentTable>
-          </Box>
-        );
+        return <StudentmanagmentTable />;
       case 'register_new_user':
-        return (
-          <Box
-            sx={{
-              backgroundImage:
-                theme.colorScheme === 'light'
-                  ? theme.fn.linearGradient(7, '#64b4f655') //OR "#4CAF50", "#2196F3"
-                  : theme.fn.linearGradient(7, '#303233'),
-            }}
-          >
-            <RegisterNewUser refetchUserList={refetchAllUsersForDashboard} />
-          </Box>
-        );
+        return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       default:
-        break;
+        return null;
     }
   };
+
   return (
     <Box>
       <AdminNavBar />

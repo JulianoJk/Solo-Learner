@@ -28,6 +28,8 @@ export interface UserContextState {
   user: IUserInfoContext;
   status: string;
   picture?: string;
+  allUsersAdminDashboard: User[];
+  isAllUsersAdminDashboardLoading: boolean;
 }
 // Type for the action for the context
 export type TUserAction =
@@ -42,6 +44,17 @@ export type TUserAction =
   | {
       picture: string;
       type: 'SET_USER_PICTURE';
+    }
+  | {
+      type: 'SET_ALL_ADMIN_DASHBOARD_USERS';
+      allUsersAdminDashboard: User[];
+    }
+  | {
+      type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING';
+      isAllUsersAdminDashboardLoading: boolean;
+    }
+  | {
+      type: 'REMOVE_ALL_ADMIN_DASHBOARD_USERS';
     }
   | ResetAction;
 // Reset everything

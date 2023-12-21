@@ -52,6 +52,7 @@ import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
+import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();

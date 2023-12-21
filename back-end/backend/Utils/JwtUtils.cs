@@ -44,7 +44,6 @@ public static class JwtUtils
         }
     }
 
-
     private static bool HasGoogleIssuer(string token)
     {
         try
@@ -154,7 +153,6 @@ public static class JwtUtils
 
         return true;
     }
-
 
     public static string GenerateJwt(string username, string email, bool isTeacher, bool isAdmin)
     {
@@ -305,6 +303,22 @@ public static class JwtUtils
             {
                 var token = tokenHandler.ReadJwtToken(jwt);
                 var isUserAdmin = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
+
+                // Check if the token is from Google
+                if (
+                    HasGoogleIssuer(jwt)
+                    && isUserAdmin != null
+                    && bool.TryParse(isUserAdmin.Value, out var isAdmin)
+                )
+                {
+                    // If the token is from Google, extract user's email
+                    var userEmail = GetUserEmailFromGoogleJwt(jwt);
+
+                    // Check isAdmin from the database using the extracted email
+                    return GetUserIsAdminFromDb(userEmail) ?? false;
+                }
+
+                // If the token is not from Google or isAdmin claim is not present, return false
                 if (isUserAdmin != null)
                 {
                     return bool.Parse(isUserAdmin.Value);
@@ -318,7 +332,6 @@ public static class JwtUtils
 
         return false;
     }
-
 
     private static string GetUserEmailFromGoogleJwt(string jwt)
     {

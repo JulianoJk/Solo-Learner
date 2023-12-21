@@ -1,11 +1,14 @@
+import React from 'react';
 import { Card, Center } from '@mantine/core';
 import AuthenticationRegisterForm from '../../Auth/Login/AuthenticationRegisterForm';
-import React from 'react';
+
 interface IRegisterNewUserProps {
   refetchUserList: () => void;
 }
-const RegisterNewUser: React.FC<IRegisterNewUserProps> = (props) => {
-  const { refetchUserList } = props;
+
+const RegisterNewUser: React.FC<IRegisterNewUserProps> = ({
+  refetchUserList,
+}) => {
   return (
     <Center>
       <Card sx={{ width: 1100, border: '1px solid black' }}>
@@ -16,9 +19,10 @@ const RegisterNewUser: React.FC<IRegisterNewUserProps> = (props) => {
           displaySocialButtons={false}
           showNotification={true}
           isAdminRegister={true}
-        ></AuthenticationRegisterForm>
+        />
       </Card>
     </Center>
   );
 };
+
 export default RegisterNewUser;
