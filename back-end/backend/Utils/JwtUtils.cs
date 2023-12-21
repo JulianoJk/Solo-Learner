@@ -302,26 +302,24 @@ public static class JwtUtils
             try
             {
                 var token = tokenHandler.ReadJwtToken(jwt);
-                var isUserAdmin = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
 
                 // Check if the token is from Google
-                if (
-                    HasGoogleIssuer(jwt)
-                    && isUserAdmin != null
-                    && bool.TryParse(isUserAdmin.Value, out var isAdmin)
-                )
+                if (HasGoogleIssuer(jwt))
                 {
-                    // If the token is from Google, extract user's email
+                    // Extract user's email from the Google token
                     var userEmail = GetUserEmailFromGoogleJwt(jwt);
 
                     // Check isAdmin from the database using the extracted email
                     return GetUserIsAdminFromDb(userEmail) ?? false;
                 }
-
-                // If the token is not from Google or isAdmin claim is not present, return false
-                if (isUserAdmin != null)
+                else
                 {
-                    return bool.Parse(isUserAdmin.Value);
+                    // Token is not from Google, check isAdmin directly from the token
+                    var isUserAdmin = token.Claims.FirstOrDefault(c => c.Type == "isAdmin");
+                    if (isUserAdmin != null && bool.TryParse(isUserAdmin.Value, out var isAdmin))
+                    {
+                        return isAdmin;
+                    }
                 }
             }
             catch (Exception ex)
