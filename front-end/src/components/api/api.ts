@@ -45,11 +45,13 @@ export const loginAPI = async ({
 export const registerAPI = async ({
   email,
   username,
+  gender,
   password,
   confirmPassword,
 }: {
   email: string;
   username: string;
+  gender: string;
   password: string;
   confirmPassword: string;
 }): Promise<IUserInfoContext | IApiError> => {
@@ -62,6 +64,51 @@ export const registerAPI = async ({
       body: JSON.stringify({
         email,
         username,
+        gender,
+        password,
+        confirmPassword,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
+
+    const data: IUserInfoContext = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
+  }
+};
+export const adminRegisterUserAPI = async ({
+  email,
+  username,
+  gender,
+  password,
+  confirmPassword,
+}: {
+  email: string;
+  username: string;
+  gender: string;
+  password: string;
+  confirmPassword: string;
+}): Promise<IUserInfoContext | IApiError> => {
+  try {
+    const response = await fetch(`${URL}admin/dashboard/register-new-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        username,
+        gender,
         password,
         confirmPassword,
       }),
@@ -345,6 +392,73 @@ export const getCurrentUser = async (token: string) => {
       },
     });
     const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+export const getGoogleClientIdAPI = async () => {
+  try {
+    const response = await fetch(URL + 'api/auth/google-client-id', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Google Client ID');
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'completed' && data.id) {
+      return data.id; // Assuming the response contains 'id' for the Google Client ID.
+    } else {
+      throw new Error('Invalid response format');
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch Google Client ID');
+  }
+};
+export const postGoogleLogin = async (code: string) => {
+  try {
+    const formData = new FormData();
+    formData.append('code', code);
+
+    const response = await fetch('http://localhost:3001/signin-google', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    return { data, response };
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+export const indexPage = async (
+  token?: string,
+): Promise<UserContextState | undefined> => {
+  try {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${URL}`, {
+      method: 'GET',
+      headers,
+    });
+
+    const data: UserContextState = await response.json();
     return data;
   } catch (error) {
     console.error(error);

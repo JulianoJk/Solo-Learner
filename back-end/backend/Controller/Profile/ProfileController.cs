@@ -24,7 +24,12 @@ public class ProfileController
         {
             reader.Read();
             bool isTeacher = (bool)reader["isTeacher"];
-            bool IsAdmin = (bool)reader["isAdmin"];
+
+            // Check for DBNull before casting isAdmin
+            bool isAdmin = DBNull.Value.Equals(reader["isAdmin"]) ? false : (bool)reader["isAdmin"];
+
+            // Check for DBNull before casting picture
+            string picture = DBNull.Value.Equals(reader["picture"]) ? string.Empty : (string)reader["picture"];
 
             User user =
                 new()
@@ -32,20 +37,23 @@ public class ProfileController
                     Id = (int)reader["id"],
                     Username = (string)reader["username"],
                     IsTeacher = isTeacher,
-                    IsAdmin = IsAdmin,
-                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
+                    IsAdmin = isAdmin,
+                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
+                    Picture = picture
                 };
             reader.Close();
             return user;
         }
+
         reader.Close();
         return null;
     }
 
+
     public async Task GetProfile(HttpContext context, string username)
     {
         // Check if JWT is valid
-        if (!JwtUtils.authenticateJwt(context))
+        if (!JwtUtils.AuthenticateJwt(context))
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsJsonAsync("Unauthorized.");
@@ -127,12 +135,12 @@ public class ProfileController
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync("Email and new username cannot be empty.");
         }
+
         // Check if the username is already taken
         var (isTaken, uniqueUsername) = _authenticator.IsUsernameTaken(newUsername);
 
         if (isTaken)
         {
-            Console.WriteLine();
             // Return an error response with a 409 status code
             var response = new { error = new { message = "Username is already taken." } };
             context.Response.StatusCode = StatusCodes.Status409Conflict;
@@ -289,6 +297,7 @@ public class ProfileController
             };
             teachers.Add(teacher);
         }
+
         reader.Close();
         return teachers;
     }

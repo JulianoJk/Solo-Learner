@@ -9,14 +9,10 @@ import {
   Menu,
   UnstyledButton,
   Avatar,
-  Skeleton,
   Drawer,
   ScrollArea,
   Divider,
-  Center,
-  Collapse,
   Burger,
-  Anchor,
 } from '@mantine/core';
 import { upperFirst, useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
@@ -40,17 +36,23 @@ import {
 } from 'react-router-dom';
 import {
   capitalString,
+  checkIfPageIsReload,
+  checkTokenValidity,
   isUndefinedOrNullString,
   isUserLoggedIn,
+  saveProfileImageAfterReload,
 } from '../../utils/utils';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import { authenticateAPI, getCurrentUser } from '../api/api';
+import { authenticateAPI } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
-import { User } from '../../Model/UserModels';
+import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
+import jwtDecode from 'jwt-decode';
+import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
+import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -59,8 +61,8 @@ const HeaderMegaMenu = () => {
   const { pathname } = useLocation();
   const [documentTitle, setDocumentTitle] = useState('');
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User>();
-  const { user } = useUserState();
+  const [currentUser, setCurrentUser] = useState<fetchUserList>();
+  const { user, picture } = useUserState();
   const { username: UsernameFromPath } = useParams<{ username: string }>();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
@@ -73,9 +75,25 @@ const HeaderMegaMenu = () => {
   const navigateUserTo = (path: string) => {
     navigate(path);
   };
-  const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
 
-  const { isLoading } = useQuery(
+  const userToken = isUndefinedOrNullString(user.token) ? ' ' : user.token;
+  const isTokenExpired = checkTokenValidity(userToken);
+  const currentFetchedUser = useGetCurrentUser(userToken);
+  useEffect(() => {
+    setCurrentUser(currentFetchedUser?.data);
+  }, [currentFetchedUser.isFetched]);
+
+  const checkToken = () => {
+    if (userToken) {
+      localStorage.setItem('lastVisitedPath', location.pathname);
+
+      if (isUserLoggedIn() && isTokenExpired) {
+        navigate('/token-expiration');
+      }
+    }
+  };
+
+  const { isLoading, data: authanticateUser } = useQuery(
     ['authenticateUser', userToken],
     async () => {
       if (user.token) {
@@ -87,37 +105,20 @@ const HeaderMegaMenu = () => {
     { enabled: !!user.token },
   );
 
-  const { isFetched: isCurrentUserFetched, isLoading: isCurrentUserLoading } =
-    useQuery(
-      ['getCurrentUser', userToken],
-      async () => {
-        if (user.token) {
-          const data = await getCurrentUser(user.token);
-          return data;
-        }
-        throw new Error('No token found');
-      },
-      {
-        onSuccess: (data) => {
-          if (data?.status === 'success') {
-            setCurrentUser(data.data);
-          }
-        },
-        enabled: !!user.token,
-      },
-    );
-
   useEffect(() => {
+    checkToken();
+
     if (pathname === '/profile') {
       useGetProfile(
         (UsernameFromPath === undefined
-          ? currentUser?.username !== undefined
+          ? currentUser?.data?.username !== undefined
             ? user.username
             : ''
           : UsernameFromPath) as string,
         user.token,
       );
     }
+
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
       setDocumentTitle(titles + ' - Solo Learner');
@@ -132,7 +133,12 @@ const HeaderMegaMenu = () => {
   }, [pathname]);
   // TODO!: Add this to the useEffect above
   useDocumentTitle(documentTitle);
+
   const logoNavigation = isUserLoggedIn() ? '/home' : '/';
+  const renderAvatar =
+    picture !== undefined
+      ? picture
+      : 'https://avatars.githubusercontent.com/u/47204253?v=4';
 
   return (
     <Box>
@@ -140,6 +146,11 @@ const HeaderMegaMenu = () => {
         <Group position="apart" sx={{ height: '100%' }}>
           {isUserLoggedIn() ? (
             <>
+              <TokenExpirationChecker
+                onSessionExpired={function (): void {
+                  throw new Error('Function not implemented.');
+                }}
+              ></TokenExpirationChecker>
               <Box
                 sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
                 onClick={() => navigateUserTo(logoNavigation)}
@@ -148,9 +159,8 @@ const HeaderMegaMenu = () => {
               </Box>
               <Group>
                 <ModeThemeButtonSmall />
-                <TokenExpirationChecker />
                 {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
-                {isCurrentUserLoading ? <></> : <></>}
+                {/* {isCurrentUserLoading ? <></> : <></>} */}
                 <Menu
                   width={260}
                   position="bottom-end"
@@ -171,12 +181,11 @@ const HeaderMegaMenu = () => {
                       <Group spacing={7}>
                         <Avatar
                           // TODO!: Change this
-                          src={
-                            'https://avatars.githubusercontent.com/u/47204253?v=4'
-                          }
-                          alt={currentUser?.username ?? 'learner'}
+                          src={picture}
+                          alt={currentUser?.data?.username ?? 'learner'}
                           radius="xl"
-                          size={20}
+                          size={30}
+                          imageProps={{ referrerPolicy: 'no-referrer' }}
                         />
                         <Text
                           className={classes.hiddenMobile}
@@ -185,8 +194,9 @@ const HeaderMegaMenu = () => {
                           sx={{ lineHeight: 1 }}
                           mr={3}
                         >
-                          {isLoading === false && isCurrentUserFetched
-                            ? upperFirst(currentUser?.username as string)
+                          {isLoading === false
+                            ? // {isLoading === false && isCurrentUserFetched
+                              upperFirst(currentUser?.data?.username as string)
                             : 'learner'}
                         </Text>
                         <IconChevronDown size={rem(12)} stroke={1.5} />
@@ -194,7 +204,7 @@ const HeaderMegaMenu = () => {
                     </UnstyledButton>
                   </Menu.Target>
                   <Menu.Dropdown>
-                    {!currentUser?.isAdmin ? (
+                    {!currentUser?.data?.isAdmin ? (
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
@@ -216,7 +226,8 @@ const HeaderMegaMenu = () => {
                         <Menu.Item
                           icon={<IconSettings size="0.9rem" stroke={1.5} />}
                           onClick={() => {
-                            navigateUserTo('/settings');
+                            // navigateUserTo('/settings');
+                            useGetCurrentUser(user.token);
                           }}
                         >
                           Account settings

@@ -1,9 +1,5 @@
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using backend;
 using backend.Models;
 using MySql.Data.MySqlClient;
-using System.Text.Json;
 
 public class AdminController
 {
@@ -23,7 +19,7 @@ public class AdminController
             await connection.OpenAsync();
 
             MySqlCommand command = new MySqlCommand(
-                "SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive FROM users",
+                "SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive, picture FROM users",
                 connection
             );
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -39,6 +35,7 @@ public class AdminController
                     Username = reader.GetString("username"),
                     IsAdmin = reader.GetBoolean("isAdmin"),
                     IsTeacher = reader.GetBoolean("isTeacher"),
+                    Picture = reader["picture"] == DBNull.Value ? null : reader.GetString("picture"),
                     CreatedAt = reader.GetDateTime("created_at").ToString("yyyy-MM-dd"),
                     UpdatedAt = reader.GetDateTime("updated_at").ToString("yyyy-MM-dd"),
                     LastActive = reader.GetDateTime("lastActive")

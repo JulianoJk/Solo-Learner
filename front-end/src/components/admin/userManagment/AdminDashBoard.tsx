@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Avatar,
   Badge,
@@ -27,19 +28,19 @@ import {
   IApiError,
   IApiMessageResponse,
   User,
+  fetchUserList,
 } from '../../../Model/UserModels';
 import { useNavigate } from 'react-router-dom';
 import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../context/AppContext';
 import { notificationAlert } from '../../notifications/NotificationAlert';
-import { adminDeleteUserAccount } from '../../api/api';
-import { useUserState } from '../../../context/UserContext';
-import { ChangeEvent, useState } from 'react';
-
-interface UsersTableProps {
-  data: User[];
-}
+import { adminDeleteUserAccount, getCurrentUser } from '../../api/api';
+import { useUserState, useUserDispatch } from '../../../context/UserContext';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useGetCurrentUser } from '../../hooks/useGetCurrentUser';
+import { CopyButtonComponent } from '../../CopyButton/CopyButton.component';
+import { useHover } from '@mantine/hooks';
 
 const roleColors: Record<string, string> = {
   student: 'blue',
@@ -48,33 +49,51 @@ const roleColors: Record<string, string> = {
   'admin/teacher': 'orange',
 };
 
-const UsersTable = ({ data }: UsersTableProps) => {
+const UsersTable = () => {
   const theme = useMantineTheme();
   const navigate = useNavigate();
-  const { user: AdminUser } = useUserState();
+  const {
+    user: AdminUser,
+    allUsersAdminDashboard,
+    isAllUsersAdminDashboardLoading,
+  } = useUserState();
+  const userDispatch = useUserDispatch();
   const appDispatch = useAppDispatch();
-  const [allUsers, setAllUsers] = useState(data);
+  // const [allUsers, setAllUsers] = useState(data);
+  const [currentUser, setCurrentUser] = useState<fetchUserList>();
+
   const [currentSelectedUser, setCurrentSelectedUser] = useState<
     number | undefined
   >();
   const [search, setSearch] = useState('');
 
+  // const { isLoading: isCurrentUserLoading } = useQuery(
+
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
 
-    const filteredUsers = data.filter(
+    const filteredUsers = allUsersAdminDashboard.filter(
       (user) =>
         user.username.toLowerCase().includes(value.toLowerCase()) ||
         user.email.toLowerCase().includes(value.toLowerCase()),
     );
-    setAllUsers(filteredUsers);
+    userDispatch({ type: 'REMOVE_ALL_ADMIN_DASHBOARD_USERS' });
+
+    userDispatch({
+      type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
+      allUsersAdminDashboard: filteredUsers,
+    });
+    // setAllUsers(filteredUsers);
   };
   const handleEditButton = () => {
     // TODO!: Add edit user modal
-    console.log('user.id');
+    // console.log('user.id');
   };
-
+  const currentFetchedUser = useGetCurrentUser(AdminUser.token);
+  useEffect(() => {
+    setCurrentUser(currentFetchedUser?.data);
+  }, [currentFetchedUser.isFetched]);
   const { mutate: deleteAccount } = useMutation(adminDeleteUserAccount, {
     onSuccess: (data: IApiMessageResponse | IApiError) => {
       if (typeof data === 'object' && 'error' in data) {
@@ -84,7 +103,15 @@ const UsersTable = ({ data }: UsersTableProps) => {
           errorAlertMessage: data.error.message,
         });
       } else {
-        setAllUsers(allUsers.filter((user) => user.id !== currentSelectedUser));
+        userDispatch({ type: 'REMOVE_ALL_ADMIN_DASHBOARD_USERS' });
+
+        userDispatch({
+          type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
+          allUsersAdminDashboard: allUsersAdminDashboard.filter(
+            (user) => user.id !== currentSelectedUser,
+          ),
+        });
+        // setAllUsers();
 
         notificationAlert({
           title: 'Account Deleted.',
@@ -96,15 +123,15 @@ const UsersTable = ({ data }: UsersTableProps) => {
       }
     },
   });
-  const isCurrentUser = (user: User) => {
-    if (AdminUser.id === undefined) return false;
+  // const isCurrentUser = (user: User) => {
+  //   if (AdminUser.id === undefined) return false;
 
-    if (user.id === parseInt(AdminUser.id)) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  //   if (user.id === parseInt(AdminUser.id)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
   const handleDeleteUser = (user: User) => {
     if (user.id !== undefined) {
       setCurrentSelectedUser(user.id);
@@ -143,27 +170,52 @@ const UsersTable = ({ data }: UsersTableProps) => {
       });
     }
   };
+  // console.log(allUsersAdminDashboard.map((user) => user));
+  const [hoveredUserId, setHoveredUserId] = useState<number | null>(null);
+  const [hoveredUsername, setHoveredUsername] = useState(false);
+  const [hoveredEmail, setHoveredEmail] = useState(false);
+  const handleUserHover = (
+    userId: number | null,
+    isUsername: boolean,
+    isEmail: boolean,
+  ) => {
+    setHoveredUserId(userId);
+    setHoveredUsername(isUsername);
+    setHoveredEmail(isEmail);
+  };
 
-  const rows = allUsers
-    .filter((item) => !isCurrentUser(item))
+  const rows = allUsersAdminDashboard
+    .filter((user) => user.id !== currentUser?.data?.id)
     .map((item) => (
-      <tr key={item.username}>
+      <tr
+        key={item.username}
+        onMouseEnter={() => handleUserHover(item.id, true, false)}
+        onMouseLeave={() => handleUserHover(null, false, false)}
+      >
         <td>
           <Group spacing="sm">
-            <Avatar size={30} src={item.avatar} radius={30} />
-            <Anchor
-              component="button"
-              size="sm"
-              onClick={() => {
-                navigate(`/profile/${item.username}`);
-              }}
-            >
-              {item.username}
-            </Anchor>
+            <Avatar size={30} src={item.picture} radius={30} />
+            <Group>
+              <Anchor
+                component="button"
+                size="sm"
+                onClick={() => {
+                  navigate(`/profile/${item.username}`);
+                }}
+              >
+                {item.username}
+              </Anchor>
+              <CopyButtonComponent
+                value={item.username}
+                isHovered={hoveredUsername && hoveredUserId === item.id}
+              />
+            </Group>
           </Group>
         </td>
 
         <td>
+          {/* Add the Role title here */}
+          {/* Assuming you have a function getJob that returns the role based on isAdmin and isTeacher */}
           <Badge
             color={roleColors[getJob(item.isAdmin, item.isTeacher)]}
             variant={theme.colorScheme === 'dark' ? 'light' : 'filled'}
@@ -171,11 +223,28 @@ const UsersTable = ({ data }: UsersTableProps) => {
             {getJob(item.isAdmin, item.isTeacher)}
           </Badge>
         </td>
+
         <td>
-          <Anchor component="button" size="sm">
-            {item.email}
-          </Anchor>
+          <Group
+            onMouseEnter={() => handleUserHover(item.id, false, true)}
+            onMouseLeave={() => handleUserHover(null, false, false)}
+          >
+            <Anchor
+              component="button"
+              size="sm"
+              onClick={() => {
+                navigate(`/profile/${item.username}`);
+              }}
+            >
+              {item.email}
+            </Anchor>
+            <CopyButtonComponent
+              value={item.email}
+              isHovered={hoveredEmail && hoveredUserId === item.id}
+            />
+          </Group>
         </td>
+
         <td>
           <Text fz="sm" c={theme.colorScheme === 'dark' ? 'dimmed' : ''}>
             {item.formattedLastActive}
@@ -254,57 +323,63 @@ const UsersTable = ({ data }: UsersTableProps) => {
     ));
 
   return (
-    <ScrollArea>
-      <TextInput
-        placeholder="Search by username or email"
-        mb="md"
-        icon={<IconSearch size={20} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Table
-        sx={{ minWidth: 800 }}
-        verticalSpacing="sm"
-        striped={theme.colorScheme === 'dark' ? true : false}
-        highlightOnHover
-        withBorder
-        withColumnBorders
-      >
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Role title</th>
-            <th>Email</th>
-            <th>
-              <Text>
-                Last active <br />
-                <Text sx={{ fontSize: 7.5, paddingTop: 2 }}>
-                  (YY-MM-DD HH-MM)
-                </Text>
-              </Text>
-            </th>
-            <th>Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.length === 0 ? (
-            <tr>
-              <td colSpan={5}>
-                <Center>
-                  <Text fw={700}>
-                    There are currently no users to display.
-                    <span style={{ color: 'teal' }}> Invite </span> users to
-                    join!
+    <>
+      {isAllUsersAdminDashboardLoading ? (
+        <div>is loading</div>
+      ) : (
+        <ScrollArea>
+          <TextInput
+            placeholder="Search by username or email"
+            mb="md"
+            icon={<IconSearch size={20} />}
+            value={search}
+            onChange={handleSearchChange}
+          />
+          <Table
+            sx={{ minWidth: 800 }}
+            verticalSpacing="sm"
+            striped={theme.colorScheme === 'dark' ? true : false}
+            highlightOnHover
+            withBorder
+            withColumnBorders
+          >
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Role title</th>
+                <th>Email</th>
+                <th>
+                  <Text>
+                    Last active <br />
+                    <Text sx={{ fontSize: 7.5, paddingTop: 2 }}>
+                      (YY-MM-DD HH-MM)
+                    </Text>
                   </Text>
-                </Center>
-              </td>
-            </tr>
-          ) : (
-            rows
-          )}
-        </tbody>
-      </Table>
-    </ScrollArea>
+                </th>
+                <th>Edit</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.length === 0 ? (
+                <tr>
+                  <td colSpan={5}>
+                    <Center>
+                      <Text fw={700}>
+                        There are currently no users to display.
+                        <span style={{ color: 'teal' }}> Invite </span> users to
+                        join!
+                      </Text>
+                    </Center>
+                  </td>
+                </tr>
+              ) : (
+                rows
+              )}
+            </tbody>
+          </Table>
+        </ScrollArea>
+      )}
+    </>
   );
 };
 function getJob(isAdmin: boolean, isTeacher: boolean) {

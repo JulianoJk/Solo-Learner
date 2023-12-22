@@ -29,6 +29,9 @@ public class RegisterUser
 
         // Extract the email, username, password, and confirm password from the RegisterModel object
         string email = registerModel.Email;
+        string firstName = registerModel.FirstName;
+        string lastName = registerModel.LastName;
+        string gender = registerModel.Gender;
         string username = registerModel.Username;
         string password = registerModel.Password;
         string confirmPassword = registerModel.ConfirmPassword;
@@ -38,8 +41,14 @@ public class RegisterUser
         {
             if (string.IsNullOrWhiteSpace(username))
             {
+                if (registerModel.isTeacher)
+                {
+                    isTeacher = registerModel.isTeacher;
+                }
+
                 // Generate a unique username based on the email
                 username = GetDefaultUsername(email);
+
 
                 if (username == null)
                 {
@@ -77,6 +86,57 @@ public class RegisterUser
                     await context.Response.WriteAsJsonAsync(response);
                     return;
                 }
+
+                if (string.IsNullOrWhiteSpace(gender))
+                {
+                    // Return an error response with a 400 status code
+                    var response = new
+                    {
+                        error = new { message = "Gender can not be empty" },
+                        status = "error"
+                    };
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsJsonAsync(response);
+                    return;
+                }
+                //TODO!: Make it required
+                // if (!string.IsNullOrWhiteSpace(firstName) || !(firstName is string))
+                // {
+                //     var response = new
+                //     {
+                //         error = new { message = "First name should be string" },
+                //         status = "error"
+                //     };
+                //     context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                //     await context.Response.WriteAsJsonAsync(response);
+                //     return;
+                // }
+                //
+                // if (!string.IsNullOrWhiteSpace(lastName) && !(lastName is string))
+                // {
+                //     var response = new
+                //     {
+                //         error = new { message = "Last name should be string" },
+                //         status = "error"
+                //     };
+                //     context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+                //     await context.Response.WriteAsJsonAsync(response);
+                //     return;
+                // }
+
+
+                if (string.IsNullOrWhiteSpace(gender))
+                {
+                    // Return an error response with a 400 status code
+                    var response = new
+                    {
+                        error = new { message = "Gender can not be empty" },
+                        status = "error"
+                    };
+                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                    await context.Response.WriteAsJsonAsync(response);
+                    return;
+                }
             }
 
             // Generate a salt
@@ -90,11 +150,16 @@ public class RegisterUser
                 // Call AuthenticateUser method on the AuthenticationUtils instance with register=true
                 var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
                     true,
+                    false,
                     username,
+                    firstName,
+                    lastName,
+                    gender,
                     email,
                     Convert.ToBase64String(hash),
                     salt,
-                    isTeacher
+                    isTeacher,
+                    null
                 );
                 if (AreCredentialsCorrect)
                 {
@@ -190,6 +255,7 @@ public class RegisterUser
             // If email does not have exactly one '@' character, it is not valid
             return false;
         }
+
         var domain = emailParts[1];
 
         if (string.IsNullOrWhiteSpace(domain))
@@ -220,9 +286,16 @@ public class RegisterUser
 
     private static string GetDefaultUsername(string email)
     {
-        var emailParts = email.Split('@');
+        int atIndex = email.IndexOf('@');
 
-        return emailParts[0];
+        if (atIndex >= 0)
+        {
+            return email.Substring(0, atIndex);
+        }
+        else
+        {
+            return email;
+        }
     }
 
     private byte[]? GenerateSalt()

@@ -21,20 +21,18 @@ import {
 import { keys } from '@mantine/utils';
 import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
+import { useUserState } from '../../../../context/UserContext';
 
-interface TableSortProps {
-  data: User[];
-}
-
-export function StudentmanagmentTable({ data }: TableSortProps) {
+export function StudentmanagmentTable() {
   const [search, setSearch] = useState('');
+  const { allUsersAdminDashboard } = useUserState();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
   };
 
-  const filteredData = filterData(data, search);
+  const filteredData = filterData(allUsersAdminDashboard, search);
 
   const rows = filteredData.map((row) => (
     <tr key={row.username}>
@@ -42,7 +40,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
         <Group spacing="sm">
           <Avatar
             size={40}
-            src={row.avatar}
+            src={row.picture}
             radius={40}
             color={getRandomColor()}
           />

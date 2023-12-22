@@ -36,7 +36,7 @@ const SmallNavigation: React.FC = () => {
 
   const logOut = () => {
     userDispatch({ type: 'RESET_STATE' });
-    navigate('/');
+    navigate('/dss');
   };
   useEffect(() => {
     saveProfileImageAfterReload(accountSettingsDispatch);
