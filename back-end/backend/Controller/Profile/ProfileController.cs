@@ -29,7 +29,9 @@ public class ProfileController
             bool isAdmin = DBNull.Value.Equals(reader["isAdmin"]) ? false : (bool)reader["isAdmin"];
 
             // Check for DBNull before casting picture
-            string picture = DBNull.Value.Equals(reader["picture"]) ? string.Empty : (string)reader["picture"];
+            string picture = DBNull.Value.Equals(reader["picture"])
+                ? string.Empty
+                : (string)reader["picture"];
 
             User user =
                 new()
@@ -48,7 +50,6 @@ public class ProfileController
         reader.Close();
         return null;
     }
-
 
     public async Task GetProfile(HttpContext context, string username)
     {

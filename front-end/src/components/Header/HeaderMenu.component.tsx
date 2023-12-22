@@ -46,7 +46,7 @@ import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import { authenticateAPI } from '../api/api';
+import { authenticateAPI, getCurrentUser } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
 import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
@@ -118,7 +118,6 @@ const HeaderMegaMenu = () => {
         user.token,
       );
     }
-
     const titles = capitalString(pathname.replace('/', ''));
     if (pathname !== '/') {
       setDocumentTitle(titles + ' - Solo Learner');
