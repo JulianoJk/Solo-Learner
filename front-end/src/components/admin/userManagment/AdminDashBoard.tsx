@@ -34,12 +34,11 @@ import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../context/AppContext';
 import { notificationAlert } from '../../notifications/NotificationAlert';
-import { adminDeleteUserAccount, getCurrentUser } from '../../api/api';
+import { adminDeleteUserAccount } from '../../api/api';
 import { useUserState, useUserDispatch } from '../../../context/UserContext';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useGetCurrentUser } from '../../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../../CopyButton/CopyButton.component';
-import { useHover } from '@mantine/hooks';
 
 const roleColors: Record<string, string> = {
   student: 'blue',
