@@ -68,7 +68,12 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
   });
   return (
     <Center maw={600} mx="auto">
-      <Paper radius="md" p="xl" withBorder={hasBorder}>
+      <Paper
+        radius="md"
+        p="xl"
+        withBorder={hasBorder}
+        style={{ maxWidth: '800px', width: '100%' }}
+      >
         <Text size="lg" weight={500} ta="center">
           {registerTitle === undefined ||
           (typeof registerTitle === 'string' && registerTitle.length === 0)
