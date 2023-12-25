@@ -408,4 +408,14 @@ app.MapGet(
     }
 );
 
+// Map the route for the Logout operation
+app.MapPut(
+    "/user/logout",
+    async (HttpContext context) =>
+    {
+        AuthenticationManager authenticationManager = new AuthenticationManager();
+        await authenticationManager.Logout(context);
+    }
+);
+
 app.Run();

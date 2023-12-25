@@ -18,6 +18,8 @@ CREATE TABLE
         `picture` VARCHAR(255),
         `isTeacher` BOOLEAN NOT NULL DEFAULT FALSE,
         `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
+        `isUserLoggedIn` BOOLEAN NOT NULL DEFAULT FALSE, -- Added field
+        `lastVisitedPath` VARCHAR(255), -- Added field
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `lastActive` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
