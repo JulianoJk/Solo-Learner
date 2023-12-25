@@ -11,6 +11,7 @@ export interface IUserInfoContext {
   email?: string;
   isAdmin?: any;
   picture?: string;
+  navigateUser?: string;
 }
 export interface IApiMessageResponse {
   message: string;

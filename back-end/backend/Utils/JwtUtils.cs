@@ -401,12 +401,38 @@ public static class JwtUtils
             if (CheckToken(jwt))
             {
                 // User is logged in
-                navigateUser = "/home"; // Customize the navigation path as needed
+                navigateUser = GetUserLastVisitedPath(GetUserEmailFromJwt(context) ?? string.Empty);
                 return true;
             }
         }
 
         // User is not logged in
         return false;
+    }
+
+    public static string? GetUserLastVisitedPath(string email)
+    {
+        return GetLastVisitedPath(email);
+    }
+
+    private static string? GetLastVisitedPath(string email)
+    {
+        string? lastVisitedPath = null;
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+            using var command = new MySqlCommand(
+                "SELECT lastVisitedPath FROM users WHERE email=@Email",
+                connection
+            );
+            command.Parameters.AddWithValue("@Email", email);
+            var result = command.ExecuteScalar();
+            if (result != null)
+            {
+                lastVisitedPath = result.ToString();
+            }
+        }
+
+        return lastVisitedPath;
     }
 }

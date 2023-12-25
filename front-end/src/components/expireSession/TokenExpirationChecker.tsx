@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
-import { Button, Center, Modal, Title, Text } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   checkIfPageIsReload,
@@ -9,25 +7,17 @@ import {
   isUndefinedOrNullString,
   isUserLoggedIn,
 } from '../../utils/utils';
-
-import { useDisclosure } from '@mantine/hooks';
 import { useUserDispatch } from '../../context/UserContext';
 import { IUserInfoContext } from '../../Model/UserModels';
-import { useAppDispatch, AppState } from '../../context/AppContext';
-import AuthenticationLoginForm from '../Auth/Login/AuthenticationLoginForm';
-interface TokenExpirationCheckerProps {
-  onSessionExpired: () => void;
-}
+import { useAppDispatch } from '../../context/AppContext';
 
-const TokenExpirationChecker: React.FC<TokenExpirationCheckerProps> = ({
-  onSessionExpired,
-}) => {
-  const { isSessionExpired, userReLoggedIn } = AppState();
+import { logoutUser } from '../Auth/LogoutUtils';
+// import useLogout from '../hooks/useLogout';
+
+const TokenExpirationChecker = () => {
   const appDispatch = useAppDispatch();
-  const [openedModal, handlers] = useDisclosure(false);
   const { pathname } = useLocation(); // <-- get current location being accessed
   const userDispatch = useUserDispatch();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -41,13 +31,7 @@ const TokenExpirationChecker: React.FC<TokenExpirationCheckerProps> = ({
       localStorage.setItem('lastVisitedPath', location.pathname);
 
       if (isUserLoggedIn() === true && isExpired) {
-        appDispatch({
-          type: 'SET_SESSION_TOKEN_EXPIRED',
-          isSessionExpired: true,
-        });
-        handlers.open();
-      } else if (isUserLoggedIn() === true && !isExpired) {
-        handlers.close();
+        logoutUser(userDispatch, navigate);
       }
     }
 
@@ -80,8 +64,6 @@ const TokenExpirationChecker: React.FC<TokenExpirationCheckerProps> = ({
 
         if (isUserLoggedIn() && isTokenExpired) {
           handleExpiredSession();
-        } else if (isUserLoggedIn() && !isTokenExpired) {
-          handlers.close();
         }
       }
     };
@@ -91,91 +73,10 @@ const TokenExpirationChecker: React.FC<TokenExpirationCheckerProps> = ({
         type: 'SET_SESSION_TOKEN_EXPIRED',
         isSessionExpired: true,
       });
-      handlers.open();
-      onSessionExpired(); // Call the callback function
     };
 
     checkToken();
   }, [checkIfPageIsReload, pathname]);
-
-  const logOut = () => {
-    userDispatch({ type: 'RESET_STATE' });
-    navigate('/');
-  };
-
-  // if (isSessionExpired && userReLoggedIn === false) {
-  //   return (
-  //     <Modal
-  //       transitionProps={{
-  //         transition: 'fade',
-  //         duration: 100,
-  //         timingFunction: 'ease',
-  //       }}
-  //       overlayProps={{
-  //         opacity: 0.55,
-  //         blur: 10,
-  //       }}
-  //       centered
-  //       opened={openedModal}
-  //       onClose={() => {
-  //         return;
-  //       }}
-  //       withCloseButton={false}
-  //     >
-  //       <Center>
-  //         <Title size="md"></Title>
-  //       </Center>
-
-  //       <AuthenticationLoginForm
-  //         switchToRegister={false}
-  //         pathToNavigateAfterLogin={pathname}
-  //         refreshPageAfterLogin={true}
-  //         sessionExpiredAuth={true}
-  //         loginTitle={
-  //           <Text size="lg" weight={650} ta="center">
-  //             Session expired.
-  //             <br />
-  //             Please log in again to continue!
-  //           </Text>
-  //         }
-  //         children={
-  //           <Button onClick={logOut} color="red">
-  //             Logout
-  //           </Button>
-  //         }
-  //       />
-  //     </Modal>
-  //   );
-  // }
-
-  // return null;
-
-  if (isSessionExpired && userReLoggedIn === false) {
-    return (
-      <>
-        <Center>
-          <Title size="md"></Title>
-        </Center>
-        <AuthenticationLoginForm
-          switchToRegister={false}
-          pathToNavigateAfterLogin={pathname}
-          sessionExpiredAuth={true}
-          loginTitle={
-            <Text size="lg" weight={650} ta="center">
-              Session expired.
-              <br />
-              Please log in again to continue!
-            </Text>
-          }
-          children={
-            <Button onClick={logOut} color="red">
-              Logout
-            </Button>
-          }
-        />
-      </>
-    );
-  }
   return null;
 };
 export default TokenExpirationChecker;

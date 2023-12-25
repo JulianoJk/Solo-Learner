@@ -22,7 +22,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
-  const { navigateTo, showNotification, sessionExpiredAuth } = props;
+  const { showNotification } = props;
   const { mutate, isLoading } = useMutation<
     IUserInfoContext | IApiError,
     unknown,
@@ -53,13 +53,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
             picture: data.picture ?? '',
           });
 
-          sessionExpiredAuth
-            ? appDispatch({
-                type: 'SET_USER_LOGGED_IN_AGAIN',
-                userReLoggedIn: true,
-              })
-            : '';
-          navigate(sessionExpiredAuth ? navigateTo : '/home');
+          navigate(data?.navigateUser ?? '/home');
           showNotification === false ? (
             <></>
           ) : (

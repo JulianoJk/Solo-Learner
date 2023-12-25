@@ -392,3 +392,4 @@ function getJob(isAdmin: boolean, isTeacher: boolean) {
   }
 }
 export default UsersTable;
+

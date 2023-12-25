@@ -467,28 +467,41 @@ export const indexPage = async (
 };
 export const logoutAPI = async (
   token: string,
-  lastVisitedPath: string | null, // Pass the lastVisitedPath as a parameter
+  lastVisitedPath: string | null,
 ): Promise<IApiMessageResponse | IApiError> => {
   try {
     const response = await fetch(`${URL}user/logout`, {
-      method: 'PUT', // You can use 'PUT' or 'DELETE' based on your server implementation
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        // Include lastVisitedPath in the request body
         lastVisitedPath: lastVisitedPath,
       }),
     });
 
-    if (!response.ok) {
-      const errorData: IApiError = await response.json();
-      return errorData;
+    // Check if the response body is empty
+    const responseBody = await response.text();
+    if (!responseBody) {
+      // Handle empty response, e.g., return an appropriate error
+      return {
+        error: {
+          message: 'Empty response from the server.',
+        },
+      } as IApiError;
     }
 
-    const data: IApiMessageResponse = await response.json();
-    return data;
+    // Parse the response body as JSON
+    const parsedResponse = JSON.parse(responseBody);
+
+    if (!response.ok) {
+      // If the response is not okay, return the error data
+      return parsedResponse;
+    }
+
+    // If the response is okay, return the data
+    return parsedResponse;
   } catch (error) {
     console.error(error);
     return {

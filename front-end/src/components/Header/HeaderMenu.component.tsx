@@ -46,13 +46,14 @@ import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../context/AppContext';
 import TokenExpirationChecker from '../expireSession/TokenExpirationChecker';
-import { authenticateAPI, getCurrentUser } from '../api/api';
+import { authenticateAPI, logoutAPI } from '../api/api';
 import { useQuery } from '@tanstack/react-query';
 import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
+import { logoutUser } from '../Auth/LogoutUtils';
 
 const HeaderMegaMenu = () => {
   const { classes, cx, theme } = useStyles();
@@ -68,9 +69,8 @@ const HeaderMegaMenu = () => {
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const navigate: NavigateFunction = useNavigate();
-  const logOut = () => {
-    userDispatch({ type: 'RESET_STATE' });
-    navigate('/');
+  const logout = async () => {
+    logoutUser(userDispatch, navigate);
   };
   const navigateUserTo = (path: string) => {
     navigate(path);
@@ -93,7 +93,7 @@ const HeaderMegaMenu = () => {
     }
   };
 
-  const { isLoading, data: authanticateUser } = useQuery(
+  const { isLoading } = useQuery(
     ['authenticateUser', userToken],
     async () => {
       if (user.token) {
@@ -145,11 +145,7 @@ const HeaderMegaMenu = () => {
         <Group position="apart" sx={{ height: '100%' }}>
           {isUserLoggedIn() ? (
             <>
-              <TokenExpirationChecker
-                onSessionExpired={function (): void {
-                  throw new Error('Function not implemented.');
-                }}
-              ></TokenExpirationChecker>
+              <TokenExpirationChecker />
               <Box
                 sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
                 onClick={() => navigateUserTo(logoNavigation)}
@@ -225,15 +221,14 @@ const HeaderMegaMenu = () => {
                         <Menu.Item
                           icon={<IconSettings size="0.9rem" stroke={1.5} />}
                           onClick={() => {
-                            // navigateUserTo('/settings');
-                            useGetCurrentUser(user.token);
+                            navigateUserTo('/settings');
                           }}
                         >
                           Account settings
                         </Menu.Item>
                         <Menu.Item
                           icon={<IconLogout size="0.9rem" stroke={1.5} />}
-                          onClick={() => logOut()}
+                          onClick={() => logout()}
                           color="red"
                         >
                           log out
@@ -275,7 +270,7 @@ const HeaderMegaMenu = () => {
                         </Menu.Item>
                         <Menu.Item
                           icon={<IconLogout size="0.9rem" stroke={1.5} />}
-                          onClick={() => logOut()}
+                          onClick={() => logout()}
                           color="red"
                         >
                           log out
