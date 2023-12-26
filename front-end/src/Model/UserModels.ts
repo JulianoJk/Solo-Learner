@@ -101,7 +101,8 @@ export interface User {
   lastActive: string;
   lastActiveDate?: string;
   lastActiveTime?: string;
-  formattedLastActive?: string; // New property for formatted last active
+  formattedLastActive?: string;
+  isUserLoggedIn?: boolean;
 }
 export interface fetchUserList {
   status: string;

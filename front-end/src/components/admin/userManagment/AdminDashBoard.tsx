@@ -12,6 +12,8 @@ import {
   rem,
   Center,
   TextInput,
+  Indicator,
+  Tooltip,
 } from '@mantine/core';
 import {
   IconDots,
@@ -39,6 +41,7 @@ import { useUserState, useUserDispatch } from '../../../context/UserContext';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useGetCurrentUser } from '../../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../../CopyButton/CopyButton.component';
+
 
 const roleColors: Record<string, string> = {
   student: 'blue',
@@ -121,15 +124,6 @@ const UsersTable = () => {
       }
     },
   });
-  // const isCurrentUser = (user: User) => {
-  //   if (AdminUser.id === undefined) return false;
-
-  //   if (user.id === parseInt(AdminUser.id)) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
   const handleDeleteUser = (user: User) => {
     if (user.id !== undefined) {
       setCurrentSelectedUser(user.id);
@@ -192,7 +186,26 @@ const UsersTable = () => {
       >
         <td>
           <Group spacing="sm">
-            <Avatar size={30} src={item.picture} radius={30} />
+            <Tooltip
+              label={item.isUserLoggedIn ? 'Online' : 'Offline'}
+              color="gray"
+              // offset={-20}
+              position="right-end"
+              withArrow
+              arrowSize={10}
+            >
+              <Indicator
+                inline
+                size={12}
+                offset={5}
+                position="bottom-end"
+                color={item.isUserLoggedIn ? 'green' : 'rgba(92, 92, 92, 0.79)'}
+                withBorder
+              >
+                <Avatar size={30} src={item.picture} radius={30} />
+              </Indicator>
+            </Tooltip>
+
             <Group>
               <Anchor
                 component="button"
@@ -392,4 +405,3 @@ function getJob(isAdmin: boolean, isTeacher: boolean) {
   }
 }
 export default UsersTable;
-

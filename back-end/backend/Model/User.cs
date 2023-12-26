@@ -14,5 +14,6 @@ namespace backend.Models
         public string UpdatedAt { get; set; }
         public DateTime LastActive { get; set; }
         public String Picture { get; set; }
+        public bool IsUserLoggedIn { get; set; }
     }
 }
