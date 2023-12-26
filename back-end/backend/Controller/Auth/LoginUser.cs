@@ -4,10 +4,12 @@ using backend;
 public class LoginUser
 {
     private readonly AuthenticationUtils _authenticator;
+    private readonly AuthenticationManager _authenticationManager;
 
     public LoginUser()
     {
         _authenticator = new AuthenticationUtils();
+        _authenticationManager = new AuthenticationManager();
     }
 
     public async Task HandleLoginRequest(HttpContext context)
@@ -46,6 +48,7 @@ public class LoginUser
             if (AreCredentialsCorrect)
             {
                 UserDataAccess usernameDataAccess = new UserDataAccess();
+                UserRepository userRepository = new UserRepository();
                 string username = usernameDataAccess.GetUsername(email);
 
                 // Get the isAdmin value from the database for this user
@@ -56,6 +59,8 @@ public class LoginUser
                 string token = JwtUtils.GenerateJwt(username, email, isTeacher, isAdmin);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
+                    // Update user status in the database (isUserLoggedIn = true)
+                    await userRepository.UpdateUserIsLoggedIn(true, email);
                     // Return a successful response with a 200 status code
                     var response = new
                     {

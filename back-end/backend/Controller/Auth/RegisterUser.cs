@@ -18,6 +18,7 @@ public class RegisterUser
 
     public async Task HandleRegistrationRequest(HttpContext context)
     {
+        UserRepository userRepository = new UserRepository();
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
@@ -169,6 +170,8 @@ public class RegisterUser
                     // Check if the token was generated
                     if (!string.IsNullOrWhiteSpace(token))
                     {
+                        await userRepository.UpdateUserIsLoggedIn(true, email);
+
                         // Return a successful response with a 200 status code and JWT token
                         var response = new { messageToUser, token };
                         context.Response.StatusCode = StatusCodes.Status200OK;

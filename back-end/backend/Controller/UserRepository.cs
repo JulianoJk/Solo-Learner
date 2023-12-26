@@ -39,6 +39,30 @@ namespace backend
             }
         }
 
+        public async Task UpdateUserIsLoggedIn(bool isUserLoggedIn, string email)
+        {
+            MySqlConnection connection = new MySqlConnection(connectionString);
+            try
+            {
+                await connection.OpenAsync();
+                MySqlCommand command = new MySqlCommand(
+                    $"UPDATE users SET isUserLoggedIn = @isUserLoggedIn WHERE email = @email",
+                    connection
+                );
+                command.Parameters.AddWithValue("@isUserLoggedIn", isUserLoggedIn);
+                command.Parameters.AddWithValue("@email", email);
+                await command.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+
         public async Task GetLastActive(HttpContext context)
         {
             string email = JwtUtils.GetUserEmailFromJwt(context);

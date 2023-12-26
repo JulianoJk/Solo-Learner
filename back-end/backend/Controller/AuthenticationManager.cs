@@ -12,9 +12,11 @@ public class AuthenticationManager
     {
         try
         {
+            var userEmail = JwtUtils.GetUserEmailFromJwt(context);
+
             // Get the authorization header from the request
             string authHeader = context.Request.Headers["Authorization"];
-
+            UserRepository userRepository = new UserRepository();
             // Check if the header is present and contains a valid JWT
             if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer "))
             {
@@ -27,7 +29,7 @@ public class AuthenticationManager
                 var lastVisitedPath = await ExtractLastVisitedPath(requestBody);
 
                 // Update user status in the database (isUserLoggedIn = false)
-                await UpdateUserStatusInDb(context, false);
+                await userRepository.UpdateUserIsLoggedIn(false, userEmail);
 
                 // Update lastVisitedPath in the database
                 await UpdateLastVisitedPathInDb(context, lastVisitedPath);
@@ -36,37 +38,6 @@ public class AuthenticationManager
         catch (Exception ex)
         {
             Console.WriteLine($"Error during logout: {ex.Message}");
-        }
-    }
-
-    private async Task UpdateUserStatusInDb(HttpContext context, bool isUserLoggedIn)
-    {
-        try
-        {
-            // Extract user information from the JWT
-            var userEmail = JwtUtils.GetUserEmailFromJwt(context);
-            var userId = JwtUtils.GetUserId(userEmail);
-
-            // Update user status in the database
-            using (var connection = new MySqlConnection(ConnectionString.Value))
-            {
-                await connection.OpenAsync();
-                using (
-                    var command = new MySqlCommand(
-                        "UPDATE users SET isUserLoggedIn = @IsUserLoggedIn WHERE id = @UserId",
-                        connection
-                    )
-                )
-                {
-                    command.Parameters.AddWithValue("@IsUserLoggedIn", isUserLoggedIn);
-                    command.Parameters.AddWithValue("@UserId", userId);
-                    await command.ExecuteNonQueryAsync();
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error updating user status in the database: {ex.Message}");
         }
     }
 

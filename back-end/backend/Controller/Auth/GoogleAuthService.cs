@@ -12,6 +12,7 @@ public class GoogleAuthService
 
     public async Task HandleGoogleAuthRequest(HttpContext context)
     {
+        UserRepository userRepository = new UserRepository();
         string code = null;
         var googleClientId = GoogleClientIdEnv.Value;
         var googleClientSecret = GoogleClientSecretEnv.Value;
@@ -72,6 +73,7 @@ public class GoogleAuthService
                     responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
                     responseDict["picture"] = additionalUserInfo?.Picture;
 
+                    await userRepository.UpdateUserIsLoggedIn(true, userEmail);
 
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsJsonAsync(responseDict);
