@@ -94,7 +94,7 @@ const useStyles = createStyles((theme) => ({
 const data = [
   { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
   { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
-  { link: 'my_students', label: 'My Students', icon: IconSchool },
+  { link: 'homework', label: 'Homework', icon: IconSchool },
   { link: 'billing', label: 'Billing', icon: IconReceipt2 },
   { link: 'Databases', label: 'Databases', icon: IconDatabaseImport },
   { link: 'Authentication', label: 'Authentication', icon: Icon2fa },

@@ -6,7 +6,6 @@ import { Box, Button, Tooltip } from '@mantine/core';
 import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
 import { AdminNavBar } from '../navBar/AdminNavBar.component';
-import UsersTable from './userManagment/AdminDashBoard';
 import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 import { AppState } from '../../context/AppContext';
 import {
@@ -18,6 +17,7 @@ import {
   IconChevronRight,
   IconMinusVertical,
 } from '@tabler/icons-react';
+import UsersTable from './userManagment/AdminDashboard/UserTable.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -85,6 +85,8 @@ const Admin = () => {
       case 'billing':
         return <StudentmanagmentTable />;
       case 'register_new_user':
+        return <RegisterNewUser refetchUserList={refetchAllUsers} />;
+      case 'homework':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       default:
         return null;

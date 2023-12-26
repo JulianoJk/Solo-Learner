@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DefaultMantineColor } from '@mantine/core';
 import { usersDispatchContext } from '../Model/UserModels';
 import jwtDecode from 'jwt-decode';
@@ -114,3 +113,9 @@ export function getJob(isAdmin: boolean, isTeacher: boolean) {
     return 'student';
   }
 }
+export const roleColors: Record<string, string> = {
+  student: 'blue',
+  admin: 'pink',
+  teacher: 'cyan',
+  'admin/teacher': 'orange',
+};

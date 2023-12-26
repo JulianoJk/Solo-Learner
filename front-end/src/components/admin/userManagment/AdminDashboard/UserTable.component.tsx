@@ -1,58 +1,31 @@
 import {
-  Avatar,
-  Badge,
   Table,
-  Group,
   Text,
-  ActionIcon,
-  Anchor,
   ScrollArea,
   useMantineTheme,
-  Menu,
-  rem,
   Center,
   TextInput,
-  Indicator,
-  Tooltip,
 } from '@mantine/core';
-import {
-  IconDots,
-  IconMessages,
-  IconMoodSad,
-  IconNote,
-  IconPencil,
-  IconReportAnalytics,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconMoodSad, IconSearch } from '@tabler/icons-react';
 import {
   IApiError,
   IApiMessageResponse,
   User,
   fetchUserList,
-} from '../../../Model/UserModels';
-import { useNavigate } from 'react-router-dom';
+} from '../../../../Model/UserModels';
+
 import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
-import { useAppDispatch } from '../../../context/AppContext';
-import { notificationAlert } from '../../notifications/NotificationAlert';
-import { adminDeleteUserAccount } from '../../api/api';
-import { useUserState, useUserDispatch } from '../../../context/UserContext';
+import { useAppDispatch } from '../../../../context/AppContext';
+import { notificationAlert } from '../../../notifications/NotificationAlert';
+import { adminDeleteUserAccount } from '../../../api/api';
+import { useUserState, useUserDispatch } from '../../../../context/UserContext';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useGetCurrentUser } from '../../hooks/useGetCurrentUser';
-import { CopyButtonComponent } from '../../CopyButton/CopyButton.component';
-
-
-const roleColors: Record<string, string> = {
-  student: 'blue',
-  admin: 'pink',
-  teacher: 'cyan',
-  'admin/teacher': 'orange',
-};
+import { useGetCurrentUser } from '../../../hooks/useGetCurrentUser';
+import UserRow from './UserRow.component';
 
 const UsersTable = () => {
   const theme = useMantineTheme();
-  const navigate = useNavigate();
   const {
     user: AdminUser,
     allUsersAdminDashboard,
@@ -179,158 +152,16 @@ const UsersTable = () => {
   const rows = allUsersAdminDashboard
     .filter((user) => user.id !== currentUser?.data?.id)
     .map((item) => (
-      <tr
+      <UserRow
         key={item.username}
-        onMouseEnter={() => handleUserHover(item.id, true, false)}
-        onMouseLeave={() => handleUserHover(null, false, false)}
-      >
-        <td>
-          <Group spacing="sm">
-            <Tooltip
-              label={item.isUserLoggedIn ? 'Online' : 'Offline'}
-              color="gray"
-              // offset={-20}
-              position="right-end"
-              withArrow
-              arrowSize={10}
-            >
-              <Indicator
-                inline
-                size={12}
-                offset={5}
-                position="bottom-end"
-                color={item.isUserLoggedIn ? 'green' : 'rgba(92, 92, 92, 0.79)'}
-                withBorder
-              >
-                <Avatar size={30} src={item.picture} radius={30} />
-              </Indicator>
-            </Tooltip>
-
-            <Group>
-              <Anchor
-                component="button"
-                size="sm"
-                onClick={() => {
-                  navigate(`/profile/${item.username}`);
-                }}
-              >
-                {item.username}
-              </Anchor>
-              <CopyButtonComponent
-                value={item.username}
-                isHovered={hoveredUsername && hoveredUserId === item.id}
-              />
-            </Group>
-          </Group>
-        </td>
-
-        <td>
-          {/* Add the Role title here */}
-          {/* Assuming you have a function getJob that returns the role based on isAdmin and isTeacher */}
-          <Badge
-            color={roleColors[getJob(item.isAdmin, item.isTeacher)]}
-            variant={theme.colorScheme === 'dark' ? 'light' : 'filled'}
-          >
-            {getJob(item.isAdmin, item.isTeacher)}
-          </Badge>
-        </td>
-
-        <td>
-          <Group
-            onMouseEnter={() => handleUserHover(item.id, false, true)}
-            onMouseLeave={() => handleUserHover(null, false, false)}
-          >
-            <Anchor
-              component="button"
-              size="sm"
-              onClick={() => {
-                navigate(`/profile/${item.username}`);
-              }}
-            >
-              {item.email}
-            </Anchor>
-            <CopyButtonComponent
-              value={item.email}
-              isHovered={hoveredEmail && hoveredUserId === item.id}
-            />
-          </Group>
-        </td>
-
-        <td>
-          <Text fz="sm" c={theme.colorScheme === 'dark' ? 'dimmed' : ''}>
-            {item.formattedLastActive}
-          </Text>
-        </td>
-        <td>
-          <Group spacing={0} position="right">
-            <ActionIcon onClick={handleEditButton}>
-              <IconPencil size="1rem" stroke={1.5} />
-            </ActionIcon>
-            <Menu
-              transitionProps={{ transition: 'pop' }}
-              withArrow
-              position="bottom-end"
-              withinPortal
-            >
-              <Menu.Target>
-                <ActionIcon variant="subtle" color="gray">
-                  <IconDots
-                    style={{ width: rem(16), height: rem(16) }}
-                    stroke={1.5}
-                  />
-                </ActionIcon>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item
-                  disabled
-                  icon={
-                    <IconMessages
-                      style={{ width: rem(16), height: rem(16) }}
-                      stroke={1.5}
-                    />
-                  }
-                >
-                  Send message
-                </Menu.Item>
-                <Menu.Item
-                  disabled
-                  icon={
-                    <IconNote
-                      style={{ width: rem(16), height: rem(16) }}
-                      stroke={1.5}
-                    />
-                  }
-                >
-                  Add note
-                </Menu.Item>
-                <Menu.Item
-                  disabled
-                  icon={
-                    <IconReportAnalytics
-                      style={{ width: rem(16), height: rem(16) }}
-                      stroke={1.5}
-                    />
-                  }
-                >
-                  Analytics
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() => handleDeleteUser(item)}
-                  icon={
-                    <IconTrash
-                      style={{ width: rem(16), height: rem(16) }}
-                      stroke={1.5}
-                    />
-                  }
-                  color="red"
-                >
-                  Delete user
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
-        </td>
-      </tr>
+        user={item}
+        hoveredUserId={hoveredUserId}
+        hoveredUsername={hoveredUsername}
+        hoveredEmail={hoveredEmail}
+        handleUserHover={handleUserHover}
+        handleEditButton={handleEditButton}
+        handleDeleteUser={handleDeleteUser}
+      />
     ));
 
   return (
@@ -393,15 +224,5 @@ const UsersTable = () => {
     </>
   );
 };
-function getJob(isAdmin: boolean, isTeacher: boolean) {
-  if (isAdmin && isTeacher) {
-    return 'admin/teacher';
-  } else if (isAdmin) {
-    return 'admin';
-  } else if (isTeacher) {
-    return 'teacher';
-  } else {
-    return 'student';
-  }
-}
+
 export default UsersTable;
