@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import {
   AppShell,
-  ColorScheme,
-  ColorSchemeProvider,
   MantineProvider,
+  useMantineColorScheme,
+  ColorSchemeScript,
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
@@ -36,14 +36,13 @@ import Vocabulary from './images/Vocabulary';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
 import { AppContextProvider } from './context/AppContext';
 import { UserContextProvider } from './context/UserContext';
-
 const App = () => {
   const queryClient = new QueryClient();
   const [clientId, setClientId] = useState('');
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  const [colorScheme, setColorScheme] = useState<colorScheme>('light');
   const [loadingClientId, setLoadingClientId] = useState(true);
 
-  const toggleColorScheme = (value?: ColorScheme) =>
+  const toggleColorScheme = (value?: string) =>
     setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
 
   useEffect(() => {
@@ -136,12 +135,11 @@ const App = () => {
     />,
   ];
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
+    <>
+      <ColorSchemeScript defaultColorScheme="auto" />
       <QueryClientProvider client={queryClient}>
         <MantineProvider
+          defaultColorScheme="auto"
           withNormalizeCSS
           withGlobalStyles
           theme={{
@@ -188,7 +186,7 @@ const App = () => {
           </AppContextProvider>
         </MantineProvider>
       </QueryClientProvider>
-    </ColorSchemeProvider>
+    </>
   );
 };
 
