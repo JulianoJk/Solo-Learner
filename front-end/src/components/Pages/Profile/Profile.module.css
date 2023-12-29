@@ -31,3 +31,10 @@
 .name {
   font-family: 'Greycliff CF', sans-serif;
 }
+.control {
+  margin-top: calc(var(--mantine-spacing-xl) * 1.5);
+
+  @media screen and (max-width: 575px) {
+    width: 100%;
+  }
+}

@@ -41,6 +41,7 @@ import { UserContextProvider } from './context/UserContext';
 import Demo from './components/Demo';
 import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
+import { useMediaQuery } from '@mantine/hooks';
 
 const AppInner = () => {
   const [clientId, setClientId] = useState('');
@@ -48,17 +49,19 @@ const AppInner = () => {
   const [loadingClientId, setLoadingClientId] = useState(true);
   const { colorScheme } = useMantineColorScheme();
 
-  // const toggleColorScheme = (value?: ColorScheme) =>
-  //   setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  const matches = useMediaQuery('(min-width: 56.25em)');
 
-  // useEffect(() => {
-  //   const appTheme: any = localStorage.getItem('app-theme');
-  //   if (checkIfPageIsReload() && appTheme !== null) {
-  //     const appThemes = JSON.parse(appTheme);
-  //     toggleColorScheme(appThemes);
-  //   }
-  // }, [window.location.pathname]);
-
+  // Lock scrolling when desktop view is active
+  useEffect(() => {
+    // If matches is true, disable scrolling
+    if (matches) {
+      document.body.style.overflow = 'hidden';
+      // Cleanup function to re-enable scrolling when the component unmounts
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }
+  }, [matches]);
   const fetchGoogleClientId = async () => {
     try {
       const fetchedClientId = await getGoogleClientIdAPI();
@@ -199,9 +202,11 @@ const AppInner = () => {
                   >
                     <HeaderMenu />
                   </AppShell.Header>
-                  <GoogleOAuthProvider clientId={clientId}>
-                    <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
-                  </GoogleOAuthProvider>
+                  <AppShell.Main style={{ marginTop: '6rem' }}>
+                    <GoogleOAuthProvider clientId={clientId}>
+                      <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
+                    </GoogleOAuthProvider>
+                  </AppShell.Main>
                 </AppShell>
               </AccountSettingsContextProvider>
             </UserContextProvider>

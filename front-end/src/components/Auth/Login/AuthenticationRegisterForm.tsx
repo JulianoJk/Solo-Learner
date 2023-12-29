@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import {
   TextInput,
@@ -19,7 +19,7 @@ import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import classes from '../Auth.module.css';
-import { useMediaQuery } from '@mantine/hooks';
+
 interface IRegisterProps {
   children?: React.ReactNode;
   switchToLogin?: boolean;
@@ -65,17 +65,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
     },
     validateInputOnChange: true,
   });
-  const matches = useMediaQuery('(min-width: 56.25em)');
-  useEffect(() => {
-    // If matches is true, disable scrolling
-    if (matches) {
-      document.body.style.overflow = 'hidden';
-      // Cleanup function to re-enable scrolling when the component unmounts
-      return () => {
-        document.body.style.overflow = 'auto';
-      };
-    }
-  }, [matches]);
+
   return (
     <Center maw={600} mx="auto" style={{ marginTop: '10rem' }}>
       <Paper

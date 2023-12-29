@@ -21,7 +21,6 @@ import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
 import classes from '../Auth.module.css';
-import { useMediaQuery } from '@mantine/hooks';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -49,7 +48,6 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
 
   const navigate: NavigateFunction = useNavigate();
   const [loading, setLoading] = useState(true);
-  const matches = useMediaQuery('(min-width: 56.25em)');
 
   const form = useForm({
     initialValues: {
@@ -68,18 +66,6 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     },
     validateInputOnChange: true,
   });
-
-  // Lock scrolling when desktop view is active
-  useEffect(() => {
-    if (matches) {
-      document.body.style.overflow = 'hidden';
-
-      // Cleanup function to re-enable scrolling when the component unmounts
-      return () => {
-        document.body.style.overflow = 'auto';
-      };
-    }
-  }, [matches]);
 
   useEffect(() => {
     const checkAuthentication = async () => {

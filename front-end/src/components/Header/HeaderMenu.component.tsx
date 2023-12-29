@@ -267,7 +267,6 @@ const HeaderMegaMenu = () => {
                     ) : (
                       <>
                         <Menu.Label>Admin</Menu.Label>
-                        <ModeThemeButtonSmall />
 
                         <Menu.Item
                           leftSection={<IconUser size="0.9rem" stroke={1.5} />}
