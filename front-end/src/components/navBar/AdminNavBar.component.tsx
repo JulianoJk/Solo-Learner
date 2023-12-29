@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import {
-  createStyles,
-  Navbar,
-  getStylesRef,
-  rem,
-  Anchor,
-  useMantineTheme,
+  // Navbar,
+  // getStylesRef,
+  useMantineColorScheme,
+  // Anchor,
+  // useMantineTheme,
 } from '@mantine/core';
 import {
   IconSettings,
@@ -18,78 +18,80 @@ import {
 } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
 import { useMediaQuery } from '@mantine/hooks';
+import classes from './AdminNavBar.module.css';
+import cx from 'clsx';
 
-const useStyles = createStyles((theme) => ({
-  header: {
-    paddingBottom: theme.spacing.md,
-    marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-    borderBottom: `${rem(1)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-    }`,
-  },
-  body: {
-    background: 'red',
-  },
+// const useStyles = createStyles((theme) => ({
+//   header: {
+//     paddingBottom: theme.spacing.md,
+//     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
+//     borderBottom: `${rem(1)} solid ${
+//       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
+//     }`,
+//   },
+//   body: {
+//     background: 'red',
+//   },
 
-  footer: {
-    paddingTop: theme.spacing.md,
-    marginTop: theme.spacing.md,
-    borderTop: `${rem(1)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-    }`,
-  },
+//   footer: {
+//     paddingTop: theme.spacing.md,
+//     marginTop: theme.spacing.md,
+//     borderTop: `${rem(1)} solid ${
+//       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
+//     }`,
+//   },
 
-  link: {
-    ...theme.fn.focusStyles(),
-    display: 'flex',
-    alignItems: 'center',
-    textDecoration: 'none',
-    fontSize: theme.fontSizes.sm,
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[1]
-        : theme.colors.gray[7],
-    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
-    borderRadius: theme.radius.sm,
-    fontWeight: 500,
+//   link: {
+//     ...theme.fn.focusStyles(),
+//     display: 'flex',
+//     alignItems: 'center',
+//     textDecoration: 'none',
+//     fontSize: theme.fontSizes.sm,
+//     color:
+//       theme.colorScheme === 'dark'
+//         ? theme.colors.dark[1]
+//         : theme.colors.gray[7],
+//     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+//     borderRadius: theme.radius.sm,
+//     fontWeight: 500,
 
-    '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
-      color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+//     '&:hover': {
+//       backgroundColor:
+//         theme.colorScheme === 'dark'
+//           ? theme.colors.dark[6]
+//           : theme.colors.gray[0],
+//       color: theme.colorScheme === 'dark' ? theme.white : theme.black,
 
-      [`& .${getStylesRef('icon')}`]: {
-        color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-      },
-    },
-  },
+//       [`& .${getStylesRef('icon')}`]: {
+//         color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+//       },
+//     },
+//   },
 
-  linkIcon: {
-    ref: getStylesRef('icon'),
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[2]
-        : theme.colors.gray[6],
-    marginRight: theme.spacing.sm,
-  },
+//   linkIcon: {
+//     ref: getStylesRef('icon'),
+//     color:
+//       theme.colorScheme === 'dark'
+//         ? theme.colors.dark[2]
+//         : theme.colors.gray[6],
+//     marginRight: theme.spacing.sm,
+//   },
 
-  linkActive: {
-    '&, &:hover': {
-      backgroundColor: theme.fn.variant({
-        variant: 'light',
-        color: theme.primaryColor,
-      }).background,
-      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-        .color,
-      [`& .${getStylesRef('icon')}`]: {
-        color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-          .color,
-      },
-    },
-  },
-}));
+//   linkActive: {
+//     '&, &:hover': {
+//       backgroundColor: theme.fn.variant({
+//         variant: 'light',
+//         color: theme.primaryColor,
+//       }).background,
+//       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+//         .color,
+//       [`& .${getStylesRef('icon')}`]: {
+//         color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+//           .color,
+//       },
+//     },
+//   },
+// }));
 
 const data = [
   { link: 'userManagment', label: 'User Managment', icon: IconUserCog },
@@ -102,60 +104,61 @@ const data = [
 ];
 
 export function AdminNavBar() {
-  const { classes, cx } = useStyles();
   const [active, setActive] = useState('User Managment');
   const appDispatch = useAppDispatch();
   const isMobile = useMediaQuery('(max-width: 768px)'); // adjust the value as needed
-  const theme = useMantineTheme();
-  const links = data.map((item) => (
-    <Anchor
-      draggable={false}
-      className={cx(classes.link, {
-        [classes.linkActive]: item.label === active,
-      })}
-      href={item.link}
-      key={item.label}
-      onClick={(event) => {
-        event.preventDefault();
-        appDispatch({
-          type: 'SET_ACTIVE_ADMIN_NAV',
-          selectedAdminNavbar: item.link,
-        });
-        setActive(item.label);
-      }}
-      style={{ fontSize: isMobile ? '0.6rem' : '1rem' }} // adjust the values as needed
-    >
-      {isMobile ? null : (
-        <item.icon className={classes.linkIcon} stroke={1.5} />
-      )}
-      <span>{item.label}</span>
-    </Anchor>
-  ));
+  // const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  // const links = data.map((item) => (
+  //   <Anchor
+  //     draggable={false}
+  //     className={cx(classes.link, {
+  //       [classes.linkActive]: item.label === active,
+  //     })}
+  //     href={item.link}
+  //     key={item.label}
+  //     onClick={(event) => {
+  //       event.preventDefault();
+  //       appDispatch({
+  //         type: 'SET_ACTIVE_ADMIN_NAV',
+  //         selectedAdminNavbar: item.link,
+  //       });
+  //       setActive(item.label);
+  //     }}
+  //     style={{ fontSize: isMobile ? '0.6rem' : '1rem' }} // adjust the values as needed
+  //   >
+  //     {isMobile ? null : (
+  //       <item.icon className={classes.linkIcon} stroke={1.5} />
+  //     )}
+  //     <span>{item.label}</span>
+  //   </Anchor>
+  // ));
 
   return (
-    <Navbar
-      styles={{
-        root: {
-          backgroundImage:
-            theme.colorScheme === 'light'
-              ? theme.fn.linearGradient(7, '#f8bbd09e', '#64b4f694') //OR "#4CAF50", "#2196F3"
-              : theme.fn.linearGradient(7, '#303233'),
-        },
-      }}
-      height={'100vh'}
-      width={{
-        // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
-        sm: 200,
+    // <Navbar
+    //   styles={{
+    //     root: {
+    //       backgroundImage:
+    //         colorScheme === 'light'
+    //           ? theme.fn.linearGradient(7, '#f8bbd09e', '#64b4f694') //OR "#4CAF50", "#2196F3"
+    //           : theme.fn.linearGradient(7, '#303233'),
+    //     },
+    //   }}
+    //   height={'100vh'}
+    //   width={{
+    //     // When viewport is larger than theme.breakpoints.sm, Navbar width will be 300
+    //     sm: 200,
 
-        // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
-        lg: 300,
+    //     // When viewport is larger than theme.breakpoints.lg, Navbar width will be 400
+    //     lg: 300,
 
-        // When other breakpoints do not match base width is used, defaults to 100%
-        base: 100,
-      }}
-      p="md"
-    >
-      <Navbar.Section grow>{links}</Navbar.Section>
-    </Navbar>
+    //     // When other breakpoints do not match base width is used, defaults to 100%
+    //     base: 100,
+    //   }}
+    //   p="md"
+    // >
+    //   <Navbar.Section grow>{links}</Navbar.Section>
+    // </Navbar>
+    <div></div>
   );
 }

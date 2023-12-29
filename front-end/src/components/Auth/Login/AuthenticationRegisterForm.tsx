@@ -18,7 +18,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
-import { classes } from '../Auth.modules.css';
+import classes from '../Auth.module.css';
 interface IRegisterProps {
   children?: React.ReactNode;
   switchToLogin?: boolean;
@@ -170,7 +170,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
             )}
           </Stack>
 
-          <Group position="apart" mt="xl">
+          <Group justify="space-between" mt="xl">
             {switchToLogin ? (
               <Anchor
                 component="button"

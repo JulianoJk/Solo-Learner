@@ -7,7 +7,7 @@ import {
   MantineProvider,
   Avatar,
   ColorSchemeScript,
-  useMantineColorScheme,
+  // useMantineColorScheme,
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
@@ -41,7 +41,7 @@ import './GlobalStyles.modules.css';
 const App = () => {
   const queryClient = new QueryClient();
   const [clientId, setClientId] = useState('');
-  const { colorScheme } = useMantineColorScheme();
+  // const { colorScheme } = useMantineColorScheme();
   const [loadingClientId, setLoadingClientId] = useState(true);
 
   // const toggleColorScheme = (value?: ColorScheme) =>
@@ -74,7 +74,7 @@ const App = () => {
     return <div>Loading...</div>;
   }
   const CommonRoutes = [
-    <Route key="/" path="/" element={<Demo />} />,
+    <Route key="/" path="/" element={<IndexPage />} />,
     // <Route key="/s" path="/" element={<IndexPage />} />,
     // <Route
     //   key="/login"
@@ -146,40 +146,40 @@ const App = () => {
 
       <MantineProvider
         defaultColorScheme="dark"
-        theme={{
-          components: {
-            Avatar: Avatar.extend({
-              defaultProps: {
-                size: 'md',
-                style: () => ({
-                  backgroundColor:
-                    colorScheme === 'light' ? '#004a44' : '#35004c',
-                  '&:hover': {
-                    color: colorScheme === 'light' ? 'red' : 'black',
-                  },
-                  gradient:
-                    colorScheme === 'light'
-                      ? { from: '#0CA678', to: 'blue', deg: 60 }
-                      : { from: '#59A5D8', to: '#84D2F6', deg: 35 },
-                }),
-              },
-            }),
-            Button: Button.extend({
-              defaultProps: {
-                size: 'md',
-                style: () => ({
-                  transition:
-                    'background-color 150ms ease, transform 150ms ease, opacity 150ms ease',
-                  '&:hover': {
-                    transform: 'translateY(1px) scale(0.95)',
-                    opacity: 0.9,
-                    filter: 'brightness(90%)',
-                  },
-                }),
-              },
-            }),
-          },
-        }}
+        // theme={{
+        //   components: {
+        //     Avatar: Avatar.extend({
+        //       defaultProps: {
+        //         size: 'md',
+        //         style: () => ({
+        //           backgroundColor:
+        //             colorScheme === 'light' ? '#004a44' : '#35004c',
+        //           '&:hover': {
+        //             color: colorScheme === 'light' ? 'red' : 'black',
+        //           },
+        //           gradient:
+        //             colorScheme === 'light'
+        //               ? { from: '#0CA678', to: 'blue', deg: 60 }
+        //               : { from: '#59A5D8', to: '#84D2F6', deg: 35 },
+        //         }),
+        //       },
+        //     }),
+        //     Button: Button.extend({
+        //       defaultProps: {
+        //         size: 'md',
+        //         style: () => ({
+        //           transition:
+        //             'background-color 150ms ease, transform 150ms ease, opacity 150ms ease',
+        //           '&:hover': {
+        //             transform: 'translateY(1px) scale(0.95)',
+        //             opacity: 0.9,
+        //             filter: 'brightness(90%)',
+        //           },
+        //         }),
+        //       },
+        //     }),
+        //   },
+        // }}
       >
         <AppContextProvider>
           <ModalsProvider>
@@ -188,9 +188,9 @@ const App = () => {
               <UserContextProvider>
                 <AccountSettingsContextProvider>
                   <AppShell padding="md">
-                    {/* <AppShell.Header>
+                    <AppShell.Header>
                       <HeaderMenu />
-                    </AppShell.Header> */}
+                    </AppShell.Header>
                     <GoogleOAuthProvider clientId={clientId}>
                       <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
                     </GoogleOAuthProvider>

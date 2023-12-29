@@ -1,0 +1,67 @@
+/* YourComponent.module.css */
+
+.header {
+  padding-bottom: var(--spacing-md);
+  margin-bottom: calc(var(--spacing-md) * 1.5);
+  border-bottom: var(--border-bottom);
+}
+
+.body {
+  background: red;
+}
+
+.footer {
+  padding-top: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  border-top: var(--border-top);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  color: var(--link-color);
+  padding: var(--link-padding);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+
+  &:hover {
+    background-color: var(--link-hover-background);
+    color: var(--link-hover-color);
+
+    .linkIcon {
+      color: var(--link-hover-color);
+    }
+  }
+}
+
+.linkIcon {
+  color: var(--link-icon-color);
+  margin-right: var(--spacing-sm);
+}
+
+.linkActive,
+.linkActive:hover {
+  background-color: var(--link-active-background);
+  color: var(--link-active-color);
+
+  .linkIcon {
+    color: var(--link-active-color);
+  }
+}
+
+:local {
+  --spacing-md: 16px;
+  --border-bottom: 1px solid #dddddd; /* Replace with appropriate color */
+  --border-top: 1px solid #dddddd; /* Replace with appropriate color */
+  --font-size-sm: 14px;
+  --link-color: #2f2f2f; /* Replace with appropriate color */
+  --link-padding: 6px 16px;
+  --radius-sm: 4px;
+  --link-hover-background: #f1f1f1; /* Replace with appropriate color */
+  --link-hover-color: #333333; /* Replace with appropriate color */
+  --link-icon-color: #888888; /* Replace with appropriate color */
+  --link-active-background: #3498db; /* Replace with appropriate color */
+  --link-active-color: #ffffff; /* Replace with appropriate color */
+}

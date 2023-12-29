@@ -15,12 +15,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { deleteAccountAPI } from '../../../../api/api';
 import { useUserDispatch } from '../../../../../context/UserContext';
-import {
-  IconLock,
-  IconEye,
-  IconEyeOff,
-  IconMoodSad,
-} from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconMoodSad } from '@tabler/icons-react';
 import {
   IApiError,
   IApiMessageResponse,
@@ -119,7 +114,7 @@ export default function MantineDemo() {
               {...form.getInputProps('email')}
             />
             <PasswordInput
-              icon={<IconLock />}
+              // icon={<IconLock />}
               label={<span>Password:</span>}
               placeholder="Password"
               visibilityToggleIcon={({ reveal }) =>
@@ -129,7 +124,8 @@ export default function MantineDemo() {
               {...form.getInputProps('password')}
             />
 
-            <Group position="right" mt="md">
+            {/* <Group position="right" mt="md"> */}
+            <Group>
               <Button onClick={() => setOpened(false)} color={'gray'}>
                 No don't delete it
               </Button>
@@ -140,7 +136,8 @@ export default function MantineDemo() {
           </form>
         </Box>
       </Modal>
-      <Group position="center">
+      {/* <Group position="center"> */}
+      <Group>
         <Button onClick={() => setOpened(true)} color={'red'}>
           Delete Account
         </Button>

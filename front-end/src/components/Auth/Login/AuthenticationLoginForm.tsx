@@ -20,7 +20,7 @@ import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
-import { classes } from '../Auth.modules.css';
+import classes from '../Auth.module.css';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -154,7 +154,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
                 radius="md"
               />
             </Stack>
-            <Group position="apart" mt="xl">
+            <Group justify="space-between" mt="xl">
               {switchToRegister ? (
                 <Anchor
                   component="button"

@@ -1,5 +1,11 @@
 import React from 'react';
-import { Avatar, Text, Button, Paper } from '@mantine/core';
+import {
+  Avatar,
+  Text,
+  Button,
+  Paper,
+  useMantineColorScheme,
+} from '@mantine/core';
 interface InstructorProfileCardProps {
   picture: string;
   name: string;
@@ -9,6 +15,7 @@ interface InstructorProfileCardProps {
 
 const InstructorProfileCard: React.FC<InstructorProfileCardProps> = (props) => {
   const { picture, name, email, job } = props;
+  const { colorScheme } = useMantineColorScheme();
   return (
     <Paper
       radius="md"
@@ -16,11 +23,11 @@ const InstructorProfileCard: React.FC<InstructorProfileCardProps> = (props) => {
       p="lg"
       style={(theme) => ({
         backgroundColor:
-          theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+          colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
       })}
     >
       <Avatar src={picture} size={120} radius={120} mx="auto" color="pink" />
-      <Text ta="center" fz="lg" weight={500} mt="md">
+      <Text ta="center" fz="lg" fw={500} mt="md">
         {name}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">

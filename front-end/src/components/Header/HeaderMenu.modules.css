@@ -81,7 +81,7 @@
   background-image: var(--header-bg);
   border-bottom: var(--header-border-bottom);
   margin-bottom: 20px;
-  height: 60;
+  height: 14rem;
 }
 
 .user {

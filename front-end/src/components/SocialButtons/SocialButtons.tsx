@@ -4,6 +4,7 @@ import {
   ButtonProps,
   Center,
   Group,
+  darken,
   Popover,
   Text,
 } from '@mantine/core';
@@ -35,7 +36,7 @@ export function GoogleButton(props: ButtonProps) {
   return (
     <Button
       onClick={handleGoogleLogin}
-      leftIcon={<GoogleIcon />}
+      leftSection={<GoogleIcon />}
       loading={googleClientIsLoading}
       variant="default"
       color="gray"
@@ -60,12 +61,12 @@ export function FacebookButton(props: ButtonProps) {
       >
         <Popover.Target>
           <Button
-            leftIcon={<FacebookIcon />}
-            style={(theme) => ({
+            leftSection={<FacebookIcon />}
+            style={() => ({
               backgroundColor: '#4267B2',
               color: '#fff',
               '&:not([data-disabled]):hover': {
-                backgroundColor: theme.fn.darken('#4267B2', 0.1),
+                backgroundColor: darken('#4267B2', 0.1),
               },
             })}
             {...props}
@@ -85,7 +86,7 @@ export function FacebookButton(props: ButtonProps) {
 
 export function SocialButtons(props: SocialButtonsProps) {
   return (
-    <Group position="center">
+    <Group justify="center">
       <GoogleButton disabled={props.disableGoogle} />
       <FacebookButton disabled={props.disableFacebook} />
     </Group>

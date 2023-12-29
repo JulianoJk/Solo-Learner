@@ -52,7 +52,9 @@ const Profile: React.FC = () => {
       <UserInfoIcons {...data} />
       {hasTeacher ? (
         <Box style={{ border: '2px solid white', width: '17rem', margin: 10 }}>
-          <Title order={4} align="center">
+          {/* TODO!: Propably add a <Center> in here */}
+          <Title order={4}>
+            {/* <Title order={4} align="center"> */}
             Your Amazing Instructor &#10024;
           </Title>
           <InstructorProfileCard

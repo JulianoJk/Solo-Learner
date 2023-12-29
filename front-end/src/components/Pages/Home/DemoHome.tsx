@@ -7,7 +7,7 @@ import {
   AspectRatio,
   Skeleton,
 } from '@mantine/core';
-import { classes } from './Home.modules.css';
+import classes from './Home.module.css';
 import Theory from '../../../images/theory.jpeg';
 import GrammarIcon from '../../../images/grammar.jpeg';
 import TestImage from '../../../images/testsImage.jpg';

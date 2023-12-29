@@ -8,7 +8,7 @@ import {
   Title,
   SimpleGrid,
 } from '@mantine/core';
-import { useStyles } from './UploadProfile.styles';
+import classes from '../Settings.modules.css';
 import { Dropzone } from '@mantine/dropzone';
 import { FileRejection } from 'react-dropzone';
 import {
@@ -29,7 +29,6 @@ import MyImageCrop from './imageCrop/imageCropper';
 import { showNotification } from '@mantine/notifications';
 
 const UploadProfileComponent = () => {
-  const { classes } = useStyles();
   const [img] = useState('');
   const accountSettingsDispatch = useAccountSettingsDispatch();
   const { profileImage } = useAccountSettingsState();
@@ -174,8 +173,8 @@ const UploadProfileComponent = () => {
           multiple={false}
         >
           <Group
-            position="center"
-            spacing="xl"
+            // position="center"
+            // spacing="xl"
             style={{ minHeight: 70, pointerEvents: 'none' }}
           >
             <Dropzone.Accept>
@@ -196,7 +195,8 @@ const UploadProfileComponent = () => {
             </Text>
           </Group>
         </Dropzone>
-        <SimpleGrid cols={4} breakpoints={[{ maxWidth: 'lg', cols: 1 }]}>
+        {/* <SimpleGrid cols={4} breakpoints={[{ maxWidth: 'lg', cols: 1 }]}> */}
+        <SimpleGrid cols={4}>
           {files.map((file) => (
             // <img
             //   key={file.name}
@@ -212,8 +212,8 @@ const UploadProfileComponent = () => {
           ))}
         </SimpleGrid>
         <Group
-          spacing={'xl'}
-          position={'right'}
+          // spacing={'xl'}
+          // position={'right'}
           className={classes.modalButtons}
         >
           <Button

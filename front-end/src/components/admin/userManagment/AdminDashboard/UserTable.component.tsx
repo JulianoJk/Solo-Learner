@@ -2,9 +2,9 @@ import {
   Table,
   Text,
   ScrollArea,
-  useMantineTheme,
   Center,
   TextInput,
+  useMantineColorScheme,
 } from '@mantine/core';
 import { IconMoodSad, IconSearch } from '@tabler/icons-react';
 import {
@@ -25,7 +25,8 @@ import { useGetCurrentUser } from '../../../hooks/useGetCurrentUser';
 import UserRow from './UserRow.component';
 
 const UsersTable = () => {
-  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+
   const {
     user: AdminUser,
     allUsersAdminDashboard,
@@ -173,16 +174,16 @@ const UsersTable = () => {
           <TextInput
             placeholder="Search by username or email"
             mb="md"
-            icon={<IconSearch size={20} />}
+            rightSection={<IconSearch size={20} />}
             value={search}
             onChange={handleSearchChange}
           />
           <Table
             style={{ minWidth: 800 }}
             verticalSpacing="sm"
-            striped={theme.colorScheme === 'dark' ? true : false}
+            striped={colorScheme === 'dark' ? true : false}
             highlightOnHover
-            withBorder
+            withTableBorder
             withColumnBorders
           >
             <thead>

@@ -4,8 +4,7 @@ import { Container, Title, Text, Button, SimpleGrid } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { ReactSVG } from 'react-svg';
 import Forbitten from '../../../../images/Forbitten.svg';
-import { useStyles } from './Forbidden.styles';
-
+import classes from './Forbidden.modules.css';
 interface NotFoundProps {
   bodyText?: string;
   navText?: string;
@@ -14,15 +13,19 @@ interface NotFoundProps {
   navigationPath: string;
 }
 const ForbiddenPage: React.FC<NotFoundProps> = (props) => {
-  const { classes } = useStyles();
   const navigate = useNavigate();
 
   return (
     <Container className={classes.root}>
-      <SimpleGrid
+      {/* <SimpleGrid
         spacing={80}
         cols={2}
         breakpoints={[{ maxWidth: 'sm', cols: 1, spacing: 40 }]}
+      > */}
+      <SimpleGrid
+        cols={{ base: 1, sm: 2, lg: 2 }} // Adjust the responsive values for cols
+        spacing={{ base: 10, sm: 'xl' }} // Adjust the responsive values for spacing
+        verticalSpacing={{ base: 'md', sm: 'xl' }} // Adjust the responsive values for verticalSpacing
       >
         <ReactSVG src={Forbitten} className={classes.mobileImage} />
         <div>

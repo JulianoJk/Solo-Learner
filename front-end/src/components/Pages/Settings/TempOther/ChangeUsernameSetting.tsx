@@ -10,7 +10,7 @@ import {
 import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
-import { useStyles } from '../Settings.styles';
+import classes from '../Settings.modules.css';
 import { isUndefinedOrNullString } from '../../../../utils/utils';
 import { useLocation } from 'react-router-dom';
 
@@ -19,7 +19,7 @@ export const ChangeUsernameSetting = () => {
   const { saveButtonClicked } = AppState();
   const userDispatch = useUserDispatch();
   const { user } = useUserState();
-  const { classes } = useStyles();
+
   const [newUsername, setNewUsername] = useState<string>('');
 
   const email: string = user.email as string;
@@ -99,7 +99,7 @@ export const ChangeUsernameSetting = () => {
     <>
       <form onSubmit={(e) => e.preventDefault()}>
         <TextInput
-          icon={<IconMail />}
+          leftSection={<IconMail />}
           type="text"
           label={<span className={classes.inputLabels}>Your full name :</span>}
           value={newUsername}

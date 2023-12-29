@@ -1,9 +1,9 @@
 import React, { useContext, useReducer } from 'react';
 import { IChildrenProvider } from '../Model/models';
-import { ColorScheme } from '@mantine/core';
+// import { ColorScheme } from '@mantine/core';
 interface IAppStateContext {
   isSmallWindow: boolean;
-  appTheme: ColorScheme;
+  appTheme: any;
   errorAlertMessage: string;
   isUserSettingsOpen: boolean;
   isSessionExpired: boolean;
@@ -34,7 +34,7 @@ type TApplicationAction =
     }
   | {
       type: 'SET_APP_THEME';
-      appTheme: ColorScheme;
+      appTheme: any;
     }
   | {
       type: 'SET_ERROR_ALERT_MESSAGE';

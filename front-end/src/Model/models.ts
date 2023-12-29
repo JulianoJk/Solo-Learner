@@ -1,4 +1,3 @@
-import { ColorScheme } from '@mantine/core';
 import React from 'react';
 
 // *** State ***
@@ -8,7 +7,7 @@ export interface AccountSettingsInterface {
 
 export interface IAppStateContext {
   isSmallWindow: boolean;
-  appTheme: ColorScheme;
+  appTheme: any;
   handleModal: boolean;
 }
 
@@ -23,7 +22,7 @@ export type TApplicationAction =
     }
   | {
       type: 'SET_APP_THEME';
-      appTheme: ColorScheme;
+      appTheme: any;
     };
 
 // Interface for the ContextProvider children

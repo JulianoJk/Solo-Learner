@@ -1,0 +1,33 @@
+/* YourComponent.module.css */
+
+:local {
+  --root-border-color: 1px solid black;
+  --root-background-light: #e5d8d0;
+  --root-background-dark: #21262d;
+  --section-container-width: 500px;
+  --section-container-height: 400px;
+  --image-container-border-radius: 70%;
+  --image-container-border: 10px solid red;
+}
+
+.root {
+  border: var(--root-border-color);
+  background-color: var(--root-background-light);
+  color: var(--text-color);
+  text-align: center;
+  height: 100%;
+}
+
+.root.dark {
+  background-color: var(--root-background-dark);
+}
+
+.sectionContainer {
+  width: var(--section-container-width);
+  height: var(--section-container-height);
+}
+
+.imageContainer {
+  border-radius: var(--image-container-border-radius);
+  border: var(--image-container-border);
+}

@@ -8,10 +8,9 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import { hasLength, useForm } from '@mantine/form';
-import { useStyles } from '../Settings.styles';
+import classes from '../Settings.modules.css';
 import { useDisclosure } from '@mantine/hooks';
 const ChangePasswordSetting = () => {
-  const { classes } = useStyles();
   const [changePassVisible, setChangePassVisible] = useState<boolean>(true);
   const [opened, { toggle }] = useDisclosure(false, {
     onOpen: () => setChangePassVisible(false),
@@ -67,7 +66,7 @@ const ChangePasswordSetting = () => {
           <Button
             className={classes.changePasswordButton}
             onClick={toggle}
-            rightIcon={<IconChevronRight></IconChevronRight>}
+            rightSection={<IconChevronRight></IconChevronRight>}
             variant="subtle"
             color="gray"
           >
@@ -96,7 +95,7 @@ const ChangePasswordSetting = () => {
         >
           <PasswordInput
             className={classes.formInput}
-            icon={<IconLock />}
+            leftSection={<IconLock />}
             label={<span>Current Password:</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
@@ -107,7 +106,7 @@ const ChangePasswordSetting = () => {
           />
           <PasswordInput
             className={classes.formInput}
-            icon={<IconLock />}
+            leftSection={<IconLock />}
             label={<span>New Password :</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
@@ -118,7 +117,7 @@ const ChangePasswordSetting = () => {
           />
           <PasswordInput
             className={classes.formInput}
-            icon={<IconLock />}
+            leftSection={<IconLock />}
             label={<span>Confirm New Password:</span>}
             placeholder="Password"
             visibilityToggleIcon={({ reveal }) =>
@@ -135,7 +134,7 @@ const ChangePasswordSetting = () => {
         <div>
           <Button
             onClick={toggle}
-            rightIcon={<IconChevronRight></IconChevronRight>}
+            rightSection={<IconChevronRight></IconChevronRight>}
             variant="light"
             color="grape"
           >

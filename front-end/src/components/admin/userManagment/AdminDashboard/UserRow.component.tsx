@@ -8,8 +8,8 @@ import {
   Anchor,
   Text,
   Badge,
-  useMantineTheme,
   ActionIcon,
+  useMantineColorScheme,
 } from '@mantine/core';
 
 import { IconPencil, IconTrash } from '@tabler/icons-react';
@@ -41,7 +41,8 @@ const UserRow: React.FC<UserRowProps> = ({
   handleEditButton,
   handleDeleteUser,
 }) => {
-  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
+  // const theme = useMantineTheme();
   const navigate = useNavigate();
   return (
     <tr
@@ -50,7 +51,7 @@ const UserRow: React.FC<UserRowProps> = ({
       onMouseLeave={() => handleUserHover(null, false, false)}
     >
       <td>
-        <Group spacing="sm">
+        <Group gap="sm">
           <Tooltip
             label={user.isUserLoggedIn ? 'Online' : 'Offline'}
             color="gray"
@@ -91,7 +92,7 @@ const UserRow: React.FC<UserRowProps> = ({
       <td>
         <Badge
           color={roleColors[getJob(user.isAdmin, user.isTeacher)]}
-          variant={theme.colorScheme === 'dark' ? 'light' : 'filled'}
+          variant={colorScheme === 'dark' ? 'light' : 'filled'}
         >
           {getJob(user.isAdmin, user.isTeacher)}
         </Badge>
@@ -119,12 +120,12 @@ const UserRow: React.FC<UserRowProps> = ({
       </td>
 
       <td>
-        <Text fz="sm" c={theme.colorScheme === 'dark' ? 'dimmed' : ''}>
+        <Text fz="sm" c={colorScheme === 'dark' ? 'dimmed' : ''}>
           {user.formattedLastActive}
         </Text>
       </td>
       <td>
-        <Group spacing={0} position="right">
+        <Group gap={0} justify="flex-end">
           <ActionIcon onClick={handleEditButton}>
             <IconPencil size="1rem" stroke={1.5} />
           </ActionIcon>

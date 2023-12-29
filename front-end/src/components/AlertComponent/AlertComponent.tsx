@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { IconAlertCircleFilled } from '@tabler/icons-react';
 
-import { classes } from './Alert.modules.css';
+import classes from './Alert.module.css';
 import { isUndefinedOrNullString } from '../../utils/utils';
 import { AppState } from '../../context/AppContext';
 
