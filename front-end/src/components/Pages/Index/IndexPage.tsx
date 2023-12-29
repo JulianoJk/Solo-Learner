@@ -60,11 +60,11 @@ const IndexPage = () => {
           <div>Loading...</div>
         ) : (
           <>
-            <Title className={classes.title}>
+            <Title className={classes.title} c="white">
               Welcome to Solo learner, your free English language learning
               platform
             </Title>
-            <Text className={classes.description} size="xl" mt="xl">
+            <Text className={classes.description} size="xl" mt="xl" c="white">
               Master the English language faster than ever - Solo learner
               provides comprehensive theory lessons, interactive exercises, and
               tests to help you in every step of your learning journey.
