@@ -61,7 +61,7 @@ export function FacebookButton(props: ButtonProps) {
         <Popover.Target>
           <Button
             leftIcon={<FacebookIcon />}
-            sx={(theme) => ({
+            style={(theme) => ({
               backgroundColor: '#4267B2',
               color: '#fff',
               '&:not([data-disabled]):hover': {
@@ -73,7 +73,7 @@ export function FacebookButton(props: ButtonProps) {
             Sign in with Facebook
           </Button>
         </Popover.Target>
-        <Popover.Dropdown sx={{ pointerEvents: 'none' }}>
+        <Popover.Dropdown style={{ pointerEvents: 'none' }}>
           <Center>
             <Text size="sm">Coming soon</Text>
           </Center>

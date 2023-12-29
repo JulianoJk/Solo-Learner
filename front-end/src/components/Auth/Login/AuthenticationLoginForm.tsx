@@ -15,12 +15,12 @@ import {
   Title,
 } from '@mantine/core';
 import { useLogin } from '../../hooks/useLogin';
-import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
+import { classes } from '../Auth.modules.css';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -45,7 +45,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
   });
-  const { classes } = useStyles();
+
   const navigate: NavigateFunction = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -104,7 +104,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
         </Stack>
       ) : (
         <Paper radius="md" p="xl" withBorder={hasBorder}>
-          <Text size="lg" weight={500} ta="center">
+          <Text size="lg" fw={500} ta="center">
             {loginTitle === undefined ||
             (typeof loginTitle === 'string' && loginTitle.length === 0)
               ? 'Welcome to Solo Learn, login with'

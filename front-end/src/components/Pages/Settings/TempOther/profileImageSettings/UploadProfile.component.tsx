@@ -135,7 +135,7 @@ const UploadProfileComponent = () => {
         icon: <IconAlertCircle size={18} color={COMMON_WHITE} />,
         title: <Text color={COMMON_WHITE}>{notificationTitle[i]}</Text>,
         message: <Text color={COMMON_WHITE}>{notificationMessage[i]}</Text>,
-        sx: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
+        style: { backgroundColor: LIGHT_NAVY, borderColor: LIGHT_NAVY },
         autoClose: 5000,
         color: 'red',
       });

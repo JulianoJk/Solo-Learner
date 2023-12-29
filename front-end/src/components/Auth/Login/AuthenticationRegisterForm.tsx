@@ -14,12 +14,11 @@ import {
   Text,
   Radio,
 } from '@mantine/core';
-import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { useRegister } from '../../hooks/useRegister';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
-
+import { classes } from '../Auth.modules.css';
 interface IRegisterProps {
   children?: React.ReactNode;
   switchToLogin?: boolean;
@@ -44,7 +43,6 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
     isAdminRegister,
     adminRefetchUserList,
   );
-  const { classes } = useStyles();
   const navigate: NavigateFunction = useNavigate();
   const form = useForm({
     initialValues: {
@@ -74,7 +72,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
         withBorder={hasBorder}
         style={{ maxWidth: '800px', width: '100%' }}
       >
-        <Text size="lg" weight={500} ta="center">
+        <Text size="lg" fw={500} ta="center">
           {registerTitle === undefined ||
           (typeof registerTitle === 'string' && registerTitle.length === 0)
             ? 'Welcome to Solo Learn, register with'

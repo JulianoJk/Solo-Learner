@@ -122,7 +122,7 @@ export function StudentmanagmentTable() {
         horizontalSpacing="md"
         verticalSpacing="xs"
         miw={700}
-        sx={{ tableLayout: 'fixed' }}
+        style={{ tableLayout: 'fixed' }}
       >
         <thead>
           <tr>

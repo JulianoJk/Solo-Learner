@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Table,
   Progress,
@@ -6,7 +7,7 @@ import {
   Group,
   ScrollArea,
 } from '@mantine/core';
-import { useStyles } from './Studentmanagment.styles';
+import { useStyles } from './Studentmanagment.modules.css';
 
 interface TableReviewsProps {
   data: {
@@ -74,14 +75,14 @@ export function Studentmanagment({ data }: TableReviewsProps) {
 
   return (
     <ScrollArea>
-      <Table sx={{ minWidth: 800 }} verticalSpacing="xs">
+      <Table style={{ minWidth: 800 }} verticalSpacing="xs">
         <thead>
           <tr>
-            <th>Book title</th>
+            <th className={classes.th}>Book title</th>
             <th>Year</th>
-            <th>Author</th>
-            <th>Reviews</th>
-            <th>Reviews distribution</th>
+            <th className={classes.th}>Author</th>
+            <th className={classes.th}>Reviews</th>
+            <th className={classes.th}>Reviews distribution</th>
           </tr>
         </thead>
         <tbody>{rows}</tbody>

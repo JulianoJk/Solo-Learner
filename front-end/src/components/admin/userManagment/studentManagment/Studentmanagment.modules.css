@@ -1,0 +1,61 @@
+
+:root {
+    --primary-color-7: var(--mantine-color-primary-7);
+    --dark-7: var(--mantine-color-dark-7);
+    --white: var(--mantine-color-white);
+    --gray-0: var(--mantine-color-gray-0);
+    --gray-2: var(--mantine-color-gray-2);
+    --red-5: var(--mantine-color-red-5);
+  }
+  
+  .body {
+    overflow: hidden;
+  }
+  
+  .rowSelected {
+    background-color: var(--primary-color-7);
+  }
+  
+  .th {
+    padding: 0 !important;
+  }
+  
+  .progressBar:not(:first-of-type) {
+    border-left: 3px solid var(--dark-7);
+  }
+  
+  .control {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-md);
+  
+    &:hover {
+      background-color: var(--dark-6);
+    }
+  }
+  
+  .icon {
+    width: 21px;
+    height: 21px;
+    border-radius: 21px;
+  }
+  
+  .scrolled {
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .header {
+    position: sticky;
+    top: 0;
+    background-color: var(--dark-7);
+    transition: box-shadow 150ms ease;
+  
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-bottom: 1px solid var(--gray-3);
+    }
+  }
+  

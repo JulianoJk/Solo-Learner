@@ -1,8 +1,14 @@
 import React from 'react';
-import { Alert, Center, Text, useMantineTheme } from '@mantine/core';
+import {
+  Alert,
+  Center,
+  Text,
+  useMantineTheme,
+  useMantineColorScheme,
+} from '@mantine/core';
 import { IconAlertCircleFilled } from '@tabler/icons-react';
 
-import { useStyles } from './Alert.styles';
+import { classes } from './Alert.modules.css';
 import { isUndefinedOrNullString } from '../../utils/utils';
 import { AppState } from '../../context/AppContext';
 
@@ -10,20 +16,25 @@ export const AlertComponent: React.FC = () => {
   const { errorAlertMessage } = AppState();
   const hasError: boolean = isUndefinedOrNullString(errorAlertMessage);
   const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
 
-  const { classes } = useStyles();
   return (
     <Center>
       {!hasError ? (
         <>
-          <Alert radius="lg" className={classes.alertBox}>
+          <Alert
+            radius="lg"
+            className={
+              colorScheme === 'light'
+                ? classes.alertBoxLight
+                : classes.alertBoxDark
+            }
+          >
             <Text
               span
-              weight={600}
+              fw={600}
               size="lg"
-              color={
-                theme.colorScheme === 'dark' ? '#FFFFFF' : theme.colors.red[9]
-              }
+              c={colorScheme === 'dark' ? '#FFFFFF' : theme.colors.red[9]}
             >
               <>
                 <IconAlertCircleFilled

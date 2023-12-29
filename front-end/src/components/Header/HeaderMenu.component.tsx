@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  Header,
   Group,
   Button,
   Box,
@@ -13,10 +12,10 @@ import {
   ScrollArea,
   Divider,
   Burger,
+  useMantineColorScheme,
 } from '@mantine/core';
 import { upperFirst, useDisclosure, useDocumentTitle } from '@mantine/hooks';
 import LogoImage from '../../images/Logo';
-import { useStyles } from './HeaderMenu.styles';
 import ModeThemeButtonSmall from '../../Styles/ModeThemeButtonSmall';
 import {
   IconChevronDown,
@@ -54,9 +53,11 @@ import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 import { logoutUser } from '../Auth/LogoutUtils';
+import classes from './HeaderMenu.modules.css';
+import cx from 'clsx';
 
 const HeaderMegaMenu = () => {
-  const { classes, cx, theme } = useStyles();
+  // const { classes, cx, theme } = useStyles();
   const userDispatch = useUserDispatch();
   const appDisp = useAppDispatch();
   const { pathname } = useLocation();
@@ -68,6 +69,7 @@ const HeaderMegaMenu = () => {
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
+  const { colorScheme } = useMantineColorScheme();
   const navigate: NavigateFunction = useNavigate();
   const logout = async () => {
     logoutUser(userDispatch, navigate);
@@ -141,13 +143,13 @@ const HeaderMegaMenu = () => {
 
   return (
     <Box>
-      <Header height={60} px="md" className={classes.headerRoot}>
-        <Group position="apart" sx={{ height: '100%' }}>
+      <header className={classes.headerRoot}>
+        <Group justify="space-between" style={{ height: '100%' }}>
           {isUserLoggedIn() ? (
             <>
               <TokenExpirationChecker />
               <Box
-                sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                style={{ width: 70, height: 60, marginTop: '0.4rem' }}
                 onClick={() => navigateUserTo(logoNavigation)}
               >
                 <LogoImage />
@@ -173,7 +175,7 @@ const HeaderMegaMenu = () => {
                         [classes.userActive]: userMenuOpened,
                       })}
                     >
-                      <Group spacing={7}>
+                      <Group gap={7}>
                         <Avatar
                           // TODO!: Change this
                           src={picture}
@@ -184,9 +186,9 @@ const HeaderMegaMenu = () => {
                         />
                         <Text
                           className={classes.hiddenMobile}
-                          weight={500}
+                          fw={500}
                           size="sm"
-                          sx={{ lineHeight: 1 }}
+                          style={{ lineHeight: 1 }}
                           mr={3}
                         >
                           {isLoading === false
@@ -203,13 +205,13 @@ const HeaderMegaMenu = () => {
                       <>
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
-                          icon={<IconHome size="0.9rem" stroke={1.5} />}
+                          leftSection={<IconHome size="0.9rem" stroke={1.5} />}
                           onClick={() => navigateUserTo('/home')}
                         >
                           Home
                         </Menu.Item>
                         <Menu.Item
-                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          leftSection={<IconUser size="0.9rem" stroke={1.5} />}
                           onClick={() =>
                             navigateUserTo(`/profile/${user.username}`)
                           }
@@ -219,7 +221,9 @@ const HeaderMegaMenu = () => {
                         <Menu.Label>Settings</Menu.Label>
 
                         <Menu.Item
-                          icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                          leftSection={
+                            <IconSettings size="0.9rem" stroke={1.5} />
+                          }
                           onClick={() => {
                             navigateUserTo('/settings');
                           }}
@@ -227,7 +231,9 @@ const HeaderMegaMenu = () => {
                           Account settings
                         </Menu.Item>
                         <Menu.Item
-                          icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                          leftSection={
+                            <IconLogout size="0.9rem" stroke={1.5} />
+                          }
                           onClick={() => logout()}
                           color="red"
                         >
@@ -238,7 +244,7 @@ const HeaderMegaMenu = () => {
                       <>
                         <Menu.Label>Admin</Menu.Label>
                         <Menu.Item
-                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          leftSection={<IconUser size="0.9rem" stroke={1.5} />}
                           onClick={() => navigateUserTo('/admin/dashboard')}
                         >
                           Admin settings
@@ -246,13 +252,13 @@ const HeaderMegaMenu = () => {
 
                         <Menu.Label>Main Navigation</Menu.Label>
                         <Menu.Item
-                          icon={<IconHome size="0.9rem" stroke={1.5} />}
+                          leftSection={<IconHome size="0.9rem" stroke={1.5} />}
                           onClick={() => navigateUserTo('/home')}
                         >
                           Home
                         </Menu.Item>
                         <Menu.Item
-                          icon={<IconUser size="0.9rem" stroke={1.5} />}
+                          leftSection={<IconUser size="0.9rem" stroke={1.5} />}
                           onClick={() =>
                             navigateUserTo(`/profile/${user.username}`)
                           }
@@ -261,7 +267,9 @@ const HeaderMegaMenu = () => {
                         </Menu.Item>
                         <Menu.Label>Settings</Menu.Label>
                         <Menu.Item
-                          icon={<IconSettings size="0.9rem" stroke={1.5} />}
+                          leftSection={
+                            <IconSettings size="0.9rem" stroke={1.5} />
+                          }
                           onClick={() => {
                             navigateUserTo('/settings');
                           }}
@@ -269,7 +277,9 @@ const HeaderMegaMenu = () => {
                           Account settings
                         </Menu.Item>
                         <Menu.Item
-                          icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                          leftSection={
+                            <IconLogout size="0.9rem" stroke={1.5} />
+                          }
                           onClick={() => logout()}
                           color="red"
                         >
@@ -284,21 +294,21 @@ const HeaderMegaMenu = () => {
           ) : (
             <>
               <Box pb={120}>
-                <Header height={60} px="md" className={classes.headerRoot}>
-                  <Group position="apart" sx={{ height: '100%' }}>
+                <header className={classes.headerRoot}>
+                  <Group justify="space-between" style={{ height: '100%' }}>
                     <Box
-                      sx={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                      style={{ width: 70, height: 60, marginTop: '0.4rem' }}
                       onClick={() => navigateUserTo(logoNavigation)}
                     >
                       <LogoImage />
                     </Box>
                     <Group
-                      sx={{ height: '100%' }}
-                      spacing={14}
+                      style={{ height: '100%' }}
+                      gap={14}
                       className={classes.hiddenMobile}
                     >
                       <Button
-                        leftIcon={<IconHome size={16} />}
+                        leftSection={<IconHome size={16} />}
                         radius="sm"
                         onClick={() => navigateUserTo('/')}
                         color="cyan"
@@ -309,7 +319,7 @@ const HeaderMegaMenu = () => {
                       </Button>
 
                       <Button
-                        leftIcon={<IconInfoCircle size={16} />}
+                        leftSection={<IconInfoCircle size={16} />}
                         radius="sm"
                         onClick={() => navigateUserTo('/')}
                         color="cyan"
@@ -322,7 +332,7 @@ const HeaderMegaMenu = () => {
 
                     <Group className={classes.hiddenMobile}>
                       <Button
-                        leftIcon={<IconLogin size={16} />}
+                        leftSection={<IconLogin size={16} />}
                         variant="filled"
                         color="violet"
                         radius="sm"
@@ -333,7 +343,7 @@ const HeaderMegaMenu = () => {
                         </Text>
                       </Button>
                       <Button
-                        leftIcon={<IconUserEdit size={16} />}
+                        leftSection={<IconUserEdit size={16} />}
                         radius="sm"
                         onClick={() => navigateUserTo('/register')}
                         color="cyan"
@@ -348,7 +358,7 @@ const HeaderMegaMenu = () => {
                       className={classes.hiddenDesktop}
                     />
                   </Group>
-                </Header>
+                </header>
 
                 <Drawer
                   opened={drawerOpened}
@@ -362,11 +372,11 @@ const HeaderMegaMenu = () => {
                   <ScrollArea h={`calc(100vh - ${rem(60)})`} mx="-md">
                     <Divider
                       my="sm"
-                      color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
+                      color={colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
                     />
 
                     <Button
-                      leftIcon={<IconHome size={16} />}
+                      leftSection={<IconHome size={16} />}
                       radius="sm"
                       onClick={() => {
                         closeDrawer();
@@ -380,7 +390,7 @@ const HeaderMegaMenu = () => {
                     </Button>
 
                     <Button
-                      leftIcon={<IconInfoCircle size={16} />}
+                      leftSection={<IconInfoCircle size={16} />}
                       radius="sm"
                       onClick={() => {
                         closeDrawer();
@@ -394,12 +404,12 @@ const HeaderMegaMenu = () => {
                     </Button>
                     <Divider
                       my="sm"
-                      color={theme.colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
+                      color={colorScheme === 'dark' ? 'dark.5' : 'gray.1'}
                     />
 
-                    <Group position="center" grow pb="xl" px="md">
+                    <Group justify="center" grow pb="xl" px="md">
                       <Button
-                        leftIcon={<IconLogin size={16} />}
+                        leftSection={<IconLogin size={16} />}
                         variant="filled"
                         color="violet"
                         radius="sm"
@@ -413,7 +423,7 @@ const HeaderMegaMenu = () => {
                         </Text>
                       </Button>
                       <Button
-                        leftIcon={<IconUserEdit size={16} />}
+                        leftSection={<IconUserEdit size={16} />}
                         radius="sm"
                         onClick={() => {
                           closeDrawer();
@@ -430,7 +440,7 @@ const HeaderMegaMenu = () => {
             </>
           )}
         </Group>
-      </Header>
+      </header>
     </Box>
   );
 };

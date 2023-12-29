@@ -14,7 +14,7 @@ const FooterPage = () => {
   return (
     <Footer className={classes.footer} height={'100'}>
       <Container className={classes.inner}>
-        <Box sx={{ width: 70, height: 60, marginTop: '0.4rem' }}>
+        <Box style={{ width: 70, height: 60, marginTop: '0.4rem' }}>
           <LogoImage />
         </Box>
         <Group spacing={0} className={classes.links} position="right" noWrap>

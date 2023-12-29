@@ -81,7 +81,7 @@ const SmallNavigation: React.FC = () => {
                 >
                   <Center>
                     <IconHome size={16} fontWeight={700} />
-                    <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    <Text weight={700} style={{ paddingLeft: 5 }}>
                       HOME
                     </Text>
                   </Center>
@@ -96,7 +96,7 @@ const SmallNavigation: React.FC = () => {
                 >
                   <Center>
                     <IconUser size={16} fontWeight={700} />
-                    <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    <Text weight={700} style={{ paddingLeft: 5 }}>
                       Profile
                     </Text>
                   </Center>
@@ -105,7 +105,7 @@ const SmallNavigation: React.FC = () => {
                 <Menu.Item>
                   <Center>
                     <IconSettings size={16} fontWeight={700} />
-                    <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    <Text weight={700} style={{ paddingLeft: 5 }}>
                       Settings
                     </Text>
                   </Center>
@@ -122,7 +122,7 @@ const SmallNavigation: React.FC = () => {
                 >
                   <Center>
                     <IconTrash size={16} fontWeight={700} />
-                    <Text weight={700} sx={{ paddingLeft: 5 }}>
+                    <Text weight={700} style={{ paddingLeft: 5 }}>
                       Sign-Out
                     </Text>
                   </Center>

@@ -178,7 +178,7 @@ const UsersTable = () => {
             onChange={handleSearchChange}
           />
           <Table
-            sx={{ minWidth: 800 }}
+            style={{ minWidth: 800 }}
             verticalSpacing="sm"
             striped={theme.colorScheme === 'dark' ? true : false}
             highlightOnHover
@@ -193,7 +193,7 @@ const UsersTable = () => {
                 <th>
                   <Text>
                     Last active <br />
-                    <Text sx={{ fontSize: 7.5, paddingTop: 2 }}>
+                    <Text style={{ fontSize: 7.5, paddingTop: 2 }}>
                       (YY-MM-DD HH-MM)
                     </Text>
                   </Text>

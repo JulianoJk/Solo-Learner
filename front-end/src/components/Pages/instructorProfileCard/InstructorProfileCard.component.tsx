@@ -14,7 +14,7 @@ const InstructorProfileCard: React.FC<InstructorProfileCardProps> = (props) => {
       radius="md"
       withBorder
       p="lg"
-      sx={(theme) => ({
+      style={(theme) => ({
         backgroundColor:
           theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
       })}
