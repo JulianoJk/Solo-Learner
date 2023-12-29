@@ -85,7 +85,9 @@ export function StudentmanagmentTable() {
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item rightSection={<IconMessages size="1rem" stroke={1.5} />}>
+              <Menu.Item
+                rightSection={<IconMessages size="1rem" stroke={1.5} />}
+              >
                 Send message
               </Menu.Item>
               <Menu.Item rightSection={<IconNote size="1rem" stroke={1.5} />}>

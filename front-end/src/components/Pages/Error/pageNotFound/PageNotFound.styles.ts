@@ -19,4 +19,4 @@
 //     borderRadius: '10px',
 //   },
 // }));
-export {}
+export {};

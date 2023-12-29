@@ -1,7 +1,7 @@
 import { Card, Text } from '@mantine/core';
 import React from 'react';
 import GrammarIcon from '../../../../images/GrammarIcon';
-import classes  from '../LearningUnits.module.css';
+import classes from '../LearningUnits.module.css';
 // import { GrammarIcon } from "../../../../images/GrammarIcon/";
 
 export default function Vocabulary() {

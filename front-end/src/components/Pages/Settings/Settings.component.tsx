@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
-import {
-
-  Anchor,
-  useMantineTheme,
-  useMantineColorScheme,
-} from '@mantine/core';
+import { Anchor, useMantineTheme, useMantineColorScheme } from '@mantine/core';
 import { IconBellCog, IconUserCog } from '@tabler/icons-react';
 
 import { useMediaQuery } from '@mantine/hooks';
@@ -74,8 +69,6 @@ const Settings = () => {
   //   >
   //     <Navbar.Section grow>{links}</Navbar.Section>
   //   </Navbar>
-  return (
-    <></>
-  );
+  return <></>;
 };
 export default Settings;

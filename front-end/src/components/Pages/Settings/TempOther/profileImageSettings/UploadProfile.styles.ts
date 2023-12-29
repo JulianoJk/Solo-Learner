@@ -34,4 +34,4 @@
 //     maxHeight: 700,
 //   },
 // }));
-export {}
+export {};

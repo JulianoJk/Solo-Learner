@@ -143,7 +143,7 @@ const HeaderMegaMenu = () => {
 
   return (
     <Box>
-      <header className={classes.headerRoot} >
+      <header className={classes.headerRoot}>
         <Group justify="space-between" style={{ height: '4rem' }}>
           {isUserLoggedIn() ? (
             <>
