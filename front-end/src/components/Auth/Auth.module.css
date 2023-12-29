@@ -1,4 +1,4 @@
-/* .formContainer {
+.formContainer {
   border-width: '2px !important';
   border-radius: 5;
   box-shadow: 'none';
@@ -12,12 +12,12 @@
 .formContainerDark {
   background-color: '#343541';
   border: '1px solid #343541';
-} */
+}
 .form {
   /* width: '40em', */
   padding: 10;
 }
-/* .title {
+.title {
   display: 'flex';
   justify-content: 'center';
   align-items: 'center';
@@ -41,4 +41,4 @@
 
 .imageContainer {
   border-radius: '50%';
-} */
+}

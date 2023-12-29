@@ -1,87 +1,44 @@
-// import {
-//   useMantineColorScheme,
-//   useMantineTheme,
-//   ActionIcon,
-//   Tooltip,
-//   ColorScheme,
-// } from '@mantine/core';
-// import { IconSun, IconMoonStars } from '@tabler/icons-react';
-// import { useLocalStorage } from '@mantine/hooks';
-
-// const ModeThemeButtonSmall = () => {
-//   const theme = useMantineTheme();
-
-//   const { toggleColorScheme } = useMantineColorScheme();
-
-//   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-//     key: 'app-theme',
-//     defaultValue: 'light',
-//     getInitialValueInEffect: true,
-//   });
-//   const dark = colorScheme === 'dark';
-
-//   const handleOnClick = () => {
-//     setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
-//     toggleColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
-//   };
-
-//   const switchDescription = `${
-//     theme.colorScheme === 'light' ? 'Dark' : 'Light'
-//   } mode`;
-
-//   return (
-//     <Tooltip
-//       label={switchDescription}
-//       openDelay={300}
-//       closeDelay={80}
-//       arrowSize={6}
-//       withArrow
-//       transitionProps={{
-//         transition: 'fade',
-//         duration: 100,
-//         timingFunction: 'ease',
-//       }}
-//     >
-//       <ActionIcon
-//         size="lg"
-//         variant="outline"
-//         color={dark ? 'yellow' : 'blue'}
-//         onClick={() => handleOnClick()}
-//         title="Toggle color scheme"
-//       >
-//         {dark ? <IconSun size={26} /> : <IconMoonStars size={26} />}
-//       </ActionIcon>
-//     </Tooltip>
-//   );
-// };
-
-// export default ModeThemeButtonSmall;
 import {
   ActionIcon,
-  useMantineColorScheme,
+  getGradient,
   useComputedColorScheme,
+  useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core';
 import { IconSun, IconMoon } from '@tabler/icons-react';
 import cx from 'clsx';
 import classes from './ModeThemeButtonSmall.module.css';
 
 function ModeThemeButtonSmall() {
-  const { setColorScheme } = useMantineColorScheme();
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
+  const theme = useMantineTheme();
   const computedColorScheme = useComputedColorScheme('light', {
     getInitialValueInEffect: true,
   });
 
+  const toggleColorScheme = () => {
+    setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light');
+    document.body.style.backgroundImage =
+      colorScheme === 'dark'
+        ? getGradient({ deg: 7, from: '#F8BBD0', to: '#64B5F6' }, theme)
+        : getGradient({ deg: 7, from: '#1A1B1E', to: '#1A1B1E' }, theme);
+    document.body.style.color =
+      colorScheme === 'dark'
+        ? 'var(--mantine-color-black)'
+        : 'var(--mantine-color-dark-0)';
+  };
   return (
     <ActionIcon
-      onClick={() =>
-        setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light')
-      }
+      onClick={() => toggleColorScheme()}
       variant="default"
       size="xl"
       aria-label="Toggle color scheme"
     >
-      <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />
-      <IconMoon className={cx(classes.icon, classes.dark)} stroke={1.5} />
+      {colorScheme === 'dark' ? (
+        <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />
+      ) : (
+        <IconMoon className={cx(classes.icon, classes.dark)} stroke={1.5} />
+      )}
     </ActionIcon>
   );
 }

@@ -14,11 +14,6 @@
   --border-top: 1px solid #aaa; /* Replace with your actual color */
   --sm-breakpoint: 600px;
   --header-border-bottom: 2px solid #aaa; /* Replace with your actual color */
-  --header-bg: linear-gradient(
-    1deg,
-    #8cb6ea,
-    #f2f4f8
-  ); /* Replace with your actual gradient */
   --user-color: #000; /* Replace with your actual color */
   --user-hover-bg: #ddd; /* Replace with your actual color */
   --user-active-bg: #8cb6ea; /* Replace with your actual color */
@@ -78,10 +73,9 @@
 }
 
 .headerRoot {
-  background-image: var(--header-bg);
   border-bottom: var(--header-border-bottom);
   margin-bottom: 20px;
-  height: 14rem;
+  height: 60;
 }
 
 .user {

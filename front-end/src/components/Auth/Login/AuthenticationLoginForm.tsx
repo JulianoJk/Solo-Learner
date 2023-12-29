@@ -95,7 +95,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     checkAuthentication();
   }, [navigate]);
   return (
-    <Center maw={600} mx="auto">
+    <Center maw={600} mx="auto" style={{ marginTop: '10rem' }}>
       {isAuthLoading || loading ? (
         <Stack align="center">
           <Loader color="teal" size={400} />

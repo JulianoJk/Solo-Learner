@@ -5,13 +5,7 @@
 }
 
 body {
-  overflow: auto;
-  /* Adjust the background styles as needed */
-  background-image: linear-gradient(
-    7deg,
-    #f8bbd0,
-    #64b5f6
-  ); /* light background gradient */
+  overflow: auto;  
   color: var(--mantine-color-dark-0);
   line-height: var(--mantine-line-height);
 }

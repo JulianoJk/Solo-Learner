@@ -48,12 +48,12 @@ const IndexPage = () => {
 
   return (
     <BackgroundImage src={IndexBook} radius="xs" className={classes.wrapper}>
-      {/* <Overlay
+      <Overlay
         className={classes.overlay}
         gradient="linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, .65) 40%)"
         opacity={1}
         zIndex={0}
-      /> */}
+      />
       <Container className={classes.container}>
         {loading ? (
           // Render a loading indicator

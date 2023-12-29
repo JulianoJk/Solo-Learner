@@ -65,7 +65,7 @@ export function FacebookButton(props: ButtonProps) {
             style={() => ({
               backgroundColor: '#4267B2',
               color: '#fff',
-              '&:not([data-disabled]):hover': {
+              '&:not([dataDisabled]):hover': {
                 backgroundColor: darken('#4267B2', 0.1),
               },
             })}

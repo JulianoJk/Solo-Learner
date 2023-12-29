@@ -65,7 +65,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
     validateInputOnChange: true,
   });
   return (
-    <Center maw={600} mx="auto">
+    <Center maw={600} mx="auto" style={{ marginTop: '10rem' }}>
       <Paper
         radius="md"
         p="xl"
