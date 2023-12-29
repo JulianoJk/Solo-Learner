@@ -13,6 +13,7 @@ import {
   Divider,
   Burger,
   useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core';
 import {
   upperFirst,
@@ -75,6 +76,7 @@ const HeaderMegaMenu = () => {
     useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const { colorScheme } = useMantineColorScheme();
+  const theme = useMantineTheme();
   const navigate: NavigateFunction = useNavigate();
   const logout = async () => {
     logoutUser(userDispatch, navigate);
@@ -152,15 +154,25 @@ const HeaderMegaMenu = () => {
       {isUserLoggedIn() ? (
         <>
           <header className={classes.headerRoot}>
-            <Group justify="space-between" style={{ height: '100%' }}>
+            <Group
+              justify="space-between"
+              style={{
+                height: '100%',
+                marginRight: '1rem',
+              }}
+            >
               <Box
-                style={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                style={{
+                  width: 70,
+                  height: 60,
+                  marginTop: '0.4rem',
+                }}
                 onClick={() => navigateUserTo(logoNavigation)}
               >
                 <LogoImage />
               </Box>
               <TokenExpirationChecker />
-            
+
               <Group>
                 <ModeThemeButtonSmall />
                 {/* //TODO!: Make the menu to load when the currentUserApi is loading. */}
@@ -310,7 +322,10 @@ const HeaderMegaMenu = () => {
       ) : (
         <>
           <header className={classes.headerRoot}>
-            <Group justify="space-between" style={{ height: '100%' }}>
+            <Group
+              justify="space-between"
+              style={{ height: '100%', marginRight: '1rem' }}
+            >
               <Box
                 style={{ width: 70, height: 60, marginTop: '0.4rem' }}
                 onClick={() => navigateUserTo(logoNavigation)}
@@ -332,6 +347,15 @@ const HeaderMegaMenu = () => {
                     color="cyan"
                     variant="subtle"
                     className={classes.link}
+                    style={{
+                      color: colorScheme === 'dark' ? '#fff' : '#000',
+                      ':hover': {
+                        backgroundColor:
+                          colorScheme === 'light'
+                            ? theme.colors.dark[6]
+                            : theme.colors.gray[5],
+                      },
+                    }}
                   >
                     Home
                   </Button>
@@ -343,6 +367,15 @@ const HeaderMegaMenu = () => {
                     color="cyan"
                     variant="subtle"
                     className={classes.link}
+                    style={{
+                      color: colorScheme === 'dark' ? '#fff' : '#000',
+                      ':hover': {
+                        backgroundColor:
+                          colorScheme === 'light'
+                            ? theme.colors.dark[6]
+                            : theme.colors.gray[5],
+                      },
+                    }}
                   >
                     About
                   </Button>
@@ -406,6 +439,15 @@ const HeaderMegaMenu = () => {
                   color="cyan"
                   variant="subtle"
                   className={classes.link}
+                  style={{
+                    color: colorScheme === 'dark' ? '#fff' : '#000',
+                    ':hover': {
+                      backgroundColor:
+                        colorScheme === 'light'
+                          ? theme.colors.dark[9]
+                          : theme.colors.gray[9],
+                    },
+                  }}
                 >
                   Home
                 </Button>
@@ -420,6 +462,15 @@ const HeaderMegaMenu = () => {
                   color="cyan"
                   variant="subtle"
                   className={classes.link}
+                  style={{
+                    color: colorScheme === 'dark' ? '#fff' : '#000',
+                    ':hover': {
+                      backgroundColor:
+                        colorScheme === 'dark'
+                          ? theme.colors.dark[9]
+                          : theme.colors.gray[9],
+                    },
+                  }}
                 >
                   About
                 </Button>

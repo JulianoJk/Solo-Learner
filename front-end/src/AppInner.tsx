@@ -182,6 +182,8 @@ const AppInner = () => {
         },
       }}
     >
+      <ColorSchemeScript defaultColorScheme="dark" />
+
       <AppContextProvider>
         <ModalsProvider>
           <BrowserRouter>
@@ -192,15 +194,7 @@ const AppInner = () => {
                   <AppShell.Header
                     style={{
                       background:
-                        colorScheme === 'dark'
-                          ? getGradient(
-                              { deg: 7, from: '#1A1B1E', to: '#1A1B1E' },
-                              theme,
-                            )
-                          : getGradient(
-                              { deg: 17, from: '#F8BBD0', to: '#64B5F6' },
-                              theme,
-                            ),
+                        colorScheme === 'dark' ? '#1A1B1E' : '#64B5F6',
                     }}
                   >
                     <HeaderMenu />
