@@ -1,32 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import {
   AppShell,
   Button,
-  MantineProvider,
   Avatar,
   ColorSchemeScript,
   MantineThemeProvider,
   useMantineColorScheme,
-  getGradient,
-  useMantineTheme,
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import HeaderMenu from './components/Header/HeaderMenu.component';
 
 import Admin from './components/admin/Admin.component';
 import { getGoogleClientIdAPI } from './components/api/api';
-import { checkIfPageIsReload } from './utils/utils';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
 import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
 import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
-// import Home from './components/Pages/Home/Home';
 import IndexPage from './components/Pages/Index/IndexPage';
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
@@ -41,53 +35,40 @@ import { UserContextProvider } from './context/UserContext';
 import Demo from './components/Demo';
 import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
-import { useMediaQuery } from '@mantine/hooks';
+
+import Preloader from './components/Loader/Preloader.component';
 
 const AppInner = () => {
-  const [clientId, setClientId] = useState('');
-  // const { colorScheme } = useMantineColorScheme();
-  const [loadingClientId, setLoadingClientId] = useState(true);
   const { colorScheme } = useMantineColorScheme();
+  const { data: googleClientId, isLoading: isGoogleClientIdLoading } = useQuery(
+    ['getGoogleClientId'],
+    async () => {
+      const data = await getGoogleClientIdAPI();
+      return data;
+    },
+    { enabled: true },
+  );
 
-  const matches = useMediaQuery('(min-width: 56.25em)');
-
-  // Lock scrolling when desktop view is active
-  useEffect(() => {
-    // If matches is true, disable scrolling
-    if (matches) {
-      document.body.style.overflow = 'hidden';
-      // Cleanup function to re-enable scrolling when the component unmounts
-      return () => {
-        document.body.style.overflow = 'auto';
-      };
-    }
-  }, [matches]);
-  const fetchGoogleClientId = async () => {
-    try {
-      const fetchedClientId = await getGoogleClientIdAPI();
-      setClientId(fetchedClientId);
-    } catch (error) {
-      console.error('Failed to fetch Google Client ID:', error);
-    } finally {
-      setLoadingClientId(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchGoogleClientId();
-  }, []);
-
-  if (loadingClientId) {
-    return <div>Loading...</div>;
-  }
   const CommonRoutes = [
-    <Route key="/" path="/" element={<IndexPage />} />,
+    <Route
+      key="/"
+      path="/"
+      element={isGoogleClientIdLoading ? <Preloader /> : <IndexPage />}
+    />,
     <Route key="/s" path="/s" element={<IndexPage />} />,
     <Route
       key="/login"
       path="/login"
       element={
-        <AuthenticationLoginForm hasBorder switchToRegister showNotification />
+        isGoogleClientIdLoading ? (
+          <Preloader />
+        ) : (
+          <AuthenticationLoginForm
+            hasBorder
+            switchToRegister
+            showNotification
+          />
+        )
       }
     />,
     <Route
@@ -107,7 +88,6 @@ const AppInner = () => {
 
   const ProtectedRoutes = [
     <Route key="/" path="/" element={<Demo />} />,
-
     <Route key="/home" path="/home" element={<Home />} />,
     <Route
       key="/profile/:username"
@@ -146,7 +126,6 @@ const AppInner = () => {
       element={<Admin />}
     />,
   ];
-  const theme = useMantineTheme();
 
   return (
     <MantineThemeProvider
@@ -185,7 +164,7 @@ const AppInner = () => {
         },
       }}
     >
-      <ColorSchemeScript defaultColorScheme="dark" />
+      <ColorSchemeScript defaultColorScheme="light" />
 
       <AppContextProvider>
         <ModalsProvider>
@@ -203,7 +182,7 @@ const AppInner = () => {
                     <HeaderMenu />
                   </AppShell.Header>
                   <AppShell.Main style={{ marginTop: '6rem' }}>
-                    <GoogleOAuthProvider clientId={clientId}>
+                    <GoogleOAuthProvider clientId={googleClientId ?? ''}>
                       <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
                     </GoogleOAuthProvider>
                   </AppShell.Main>

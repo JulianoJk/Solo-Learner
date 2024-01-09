@@ -220,7 +220,7 @@ const HeaderMegaMenu = () => {
                           </Text>
                         )}
 
-                        <IconChevronDown size={rem(12)} stroke={1.5} />
+                        <IconChevronDown size="1rem" stroke={1.5} />
                       </Group>
                     </UnstyledButton>
                   </Menu.Target>
@@ -323,10 +323,17 @@ const HeaderMegaMenu = () => {
           <header className={classes.headerRoot}>
             <Group
               justify="space-between"
-              style={{ height: '100%', marginRight: '1rem' }}
+              style={{
+                height: '100%',
+                marginRight: '1rem',
+              }}
             >
               <Box
-                style={{ width: 70, height: 60, marginTop: '0.4rem' }}
+                style={{
+                  width: 70,
+                  height: 60,
+                  marginTop: '0.4rem',
+                }}
                 onClick={() => navigateUserTo(logoNavigation)}
               >
                 <LogoImage />

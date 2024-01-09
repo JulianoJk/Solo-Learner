@@ -1,0 +1,164 @@
+/* YourLoaderComponent.module.css */
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 1.25rem rgba(255, 111, 97, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 1.875rem rgba(255, 111, 97, 1);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-1.25rem);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-0.625rem);
+  }
+}
+
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background: linear-gradient(
+    135deg,
+    #fd6363,
+    #ffcc00
+  ); /* Sunset gradient background */
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.loader {
+  text-align: center;
+}
+
+.iconContainer {
+  display: flex;
+  flex-wrap: wrap; /* Allow icons to wrap on smaller screens */
+  justify-content: center;
+  align-items: center;
+}
+
+.icon {
+  width: 3.75rem; /* Default size for larger screens */
+  height: 3.75rem; /* Default size for larger screens */
+  margin: 1rem; /* Default margin for larger screens */
+  background-color: #ffc200;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 1.25rem rgba(255, 111, 97, 0.7); /* Glowing effect */
+}
+
+/* Media query for big-sized screens */
+@media (min-width: 768px) {
+  .icon {
+    width: 5rem; /* Adjusted size for medium-sized screens */
+    height: 5rem; /* Adjusted size for medium-sized screens */
+    margin: 1rem; /* Adjusted margin for medium-sized screens */
+    box-shadow: 0 0 1rem rgba(255, 111, 97, 0.7); /* Adjusted glowing effect for medium-sized screens */
+  }
+  .icon.book::before,
+  .icon.pen::before,
+  .icon.globe::before {
+    font-size: 2rem; /* Adjusted font size for smaller screens */
+  }
+}
+/* Media query for medium-sized screens */
+@media (max-width: 768px) {
+  .icon {
+    width: 3rem; /* Adjusted size for medium-sized screens */
+    height: 3rem; /* Adjusted size for medium-sized screens */
+    margin: 0.75rem; /* Adjusted margin for medium-sized screens */
+    box-shadow: 0 0 1rem rgba(255, 111, 97, 0.7); /* Adjusted glowing effect for medium-sized screens */
+  }
+  .icon.book::before,
+  .icon.pen::before,
+  .icon.globe::before {
+    font-size: 1.5rem; /* Adjusted font size for smaller screens */
+  }
+}
+
+/* Media query for smaller screens */
+@media (max-width: 576px) {
+  .icon {
+    width: 2.5rem; /* Adjusted size for smaller screens */
+    height: 2.5rem; /* Adjusted size for smaller screens */
+    margin: 0.5rem; /* Adjusted margin for smaller screens */
+    box-shadow: 0 0 0.9375rem rgba(255, 111, 97, 0.7); /* Adjusted glowing effect for smaller screens */
+  }
+  .icon.book::before,
+  .icon.pen::before,
+  .icon.globe::before {
+    font-size: 1rem; /* Adjusted font size for smaller screens */
+  }
+}
+
+.book {
+  animation: bounce 1.5s ease-in-out infinite,
+    glow 1s ease-in-out infinite alternate;
+}
+
+.pen {
+  animation: bounce 1.5s ease-in-out infinite 0.2s,
+    glow 1s ease-in-out infinite alternate; /* Adjusted delay for the pen */
+}
+
+.globe {
+  animation: bounce 1.5s ease-in-out infinite 0.4s,
+    glow 1s ease-in-out infinite alternate; /* Adjusted delay for the globe */
+}
+
+.text {
+  margin-top: 1.25rem; /* Adjusted margin for smaller screens */
+  font-size: 1.125rem; /* Adjusted font size for smaller screens */
+  color: #fff; /* White text color */
+}
+
+.loaded {
+  opacity: 0;
+  pointer-events: none;
+}
+.icon.book::before {
+  content: '\1F4D6'; /* Unicode for book icon */
+}
+
+.icon.pen::before {
+  content: '\270E'; /* Unicode for pen icon */
+  color: black;
+}
+
+.icon.globe::before {
+  content: '\1F30E'; /* Unicode for globe icon */
+}
+
+.loading {
+  font-weight: bold;
+  display: inline-block;
+  clip-path: inset(0 1.2ch 0 0);
+  animation: l 1s steps(5) infinite;
+  padding-bottom: 10px !important;
+}
+
+@keyframes l {
+  to {
+    clip-path: inset(0 -1ch 0 0);
+  }
+}
