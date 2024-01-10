@@ -6,11 +6,6 @@
 
 body {
   overflow: auto;
-  background-image: linear-gradient(
-    7deg,
-    #f8bbd0,
-    #64b5f6
-  ); /* light background gradient */
   color: var(--mantine-color-dark-0);
   line-height: var(--mantine-line-height);
 }

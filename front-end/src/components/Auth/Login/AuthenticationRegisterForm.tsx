@@ -67,7 +67,7 @@ const AuthenticationRegisterForm: React.FC<IRegisterProps> = ({
   });
 
   return (
-    <Center maw={600} mx="auto" style={{ marginTop: '10rem' }}>
+    <Center maw={600} mx="auto" style={{ marginTop: '1rem' }}>
       <Paper
         radius="md"
         p="xl"

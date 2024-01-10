@@ -7,16 +7,29 @@ import {
   Text,
   BackgroundImage,
 } from '@mantine/core';
-import IndexBook from '../../../images/IndexBook.jpeg';
+
 import { useNavigate } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
 import { indexPage } from '../../api/api';
 import classes from './IndexPage.module.css';
+import { useMediaQuery } from '@mantine/hooks';
 const IndexPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const matches = useMediaQuery('(min-width: 56.25em)');
 
+  // Lock scrolling when desktop view is active
+  useEffect(() => {
+    // If matches is true, disable scrolling
+    if (matches) {
+      document.body.style.overflow = 'hidden';
+      // Cleanup function to re-enable scrolling when the component unmounts
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }
+  }, [matches]);
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
@@ -47,42 +60,34 @@ const IndexPage = () => {
   }, [navigate]);
 
   return (
-    <BackgroundImage src={IndexBook} radius="xs" className={classes.wrapper}>
-      <Overlay
-        className={classes.overlay}
-        gradient="linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, .65) 40%)"
-        opacity={1}
-        zIndex={0}
-      />
-      <Container className={classes.container}>
-        {loading ? (
-          // Render a loading indicator
-          <div>Loading...</div>
-        ) : (
-          <>
-            <Title className={classes.title} c="white">
-              Welcome to Solo learner, your free English language learning
-              platform
-            </Title>
-            <Text className={classes.description} size="xl" mt="xl" c="white">
-              Master the English language faster than ever - Solo learner
-              provides comprehensive theory lessons, interactive exercises, and
-              tests to help you in every step of your learning journey.
-            </Text>
+    <Container className={classes.container}>
+      {loading ? (
+        // Render a loading indicator
+        <div>Loading...</div>
+      ) : (
+        <>
+          <Title className={classes.title} c="white">
+            Welcome to Solo learner, your free English language learning
+            platform
+          </Title>
+          <Text className={classes.description} size="xl" mt="xl" c="white">
+            Master the English language faster than ever - Solo learner provides
+            comprehensive theory lessons, interactive exercises, and tests to
+            help you in every step of your learning journey.
+          </Text>
 
-            <Button
-              variant="gradient"
-              size="xl"
-              radius="xl"
-              className={classes.control}
-              onClick={() => navigate('/login')}
-            >
-              Start Learning
-            </Button>
-          </>
-        )}
-      </Container>
-    </BackgroundImage>
+          <Button
+            variant="gradient"
+            size="xl"
+            radius="xl"
+            className={classes.control}
+            onClick={() => navigate('/login')}
+          >
+            Start Learning
+          </Button>
+        </>
+      )}
+    </Container>
   );
 };
 

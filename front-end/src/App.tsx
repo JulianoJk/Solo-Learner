@@ -8,7 +8,7 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MantineProvider>
+      <MantineProvider defaultColorScheme="dark">
         <AppInner></AppInner>
       </MantineProvider>
     </QueryClientProvider>

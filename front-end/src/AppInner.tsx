@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import {
   AppShell,
   Button,
   Avatar,
-  ColorSchemeScript,
   MantineThemeProvider,
   useMantineColorScheme,
 } from '@mantine/core';
@@ -40,6 +39,14 @@ import Preloader from './components/Loader/Preloader.component';
 
 const AppInner = () => {
   const { colorScheme } = useMantineColorScheme();
+  useEffect(() => {
+    console.log(colorScheme);
+    document.body.style.backgroundImage =
+      colorScheme === 'dark'
+        ? 'linear-gradient(180deg, #1A1B1E 0%, #1A1B1E 100%)'
+        : 'linear-gradient(180deg, #64B5F6 0%, #64B5F6 100%)';
+  }, [colorScheme]);
+
   const { data: googleClientId, isLoading: isGoogleClientIdLoading } = useQuery(
     ['getGoogleClientId'],
     async () => {
@@ -128,72 +135,72 @@ const AppInner = () => {
   ];
 
   return (
-    <MantineThemeProvider
-      theme={{
-        components: {
-          Avatar: Avatar.extend({
-            defaultProps: {
-              size: 'md',
-              style: () => ({
-                backgroundColor:
-                  colorScheme === 'light' ? '#004a44' : '#35004c',
-                '&:hover': {
-                  color: colorScheme === 'light' ? 'red' : 'black',
-                },
-                gradient:
-                  colorScheme === 'light'
-                    ? { from: '#0CA678', to: 'blue', deg: 60 }
-                    : { from: '#59A5D8', to: '#84D2F6', deg: 35 },
-              }),
-            },
-          }),
-          Button: Button.extend({
-            defaultProps: {
-              size: 'md',
-              style: () => ({
-                transition:
-                  'background-color 150ms ease, transform 150ms ease, opacity 150ms ease',
-                '&:hover': {
-                  transform: 'translateY(1px) scale(0.95)',
-                  opacity: 0.9,
-                  filter: 'brightness(90%)',
-                },
-              }),
-            },
-          }),
-        },
-      }}
-    >
-      <ColorSchemeScript defaultColorScheme="light" />
-
-      <AppContextProvider>
-        <ModalsProvider>
-          <BrowserRouter>
-            <Notifications />
-            <UserContextProvider>
-              <AccountSettingsContextProvider>
-                <AppShell padding="md">
-                  <AppShell.Header
-                    style={{
-                      background:
-                        colorScheme === 'dark' ? '#1A1B1E' : '#64B5F6',
-                    }}
-                  >
-                    <HeaderMenu />
-                  </AppShell.Header>
-                  <AppShell.Main style={{ marginTop: '6rem' }}>
-                    <GoogleOAuthProvider clientId={googleClientId ?? ''}>
-                      <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
-                    </GoogleOAuthProvider>
-                  </AppShell.Main>
-                </AppShell>
-              </AccountSettingsContextProvider>
-            </UserContextProvider>
-          </BrowserRouter>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </ModalsProvider>
-      </AppContextProvider>
-    </MantineThemeProvider>
+    <>
+      <MantineThemeProvider
+        theme={{
+          components: {
+            Avatar: Avatar.extend({
+              defaultProps: {
+                size: 'md',
+                style: () => ({
+                  backgroundColor:
+                    colorScheme === 'light' ? '#004a44' : '#35004c',
+                  '&:hover': {
+                    color: colorScheme === 'light' ? 'red' : 'black',
+                  },
+                  gradient:
+                    colorScheme === 'light'
+                      ? { from: '#0CA678', to: 'blue', deg: 60 }
+                      : { from: '#59A5D8', to: '#84D2F6', deg: 35 },
+                }),
+              },
+            }),
+            Button: Button.extend({
+              defaultProps: {
+                size: 'md',
+                style: () => ({
+                  transition:
+                    'background-color 150ms ease, transform 150ms ease, opacity 150ms ease',
+                  '&:hover': {
+                    transform: 'translateY(1px) scale(0.95)',
+                    opacity: 0.9,
+                    filter: 'brightness(90%)',
+                  },
+                }),
+              },
+            }),
+          },
+        }}
+      >
+        <AppContextProvider>
+          <ModalsProvider>
+            <BrowserRouter>
+              <Notifications />
+              <UserContextProvider>
+                <AccountSettingsContextProvider>
+                  <AppShell padding="md">
+                    <AppShell.Header
+                      style={{
+                        background:
+                          colorScheme === 'light' ? '#64B5F6' : '#1A1B1E',
+                      }}
+                    >
+                      <HeaderMenu />
+                    </AppShell.Header>
+                    <AppShell.Main style={{ marginTop: '6rem' }}>
+                      <GoogleOAuthProvider clientId={googleClientId ?? ''}>
+                        <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
+                      </GoogleOAuthProvider>
+                    </AppShell.Main>
+                  </AppShell>
+                </AccountSettingsContextProvider>
+              </UserContextProvider>
+            </BrowserRouter>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </ModalsProvider>
+        </AppContextProvider>
+      </MantineThemeProvider>
+    </>
   );
 };
 
