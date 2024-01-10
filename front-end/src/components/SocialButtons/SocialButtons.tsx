@@ -4,7 +4,6 @@ import {
   ButtonProps,
   Center,
   Group,
-  darken,
   Popover,
   Text,
 } from '@mantine/core';
@@ -62,14 +61,11 @@ export function FacebookButton(props: ButtonProps) {
         <Popover.Target>
           <Button
             leftSection={<FacebookIcon />}
-            style={() => ({
-              backgroundColor: '#4267B2',
-              color: '#fff',
-              '&:not([dataDisabled]):hover': {
-                backgroundColor: darken('#4267B2', 0.1),
-              },
-            })}
-            {...props}
+            disabled={true}
+            style={{
+              backgroundColor: props.disabled ? '' : '#4267B2',
+              color: props.disabled ? '' : '#ffff',
+            }}
           >
             Sign in with Facebook
           </Button>

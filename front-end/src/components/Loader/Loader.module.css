@@ -35,11 +35,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  background: linear-gradient(
-    135deg,
-    #fd6363,
-    #ffcc00
-  ); /* Sunset gradient background */
+
   opacity: 1;
   transition: opacity 0.3s ease;
 }
