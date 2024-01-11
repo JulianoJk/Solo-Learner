@@ -21,28 +21,26 @@ import {
 import { keys } from '@mantine/utils';
 import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
+import { useUserState } from '../../../../context/UserContext';
 
-interface TableSortProps {
-  data: User[];
-}
-
-export function StudentmanagmentTable({ data }: TableSortProps) {
+export function StudentmanagmentTable() {
   const [search, setSearch] = useState('');
+  const { allUsersAdminDashboard } = useUserState();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
   };
 
-  const filteredData = filterData(data, search);
+  const filteredData = filterData(allUsersAdminDashboard, search);
 
   const rows = filteredData.map((row) => (
     <tr key={row.username}>
       <td>
-        <Group spacing="sm">
+        <Group gap="sm">
           <Avatar
             size={40}
-            src={row.avatar}
+            src={row.picture}
             radius={40}
             color={getRandomColor()}
           />
@@ -71,7 +69,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
         </Text>
       </td>
       <td>
-        <Group spacing={0} position="right">
+        <Group gap={0} justify="flex-end">
           <ActionIcon>
             <IconPencil size="1rem" stroke={1.5} />
           </ActionIcon>
@@ -87,19 +85,21 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
               </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item icon={<IconMessages size="1rem" stroke={1.5} />}>
+              <Menu.Item
+                rightSection={<IconMessages size="1rem" stroke={1.5} />}
+              >
                 Send message
               </Menu.Item>
-              <Menu.Item icon={<IconNote size="1rem" stroke={1.5} />}>
+              <Menu.Item rightSection={<IconNote size="1rem" stroke={1.5} />}>
                 Add note
               </Menu.Item>
               <Menu.Item
-                icon={<IconReportAnalytics size="1rem" stroke={1.5} />}
+                rightSection={<IconReportAnalytics size="1rem" stroke={1.5} />}
               >
                 Analytics
               </Menu.Item>
               <Menu.Item
-                icon={<IconTrash size="1rem" stroke={1.5} />}
+                rightSection={<IconTrash size="1rem" stroke={1.5} />}
                 color="red"
               >
                 Terminate contract
@@ -116,7 +116,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
       <TextInput
         placeholder="Search by any field"
         mb="md"
-        icon={<IconSearch size="0.9rem" stroke={1.5} />}
+        rightSection={<IconSearch size="0.9rem" stroke={1.5} />}
         value={search}
         onChange={handleSearchChange}
       />
@@ -124,7 +124,7 @@ export function StudentmanagmentTable({ data }: TableSortProps) {
         horizontalSpacing="md"
         verticalSpacing="xs"
         miw={700}
-        sx={{ tableLayout: 'fixed' }}
+        style={{ tableLayout: 'fixed' }}
       >
         <thead>
           <tr>

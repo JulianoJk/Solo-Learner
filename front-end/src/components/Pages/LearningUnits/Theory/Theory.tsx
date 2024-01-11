@@ -2,10 +2,8 @@
 import { Button, Card, Text, Title } from '@mantine/core';
 import React from 'react';
 import TheoryIcon from '../../../../images/TheoryIcon';
-import { useStyles } from '../LearningUnits.styles';
+import { classes } from './Theory.modules.css';
 
 export default function Theory() {
-  const { classes } = useStyles();
-
   return <Title>Theory</Title>;
 }

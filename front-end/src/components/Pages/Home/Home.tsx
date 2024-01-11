@@ -17,13 +17,19 @@ const Home: React.FC = () => {
     isLoading,
     isError,
     isFetched,
-  } = useQuery(['authenticateUser', user.token], async () => {
-    if (user.token) {
-      const data = await authenticateAPI(user.token);
-      return data;
-    }
-    throw new Error('No token found');
-  });
+  } = useQuery(
+    ['authenticateUser', user.token],
+    async () => {
+      if (user.token) {
+        const data = await authenticateAPI(user.token);
+        return data;
+      }
+      throw new Error('No token found');
+    },
+    {
+      enabled: !!user.token.trim(),
+    },
+  );
 
   if (
     isFetched &&
@@ -49,7 +55,7 @@ export default Home;
       ) : (
         <>
           <UserInfoIcons {...data}></UserInfoIcons>
-          <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+          <Box style={{ border: '2px solid white', width: '17rem', margin: 10 }}>
             <Title order={4} align="center">
               Your Amazing Instructor &#10024;
             </Title>

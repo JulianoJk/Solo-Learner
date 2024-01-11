@@ -1,0 +1,40 @@
+/* YourComponent.module.css */
+
+:local {
+  --loader-margin-top: 5%;
+  --loader-background-color: red;
+  --profile-image-margin: 30px;
+  --dark-color: #3b3e42;
+  --light-color: #f8f9fa;
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: var(--loader-margin-top);
+  background-color: var(--loader-background-color);
+}
+
+.profileImage {
+  margin: var(--profile-image-margin);
+}
+
+.icon {
+  color: var(--dark-color);
+}
+
+.description {
+  color: var(--dark-color) !important;
+}
+
+.name {
+  font-family: 'Greycliff CF', sans-serif;
+}
+.control {
+  margin-top: calc(var(--mantine-spacing-xl) * 1.5);
+
+  @media screen and (max-width: 575px) {
+    width: 100%;
+  }
+}

@@ -1,0 +1,11 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  overflow: auto;
+  color: var(--mantine-color-dark-0);
+  line-height: var(--mantine-line-height);
+}

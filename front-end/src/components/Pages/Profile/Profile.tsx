@@ -34,13 +34,13 @@ const Profile: React.FC = () => {
   const displayDateJoined = userProfileData?.user.createdAt;
   const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
   const data = {
-    avatar: '',
+    picture: userProfileData?.user.picture ?? '',
     role: userRole,
     userName: upperFirst(displayUsername as string),
     displayDateJoined: displayDateJoined,
   };
   const instructionData = {
-    avatar: '',
+    picture: '',
     name: 'Jane Fingerlicker',
     email: 'randomEmail@me.io',
     job: 'Art director',
@@ -51,12 +51,14 @@ const Profile: React.FC = () => {
     <>
       <UserInfoIcons {...data} />
       {hasTeacher ? (
-        <Box sx={{ border: '2px solid white', width: '17rem', margin: 10 }}>
-          <Title order={4} align="center">
+        <Box style={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+          {/* TODO!: Propably add a <Center> in here */}
+          <Title order={4}>
+            {/* <Title order={4} align="center"> */}
             Your Amazing Instructor &#10024;
           </Title>
           <InstructorProfileCard
-            avatar={instructionData.avatar}
+            picture={instructionData.picture}
             name={instructionData.name}
             email={instructionData.email}
             job={instructionData.job}

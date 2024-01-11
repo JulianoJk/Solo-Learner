@@ -2,6 +2,7 @@ import React from 'react';
 // *** State ***
 export interface IUserInfoContext {
   message?: string;
+  name?: string;
   username?: string;
   token: string;
   id?: string | undefined;
@@ -9,6 +10,8 @@ export interface IUserInfoContext {
   isTeacher?: boolean;
   email?: string;
   isAdmin?: any;
+  picture?: string;
+  navigateUser?: string;
 }
 export interface IApiMessageResponse {
   message: string;
@@ -25,6 +28,9 @@ export interface IUserAccountContext {
 export interface UserContextState {
   user: IUserInfoContext;
   status: string;
+  picture?: string;
+  allUsersAdminDashboard: User[];
+  isAllUsersAdminDashboardLoading: boolean;
 }
 // Type for the action for the context
 export type TUserAction =
@@ -35,6 +41,21 @@ export type TUserAction =
   | {
       profileImage: string;
       type: 'SET_PROFILE_IMAGE';
+    }
+  | {
+      picture: string;
+      type: 'SET_USER_PICTURE';
+    }
+  | {
+      type: 'SET_ALL_ADMIN_DASHBOARD_USERS';
+      allUsersAdminDashboard: User[];
+    }
+  | {
+      type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING';
+      isAllUsersAdminDashboardLoading: boolean;
+    }
+  | {
+      type: 'REMOVE_ALL_ADMIN_DASHBOARD_USERS';
     }
   | ResetAction;
 // Reset everything
@@ -76,13 +97,17 @@ export interface User {
   isTeacher: boolean;
   createdAt: string;
   updatedAt: string;
-  avatar?: string;
+  picture?: string;
   lastActive: string;
   lastActiveDate?: string;
   lastActiveTime?: string;
-  formattedLastActive?: string; // New property for formatted last active
+  formattedLastActive?: string;
+  isUserLoggedIn?: boolean;
 }
-
+export interface fetchUserList {
+  status: string;
+  data: User;
+}
 export interface GetUsersListResponse {
   status: string;
   users: User[];

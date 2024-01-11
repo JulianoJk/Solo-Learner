@@ -7,6 +7,7 @@ interface INotificationAlert {
   icon?: React.ReactNode;
   iconColor?: string;
   closeAfter?: number;
+  loading?: boolean;
 }
 export const notificationAlert = (props: INotificationAlert) => {
   showNotification({
@@ -14,6 +15,7 @@ export const notificationAlert = (props: INotificationAlert) => {
     message: props.message,
     autoClose: props.closeAfter ?? 2000,
     icon: props.icon,
+    loading: props.loading ?? false,
     color: props.iconColor,
     style: {
       minHeight: '7vh',

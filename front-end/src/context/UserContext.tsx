@@ -8,7 +8,6 @@ import {
 
 // Default state fot the user context
 const defaultState: UserContextState = {
-  status: '',
   user: {
     username: undefined,
     token: '',
@@ -16,6 +15,10 @@ const defaultState: UserContextState = {
     email: undefined,
     isAdmin: false,
   },
+  status: '',
+  picture: '',
+  allUsersAdminDashboard: [],
+  isAllUsersAdminDashboardLoading: false,
 };
 
 const UserStateContext = React.createContext<UserContextState | undefined>(
@@ -35,6 +38,23 @@ const appReducer = (state: UserContextState, action: TUserAction) => {
       // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem('jwtToken', action.user.token);
       return { ...state, user: action.user };
+    case 'SET_USER_PICTURE':
+      localStorage.removeItem('userPicture');
+      // Save user to localStorage to persist keeping logged after refreshing the page
+      localStorage.setItem('userPicture', action.picture);
+      return { ...state, picture: action.picture };
+    case 'SET_ALL_ADMIN_DASHBOARD_USERS':
+      return {
+        ...state,
+        allUsersAdminDashboard: action.allUsersAdminDashboard,
+      };
+    case 'REMOVE_ALL_ADMIN_DASHBOARD_USERS':
+      return { ...state, allUsersAdminDashboard: [] };
+    case 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING':
+      return {
+        ...state,
+        isAllUsersAdminDashboardLoading: action.isAllUsersAdminDashboardLoading,
+      };
     case 'RESET_STATE':
       // Clear user from localStorage
       localStorage.removeItem('user');

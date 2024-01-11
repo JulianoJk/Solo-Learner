@@ -1,15 +1,17 @@
 import React, { useContext, useReducer } from 'react';
 import { IChildrenProvider } from '../Model/models';
-import { ColorScheme } from '@mantine/core';
+// import { ColorScheme } from '@mantine/core';
 interface IAppStateContext {
   isSmallWindow: boolean;
-  appTheme: ColorScheme;
+  appTheme: any;
   errorAlertMessage: string;
   isUserSettingsOpen: boolean;
   isSessionExpired: boolean;
   saveButtonClicked: boolean;
   userReLoggedIn: boolean;
   selectedAdminNavbar?: string;
+  googleClientIsLoading?: boolean;
+  isAuthLoading?: boolean;
 }
 
 // Default state fot the Application context
@@ -22,6 +24,8 @@ const defaultState: IAppStateContext = {
   saveButtonClicked: false,
   userReLoggedIn: false,
   selectedAdminNavbar: 'userManagment',
+  googleClientIsLoading: false,
+  isAuthLoading: false,
 };
 type TApplicationAction =
   | {
@@ -30,7 +34,7 @@ type TApplicationAction =
     }
   | {
       type: 'SET_APP_THEME';
-      appTheme: ColorScheme;
+      appTheme: any;
     }
   | {
       type: 'SET_ERROR_ALERT_MESSAGE';
@@ -51,6 +55,14 @@ type TApplicationAction =
   | {
       type: 'SET_ACTIVE_ADMIN_NAV';
       selectedAdminNavbar: string;
+    }
+  | {
+      type: 'SET_GOOGLE_CLIENT_ID_IS_LOADING';
+      googleClientIsLoading: boolean;
+    }
+  | {
+      type: 'SET_AUTH_IS_LOADING';
+      isAuthLoading: boolean;
     }
   | {
       type: 'RESET_ERROR_MESSAGE';
@@ -84,6 +96,10 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, userReLoggedIn: action.userReLoggedIn };
     case 'SET_ACTIVE_ADMIN_NAV':
       return { ...state, selectedAdminNavbar: action.selectedAdminNavbar };
+    case 'SET_GOOGLE_CLIENT_ID_IS_LOADING':
+      return { ...state, googleClientIsLoading: action.googleClientIsLoading };
+    case 'SET_AUTH_IS_LOADING':
+      return { ...state, isAuthLoading: action.isAuthLoading };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }
@@ -101,7 +117,7 @@ const AppContextProvider = ({ children }: IChildrenProvider) => {
   );
 };
 // Pass the state of the user
-const AppState = (): IAppStateContext => {
+const useAppState = (): IAppStateContext => {
   const context = useContext(ApplicationState);
   if (context === undefined) {
     throw new Error('AppState must be used within AppStateContext');
@@ -118,4 +134,4 @@ const useAppDispatch = (): ApplicationDispatchContext => {
   return context;
 };
 
-export { AppContextProvider, AppState, useAppDispatch };
+export { AppContextProvider, useAppState, useAppDispatch };

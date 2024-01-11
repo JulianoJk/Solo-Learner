@@ -1,0 +1,23 @@
+/* styles.module.css */
+
+.sectionContainer {
+  max-width: 140em;
+  min-width: 10em;
+}
+
+.cardLoading {
+  /* Add any styles for cardLoading class */
+}
+
+.cardLoaded {
+  background-color: var(--mantine-color-primary);
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: var(--mantine-shadow-md);
+  }
+}
+
+.title {
+  font-family: 'Greycliff CF', var(--mantine-font-family);
+  font-weight: 600;
+}

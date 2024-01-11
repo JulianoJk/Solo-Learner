@@ -1,0 +1,17 @@
+.alertBox {
+  margin: 10px;
+}
+
+.alertBoxLight {
+  background-color: #ffe8e8;
+  color: #fa5252;
+}
+
+.alertBoxDark {
+  background-color: #482022;
+  color: #ffffff;
+}
+
+.alertIcon {
+  margin: 0 5px 4px 0;
+}

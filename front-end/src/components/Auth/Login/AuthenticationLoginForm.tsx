@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from '@mantine/form';
 import {
   TextInput,
@@ -13,16 +13,18 @@ import {
   Text,
 } from '@mantine/core';
 import { useLogin } from '../../hooks/useLogin';
-import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
-import { SocialButtonsUnavailable } from '../SocialButtonsUnavailable';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
+import { useAppState } from '../../../context/AppContext';
+import { indexPage } from '../../api/api';
+import classes from '../Auth.module.css';
+import Preloader from '../../Loader/Preloader.component';
 
 interface ILoginProps {
   children?: React.ReactNode;
   switchToRegister?: boolean;
   pathToNavigateAfterLogin?: string;
-  refreshPageAfterLogin?: boolean;
   hasBorder?: boolean;
   loginTitle?: string | React.ReactNode;
   showNotification?: boolean;
@@ -37,11 +39,13 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-  const { login } = useLogin({
+  const { isAuthLoading } = useAppState();
+
+  const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
   });
-  const { classes } = useStyles();
+
   const navigate: NavigateFunction = useNavigate();
 
   const form = useForm({
@@ -62,85 +66,121 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     validateInputOnChange: true,
   });
 
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        // Retrieve the JWT token from local storage
+        const jwtToken = localStorage.getItem('jwtToken');
+
+        // If the token is present, pass it to the authentication function
+        if (jwtToken) {
+          const response: any = await indexPage(jwtToken);
+
+          // If the user is logged in, navigate to the specified path
+          if (response && response.navigateUser) {
+            navigate(response.navigateUser);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to check authentication:', error);
+      } finally {
+        // Set loading to false once authentication check is complete
+      }
+    };
+
+    checkAuthentication();
+  }, [navigate]);
   return (
-    <Center maw={600} mx="auto">
-      <Paper radius="md" p="xl" withBorder={hasBorder}>
-        <Text size="lg" weight={500} ta="center">
-          {loginTitle === undefined ||
-          (typeof loginTitle === 'string' && loginTitle.length === 0)
-            ? 'Welcome to Solo Learn, login with'
-            : loginTitle}
-        </Text>
+    <Center maw={600} mx="auto" style={{ marginTop: '1rem' }}>
+      {isAuthLoading || isLoading ? (
+        <Preloader></Preloader>
+      ) : (
+        <Paper radius="md" p="xl" withBorder={hasBorder}>
+          <Text size="lg" fw={500} ta="center">
+            {loginTitle === undefined ||
+            (typeof loginTitle === 'string' && loginTitle.length === 0)
+              ? 'Welcome to Solo Learn, login with'
+              : loginTitle}
+          </Text>
 
-        <SocialButtonsUnavailable />
+          <SocialButtons disableFacebook={true} disableGoogle={isLoading} />
 
-        <Divider
-          label="Or continue with email"
-          labelPosition="center"
-          my="lg"
-        />
+          <Divider
+            label="Or continue with email"
+            labelPosition="center"
+            my="lg"
+          />
 
-        <form
-          className={classes.form}
-          onSubmit={form.onSubmit((value) => {
-            const { email, password } = value;
-            login(email, password);
-          })}
-        >
-          <Stack>
-            <TextInput
-              withAsterisk
-              label="Email"
-              placeholder="name@example.com"
-              value={form.values.email}
-              onChange={(event) =>
-                form.setFieldValue('email', event.currentTarget.value)
-              }
-              error={form.errors.email && 'Invalid email'}
-              radius="md"
-            />
+          <form
+            className={classes.form}
+            onSubmit={form.onSubmit((value) => {
+              const { email, password } = value;
+              login(email, password);
+            })}
+          >
+            <Stack>
+              <TextInput
+                disabled={isLoading}
+                withAsterisk
+                label="Email"
+                placeholder="name@example.com"
+                value={form.values.email}
+                onChange={(event) =>
+                  form.setFieldValue('email', event.currentTarget.value)
+                }
+                error={form.errors.email && 'Invalid email'}
+                radius="md"
+              />
 
-            <PasswordInput
-              withAsterisk
-              label="Password"
-              placeholder="Your password"
-              value={form.values.password}
-              onChange={(event) =>
-                form.setFieldValue('password', event.currentTarget.value)
-              }
-              error={
-                form.errors.password &&
-                'Password should include at least 6 characters'
-              }
-              radius="md"
-            />
-          </Stack>
-          <Group position="apart" mt="xl">
-            {switchToRegister ? (
-              <Anchor
-                component="button"
-                type="button"
-                color="dimmed"
-                onClick={() => navigate('/register')}
-                size="xs"
+              <PasswordInput
+                disabled={isLoading}
+                withAsterisk
+                label="Password"
+                placeholder="Your password"
+                value={form.values.password}
+                onChange={(event) =>
+                  form.setFieldValue('password', event.currentTarget.value)
+                }
+                error={
+                  form.errors.password &&
+                  'Password should include at least 6 characters'
+                }
+                radius="md"
+              />
+            </Stack>
+            <Group justify="space-between" mt="xl">
+              {switchToRegister ? (
+                <Anchor
+                  disabled={isLoading}
+                  component="button"
+                  type="button"
+                  c="dimmed"
+                  onClick={() => navigate('/register')}
+                  size="xs"
+                >
+                  Don't have an account?
+                  <Text c="blue" span>
+                    &nbsp;Register
+                  </Text>
+                </Anchor>
+              ) : (
+                children
+              )}
+
+              <Button
+                type="submit"
+                radius="xl"
+                color="cyan"
+                disabled={isLoading}
               >
-                Don't have an account?
-                <Text c="blue" span>
-                  &nbsp;Register
-                </Text>
-              </Anchor>
-            ) : (
-              children
-            )}
-
-            <Button type="submit" radius="xl" color="cyan">
-              Login
-            </Button>
-          </Group>
-        </form>
-        {/*Display error message if any*/}
-        <AlertComponent />
-      </Paper>
+                Login
+              </Button>
+            </Group>
+          </form>
+          {/*Display error message if any*/}
+          <AlertComponent />
+        </Paper>
+      )}
     </Center>
   );
 };

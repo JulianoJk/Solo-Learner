@@ -25,12 +25,17 @@ namespace backend
         // Method to initialize the database connection and perform registration or login based on 'isRegister' parameter
         public void InitializeDatabaseConnection(
             bool isRegister,
+            bool isGoogle,
             string email,
+            string firstName,
+            string lastName,
+            string gender,
             string? username,
-            string password,
-            byte[] salt,
+            string? password,
+            byte[]? salt,
             bool isTeacher,
-            bool isAdmin
+            bool isAdmin,
+            string? picture
         )
         {
             MySqlConnection connection = new MySqlConnection(connectionString);
@@ -49,16 +54,38 @@ namespace backend
                                 AreCredentialsCorrect = false;
                                 MessageToUser = "Invalid email address or password.";
                             }
+                            else if (!isGoogle)
+                            {
+                                saveToDatabase(
+                                    connection,
+                                    email,
+                                    firstName,
+                                    lastName,
+                                    gender,
+                                    username,
+                                    password,
+                                    salt,
+                                    isTeacher,
+                                    isAdmin,
+                                    null
+                                );
+                                AreCredentialsCorrect = true;
+                                MessageToUser = "Registration successful!";
+                            }
                             else
                             {
                                 saveToDatabase(
                                     connection,
                                     email,
+                                    firstName,
+                                    lastName,
+                                    gender,
                                     username,
-                                    password,
-                                    salt,
+                                    "",
+                                    null,
                                     isTeacher,
-                                    isAdmin
+                                    isAdmin,
+                                    picture
                                 );
                                 AreCredentialsCorrect = true;
                                 MessageToUser = "Registration successful!";
@@ -90,23 +117,31 @@ namespace backend
         public void saveToDatabase(
             MySqlConnection connection,
             string email,
+            string firstName,
+            string lastName,
+            string gender,
             string username,
             string password,
-            byte[] salt,
+            byte[]? salt,
             bool isTeacher,
-            bool isAdmin
+            bool isAdmin,
+            string? picture
         )
         {
             MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email, username, password, salt, isTeacher, isAdmin) VALUES (@email, @username, @password, @salt, @isTeacher, @isAdmin)",
+                "INSERT INTO users (email,firstName, lastName, gender, username, password, salt, isTeacher, isAdmin, picture) VALUES (@email,@firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isAdmin, @picture)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
+            command.Parameters.AddWithValue("@firstName", firstName);
+            command.Parameters.AddWithValue("@lastName", lastName);
+            command.Parameters.AddWithValue("@gender", gender);
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
             command.Parameters.AddWithValue("@salt", salt);
             command.Parameters.AddWithValue("@isTeacher", isTeacher);
             command.Parameters.AddWithValue("@isAdmin", isAdmin);
+            command.Parameters.AddWithValue("@picture", picture);
             MySqlDataReader reader = command.ExecuteReader();
             reader.Close();
             // Set AreCredentialsCorrect to true if the data was successfully saved to the database
@@ -141,6 +176,7 @@ namespace backend
             object salt = command.ExecuteScalar();
             if (salt == null || salt == DBNull.Value)
             {
+                connection.Close();
                 return null;
             }
             else
@@ -161,6 +197,7 @@ namespace backend
             object password = command.ExecuteScalar();
             if (password == null || password == DBNull.Value)
             {
+                connection.Close();
                 return null;
             }
             else

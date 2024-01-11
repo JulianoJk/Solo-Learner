@@ -1,0 +1,27 @@
+/* YourComponent.module.css */
+
+.footer {
+  margin-top: var(--mantine-spacing-120);
+  border-top: var(--mantine-border-width-1) solid var(--mantine-colors-dark-5);
+  height: 100;
+}
+
+.inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--mantine-spacing-xl);
+  padding-bottom: var(--mantine-spacing-xl);
+
+  @media screen and (max-width: 479px) {
+    flex-direction: column;
+  }
+}
+
+.links {
+  @media screen and (max-width: 479px) {
+    margin-top: var(--mantine-spacing-md);
+  }
+}
+
+/* You can use the :local declaration for local scoping, but it's not necessary in most cases with CSS Modules */
