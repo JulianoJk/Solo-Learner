@@ -38,6 +38,7 @@ import Home from './components/Pages/Home/Home';
 import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
+import GrammarExercise from './components/Pages/LearningUnits/DragNDrop/GrammarExercise.component';
 
 const AppInner = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -140,9 +141,14 @@ const AppInner = () => {
       element={<Admin />}
     />,
     <Route
+      key="/user/DragNDrops"
+      path="/user/DragNDrops"
+      element={<DragNDrop />}
+    />,
+    <Route
       key="/user/DragNDrop"
       path="/user/DragNDrop"
-      element={<DragNDrop />}
+      element={<GrammarExercise />}
     />,
   ];
 
