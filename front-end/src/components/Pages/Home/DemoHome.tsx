@@ -13,6 +13,7 @@ import GrammarIcon from '../../../images/grammar.jpeg';
 import TestImage from '../../../images/testsImage.jpg';
 import Dictionary from '../../../images/vocabulary.jpeg';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const mockdata = [
   {
@@ -41,6 +42,7 @@ interface DemoHomeProps {
 }
 const Modules: React.FC<DemoHomeProps> = (props) => {
   const { isLoading } = props;
+  const navigate = useNavigate();
   const cards = mockdata.map((article) => (
     <Card
       key={article.title}
@@ -50,7 +52,7 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
       className={classes.cardLoaded}
       draggable={false}
       style={{ cursor: 'pointer' }}
-      onClick={() => console.log(article.title)}
+      onClick={() => navigate('/user/DragNDrop')}
     >
       <Skeleton visible={isLoading}>
         <AspectRatio ratio={1920 / 1080}>

@@ -37,6 +37,7 @@ import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
+import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
 
 const AppInner = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -93,7 +94,11 @@ const AppInner = () => {
         />
       }
     />,
-    <Route key="/*" path="/*" element={<NotFound navigationPath={'/home'} />} />,
+    <Route
+      key="/*"
+      path="/*"
+      element={<NotFound navigationPath={'/home'} />}
+    />,
   ];
 
   const ProtectedRoutes = [
@@ -133,6 +138,11 @@ const AppInner = () => {
       key="/admin/dashboard"
       path="/admin/dashboard"
       element={<Admin />}
+    />,
+    <Route
+      key="/user/DragNDrop"
+      path="/user/DragNDrop"
+      element={<DragNDrop />}
     />,
   ];
 
@@ -207,3 +217,4 @@ const AppInner = () => {
 };
 
 export default AppInner;
+// https://wordwall.net/el/resource/14833090/english/can-and-cant-for-rules-2
