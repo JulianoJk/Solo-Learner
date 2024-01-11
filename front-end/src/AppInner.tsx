@@ -36,6 +36,7 @@ import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';
+import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 
 const AppInner = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -92,6 +93,7 @@ const AppInner = () => {
         />
       }
     />,
+    <Route key="/*" path="/*" element={<NotFound navigationPath={'/home'} />} />,
   ];
 
   const ProtectedRoutes = [
