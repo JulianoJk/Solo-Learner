@@ -11,7 +11,7 @@ import { GoogleIcon } from './GoogleIcon';
 import { FacebookIcon } from './FacebookIcon';
 import { useHover } from '@mantine/hooks';
 import { useGoogleAuth } from '../hooks/useGoogleAuth';
-import { AppState } from '../../context/AppContext';
+import { useAppState } from '../../context/AppContext';
 
 interface SocialButtonsProps extends ButtonProps {
   disableGoogle?: boolean;
@@ -20,7 +20,7 @@ interface SocialButtonsProps extends ButtonProps {
 
 export function GoogleButton(props: ButtonProps) {
   const { login: loginUser } = useGoogleAuth();
-  const { googleClientIsLoading } = AppState();
+  const { googleClientIsLoading } = useAppState();
 
   const handleGoogleLogin = async () => {
     try {

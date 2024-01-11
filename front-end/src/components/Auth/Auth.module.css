@@ -14,8 +14,8 @@
   border: '1px solid #343541';
 }
 .form {
-  /* width: '40em', */
-  padding: 10;
+  width: 30rem;
+  /* padding: 10; */
 }
 .title {
   display: 'flex';

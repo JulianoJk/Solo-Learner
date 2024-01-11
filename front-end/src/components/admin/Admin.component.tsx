@@ -2,31 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
-import { Box, Button, Tooltip } from '@mantine/core';
+import { Box } from '@mantine/core';
 import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
-import { AdminNavBar } from '../navBar/AdminNavBar.component';
+// import { AdminNavBar } from '../navBar/AdminNavBar.component';
 import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
-import { AppState } from '../../context/AppContext';
+import { useAppState } from '../../context/AppContext';
 import {
   LastActiveFormat,
   formatLastActive,
 } from '../../utils/formattedLastActive';
-import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconMinusVertical,
-} from '@tabler/icons-react';
 import UsersTable from './userManagment/AdminDashboard/UserTable.component';
+import AdminDrawer from '../navBar/AdminTabs.component';
+import Demo from '../Demo';
 
 const Admin = () => {
   const { user } = useUserState();
-  const { selectedAdminNavbar } = AppState();
+  const { selectedAdminNavbar } = useAppState();
   const userDispatch = useUserDispatch();
 
   const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
-  const [isNavbarVisible, setNavbarVisibility] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
+
   const { data: adminDashboardData, isLoading: isAdminLoading } = useQuery(
     ['getAdminDashboardItems', user.token],
     async () => {
@@ -86,64 +82,58 @@ const Admin = () => {
         return <StudentmanagmentTable />;
       case 'register_new_user':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
-      case 'homework':
-        return <RegisterNewUser refetchUserList={refetchAllUsers} />;
+      case 'Assignent':
+        return <Demo />;
       default:
         return null;
     }
   };
 
-  const ArrowButton = ({ onClick, isClosed }: any) => (
-    <span
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ display: 'flex', alignItems: 'center' }}
-    >
-      <Tooltip
-        label={isClosed ? 'Open sidebar' : 'Close sidebar'}
-        color="gray"
-        offset={-20}
-        position="right"
-        withArrow
-        arrowSize={10}
-      >
-        <Button
-          onClick={onClick}
-          style={{
-            position: 'absolute',
-            top: '20em',
-            left: '-2.6em',
-            transform: 'translateY(-50%)',
-            zIndex: 999,
-            border: 'none',
-            background: 'transparent',
-          }}
-          size="lg"
-        >
-          <div>
-            {!isHovered ? (
-              <IconMinusVertical size={30} stroke={4} color="gray" />
-            ) : isClosed ? (
-              <IconChevronLeft size={30} stroke={4} color="gray" />
-            ) : (
-              <IconChevronRight size={30} stroke={4} color="gray" />
-            )}
-          </div>
-        </Button>
-      </Tooltip>
-    </span>
-  );
+  // const ArrowButton = ({ onClick, isClosed }: any) => (
+  //   <span
+  //     onMouseEnter={() => setIsHovered(true)}
+  //     onMouseLeave={() => setIsHovered(false)}
+  //     style={{ display: 'flex', alignItems: 'center' }}
+  //   >
+  //     <Tooltip
+  //       label={isClosed ? 'Open sidebar' : 'Close sidebar'}
+  //       color="gray"
+  //       offset={-20}
+  //       position="right"
+  //       withArrow
+  //       arrowSize={10}
+  //     >
+  //       <Button
+  //         onClick={onClick}
+  //         style={{
+  //           position: 'absolute',
+  //           top: '20em',
+  //           left: '-2.6em',
+  //           transform: 'translateY(-50%)',
+  //           zIndex: 999,
+  //           border: 'none',
+  //           background: 'transparent',
+  //         }}
+  //         size="lg"
+  //       >
+  //         <div>
+  //           {!isHovered ? (
+  //             <IconMinusVertical size={30} stroke={4} color="gray" />
+  //           ) : isClosed ? (
+  //             <IconChevronLeft size={30} stroke={4} color="gray" />
+  //           ) : (
+  //             <IconChevronRight size={30} stroke={4} color="gray" />
+  //           )}
+  //         </div>
+  //       </Button>
+  //     </Tooltip>
+  //   </span>
+  // );
 
   return (
     <Box style={{ position: 'relative' }}>
-      <ArrowButton
-        onClick={() => {
-          setNavbarVisibility(!isNavbarVisible);
-          setIsHovered(false);
-        }}
-        isClosed={isNavbarVisible}
-      />
-      {isNavbarVisible && <AdminNavBar />}
+      {/* {isNavbarVisible && <AdminNavBar />} */}
+      <AdminDrawer />
       {renderComponentToDisplay()}
     </Box>
   );

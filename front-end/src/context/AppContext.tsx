@@ -117,7 +117,7 @@ const AppContextProvider = ({ children }: IChildrenProvider) => {
   );
 };
 // Pass the state of the user
-const AppState = (): IAppStateContext => {
+const useAppState = (): IAppStateContext => {
   const context = useContext(ApplicationState);
   if (context === undefined) {
     throw new Error('AppState must be used within AppStateContext');
@@ -134,4 +134,4 @@ const useAppDispatch = (): ApplicationDispatchContext => {
   return context;
 };
 
-export { AppContextProvider, AppState, useAppDispatch };
+export { AppContextProvider, useAppState, useAppDispatch };

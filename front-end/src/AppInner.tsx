@@ -31,7 +31,7 @@ import Vocabulary from './images/Vocabulary';
 import { AccountSettingsContextProvider } from './context/AccountSettingsContext';
 import { AppContextProvider } from './context/AppContext';
 import { UserContextProvider } from './context/UserContext';
-import Demo from './components/Demo';
+
 import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
 
@@ -44,7 +44,8 @@ const AppInner = () => {
     document.body.style.backgroundImage =
       colorScheme === 'dark'
         ? 'linear-gradient(180deg, #1A1B1E 0%, #1A1B1E 100%)'
-        : 'linear-gradient(180deg, #64B5F6 0%, #64B5F6 100%)';
+        : 'linear-gradient(7deg, #F8BBD0 0%, #64B5F6 100%)';
+    // : 'linear-gradient(7deg, #F8BBD0 0%, #FFA500 5%, #64B5F6 100%)';
   }, [colorScheme]);
 
   const { data: googleClientId, isLoading: isGoogleClientIdLoading } = useQuery(
@@ -94,7 +95,6 @@ const AppInner = () => {
   ];
 
   const ProtectedRoutes = [
-    <Route key="/" path="/" element={<Demo />} />,
     <Route key="/home" path="/home" element={<Home />} />,
     <Route
       key="/profile/:username"

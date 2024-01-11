@@ -16,7 +16,7 @@ import { useLogin } from '../../hooks/useLogin';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
-import { AppState } from '../../../context/AppContext';
+import { useAppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
 import classes from '../Auth.module.css';
 import Preloader from '../../Loader/Preloader.component';
@@ -39,7 +39,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-  const { isAuthLoading } = AppState();
+  const { isAuthLoading } = useAppState();
 
   const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',

@@ -10,10 +10,10 @@ import { IconAlertCircleFilled } from '@tabler/icons-react';
 
 import classes from './Alert.module.css';
 import { isUndefinedOrNullString } from '../../utils/utils';
-import { AppState } from '../../context/AppContext';
+import { useAppState } from '../../context/AppContext';
 
 export const AlertComponent: React.FC = () => {
-  const { errorAlertMessage } = AppState();
+  const { errorAlertMessage } = useAppState();
   const hasError: boolean = isUndefinedOrNullString(errorAlertMessage);
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();

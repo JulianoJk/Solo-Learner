@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { profileAPI, updateUsernameAPI } from '../../../api/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
-import { useAppDispatch, AppState } from '../../../../context/AppContext';
+import { useAppDispatch, useAppState } from '../../../../context/AppContext';
 import {
   IUserInfoContext,
   UserContextState,
@@ -16,7 +16,7 @@ import { useLocation } from 'react-router-dom';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();
-  const { saveButtonClicked } = AppState();
+  const { saveButtonClicked } = useAppState();
   const userDispatch = useUserDispatch();
   const { user } = useUserState();
 
