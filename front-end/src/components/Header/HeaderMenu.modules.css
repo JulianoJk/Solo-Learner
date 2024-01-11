@@ -1,0 +1,93 @@
+:local {
+  --spacing-md: 16px;
+  --spacing-sm: 8px;
+  --spacing-xs: 4px;
+  --link-color: #000; /* Replace with your actual color */
+  --link-height-sm: 42px;
+  --font-size-sm: 14px;
+  --link-hover-bg: #ccc; /* Replace with your actual color */
+  --sublink-hover-bg: #ddd; /* Replace with your actual color */
+  --active-bg: #eee; /* Replace with your actual color */
+  --dropdown-footer-bg: #bbb; /* Replace with your actual color */
+  --border-top: 1px solid #aaa; /* Replace with your actual color */
+  --sm-breakpoint: 600px;
+  --header-border-bottom: 2px solid #aaa; /* Replace with your actual color */
+  --user-color: #000; /* Replace with your actual color */
+  --user-hover-bg: #ddd; /* Replace with your actual color */
+  --user-active-bg: #8cb6ea; /* Replace with your actual color */
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  height: 80%;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+  text-decoration: none;
+  color: var(--link-color);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+
+  @media (max-width: var(--sm-breakpoint)) {
+    height: var(--link-height-sm);
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.subLink {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-md);
+
+  &:hover {
+    background-color: var(--sublink-hover-bg);
+  }
+
+  &:active {
+    background-color: var(--active-bg);
+  }
+}
+
+.dropdownFooter {
+  background-color: var(--dropdown-footer-bg);
+  margin: calc(var(--spacing-md) * -1);
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-md) calc(var(--spacing-md) * 2);
+  padding-bottom: var(--spacing-xl);
+  border-top: var(--border-top);
+}
+
+.hiddenMobile {
+  @media (max-width: var(--sm-breakpoint)) {
+    display: none;
+  }
+}
+
+.headerRoot {
+  border-bottom: var(--header-border-bottom);
+  margin-bottom: 20px;
+  height: 60;
+}
+
+.user {
+  color: var(--user-color);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: background-color 100ms ease;
+
+  &:hover {
+    background-color: var(--user-hover-bg);
+  }
+}
+
+.userActive {
+  background-color: var(--user-active-bg);
+}
+
+.hiddenDesktop {
+  @media (min-width: var(--sm-breakpoint)) {
+    display: none;
+  }
+}

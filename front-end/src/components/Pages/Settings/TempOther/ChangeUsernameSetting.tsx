@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { profileAPI, updateUsernameAPI } from '../../../api/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
-import { useAppDispatch, AppState } from '../../../../context/AppContext';
+import { useAppDispatch, useAppState } from '../../../../context/AppContext';
 import {
   IUserInfoContext,
   UserContextState,
@@ -10,16 +10,16 @@ import {
 import { TextInput } from '@mantine/core';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
-import { useStyles } from '../Settings.styles';
+import classes from '../Settings.modules.css';
 import { isUndefinedOrNullString } from '../../../../utils/utils';
 import { useLocation } from 'react-router-dom';
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();
-  const { saveButtonClicked } = AppState();
+  const { saveButtonClicked } = useAppState();
   const userDispatch = useUserDispatch();
   const { user } = useUserState();
-  const { classes } = useStyles();
+
   const [newUsername, setNewUsername] = useState<string>('');
 
   const email: string = user.email as string;
@@ -99,7 +99,7 @@ export const ChangeUsernameSetting = () => {
     <>
       <form onSubmit={(e) => e.preventDefault()}>
         <TextInput
-          icon={<IconMail />}
+          leftSection={<IconMail />}
           type="text"
           label={<span className={classes.inputLabels}>Your full name :</span>}
           value={newUsername}

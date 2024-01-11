@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from '@mantine/form';
 import {
   TextInput,
@@ -11,16 +11,15 @@ import {
   Stack,
   Center,
   Text,
-  Loader,
-  Title,
 } from '@mantine/core';
 import { useLogin } from '../../hooks/useLogin';
-import { useStyles } from '../Auth.styles';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
-import { AppState } from '../../../context/AppContext';
+import { useAppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
+import classes from '../Auth.module.css';
+import Preloader from '../../Loader/Preloader.component';
 
 interface ILoginProps {
   children?: React.ReactNode;
@@ -40,14 +39,14 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-  const { isAuthLoading } = AppState();
-  const { login } = useLogin({
+  const { isAuthLoading } = useAppState();
+
+  const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
   });
-  const { classes } = useStyles();
+
   const navigate: NavigateFunction = useNavigate();
-  const [loading, setLoading] = useState(true);
 
   const form = useForm({
     initialValues: {
@@ -66,6 +65,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     },
     validateInputOnChange: true,
   });
+
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
@@ -80,38 +80,30 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
           if (response && response.navigateUser) {
             navigate(response.navigateUser);
           }
-        } else {
-          // Token is not present, continue with loading
-          setLoading(false);
         }
       } catch (error) {
         console.error('Failed to check authentication:', error);
       } finally {
         // Set loading to false once authentication check is complete
-        setLoading(false);
       }
     };
 
     checkAuthentication();
   }, [navigate]);
   return (
-    <Center maw={600} mx="auto">
-      {isAuthLoading || loading ? (
-        <Stack align="center">
-          <Loader color="teal" size={400} />
-
-          <Title>Loading...</Title>
-        </Stack>
+    <Center maw={600} mx="auto" style={{ marginTop: '1rem' }}>
+      {isAuthLoading || isLoading ? (
+        <Preloader></Preloader>
       ) : (
         <Paper radius="md" p="xl" withBorder={hasBorder}>
-          <Text size="lg" weight={500} ta="center">
+          <Text size="lg" fw={500} ta="center">
             {loginTitle === undefined ||
             (typeof loginTitle === 'string' && loginTitle.length === 0)
               ? 'Welcome to Solo Learn, login with'
               : loginTitle}
           </Text>
 
-          <SocialButtons disableFacebook />
+          <SocialButtons disableFacebook={true} disableGoogle={isLoading} />
 
           <Divider
             label="Or continue with email"
@@ -128,6 +120,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
           >
             <Stack>
               <TextInput
+                disabled={isLoading}
                 withAsterisk
                 label="Email"
                 placeholder="name@example.com"
@@ -140,6 +133,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
               />
 
               <PasswordInput
+                disabled={isLoading}
                 withAsterisk
                 label="Password"
                 placeholder="Your password"
@@ -154,12 +148,13 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
                 radius="md"
               />
             </Stack>
-            <Group position="apart" mt="xl">
+            <Group justify="space-between" mt="xl">
               {switchToRegister ? (
                 <Anchor
+                  disabled={isLoading}
                   component="button"
                   type="button"
-                  color="dimmed"
+                  c="dimmed"
                   onClick={() => navigate('/register')}
                   size="xs"
                 >
@@ -172,7 +167,12 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
                 children
               )}
 
-              <Button type="submit" radius="xl" color="cyan">
+              <Button
+                type="submit"
+                radius="xl"
+                color="cyan"
+                disabled={isLoading}
+              >
                 Login
               </Button>
             </Group>

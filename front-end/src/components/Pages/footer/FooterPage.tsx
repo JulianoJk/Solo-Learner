@@ -1,23 +1,25 @@
-import { Container, Group, ActionIcon, Box, Footer } from '@mantine/core';
+import { Container, Group, ActionIcon, Box } from '@mantine/core';
 import {
   IconBrandTwitter,
   IconBrandYoutube,
   IconBrandInstagram,
 } from '@tabler/icons-react';
-
-import { useStyles } from './FooterPage.styles';
+import classes from './FooterPage.module.css';
 import LogoImage from '../../../images/Logo';
 
 const FooterPage = () => {
-  const { classes } = useStyles();
-
   return (
-    <Footer className={classes.footer} height={'100'}>
+    <footer className={classes.footer}>
       <Container className={classes.inner}>
-        <Box sx={{ width: 70, height: 60, marginTop: '0.4rem' }}>
+        <Box style={{ width: 70, height: 60, marginTop: '0.4rem' }}>
           <LogoImage />
         </Box>
-        <Group spacing={0} className={classes.links} position="right" noWrap>
+        <Group
+          gap={0}
+          className={classes.links}
+          justify="flex-end"
+          wrap="nowrap"
+        >
           <ActionIcon size="lg">
             <IconBrandTwitter size="1.05rem" stroke={1.5} />
           </ActionIcon>
@@ -29,7 +31,7 @@ const FooterPage = () => {
           </ActionIcon>
         </Group>
       </Container>
-    </Footer>
+    </footer>
   );
 };
 export default FooterPage;

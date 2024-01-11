@@ -11,7 +11,7 @@ const RegisterNewUser: React.FC<IRegisterNewUserProps> = ({
 }) => {
   return (
     <Center>
-      <Card sx={{ width: 1100, border: '1px solid black' }}>
+      <Card style={{ width: 1100, border: '1px solid black' }}>
         <AuthenticationRegisterForm
           adminRefetchUserList={refetchUserList}
           registerTitle={'Register new users'}

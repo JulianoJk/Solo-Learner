@@ -11,7 +11,7 @@ import { GoogleIcon } from './GoogleIcon';
 import { FacebookIcon } from './FacebookIcon';
 import { useHover } from '@mantine/hooks';
 import { useGoogleAuth } from '../hooks/useGoogleAuth';
-import { AppState } from '../../context/AppContext';
+import { useAppState } from '../../context/AppContext';
 
 interface SocialButtonsProps extends ButtonProps {
   disableGoogle?: boolean;
@@ -20,7 +20,7 @@ interface SocialButtonsProps extends ButtonProps {
 
 export function GoogleButton(props: ButtonProps) {
   const { login: loginUser } = useGoogleAuth();
-  const { googleClientIsLoading } = AppState();
+  const { googleClientIsLoading } = useAppState();
 
   const handleGoogleLogin = async () => {
     try {
@@ -35,7 +35,7 @@ export function GoogleButton(props: ButtonProps) {
   return (
     <Button
       onClick={handleGoogleLogin}
-      leftIcon={<GoogleIcon />}
+      leftSection={<GoogleIcon />}
       loading={googleClientIsLoading}
       variant="default"
       color="gray"
@@ -60,20 +60,17 @@ export function FacebookButton(props: ButtonProps) {
       >
         <Popover.Target>
           <Button
-            leftIcon={<FacebookIcon />}
-            sx={(theme) => ({
-              backgroundColor: '#4267B2',
-              color: '#fff',
-              '&:not([data-disabled]):hover': {
-                backgroundColor: theme.fn.darken('#4267B2', 0.1),
-              },
-            })}
-            {...props}
+            leftSection={<FacebookIcon />}
+            disabled={true}
+            style={{
+              backgroundColor: props.disabled ? '' : '#4267B2',
+              color: props.disabled ? '' : '#ffff',
+            }}
           >
             Sign in with Facebook
           </Button>
         </Popover.Target>
-        <Popover.Dropdown sx={{ pointerEvents: 'none' }}>
+        <Popover.Dropdown style={{ pointerEvents: 'none' }}>
           <Center>
             <Text size="sm">Coming soon</Text>
           </Center>
@@ -85,7 +82,7 @@ export function FacebookButton(props: ButtonProps) {
 
 export function SocialButtons(props: SocialButtonsProps) {
   return (
-    <Group position="center">
+    <Group justify="center">
       <GoogleButton disabled={props.disableGoogle} />
       <FacebookButton disabled={props.disableFacebook} />
     </Group>

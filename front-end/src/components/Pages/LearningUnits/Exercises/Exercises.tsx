@@ -7,7 +7,7 @@ export default function Exercises() {
       <Card shadow="sm" p="xl" component="a" href="#">
         <Card.Section>{/* <Grammar /> */}</Card.Section>
 
-        <Text weight={500} size="lg" mt="md">
+        <Text fw={500} size="lg" mt="md">
           Exercises
         </Text>
       </Card>
