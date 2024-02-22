@@ -146,8 +146,8 @@ const AppInner = () => {
       element={<DragNDrop />}
     />,
     <Route
-      key="/user/DragNDrop"
-      path="/user/DragNDrop"
+      key="/user/grammar"
+      path="/user/grammar"
       element={<GrammarExercise />}
     />,
   ];

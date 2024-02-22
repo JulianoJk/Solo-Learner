@@ -4,8 +4,6 @@ import {
   Droppable,
   Draggable,
   DropResult,
-  DroppableProvided,
-  DraggableProvided,
 } from '@hello-pangea/dnd';
 
 interface Item {
@@ -13,7 +11,6 @@ interface Item {
   content: string;
 }
 
-// Initial draggable items for the exercise
 const initialDraggableItems: Item[] = [
   { id: 'item-1', content: 'I am' },
   { id: 'item-2', content: 'You are' },
@@ -25,94 +22,96 @@ const initialDraggableItems: Item[] = [
   { id: 'item-8', content: 'They are' },
 ];
 
-// Styles
-const grid = 4;
-const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle?: React.CSSProperties,
-): React.CSSProperties => ({
-  userSelect: 'none',
-  padding: grid * 2,
-  margin: `0 ${grid}px ${grid}px 0`,
-  background: isDragging ? 'lightgreen' : 'lightgrey',
-  border: '1px solid black',
-  borderRadius: '4px',
-  ...draggableStyle,
-  display: 'inline-flex', // Make it inline for fitting in text
-  width: 'auto', // Adjust width based on content
-  height: 'auto', // Adjust height based on content
-  justifyContent: 'center',
-  alignItems: 'center',
-  fontSize: '12px',
-});
-
-const getListStyle = (isDraggingOver: boolean): React.CSSProperties => ({
-  background: isDraggingOver ? 'lightblue' : 'transparent', // Make droppable area less visible
-  display: 'inline-block',
-  padding: grid,
-  minHeight: '2rem',
-  minWidth: '5rem',
-  lineHeight: '20px', // Align with text
-});
-
-const GrammarExercise: React.FC = () => {
-  const [items] = useState<Item[]>(initialDraggableItems); // Removed setItems as it's unused
+const GrammarExercise = () => {
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
-
-    if (result.destination.droppableId === 'sentenceDropzone') {
-      const item = items.find((i) => i.id === result.draggableId);
-      if (item) setSelectedItem(item); // Set or replace the item in the sentence
-    } else if (selectedItem?.id === result.draggableId) {
-      setSelectedItem(null); // Remove from sentence if dragged back
-    }
+    if (
+      !result.destination ||
+      result.destination.droppableId !== 'sentenceDropzone'
+    )
+      return;
+    const item = initialDraggableItems.find((i) => i.id === result.draggableId);
+    setSelectedItem(item ?? null);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="optionsList" direction="horizontal">
-        {(provided: DroppableProvided) => (
-          <div
-            ref={provided.innerRef}
-            style={{ display: 'flex', padding: '8px', overflow: 'auto' }}
-          >
-            {items.map((item, index) => (
-              <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided: DraggableProvided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    style={getItemStyle(
-                      snapshot.isDragging,
-                      provided.draggableProps.style,
-                    )}
-                  >
-                    {item.content}
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-      <div style={{ marginTop: '20px', fontSize: '16px' }}>
-        The dogs
-        <Droppable droppableId="sentenceDropzone" direction="horizontal">
-          {(provided: DroppableProvided, snapshot) => (
-            <span
+      <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
+        {/* Container for draggable items */}
+        <Droppable droppableId="optionsList" direction="horizontal">
+          {(provided) => (
+            <div
               ref={provided.innerRef}
-              style={getListStyle(snapshot.isDraggingOver)}
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px',
+                justifyContent: 'center',
+                marginBottom: '20px', // Adjust spacing as needed
+              }}
               {...provided.droppableProps}
             >
-              {selectedItem ? selectedItem.content : '...'}
-            </span>
+              {initialDraggableItems
+                .filter((item) => item !== selectedItem)
+                .map((item, index) => (
+                  <Draggable key={item.id} draggableId={item.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={{
+                          userSelect: 'none',
+                          padding: '6px 12px',
+                          margin: '0 8px 8px 0',
+                          background: snapshot.isDragging
+                            ? '#4CAF50'
+                            : '#2196F3',
+                          color: 'white',
+                          borderRadius: '20px',
+                          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                          fontSize: '14px',
+                          ...provided.draggableProps.style,
+                        }}
+                      >
+                        {item.content}
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+              {provided.placeholder}
+            </div>
           )}
-        </Droppable>{' '}
-        running.
+        </Droppable>
+
+        {/* Container for the sentence */}
+        <p style={{ fontSize: '16px', textAlign: 'center' }}>
+          The dogs{' '}
+          <Droppable droppableId="sentenceDropzone">
+            {(provided, snapshot) => (
+              <span
+                ref={provided.innerRef}
+                style={{
+                  display: 'inline-block',
+                  minWidth: '60px',
+                  background: snapshot.isDraggingOver
+                    ? '#F0F0F0'
+                    : 'transparent',
+                  padding: '4px',
+                  borderRadius: '10px',
+                  border: '2px dashed #BDBDBD',
+                  lineHeight: '20px',
+                  textAlign: 'center',
+                }}
+                {...provided.droppableProps}
+              >
+                {selectedItem ? selectedItem.content : '...'}
+              </span>
+            )}
+          </Droppable>{' '}
+          running.
+        </p>
       </div>
     </DragDropContext>
   );
