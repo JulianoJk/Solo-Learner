@@ -1,71 +1,89 @@
-import cx from 'clsx';
-import { Container, Text } from '@mantine/core';
-import { useListState } from '@mantine/hooks';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import classes from './GrammarExercise.module.css';
+import styles from './DragNDrop.module.css';
 
-const data = [
-  { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
-  { position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen' },
-  { position: 39, mass: 88.906, symbol: 'Y', name: 'Yttrium' },
-  { position: 56, mass: 137.33, symbol: 'Ba', name: 'Barium' },
-  { position: 58, mass: 140.12, symbol: 'Ce', name: 'Cerium' },
-];
+const initialWords = ['eat', 'sleep', 'code'];
+const initialSentence = ['I', '___', 'and', '___', 'every day.'];
 
 function GrammarExercise() {
-  const [state, handlers] = useListState(data);
+  const [words, setWords] = useState(initialWords);
+  const [sentence, setSentence] = useState(initialSentence);
 
-  const items = state.map((item, index) => (
-    <Draggable key={item.symbol} index={index} draggableId={item.symbol}>
-      {(provided, snapshot) => (
-        <Container w={300}>
-          <div
-            className={cx(classes.item, {
-              [classes.itemDragging]: snapshot.isDragging,
-            })}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-          >
-            <Text className={classes.symbol}>{item.symbol}</Text>
-            <div>
-              <Text>{item.name}</Text>
-              <Text c="dimmed" size="sm">
-                Position: {item.position} • Mass: {item.mass}
-              </Text>
-            </div>
-          </div>
-        </Container>
-      )}
-    </Draggable>
-  ));
+  const onDragEnd = (result: any) => {
+    const { source, destination } = result;
+
+    // Dropped outside the list
+    if (!destination) return;
+
+    // Implement logic to handle the word being dropped into the sentence
+    // For simplicity, this example will just replace the first blank
+    const newSentence = [...sentence];
+    newSentence[destination.index] = words[source.index];
+    setSentence(newSentence);
+
+    // Optionally, remove the word from the list or handle as needed
+  };
 
   return (
-    <DragDropContext
-      onDragEnd={({ destination, source }) =>
-        handlers.reorder({ from: source.index, to: destination?.index || 0 })
-      }
-    >
-      <Droppable droppableId="dnd-list" direction="vertical">
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="wordsList" direction="horizontal">
         {(provided) => (
           <div
-            style={{ backgroundColor: 'red' }}
-            {...provided.droppableProps}
             ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={styles.dropzone}
           >
-            {items}
+            {words.map((word, index) => (
+              <Draggable key={word} draggableId={word} index={index}>
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className={
+                      snapshot.isDragging
+                        ? styles.draggingOver
+                        : styles.draggableItem
+                    }
+                  >
+                    {word}
+                  </div>
+                )}
+              </Draggable>
+            ))}
             {provided.placeholder}
           </div>
         )}
       </Droppable>
-      <Droppable droppableId="dnd-list" direction="vertical">
-        {(provided) => (
+      <Droppable droppableId="sentence" direction="horizontal">
+        {(provided, snapshot) => (
           <div
-            style={{ backgroundColor: 'red' }}
-            {...provided.droppableProps}
             ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={
+              snapshot.isDraggingOver ? styles.dropzoneHovered : styles.dropzone
+            }
           >
-            {items}
+            {sentence.map((word, index) => (
+              <Draggable
+                key={`${word}-${index}`}
+                draggableId={`${word}-${index}`}
+                index={index}
+                isDragDisabled={true}
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className={styles.draggableItem}
+                  >
+                    {word}
+                  </div>
+                )}
+              </Draggable>
+            ))}
             {provided.placeholder}
           </div>
         )}

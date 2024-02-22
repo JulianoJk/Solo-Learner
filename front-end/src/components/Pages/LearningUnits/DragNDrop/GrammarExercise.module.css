@@ -1,3 +1,28 @@
+/* .item {
+  display: flex;
+  align-items: center;
+  border-radius: var(--mantine-radius-md);
+  border: rem(1px) solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-xl);
+  background-color: light-dark(
+    var(--mantine-color-white),
+    var(--mantine-color-dark-5)
+  );
+  margin-bottom: var(--mantine-spacing-sm);
+
+  border: '9px solid yellow !important';
+}
+
+.itemDragging {
+  box-shadow: var(--mantine-shadow-sm);
+}
+
+.symbol {
+  font-size: rem(30px);
+  font-weight: 700;
+  width: rem(60px);
+} */
 .item {
   display: flex;
   align-items: center;
@@ -10,8 +35,6 @@
     var(--mantine-color-dark-5)
   );
   margin-bottom: var(--mantine-spacing-sm);
-  background-color: 'red !important';
-  border: '9px solid red !important';
 }
 
 .itemDragging {
