@@ -48,6 +48,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
           };
           // window.location.reload();
           userDispatch({ type: 'SET_USER', user: user });
+          navigate(props.navigateTo);
           userDispatch({
             type: 'SET_USER_PICTURE',
             picture: data.picture ?? '',

@@ -1,95 +1,18 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from 'react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import styles from './DragNDrop.module.css';
+import React from 'react';
+import DragNDrop from './DragNDrop.component'; // Assuming the DragNDrop component is in a separate file
 
-const initialWords = ['eat', 'sleep', 'code'];
-const initialSentence = ['I', '___', 'and', '___', 'every day.'];
-
-function GrammarExercise() {
-  const [words, setWords] = useState(initialWords);
-  const [sentence, setSentence] = useState(initialSentence);
-
-  const onDragEnd = (result: any) => {
-    const { source, destination } = result;
-
-    // Dropped outside the list
-    if (!destination) return;
-
-    // Implement logic to handle the word being dropped into the sentence
-    // For simplicity, this example will just replace the first blank
-    const newSentence = [...sentence];
-    newSentence[destination.index] = words[source.index];
-    setSentence(newSentence);
-
-    // Optionally, remove the word from the list or handle as needed
-  };
+const Grammar: React.FC = () => {
+  // const lists = ['I', 'YOU', 'HE', 'SHE', 'IT', 'WE', 'THEY'];
+  // make the list with numbers 1 to 5
+  const lists = ['1', '2', '3', '4', '5'];
+  const listsss = 'The pronouns are: ___ ___.';
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="wordsList" direction="horizontal">
-        {(provided) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className={styles.dropzone}
-          >
-            {words.map((word, index) => (
-              <Draggable key={word} draggableId={word} index={index}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={
-                      snapshot.isDragging
-                        ? styles.draggingOver
-                        : styles.draggableItem
-                    }
-                  >
-                    {word}
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-      <Droppable droppableId="sentence" direction="horizontal">
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-            className={
-              snapshot.isDraggingOver ? styles.dropzoneHovered : styles.dropzone
-            }
-          >
-            {sentence.map((word, index) => (
-              <Draggable
-                key={`${word}-${index}`}
-                draggableId={`${word}-${index}`}
-                index={index}
-                isDragDisabled={true}
-              >
-                {(provided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    className={styles.draggableItem}
-                  >
-                    {word}
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <div>
+      <h2>{'asduasdu'}</h2>
+      <DragNDrop items={lists} text={listsss} />
+    </div>
   );
-}
+};
 
-export default GrammarExercise;
+export default Grammar;

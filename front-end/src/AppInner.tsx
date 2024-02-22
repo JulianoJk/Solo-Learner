@@ -37,7 +37,7 @@ import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
-import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
+// import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
 import GrammarExercise from './components/Pages/LearningUnits/DragNDrop/GrammarExercise.component';
 
 const AppInner = () => {
@@ -140,11 +140,11 @@ const AppInner = () => {
       path="/admin/dashboard"
       element={<Admin />}
     />,
-    <Route
-      key="/user/DragNDrops"
-      path="/user/DragNDrops"
-      element={<DragNDrop />}
-    />,
+    // <Route
+    //   key="/user/DragNDrops"
+    //   path="/user/DragNDrops"
+    //   element={<DragNDrop />}
+    // />,
     <Route
       key="/user/grammar"
       path="/user/grammar"
