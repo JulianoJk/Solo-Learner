@@ -18,91 +18,69 @@ interface DragNDropProps {
 
 const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
   const initialItems = useMemo(
-    () =>
-      items.map((content, index) => ({
-        id: `item-${index}`,
-        content,
-      })),
+    () => items.map((content, index) => ({ id: `item-${index}`, content })),
     [items],
   );
 
+  // Adjust the type definition here to allow null values
   const [availableItems, setAvailableItems] = useState<Item[]>(initialItems);
-  console.log('🚀 ~ availableItems:', availableItems);
-  const [placedItems, setPlacedItems] = useState<Item[]>([]);
-  console.log('🚀 ~ placedItems:', placedItems);
-
+  const [placedItems, setPlacedItems] = useState<(Item | null)[]>(
+    Array(text.split('___').length - 1).fill(null),
+  );
   const sentenceParts = useMemo(() => text.split('___'), [text]);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
 
-    const sourceId = result.source.droppableId;
-    const destinationId = result.destination.droppableId;
+    const { source, destination } = result;
+    const sourceIndex = source.index;
+    const destinationIndex = parseInt(
+      destination.droppableId.split('-')[1],
+      10,
+    );
 
-    const draggedItemId =
-      sourceId === 'optionsList'
-        ? availableItems[result.source.index].id
-        : placedItems[result.source.index].id;
-    const draggedItem =
-      availableItems.find((item) => item.id === draggedItemId) ||
-      placedItems.find((item) => item.id === draggedItemId);
+    const itemBeingDragged =
+      source.droppableId === 'optionsList'
+        ? availableItems[sourceIndex]
+        : placedItems[sourceIndex];
 
-    if (!draggedItem) return;
+    if (!itemBeingDragged) return;
 
-    if (sourceId === destinationId) {
-      // Rearrange within the same list
-      if (sourceId === 'optionsList') {
-        const newAvailableItems = Array.from(availableItems);
-        newAvailableItems.splice(result.source.index, 1);
-        newAvailableItems.splice(result.destination.index, 0, draggedItem);
-        setAvailableItems(newAvailableItems);
-      } else {
-        const newPlacedItems = Array.from(placedItems);
-        newPlacedItems.splice(result.source.index, 1);
-        newPlacedItems.splice(result.destination.index, 0, draggedItem);
-        setPlacedItems(newPlacedItems);
-      }
-    } else {
-      // Move between lists
-      if (destinationId === 'optionsList') {
-        setPlacedItems((prev) =>
-          prev.filter((item) => item.id !== draggedItem.id),
-        );
-
-        const itemExists = availableItems.some(
-          (item) => item.id === draggedItem.id,
-        );
-        if (!itemExists) {
-          setAvailableItems((prev) => {
-            const newAvailableItems = [...prev];
-            if (result.destination) {
-              newAvailableItems.splice(result.destination.index, 0, {
-                ...draggedItem,
-              });
-            }
-            return newAvailableItems;
-          });
+    if (
+      source.droppableId === 'optionsList' &&
+      destination.droppableId.includes('sentenceDropzone')
+    ) {
+      // Moving from available items to a placeholder
+      setAvailableItems((prev) =>
+        prev.filter((item) => item.id !== itemBeingDragged.id),
+      );
+      setPlacedItems((prev) => {
+        const newPlacedItems = [...prev];
+        newPlacedItems[destinationIndex] = itemBeingDragged; // Place item in the correct spot
+        return newPlacedItems;
+      });
+    } else if (
+      source.droppableId.includes('sentenceDropzone') &&
+      destination.droppableId === 'optionsList'
+    ) {
+      // Moving back to available items
+      setAvailableItems((prev) => [...prev, itemBeingDragged]);
+      setPlacedItems((prev) =>
+        prev.map((item, index) => (index === sourceIndex ? null : item)),
+      );
+    } else if (
+      source.droppableId.includes('sentenceDropzone') &&
+      destination.droppableId.includes('sentenceDropzone')
+    ) {
+      // Moving between placeholders
+      setPlacedItems((prev) => {
+        const newPlacedItems = [...prev];
+        newPlacedItems[destinationIndex] = itemBeingDragged;
+        if (sourceIndex !== destinationIndex) {
+          newPlacedItems[sourceIndex] = null; // Clear the original position
         }
-      } else {
-        setAvailableItems((prev) =>
-          prev.filter((item) => item.id !== draggedItem.id),
-        );
-
-        const itemExists = placedItems.some(
-          (item) => item.id === draggedItem.id,
-        );
-        if (!itemExists) {
-          setPlacedItems((prev) => {
-            const newPlacedItems = [...prev];
-            if (result.destination) {
-              newPlacedItems.splice(result.destination.index, 0, {
-                ...draggedItem,
-              });
-            }
-            return newPlacedItems;
-          });
-        }
-      }
+        return newPlacedItems;
+      });
     }
   };
 
@@ -123,11 +101,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
               }}
             >
               {availableItems.map((item, index) => (
-                <Draggable
-                  key={`available-${item.id}`}
-                  draggableId={`available-${item.id}`}
-                  index={index}
-                >
+                <Draggable key={item.id} draggableId={item.id} index={index}>
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
@@ -150,7 +124,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
                   )}
                 </Draggable>
               ))}
-
               {provided.placeholder}
             </div>
           )}
@@ -182,7 +155,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
                     >
                       {placedItems[index] ? (
                         <Draggable
-                          draggableId={placedItems[index].id}
+                          key={placedItems[index]?.id}
+                          draggableId={placedItems[index]?.id || 'placeholder'}
                           index={index}
                         >
                           {(provided) => (
@@ -200,7 +174,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
                                 ...provided.draggableProps.style,
                               }}
                             >
-                              {placedItems[index].content}
+                              {placedItems[index]?.content}
                             </div>
                           )}
                         </Draggable>
