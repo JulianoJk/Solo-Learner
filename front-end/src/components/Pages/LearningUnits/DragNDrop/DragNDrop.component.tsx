@@ -22,7 +22,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
     [items],
   );
 
-  // Adjust the type definition here to allow null values
   const [availableItems, setAvailableItems] = useState<Item[]>(initialItems);
   const [placedItems, setPlacedItems] = useState<(Item | null)[]>(
     Array(text.split('___').length - 1).fill(null),
@@ -51,11 +50,21 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
       destination.droppableId.includes('sentenceDropzone')
     ) {
       // Moving from available items to a placeholder
-      setAvailableItems((prev) =>
-        prev.filter((item) => item.id !== itemBeingDragged.id),
+      const newAvailableItems = availableItems.filter(
+        (item) => item.id !== itemBeingDragged.id,
       );
+      setAvailableItems(newAvailableItems);
+
       setPlacedItems((prev) => {
         const newPlacedItems = [...prev];
+        const replacedItem = newPlacedItems[destinationIndex];
+        if (replacedItem) {
+          // If there's already an item in the placeholder, move it back to availableItems
+          setAvailableItems((prevAvailableItems) => [
+            ...prevAvailableItems,
+            replacedItem,
+          ]);
+        }
         newPlacedItems[destinationIndex] = itemBeingDragged; // Place item in the correct spot
         return newPlacedItems;
       });
@@ -73,14 +82,14 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
       destination.droppableId.includes('sentenceDropzone')
     ) {
       // Moving between placeholders
-      setPlacedItems((prev) => {
-        const newPlacedItems = [...prev];
-        newPlacedItems[destinationIndex] = itemBeingDragged;
-        if (sourceIndex !== destinationIndex) {
-          newPlacedItems[sourceIndex] = null; // Clear the original position
-        }
-        return newPlacedItems;
-      });
+      const newPlacedItems = [...placedItems];
+      const sourceItem = placedItems[sourceIndex];
+      const destinationItem = placedItems[destinationIndex];
+
+      newPlacedItems[sourceIndex] = destinationItem;
+      newPlacedItems[destinationIndex] = sourceItem;
+
+      setPlacedItems(newPlacedItems);
     }
   };
 
@@ -129,12 +138,16 @@ const DragNDrop: React.FC<DragNDropProps> = ({ items, text }) => {
           )}
         </Droppable>
 
+        {/* Render sentence parts and droppable zones */}
         <div style={{ fontSize: '16px', textAlign: 'center' }}>
           {sentenceParts.map((part, index) => (
             <React.Fragment key={index}>
               {part}
               {index < sentenceParts.length - 1 && (
-                <Droppable droppableId={`sentenceDropzone-${index}`}>
+                <Droppable
+                  droppableId={`sentenceDropzone-${index}`}
+                  direction="horizontal"
+                >
                   {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
