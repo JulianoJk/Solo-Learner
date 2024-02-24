@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-
+import React, { useState, useEffect } from 'react';
 export interface Option {
+  id: string;
   label: string;
   isCorrect: boolean;
 }
 
 interface SelectionProps {
-  onSelect: (selectedOption: string, index: number) => void;
+  onSelect: (selectedOptionId: string, index: number) => void;
   optionsSets: Option[][];
   placeholder: string;
   text: string;
+  page: number; // Current page index
+  selectedOptions: string[]; // Selected option IDs for the current page
 }
 
 const Selection: React.FC<SelectionProps> = ({
@@ -17,19 +19,26 @@ const Selection: React.FC<SelectionProps> = ({
   optionsSets,
   placeholder,
   text,
+  page,
+  selectedOptions,
 }) => {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>(
-    new Array(text.split('___').length - 1).fill(''),
+  const [localSelectedOptions, setLocalSelectedOptions] = useState<string[]>(
+    [],
   );
+
+  useEffect(() => {
+    // Load selected options for the current page when it changes
+    setLocalSelectedOptions(selectedOptions);
+  }, [selectedOptions, page]);
 
   const textWithPlaceholders = text.split('___');
 
   // Handle selection change
-  const handleSelect = (selectedOption: string, index: number) => {
-    const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[index] = selectedOption;
-    setSelectedOptions(newSelectedOptions);
-    onSelect(selectedOption, index);
+  const handleSelect = (selectedOptionId: string, index: number) => {
+    const newSelectedOptions = [...localSelectedOptions];
+    newSelectedOptions[index] = selectedOptionId;
+    setLocalSelectedOptions(newSelectedOptions);
+    onSelect(selectedOptionId, index);
   };
 
   return (
@@ -41,12 +50,12 @@ const Selection: React.FC<SelectionProps> = ({
               {part}
               {optionsSets[index] && optionsSets[index].length > 0 && (
                 <select
-                  value={selectedOptions[index]}
+                  value={localSelectedOptions[index]}
                   onChange={(e) => handleSelect(e.target.value, index)}
                 >
                   <option value="">{placeholder}</option>
-                  {optionsSets[index].map((option, optionIndex) => (
-                    <option key={optionIndex} value={option.label}>
+                  {optionsSets[index].map((option) => (
+                    <option key={option.id} value={option.id}>
                       {option.label}
                     </option>
                   ))}
