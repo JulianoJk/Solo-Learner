@@ -7,34 +7,55 @@ export interface Option {
 
 interface SelectionProps {
   onSelect: (selectedOption: string, index: number) => void;
-  options: Option[];
+  optionsSets: Option[][];
   placeholder: string;
-  index: number;
+  text: string;
 }
 
 const Selection: React.FC<SelectionProps> = ({
   onSelect,
-  options,
+  optionsSets,
   placeholder,
-  index,
+  text,
 }) => {
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOptions, setSelectedOptions] = useState<string[]>(
+    new Array(text.split('___').length - 1).fill(''),
+  );
 
-  const handleSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedValue = e.target.value;
-    setSelectedOption(selectedValue);
-    onSelect(selectedValue, index);
+  const textWithPlaceholders = text.split('___');
+
+  // Handle selection change
+  const handleSelect = (selectedOption: string, index: number) => {
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions[index] = selectedOption;
+    setSelectedOptions(newSelectedOptions);
+    onSelect(selectedOption, index);
   };
 
   return (
-    <select value={selectedOption} onChange={handleSelect}>
-      <option value="">{placeholder}</option>
-      {options.map((option, optionIndex) => (
-        <option key={optionIndex} value={option.label}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <div>
+      {textWithPlaceholders.map(
+        (part, index) =>
+          part !== '' && (
+            <React.Fragment key={index}>
+              {part}
+              {optionsSets[index] && optionsSets[index].length > 0 && (
+                <select
+                  value={selectedOptions[index]}
+                  onChange={(e) => handleSelect(e.target.value, index)}
+                >
+                  <option value="">{placeholder}</option>
+                  {optionsSets[index].map((option, optionIndex) => (
+                    <option key={optionIndex} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </React.Fragment>
+          ),
+      )}
+    </div>
   );
 };
 
