@@ -4,7 +4,7 @@ import {
   IconBrandYoutube,
   IconBrandInstagram,
 } from '@tabler/icons-react';
-import classes from './FooterPage.module.css';
+import classes from './FooterPage.modules.css';
 import LogoImage from '../../../images/Logo';
 
 const FooterPage = () => {
