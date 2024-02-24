@@ -52,7 +52,7 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
       className={classes.cardLoaded}
       draggable={false}
       style={{ cursor: 'pointer' }}
-      onClick={() => navigate('/user/DragNDrop')}
+      onClick={() => navigate('/user/grammar')}
     >
       <Skeleton visible={isLoading}>
         <AspectRatio ratio={1920 / 1080}>
