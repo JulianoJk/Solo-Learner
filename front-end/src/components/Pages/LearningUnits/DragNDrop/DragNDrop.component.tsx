@@ -5,6 +5,7 @@ import {
   Draggable,
   DropResult,
 } from '@hello-pangea/dnd';
+import { Button } from '@mantine/core';
 
 interface Item {
   id: string;
@@ -25,7 +26,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [availableItems, setAvailableItems] = useState<Item[]>([]);
   const [placedItems, setPlacedItems] = useState<(Item | null)[]>([]);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const currentQuestion = questions[currentQuestionIndex];
 
   useMemo(() => {
@@ -38,7 +38,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
     setPlacedItems(
       Array(currentQuestion.text.split('___').length - 1).fill(null),
     );
-    setIsSubmitted(false); // Reset submission status when question changes
   }, [currentQuestion]);
 
   const sentenceParts = useMemo(
@@ -120,13 +119,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
     const placedContent = placedItems.map((item) => (item ? item.content : ''));
     const isCorrect =
       JSON.stringify(correctAnswers) === JSON.stringify(placedContent);
-    setIsSubmitted(true);
     if (isCorrect) {
       alert('Correct!');
-      // You can add further actions upon correct submission
     } else {
       alert('Incorrect. Please try again.');
-      // You can add further actions upon incorrect submission
     }
   };
 
@@ -194,7 +190,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
                         {...provided.droppableProps}
                         style={{
                           display: 'inline-block',
-                          minWidth: '60px',
+                          width: '100px', // Adjust the width here
+                          height: '40px', // Adjust the height here
                           background: snapshot.isDraggingOver
                             ? '#F0F0F0'
                             : 'transparent',
@@ -245,11 +242,10 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
             ))}
           </div>
         </div>
-        {isSubmitted ? (
-          <button onClick={handleNextQuestion}>Next Question</button>
-        ) : (
-          <button onClick={handleSubmit}>Submit</button>
-        )}
+        <Button onClick={handleNextQuestion}>Next Question</Button>
+        <Button onClick={handleSubmit} color="green">
+          Submit
+        </Button>
       </div>
     </DragDropContext>
   );
