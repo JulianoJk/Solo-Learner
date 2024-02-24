@@ -43,6 +43,26 @@ interface DemoHomeProps {
 const Modules: React.FC<DemoHomeProps> = (props) => {
   const { isLoading } = props;
   const navigate = useNavigate();
+
+  const navigateUser = (title: string) => {
+    switch (title) {
+      case 'Theory':
+        navigate('/learning-units/theory');
+        break;
+      case 'Grammar':
+        navigate('/learning-units/grammar');
+        break;
+      case 'Tests':
+        navigate('/learning-units/tests');
+        break;
+      case 'Vocabulary':
+        navigate('/learning-units/vocabulary');
+        break;
+      default:
+        navigate('/learning-units/grammar');
+    }
+  };
+
   const cards = mockdata.map((article) => (
     <Card
       key={article.title}
@@ -52,7 +72,7 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
       className={classes.cardLoaded}
       draggable={false}
       style={{ cursor: 'pointer' }}
-      onClick={() => navigate('/user/grammar')}
+      onClick={() => navigateUser(article.title)} // Apply navigateUser function here
     >
       <Skeleton visible={isLoading}>
         <AspectRatio ratio={1920 / 1080}>
