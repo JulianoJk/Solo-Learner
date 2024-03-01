@@ -1,51 +1,40 @@
 import React, { useState } from 'react';
-import TextWithSelection from '../TextWithSelection/TextWithSelection.component';
-import { Button, List, Title } from '@mantine/core';
-import { selectionQuestions } from '../constants';
+import SelectionContent from '../TextWithSelection/SelectionContent.component';
+import { Pagination } from '@mantine/core';
+import { dragNdropQuestions } from '../constants';
+import DragNDrop from '../DragNDrop/DragNDrop.component';
 
-const Theory: React.FC = () => {
-  // State to hold selected options for each question
-  const [selectedOptions, setSelectedOptions] = useState<{
-    [key: string]: string;
-  }>({});
+const Theory = () => {
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Function to handle option selection for a question
-  const handleSelect = (selectedOptionId: string, questionId: string) => {
-    setSelectedOptions((prev) => ({
-      ...prev,
-      [questionId]: selectedOptionId,
-    }));
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
-  // Function to handle form submission
-  const handleSubmit = () => {
-    console.log(selectedOptions);
-    // Your submission logic here
+  // Function to render content based on the current page
+  const renderContent = () => {
+    switch (currentPage) {
+      case 1:
+        return <SelectionContent />;
+      case 2:
+        return <DragNDrop questions={dragNdropQuestions} />;
+      case 3:
+        return <p>World</p>;
+      default:
+        return null;
+    }
   };
 
   return (
-    <div>
-      <Title>Choose and fill in.</Title>
-      <List type="ordered" withPadding>
-        {selectionQuestions.map((question) => (
-          <List.Item key={question.id} style={{ padding: 8 }}>
-            <TextWithSelection
-              text={question.text}
-              optionsSets={question.options}
-              placeholder="Select Option"
-              onSelect={(selectedOptionId, questionId) =>
-                handleSelect(selectedOptionId, questionId)
-              }
-              selectedOption={selectedOptions[question.id] || ''}
-              questionId={question.id} // Pass question ID
-            />
-          </List.Item>
-        ))}
-      </List>
-      <Button onClick={handleSubmit} style={{ marginTop: '10px' }}>
-        Submit
-      </Button>
-    </div>
+    <>
+      {renderContent()}
+
+      <Pagination
+        total={3} // Total number of pages
+        value={currentPage}
+        onChange={handlePageChange}
+      />
+    </>
   );
 };
 
