@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import SelectionContent from '../TextWithSelection/SelectionContent.component';
-import { Pagination } from '@mantine/core';
 import { dragNdropQuestions } from '../constants';
 import DragNDrop from '../DragNDrop/DragNDrop.component';
+import CustomPagination from '../../../CustomComponents/CustomPagination.component';
 
 const Theory = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,15 +26,19 @@ const Theory = () => {
   };
 
   return (
-    <>
-      {renderContent()}
+    <div style={{ width: '80%', margin: 'auto' }}>
+      <div style={{ paddingBottom: '100px' }}>
+        {' '}
+        {/* Ensure space for pagination at the bottom */}
+        {renderContent()}
+      </div>
 
-      <Pagination
-        total={3} // Total number of pages
-        value={currentPage}
-        onChange={handlePageChange}
+      <CustomPagination
+        total={3}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
-    </>
+    </div>
   );
 };
 

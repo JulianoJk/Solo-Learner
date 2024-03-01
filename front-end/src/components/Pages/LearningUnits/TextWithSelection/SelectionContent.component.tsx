@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, List, Title } from '@mantine/core';
+import { List, Title } from '@mantine/core';
 import TextWithSelection from './TextWithSelection.component';
 import { selectionQuestions } from '../constants';
 
@@ -15,12 +15,6 @@ const SelectionContent: React.FC = () => {
       ...prev,
       [questionId]: selectedOptionId,
     }));
-  };
-
-  // Function to handle form submission
-  const handleSubmit = () => {
-    console.log(selectedOptions);
-    // Your submission logic here
   };
 
   return (
@@ -42,9 +36,6 @@ const SelectionContent: React.FC = () => {
           </List.Item>
         ))}
       </List>
-      <Button onClick={handleSubmit} style={{ marginTop: '10px' }}>
-        Submit
-      </Button>
     </div>
   );
 };
