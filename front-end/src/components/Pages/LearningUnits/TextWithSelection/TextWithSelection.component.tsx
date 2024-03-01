@@ -1,6 +1,8 @@
 import React from 'react';
 import { Select } from '@mantine/core';
-// import classes from './TextWithSelection.module.css';
+import { useMediaQuery } from '@mantine/hooks';
+import classes from './TextWithSelection.module.css';
+import cx from 'clsx';
 
 export interface Option {
   id: string;
@@ -30,6 +32,7 @@ const TextWithSelection: React.FC<TextWithSelectionProps> = ({
   };
 
   const textWithPlaceholders = text.split('___');
+  const matches = useMediaQuery('(max-width: 500px)');
 
   return (
     <div>
@@ -39,7 +42,11 @@ const TextWithSelection: React.FC<TextWithSelectionProps> = ({
             <React.Fragment key={index}>
               {part}
               {optionsSets[index]?.length > 0 && (
-                <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <div
+                  className={cx(
+                    matches ? classes.containerSmall : classes.containerLarge,
+                  )}
+                >
                   <Select
                     clearable
                     placeholder={placeholder}
@@ -49,7 +56,6 @@ const TextWithSelection: React.FC<TextWithSelectionProps> = ({
                       value: option.id,
                       label: option.label,
                     }))}
-                    style={{ width: '10em', height: '0.4em' }}
                   />
                 </div>
               )}
