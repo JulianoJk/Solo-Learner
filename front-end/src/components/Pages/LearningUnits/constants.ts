@@ -46,6 +46,7 @@ export const selectionQuestions = [
       [
         { id: '25', label: 'between', isCorrect: false },
         { id: '26', label: 'in front of', isCorrect: true },
+        { id: '133', label: '-', isCorrect: true },
       ],
     ],
   },

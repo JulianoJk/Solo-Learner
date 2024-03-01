@@ -48,8 +48,8 @@ const TextWithSelection: React.FC<TextWithSelectionProps> = ({
                   )}
                 >
                   <Select
-                    clearable
                     placeholder={placeholder}
+                    styles={{ input: { textAlign: 'center' } }}
                     value={selectedOption}
                     onChange={(value) => handleSelect(value)}
                     data={optionsSets[index].map((option) => ({
