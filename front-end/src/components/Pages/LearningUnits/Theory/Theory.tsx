@@ -1,169 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import Selection, { Option } from '../Selection/Selection.component';
-import { Pagination, Button } from '@mantine/core';
-import { checkIfPageIsReload } from '../../../../utils/utils';
+import React, { useState } from 'react';
+import TextWithSelection, {
+  Option,
+} from '../TextWithSelection/TextWithSelection.component';
+import { Button, List } from '@mantine/core';
 
 const Theory: React.FC = () => {
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [selectedOptionsByPage, setSelectedOptionsByPage] = useState<{
-    [key: number]: string[];
+  // State to hold selected options for each question
+  const [selectedOptions, setSelectedOptions] = useState<{
+    [key: string]: string;
   }>({});
 
-  // Check if the page has been reloaded
-  useEffect(() => {
-    if (checkIfPageIsReload()) {
-      // If the page has been reloaded, you can retrieve the selected options and current page from the localStorage
-      const selectedOptionsFromStorage = JSON.parse(
-        localStorage.getItem('selectedOptions') || '{}',
-      );
-      const currentPageFromStorage = JSON.parse(
-        localStorage.getItem('currentPage') || '0',
-      );
-      setSelectedOptionsByPage(selectedOptionsFromStorage);
-      setCurrentPageIndex(currentPageFromStorage);
-    }
-  }, []);
+  // Function to handle option selection for a question
+  const handleSelect = (selectedOptionId: string, questionId: string) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [questionId]: selectedOptionId,
+    }));
+  };
 
-  // Load selected options and current page from local storage on component mount
-  useEffect(() => {
-    const storedSelectedOptions = localStorage.getItem('selectedOptions');
-    const storedCurrentPage = localStorage.getItem('currentPage');
-    if (storedSelectedOptions) {
-      setSelectedOptionsByPage(JSON.parse(storedSelectedOptions));
-    }
-    if (storedCurrentPage) {
-      setCurrentPageIndex(JSON.parse(storedCurrentPage));
-    }
-  }, []);
-
-  // Update local storage whenever selectedOptionsByPage or currentPage changes
-  useEffect(() => {
-    localStorage.setItem(
-      'selectedOptions',
-      JSON.stringify(selectedOptionsByPage),
-    );
-    localStorage.setItem('currentPage', JSON.stringify(currentPageIndex));
-  }, [selectedOptionsByPage, currentPageIndex]);
+  // Function to handle form submission
+  const handleSubmit = () => {
+    console.log(selectedOptions);
+    // Your submission logic here
+  };
 
   const questions: { id: string; text: string; options: Option[][] }[] = [
     {
       id: 'question1',
-      text: '1hello ___ world ___',
+      text: 'Your shoes are ___ the bed.',
       options: [
         [
-          { id: '1', label: 'English', isCorrect: false },
-          { id: '2', label: 'German', isCorrect: false },
-          { id: '3', label: 'Italian', isCorrect: false },
-        ],
-        [
-          { id: '4', label: 'English', isCorrect: false },
-          { id: '5', label: 'German', isCorrect: false },
-          { id: '6', label: 'Italian', isCorrect: false },
+          { id: '1', label: 'under', isCorrect: true },
+          { id: '2', label: 'between', isCorrect: false },
         ],
       ],
     },
     {
       id: 'question2',
-      text: '2hello ___ world ___',
+      text: 'The photo is ___ the self.',
       options: [
         [
-          { id: '7', label: 'English', isCorrect: false },
-          { id: '8', label: 'German', isCorrect: false },
-          { id: '9', label: 'Italian', isCorrect: false },
-        ],
-        [
-          { id: '10', label: 'English', isCorrect: false },
-          { id: '11', label: 'German', isCorrect: false },
-          { id: '12', label: 'Italian', isCorrect: false },
+          { id: '7', label: 'on', isCorrect: true },
+          { id: '8', label: 'behind', isCorrect: false },
         ],
       ],
     },
     {
       id: 'question3',
-      text: '3hello ___ world ___',
+      text: 'The toy is ___ the box.',
       options: [
         [
-          { id: '13', label: 'English', isCorrect: false },
-          { id: '14', label: 'German', isCorrect: false },
-          { id: '15', label: 'Italian', isCorrect: false },
-        ],
-        [
-          { id: '16', label: 'English', isCorrect: false },
-          { id: '17', label: 'German', isCorrect: false },
-          { id: '18', label: 'Italian', isCorrect: false },
+          { id: '13', label: 'between', isCorrect: false },
+          { id: '14', label: 'in', isCorrect: true },
         ],
       ],
     },
     {
       id: 'question4',
-      text: '4hello ___ world ___',
+      text: 'Look! Linda is ___ that door.',
       options: [
         [
-          { id: '19', label: 'English', isCorrect: false },
-          { id: '20', label: 'German', isCorrect: false },
-          { id: '21', label: 'Italian', isCorrect: false },
-        ],
-        [
-          { id: '22', label: 'English', isCorrect: false },
-          { id: '23', label: 'German', isCorrect: false },
-          { id: '24', label: 'Italian', isCorrect: false },
+          { id: '19', label: 'in', isCorrect: false },
+          { id: '20', label: 'behind', isCorrect: true },
         ],
       ],
     },
     {
       id: 'question5',
-      text: '5hello ___ world ___',
+      text: 'The sheep is ___ the tree.',
       options: [
         [
-          { id: '25', label: 'English', isCorrect: false },
-          { id: '26', label: 'German', isCorrect: false },
-          { id: '27', label: 'Italian', isCorrect: false },
+          { id: '25', label: 'between', isCorrect: false },
+          { id: '26', label: 'in front of', isCorrect: true },
         ],
+      ],
+    },
+    {
+      id: 'question6',
+      text: 'The wardrobe is ___ the window.',
+      options: [
         [
-          { id: '28', label: 'English', isCorrect: false },
-          { id: '29', label: 'German', isCorrect: false },
-          { id: '30', label: 'Italian', isCorrect: false },
+          { id: '27', label: 'next to', isCorrect: true },
+          { id: '28', label: 'on', isCorrect: false },
         ],
       ],
     },
   ];
 
-  const handlePageChange = (page: number) => {
-    setCurrentPageIndex(page - 1);
-  };
-
-  const handleSelect = (selectedOptionId: string) => {
-    setSelectedOptionsByPage((prev) => ({
-      ...prev,
-      [currentPageIndex]: [...(prev[currentPageIndex] || []), selectedOptionId],
-    }));
-  };
-
-  const handleSubmit = () => {
-    console.log(selectedOptionsByPage);
-    // Your submission logic here
-  };
-
   return (
     <div>
-      <Selection
-        text={questions[currentPageIndex].text}
-        optionsSets={questions[currentPageIndex].options}
-        placeholder="Select Option"
-        onSelect={handleSelect}
-        page={currentPageIndex}
-        selectedOptions={selectedOptionsByPage[currentPageIndex] || []}
-      />
-      <Pagination
-        total={questions.length}
-        value={currentPageIndex + 1}
-        onChange={handlePageChange}
-      />
-      {currentPageIndex === questions.length - 1 && (
-        <Button onClick={handleSubmit} style={{ marginTop: '10px' }}>
-          Submit
-        </Button>
-      )}
+      <List type="ordered" withPadding>
+        {questions.map((question) => (
+          <List.Item key={question.id} style={{ padding: 5 }}>
+            <TextWithSelection
+              text={question.text}
+              optionsSets={question.options}
+              placeholder="Select Option"
+              onSelect={(selectedOptionId, questionId) =>
+                handleSelect(selectedOptionId, questionId)
+              }
+              selectedOption={selectedOptions[question.id] || ''}
+              questionId={question.id} // Pass question ID
+            />
+          </List.Item>
+        ))}
+      </List>
+      <Button onClick={handleSubmit} style={{ marginTop: '10px' }}>
+        Submit
+      </Button>
     </div>
   );
 };

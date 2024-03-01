@@ -1,0 +1,42 @@
+.selectionContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Adjustments for Mantine Select */
+.mantine-Select-root {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px; /* Adjust padding as needed */
+  border-radius: 8px; /* Adjust border-radius as needed */
+  border: 1px solid #ccc; /* Adjust border color as needed */
+  transition: background-color 150ms ease;
+  background-color: #f7f7f7; /* Adjust background color as needed */
+}
+
+.mantine-Select-label {
+  font-weight: 500;
+  font-size: 14px; /* Adjust font size as needed */
+}
+
+.mantine-Select-icon {
+  transition: transform 150ms ease;
+  transform: rotate(0deg);
+}
+
+.mantine-Select-input {
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .mantine-Select-root {
+    width: 150px; /* Adjust width for smaller screens */
+  }
+
+  .mantine-Select-label {
+    font-size: 12px; /* Adjust font size for smaller screens */
+  }
+}
