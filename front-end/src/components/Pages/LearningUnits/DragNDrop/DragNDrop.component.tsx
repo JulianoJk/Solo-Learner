@@ -13,37 +13,31 @@ interface Item {
 }
 
 interface Question {
+  id: string; // Add an id property
   items: string[];
   text: string;
   correctAnswers: string[];
 }
 
 interface DragNDropProps {
-  questions: Question[];
+  question: Question;
 }
 
-const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+const DragNDrop: React.FC<DragNDropProps> = ({ question }) => {
   const [availableItems, setAvailableItems] = useState<Item[]>([]);
   const [placedItems, setPlacedItems] = useState<(Item | null)[]>([]);
-  const currentQuestion = questions[currentQuestionIndex];
 
   useMemo(() => {
     setAvailableItems(
-      currentQuestion.items.map((content, index) => ({
+      question.items.map((content, index) => ({
         id: `item-${index}`,
         content,
       })),
     );
-    setPlacedItems(
-      Array(currentQuestion.text.split('___').length - 1).fill(null),
-    );
-  }, [currentQuestion]);
+    setPlacedItems(Array(question.text.split('___').length - 1).fill(null));
+  }, [question]);
 
-  const sentenceParts = useMemo(
-    () => currentQuestion.text.split('___'),
-    [currentQuestion.text],
-  );
+  const sentenceParts = useMemo(() => question.text.split('___'), [question]);
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -106,30 +100,21 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
     }
   };
 
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      alert('All questions completed!');
-    }
-  };
-
   const handleSubmit = () => {
-    const correctAnswers = currentQuestion.correctAnswers;
+    const correctAnswers = question.correctAnswers;
     const placedContent = placedItems.map((item) => (item ? item.content : ''));
     const isCorrect =
       JSON.stringify(correctAnswers) === JSON.stringify(placedContent);
     if (isCorrect) {
-      alert('Correct!');
+      console.log('Correct!');
     } else {
-      alert('Incorrect. Please try again.');
+      console.log('Incorrect. Please try again.');
     }
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-        <h3>Question {currentQuestionIndex + 1}</h3>
         <div>
           <Droppable droppableId="optionsList" direction="horizontal">
             {(provided) => (
@@ -242,7 +227,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions }) => {
             ))}
           </div>
         </div>
-        <Button onClick={handleNextQuestion}>Next Question</Button>
         <Button onClick={handleSubmit} color="green">
           Submit
         </Button>

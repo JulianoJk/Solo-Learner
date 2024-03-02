@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { List, Title } from '@mantine/core';
 import TextWithSelection from './TextWithSelection.component';
-import { selectionQuestions } from '../constants';
 
-const SelectionContent: React.FC = () => {
+const SelectionContent: React.FC<{ selectionQuestions: any[] }> = ({
+  selectionQuestions,
+}) => {
   // State to hold selected options for each question
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: string;
