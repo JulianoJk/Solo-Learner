@@ -13,31 +13,48 @@ interface Item {
 }
 
 interface Question {
-  id: string; // Add an id property
+  id: string;
   items: string[];
   text: string;
   correctAnswers: string[];
+  questionOrder: number;
 }
 
 interface DragNDropProps {
-  question: Question;
+  questions: Question[];
+  currentPage: number;
 }
 
-const DragNDrop: React.FC<DragNDropProps> = ({ question }) => {
+const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
+  // Find the current question based on its order
+  const currentQuestion = useMemo(() => {
+    return questions.find((question) => question.questionOrder === currentPage);
+  }, [currentPage, questions]);
+
+  // If current question is not found or is undefined, handle it appropriately
+  if (!currentQuestion) {
+    return <div>No question found for the current page.</div>;
+  }
+
   const [availableItems, setAvailableItems] = useState<Item[]>([]);
   const [placedItems, setPlacedItems] = useState<(Item | null)[]>([]);
 
   useMemo(() => {
     setAvailableItems(
-      question.items.map((content, index) => ({
+      currentQuestion.items.map((content, index) => ({
         id: `item-${index}`,
         content,
       })),
     );
-    setPlacedItems(Array(question.text.split('___').length - 1).fill(null));
-  }, [question]);
+    setPlacedItems(
+      Array(currentQuestion.text.split('___').length - 1).fill(null),
+    );
+  }, [currentQuestion]);
 
-  const sentenceParts = useMemo(() => question.text.split('___'), [question]);
+  const sentenceParts = useMemo(
+    () => currentQuestion.text.split('___'),
+    [currentQuestion],
+  );
 
   const onDragEnd = (result: DropResult) => {
     if (!result.destination) return;
@@ -101,7 +118,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ question }) => {
   };
 
   const handleSubmit = () => {
-    const correctAnswers = question.correctAnswers;
+    const correctAnswers = currentQuestion.correctAnswers;
     const placedContent = placedItems.map((item) => (item ? item.content : ''));
     const isCorrect =
       JSON.stringify(correctAnswers) === JSON.stringify(placedContent);

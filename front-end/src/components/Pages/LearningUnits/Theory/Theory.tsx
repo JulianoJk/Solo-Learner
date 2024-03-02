@@ -26,28 +26,47 @@ const Theory = () => {
     return groupedQuestions;
   };
 
+  // Get grouped questions
+  const groupedQuestions = groupQuestionsByOrder(selectionQuestions);
+
+  // Ensure currentPage is within valid range
+  const maxPage = Object.keys(groupedQuestions).length;
+  if (currentPage < 1 || currentPage > maxPage) {
+    return <div>Invalid page number.</div>;
+  }
+
   // Function to render content based on the current page
   const renderContent = () => {
-    const groupedQuestions = groupQuestionsByOrder(selectionQuestions);
+    const orderedQuestions = Object.values(groupedQuestions).flat();
+    const currentQuestion = orderedQuestions.find(
+      (question) => question.questionOrder === currentPage,
+    );
 
-    switch (currentPage) {
-      case 1:
+    if (!currentQuestion) {
+      // Handle the case where the current question is not found
+      return null;
+    }
+
+    const { type } = currentQuestion;
+
+    switch (type) {
+      case 'selection':
         return (
           <SelectionContent
             selectionQuestions={groupedQuestions[currentPage] || []}
           />
         );
-      default:
+      case 'dragNdrop':
         // Pass the current question to the DragNDrop component
         return (
           <DragNDrop
-            question={
-              groupedQuestions[currentPage]
-                ? groupedQuestions[currentPage][0]
-                : null
-            }
+            questions={groupedQuestions[currentPage]}
+            currentPage={currentPage}
           />
         );
+      default:
+        // Handle unknown question types
+        return null;
     }
   };
 
@@ -59,7 +78,7 @@ const Theory = () => {
       </div>
 
       <CustomPagination
-        total={Object.keys(groupQuestionsByOrder(selectionQuestions)).length}
+        total={maxPage}
         currentPage={currentPage}
         onPageChange={handlePageChange}
       />
