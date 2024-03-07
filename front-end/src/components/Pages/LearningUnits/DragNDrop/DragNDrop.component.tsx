@@ -117,9 +117,73 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
     }
   };
 
+  const handleClickOnMobile = (index: number) => {
+    if (window.innerWidth <= 600) {
+      const clickedItem = availableItems[index];
+      const updatedAvailableItems = [...availableItems];
+      const updatedPlacedItems = [...placedItems];
+
+      // If the clicked item is from the original list
+      if (clickedItem !== null) {
+        const placeholderIndex = updatedPlacedItems.indexOf(null);
+
+        // If there's an item in the placeholder, replace it with the clicked item
+        if (placeholderIndex !== -1) {
+          updatedPlacedItems[placeholderIndex] = clickedItem;
+        } else {
+          // If no placeholder available, find the first non-placeholder item and replace it
+          const firstNonPlaceholderIndex = updatedPlacedItems.findIndex(
+            (item) => item !== null,
+          );
+          updatedAvailableItems.push(
+            updatedPlacedItems[firstNonPlaceholderIndex] as Item,
+          ); // Cast to Item
+          updatedPlacedItems[firstNonPlaceholderIndex] = clickedItem;
+        }
+
+        // Remove the clicked item from the available items list
+        updatedAvailableItems.splice(index, 1);
+      } else {
+        // If the clicked item is from the placeholder, return it to the available items list
+        const clickedItem = placedItems[index];
+
+        if (clickedItem !== null) {
+          // Move the clicked item back to the availableItems list
+          setAvailableItems((prevAvailableItems) => [
+            ...prevAvailableItems,
+            clickedItem,
+          ]);
+          // Remove the clicked item from placedItems list
+          setPlacedItems((prevPlacedItems) =>
+            prevPlacedItems.map((item, i) => (i === index ? null : item)),
+          );
+        }
+      }
+
+      setAvailableItems(updatedAvailableItems);
+      setPlacedItems(updatedPlacedItems);
+    }
+  };
+  const moveItemToAvailable = (index: number) => {
+    const clickedItem = placedItems[index];
+
+    if (clickedItem !== null) {
+      // Move the clicked item back to the availableItems list
+      setAvailableItems((prevAvailableItems) => [
+        ...prevAvailableItems,
+        clickedItem,
+      ]);
+      // Remove the clicked item from placedItems list
+      setPlacedItems((prevPlacedItems) =>
+        prevPlacedItems.map((item, i) => (i === index ? null : item)),
+      );
+    }
+  };
+
   const handleSubmit = () => {
     const correctAnswers = currentQuestion.correctAnswers;
     const placedContent = placedItems.map((item) => (item ? item.content : ''));
+
     const isCorrect =
       JSON.stringify(correctAnswers) === JSON.stringify(placedContent);
     if (isCorrect) {
@@ -147,30 +211,32 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
                 }}
               >
                 {availableItems.map((item, index) => (
-                  <Draggable key={item.id} draggableId={item.id} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={{
-                          userSelect: 'none',
-                          padding: '6px 12px',
-                          margin: '0',
-                          background: snapshot.isDragging
-                            ? '#4CAF50'
-                            : '#2196F3',
-                          color: 'white',
-                          borderRadius: '20px',
-                          boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
-                          fontSize: '14px',
-                          ...provided.draggableProps.style,
-                        }}
-                      >
-                        {item.content}
-                      </div>
-                    )}
-                  </Draggable>
+                  <div key={item.id} onClick={() => handleClickOnMobile(index)}>
+                    <Draggable draggableId={item.id} index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={{
+                            userSelect: 'none',
+                            padding: '6px 12px',
+                            margin: '0',
+                            background: snapshot.isDragging
+                              ? '#4CAF50'
+                              : '#2196F3',
+                            color: 'white',
+                            borderRadius: '20px',
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                            fontSize: '14px',
+                            ...provided.draggableProps.style,
+                          }}
+                        >
+                          {item.content}
+                        </div>
+                      )}
+                    </Draggable>
+                  </div>
                 ))}
                 {provided.placeholder}
               </div>
@@ -227,6 +293,7 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
                                   fontSize: '14px',
                                   ...provided.draggableProps.style,
                                 }}
+                                onClick={() => moveItemToAvailable(index)}
                               >
                                 {placedItems[index]?.content}
                               </div>
