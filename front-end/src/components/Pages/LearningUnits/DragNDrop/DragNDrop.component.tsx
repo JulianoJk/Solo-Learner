@@ -26,12 +26,11 @@ interface DragNDropProps {
 }
 
 const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
-  // Find the current question based on its order
-  const currentQuestion = useMemo(() => {
-    return questions.find((question) => question.questionOrder === currentPage);
-  }, [currentPage, questions]);
+  const currentQuestion = useMemo(
+    () => questions.find((question) => question.questionOrder === currentPage),
+    [currentPage, questions],
+  );
 
-  // If current question is not found or is undefined, handle it appropriately
   if (!currentQuestion) {
     return <div>No question found for the current page.</div>;
   }
@@ -65,7 +64,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
       destination.droppableId.split('-')[1],
       10,
     );
-
     const itemBeingDragged =
       source.droppableId === 'optionsList'
         ? availableItems[sourceIndex]
@@ -81,7 +79,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
         (item) => item.id !== itemBeingDragged.id,
       );
       setAvailableItems(newAvailableItems);
-
       setPlacedItems((prev) => {
         const newPlacedItems = [...prev];
         const replacedItem = newPlacedItems[destinationIndex];
@@ -109,10 +106,8 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
       const newPlacedItems = [...placedItems];
       const sourceItem = placedItems[sourceIndex];
       const destinationItem = placedItems[destinationIndex];
-
       newPlacedItems[sourceIndex] = destinationItem;
       newPlacedItems[destinationIndex] = sourceItem;
-
       setPlacedItems(newPlacedItems);
     }
   };
@@ -122,58 +117,46 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
       const clickedItem = availableItems[index];
       const updatedAvailableItems = [...availableItems];
       const updatedPlacedItems = [...placedItems];
-
-      // If the clicked item is from the original list
       if (clickedItem !== null) {
         const placeholderIndex = updatedPlacedItems.indexOf(null);
-
-        // If there's an item in the placeholder, replace it with the clicked item
         if (placeholderIndex !== -1) {
           updatedPlacedItems[placeholderIndex] = clickedItem;
         } else {
-          // If no placeholder available, find the first non-placeholder item and replace it
           const firstNonPlaceholderIndex = updatedPlacedItems.findIndex(
             (item) => item !== null,
           );
-          updatedAvailableItems.push(
-            updatedPlacedItems[firstNonPlaceholderIndex] as Item,
-          ); // Cast to Item
-          updatedPlacedItems[firstNonPlaceholderIndex] = clickedItem;
+          if (firstNonPlaceholderIndex !== -1) {
+            updatedAvailableItems.push(
+              updatedPlacedItems[firstNonPlaceholderIndex] as Item,
+            );
+            updatedPlacedItems[firstNonPlaceholderIndex] = clickedItem;
+          }
         }
-
-        // Remove the clicked item from the available items list
         updatedAvailableItems.splice(index, 1);
       } else {
-        // If the clicked item is from the placeholder, return it to the available items list
         const clickedItem = placedItems[index];
-
         if (clickedItem !== null) {
-          // Move the clicked item back to the availableItems list
           setAvailableItems((prevAvailableItems) => [
             ...prevAvailableItems,
             clickedItem,
           ]);
-          // Remove the clicked item from placedItems list
           setPlacedItems((prevPlacedItems) =>
             prevPlacedItems.map((item, i) => (i === index ? null : item)),
           );
         }
       }
-
       setAvailableItems(updatedAvailableItems);
       setPlacedItems(updatedPlacedItems);
     }
   };
+
   const moveItemToAvailable = (index: number) => {
     const clickedItem = placedItems[index];
-
     if (clickedItem !== null) {
-      // Move the clicked item back to the availableItems list
       setAvailableItems((prevAvailableItems) => [
         ...prevAvailableItems,
         clickedItem,
       ]);
-      // Remove the clicked item from placedItems list
       setPlacedItems((prevPlacedItems) =>
         prevPlacedItems.map((item, i) => (i === index ? null : item)),
       );
@@ -183,7 +166,6 @@ const DragNDrop: React.FC<DragNDropProps> = ({ questions, currentPage }) => {
   const handleSubmit = () => {
     const correctAnswers = currentQuestion.correctAnswers;
     const placedContent = placedItems.map((item) => (item ? item.content : ''));
-
     const isCorrect =
       JSON.stringify(correctAnswers) === JSON.stringify(placedContent);
     if (isCorrect) {
