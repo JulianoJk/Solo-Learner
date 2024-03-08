@@ -236,11 +236,15 @@ app.MapPost("/signin-google", async (HttpContext context) =>
         // Get the value of the 'code' parameter from the form-data
         var code = context.Request.Form["code"];
 
-        // Process the code and perform Google sign-in logic here
+        // Authenticate the Google user
+        var authService = new GoogleAuthService();
+        var responseDict = await authService.AuthenticateGoogleUser(code);
 
-        // Return a success response
+        // Handle the authentication response as needed
+        // For example, check if the user is registered and return appropriate data
+
         context.Response.StatusCode = StatusCodes.Status200OK;
-        await context.Response.WriteAsJsonAsync(new { message = "Google sign-in successful", code });
+        await context.Response.WriteAsJsonAsync(responseDict);
     }
     catch (Exception ex)
     {
@@ -249,6 +253,7 @@ app.MapPost("/signin-google", async (HttpContext context) =>
         await context.Response.WriteAsJsonAsync(new { error = ex.Message });
     }
 });
+
 
 // app.MapGet(
 //     "/users/profile",

@@ -103,4 +103,27 @@ public class GoogleAuthService
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
     }
+
+    public async Task<Dictionary<string, string>> AuthenticateGoogleUser(string code)
+    {
+        var googleClientId = GoogleClientIdEnv.Value;
+        var googleClientSecret = GoogleClientSecretEnv.Value;
+
+        var client = new HttpClient();
+        var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token");
+        request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["code"] = code,
+            ["client_id"] = googleClientId,
+            ["client_secret"] = googleClientSecret,
+            ["redirect_uri"] = "postmessage",
+            ["grant_type"] = "authorization_code"
+        });
+
+        var response = await client.SendAsync(request);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+        return responseDict;
+    }
 }
