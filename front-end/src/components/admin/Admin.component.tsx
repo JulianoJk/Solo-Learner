@@ -12,9 +12,10 @@ import {
   LastActiveFormat,
   formatLastActive,
 } from '../../utils/formattedLastActive';
-import UsersTable from './userManagment/AdminDashboard/UserTable.component';
+// import UsersTable from './userManagment/AdminDashboard/UserTable.component';
 import AdminDrawer from '../navBar/AdminTabs.component';
 import Demo from '../Demo';
+import StudentmanagmenTable from './userManagment/AdminDashboard/StudentManagmentTable.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -77,7 +78,7 @@ const Admin = () => {
   const renderComponentToDisplay = () => {
     switch (selectedAdminNavbar) {
       case 'userManagment':
-        return <UsersTable />;
+        return <StudentmanagmenTable />;
       case 'billing':
         return <StudentmanagmentTable />;
       case 'register_new_user':
