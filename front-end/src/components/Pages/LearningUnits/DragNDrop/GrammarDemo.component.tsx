@@ -3,7 +3,7 @@ import { Text } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import classes from './GrammarExercise.module.css';
-
+import React from 'react';
 const data = [
   { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
   { position: 7, mass: 14.007, symbol: 'N', name: 'Nitrogen' },

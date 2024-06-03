@@ -5,6 +5,7 @@ import { IconBellCog, IconUserCog } from '@tabler/icons-react';
 
 import { useMediaQuery } from '@mantine/hooks';
 import { useAppDispatch } from '../../../context/AppContext';
+import React from 'react';
 // import { useStyles } from './Settings.styles';
 
 const data = [

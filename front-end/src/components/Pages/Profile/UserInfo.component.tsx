@@ -1,6 +1,7 @@
 import { Avatar, Text, Group } from '@mantine/core';
 import { IconCalendarHeart } from '@tabler/icons-react';
 import classes from './Profile.module.css';
+import React from 'react';
 interface UserInfoIconsProps {
   picture: string;
   userName: string;

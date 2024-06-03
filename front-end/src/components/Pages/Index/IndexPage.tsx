@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { indexPage } from '../../api/api';
 import classes from './IndexPage.module.css';
 import { useMediaQuery } from '@mantine/hooks';
+import React from 'react';
 const IndexPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);

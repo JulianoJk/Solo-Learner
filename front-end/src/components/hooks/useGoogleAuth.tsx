@@ -7,6 +7,7 @@ import { isUndefinedOrNullString } from '../../utils/utils';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { postGoogleLogin } from '../api/api';
+import React from 'react';
 
 export function useGoogleAuth() {
   const navigate = useNavigate();

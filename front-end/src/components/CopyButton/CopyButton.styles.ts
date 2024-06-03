@@ -1,6 +1,6 @@
 import { createStyles } from '@mantine/emotion';
 
-const useStyles = createStyles((theme, _, u) => ({
+const useStyles = createStyles(() => ({
   wrapper: {
     opacity: 0,
     transition: 'opacity 0.2s ease-in-out',

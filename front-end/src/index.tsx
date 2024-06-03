@@ -18,6 +18,7 @@ import '@mantine/core/styles/ModalBase.css';
 import '@mantine/core/styles/Input.css';
 import '@mantine/core/styles/Flex.css';
 import '@mantine/core/styles.css';
+import React from 'react';
 
 const container = document.getElementById('root');
 const root = createRoot(container!); // Add the non-null assertion operator (!) to the container variable

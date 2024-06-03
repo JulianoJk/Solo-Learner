@@ -59,8 +59,9 @@ import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 import { logoutUser } from '../Auth/LogoutUtils';
-// import classes from './HeaderMenu.modules.css';
+
 import cx from 'clsx';
+import React from 'react';
 import { useStyles } from './HeaderMenu.styles';
 
 const HeaderMegaMenu = () => {

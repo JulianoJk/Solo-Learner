@@ -1,7 +1,7 @@
 import { rem } from '@mantine/core';
 import { createStyles } from '@mantine/emotion';
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme, _, u) => ({
   link: {
     display: 'flex',
     alignItems: 'center',
@@ -9,24 +9,30 @@ export const useStyles = createStyles((theme) => ({
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
     textDecoration: 'none',
-    color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+    [u.dark]: {
+      color: theme.black,
+    },
+    [u.light]: {
+      color: theme.white,
+    },
     fontWeight: 500,
     fontSize: theme.fontSizes.sm,
 
-    [theme.fn.smallerThan('sm')]: {
-      height: rem(42),
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-    },
-
-    ...theme.fn.hover({
+    // [theme.other.smallerThan('sm')]: {
+    //   height: rem(42),
+    //   display: 'flex',
+    //   alignItems: 'center',
+    //   width: '100%',
+    // },
+    '&:hover': {
       borderRadius: '0.3rem',
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[6]
-          : theme.colors.gray[5],
-    }),
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[6],
+      },
+      [u.light]: {
+        backgroundColor: theme.colors.gray[5],
+      },
+    },
   },
 
   subLink: {
@@ -34,65 +40,83 @@ export const useStyles = createStyles((theme) => ({
     padding: `${theme.spacing.xs} ${theme.spacing.md}`,
     borderRadius: theme.radius.md,
 
-    ...theme.fn.hover({
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[7]
-          : theme.colors.gray[0],
-    }),
+    '&:hover': {
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[7],
+      },
+      [u.light]: {
+        backgroundColor: theme.colors.gray[0],
+      },
+    },
 
-    '&:active': theme.activeStyles,
+    '&:active': theme.other.active,
   },
 
   dropdownFooter: {
-    backgroundColor:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[7]
-        : theme.colors.gray[0],
+    [u.dark]: {
+      backgroundColor: theme.colors.dark[7],
+      borderTop: `${rem(1)} solid ${theme.colors.dark[5]}`,
+    },
+    [u.light]: {
+      backgroundColor: theme.colors.gray[0],
+      borderTop: `${rem(1)} solid ${theme.colors.gray[1]}`,
+    },
     margin: `calc(${theme.spacing.md} * -1)`,
     marginTop: theme.spacing.sm,
     padding: `${theme.spacing.md} calc(${theme.spacing.md} * 2)`,
     paddingBottom: theme.spacing.xl,
-    borderTop: `${rem(1)} solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[1]
-    }`,
   },
 
   hiddenMobile: {
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none',
-    },
+    // [theme.other.smallerThan('sm')]: {
+    //   display: 'none',
+    // },
   },
   headerRoot: {
-    backgroundImage:
-      theme.colorScheme === 'light'
-        ? theme.fn.linearGradient(1, '#8CB6EA')
-        : theme.fn.linearGradient(300, '#161b22', '#21262d'),
+    [u.dark]: {
+      //   backgroundImage: theme.other.linearGradient(300, '#161b22', '#21262d'),
+      backgroundImage: 'linear-gradient(300deg, #161b22, #21262d)',
 
-    borderBottom:
-      theme.colorScheme === 'light'
-        ? `2px solid #7FAAE0`
-        : `1px solid ${theme.colors.dark[5]}`,
-    marginBottom: 20,
+      // borderBottom: `1px solid ${theme.colors.dark[5]}`,
+    },
+    [u.light]: {
+      //   backgroundImage: theme.other.linearGradient(1, '#8CB6EA'),
+      // borderBottom: '2px solid #7FAAE0',
+    },
+
+    // marginBottom: 20,
   },
   user: {
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+    [u.dark]: {
+      color: theme.colors.dark[0],
+    },
+    [u.light]: {
+      color: theme.black,
+    },
     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
     borderRadius: theme.radius.sm,
     transition: 'background-color 100ms ease',
 
     '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
+      [u.dark]: {
+        backgroundColor: theme.colors.dark[8],
+      },
+      [u.light]: {
+        backgroundColor: theme.white,
+      },
     },
   },
   userActive: {
-    backgroundColor: theme.colorScheme === 'dark' ? '#8CB6EA' : '#7FAAE0',
-  },
-  hiddenDesktop: {
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+    [u.dark]: {
+      backgroundColor: '#8CB6EA',
+    },
+    [u.light]: {
+      backgroundColor: '#7FAAE0',
     },
   },
+  hiddenDesktop: {
+    // [theme.other.largerThan('sm')]: {
+    //   display: 'none',
+    // },
+  },
 }));
-export {};

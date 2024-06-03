@@ -2,7 +2,7 @@ import { ActionIcon, useMantineColorScheme } from '@mantine/core';
 import { IconSun, IconMoon } from '@tabler/icons-react';
 import cx from 'clsx';
 import classes from './ModeThemeButtonSmall.module.css';
-
+import React from 'react';
 function ModeThemeButtonSmall() {
   const { colorScheme, setColorScheme } = useMantineColorScheme();
 
