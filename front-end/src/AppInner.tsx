@@ -18,8 +18,7 @@ import Admin from './components/admin/Admin.component';
 import { getGoogleClientIdAPI } from './components/api/api';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
-import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
-import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
+
 import IndexPage from './components/Pages/Index/IndexPage';
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
@@ -37,6 +36,8 @@ import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
+import AuthenticationForm from './components/Auth/Login/AuthenticationLogin.component';
+import AuthenticationRegister from './components/Auth/Register/AuthenticationRegister.component';
 // import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
 
 const AppInner = () => {
@@ -73,11 +74,7 @@ const AppInner = () => {
         isGoogleClientIdLoading ? (
           <Preloader />
         ) : (
-          <AuthenticationLoginForm
-            hasBorder
-            switchToRegister
-            showNotification
-          />
+          <AuthenticationForm hasBorder switchToRegister showNotification />
         )
       }
     />,
@@ -85,7 +82,7 @@ const AppInner = () => {
       key="/register"
       path="/register"
       element={
-        <AuthenticationRegisterForm
+        <AuthenticationRegister
           displaySocialButtons
           hasBorder
           switchToLogin
