@@ -14,8 +14,6 @@ public class GoogleAuthService
     {
         UserRepository userRepository = new UserRepository();
         string code = null;
-        var googleClientId = GoogleClientIdEnv.Value;
-        var googleClientSecret = GoogleClientSecretEnv.Value;
 
         if (context.Request.HasFormContentType)
         {
@@ -34,31 +32,9 @@ public class GoogleAuthService
 
         try
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(
-                HttpMethod.Post,
-                "https://oauth2.googleapis.com/token"
-            );
-            request.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    ["code"] = code,
-                    ["client_id"] = googleClientId,
-                    ["client_secret"] = googleClientSecret,
-                    ["redirect_uri"] = "postmessage",
-                    ["grant_type"] = "authorization_code"
-                }
-            );
+            var responseDict = await AuthenticateGoogleUser(code);
 
-            var response = await client.SendAsync(request);
-            var responseContent = await response.Content.ReadAsStringAsync();
-            var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
-                Dictionary<string, string>
-            >(responseContent);
-            var userJwt = responseDict["id_token"];
-            var jwtData = JwtUtils.ExtractJwtData(userJwt);
-
-            if (jwtData.TryGetValue("email", out string userEmail))
+            if (responseDict.TryGetValue("email", out string userEmail))
             {
                 string isUserRegistered = _authenticator.GetUserEmailFromGoogleId(userEmail);
                 if (isUserRegistered != null)
@@ -84,8 +60,8 @@ public class GoogleAuthService
                     // Pass the 'picture' from jwtData to HandleRegistrationRequest
                     await registerGoogleUser.HandleRegistrationRequest(
                         context,
-                        jwtData,
-                        jwtData["picture"]
+                        responseDict, // Pass the responseDict directly
+                        responseDict["picture"]
                     );
                 }
             }
@@ -110,19 +86,26 @@ public class GoogleAuthService
         var googleClientSecret = GoogleClientSecretEnv.Value;
 
         var client = new HttpClient();
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://oauth2.googleapis.com/token");
-        request.Content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["code"] = code,
-            ["client_id"] = googleClientId,
-            ["client_secret"] = googleClientSecret,
-            ["redirect_uri"] = "postmessage",
-            ["grant_type"] = "authorization_code"
-        });
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            "https://oauth2.googleapis.com/token"
+        );
+        request.Content = new FormUrlEncodedContent(
+            new Dictionary<string, string>
+            {
+                ["code"] = code,
+                ["client_id"] = googleClientId,
+                ["client_secret"] = googleClientSecret,
+                ["redirect_uri"] = "postmessage",
+                ["grant_type"] = "authorization_code"
+            }
+        );
 
         var response = await client.SendAsync(request);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+        var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
+            Dictionary<string, string>
+        >(responseContent);
 
         return responseDict;
     }
