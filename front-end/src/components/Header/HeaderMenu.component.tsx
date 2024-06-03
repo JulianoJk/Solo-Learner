@@ -59,11 +59,12 @@ import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
 import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 import { logoutUser } from '../Auth/LogoutUtils';
-import classes from './HeaderMenu.modules.css';
+// import classes from './HeaderMenu.modules.css';
 import cx from 'clsx';
+import { useStyles } from './HeaderMenu.styles';
 
 const HeaderMegaMenu = () => {
-  // const { classes, cx, theme } = useStyles();
+  const { classes } = useStyles();
   const userDispatch = useUserDispatch();
   const appDisp = useAppDispatch();
   const { pathname } = useLocation();
