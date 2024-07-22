@@ -1,126 +1,145 @@
-// import { createStyles, getStylesRef, rem } from '@mantine/core';
-// import { LIGHT_MENT } from '../../../Theme/Styles';
-// export const useStyles = createStyles((theme) => ({
-//   formContainer: {
-//     borderWidth: '2px !important',
-//     borderRadius: 5,
-//     boxShadow: 'none',
-//     padding: 10,
-//     width: '100%',
-//     backgroundColor: theme.colorScheme === 'light' ? '#95c9f457' : '#343541',
-//     border:
-//       theme.colorScheme === 'light' ? `11px solid indigo` : `1px solid #343541`,
-//   },
-//   form: {
-//     padding: 10,
-//   },
-//   formInput: {
-//     width: 300,
-//   },
-//   title: {
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
+import { rem } from '@mantine/core';
+import { createStyles, getStylesRef } from '@mantine/emotion';
 
-//   submitButton: {
-//     display: 'inline-block',
-//     width: '100%',
-//     marginTop: 10,
-//     '&:hover': {
-//       backgroundColor: LIGHT_MENT,
-//     },
-//   },
-//   inputLabels: {
-//     fontWeight: 700,
-//   },
-//   switchAuthLinks: {
-//     alignItems: 'center',
-//     padding: 10,
-//   },
-//   switchAuthLinkAnchor: {
-//     marginLeft: 8,
-//     textDecoration: 'underline',
-//   },
-//   imageContainer: {
-//     borderRadius: '50%',
-//   },
-//   changePasswordButton: {
-//     float: 'right',
-//     margin: 10,
-//   },
-//   changePasswordLabel: {
-//     float: 'left',
-//     margin: 10,
-//   },
-//   header: {
-//     paddingBottom: theme.spacing.md,
-//     marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-//     borderBottom: `${rem(1)} solid ${
-//       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-//     }`,
-//   },
-//   body: {
-//     background: 'red',
-//   },
+import { LIGHT_MENT } from '../../../Theme/Styles';
+export const useStyles = createStyles((theme, _, u) => ({
+  formContainer: {
+    borderWidth: '2px !important',
+    borderRadius: 5,
+    boxShadow: 'none',
+    padding: 10,
+    width: '100%',
+    [u.light]: {
+      backgroundColor: '#95c9f457',
+      border: '11px solid indigo',
+    },
+    [u.dark]: {
+      backgroundColor: '#343541',
+      border: '1px solid #343541',
+    },
+  },
+  form: {
+    padding: 10,
+  },
+  formInput: {
+    width: 300,
+  },
+  title: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-//   footer: {
-//     paddingTop: theme.spacing.md,
-//     marginTop: theme.spacing.md,
-//     borderTop: `${rem(1)} solid ${
-//       theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-//     }`,
-//   },
+  submitButton: {
+    display: 'inline-block',
+    width: '100%',
+    marginTop: 10,
+    '&:hover': {
+      backgroundColor: LIGHT_MENT,
+    },
+  },
+  inputLabels: {
+    fontWeight: 700,
+  },
+  switchAuthLinks: {
+    alignItems: 'center',
+    padding: 10,
+  },
+  switchAuthLinkAnchor: {
+    marginLeft: 8,
+    textDecoration: 'underline',
+  },
+  imageContainer: {
+    borderRadius: '50%',
+  },
+  changePasswordButton: {
+    float: 'right',
+    margin: 10,
+  },
+  changePasswordLabel: {
+    float: 'left',
+    margin: 10,
+  },
+  header: {
+    paddingBottom: theme.spacing.md,
+    marginBottom: `calc(${theme.spacing.md} * 1.5)`,
 
-//   link: {
-//     ...theme.fn.focusStyles(),
-//     display: 'flex',
-//     alignItems: 'center',
-//     textDecoration: 'none',
-//     fontSize: theme.fontSizes.sm,
-//     color:
-//       theme.colorScheme === 'dark'
-//         ? theme.colors.dark[1]
-//         : theme.colors.gray[7],
-//     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
-//     borderRadius: theme.radius.sm,
-//     fontWeight: 500,
+    [u.light]: {
+      borderBottom: `${rem(1)} solid ${theme.colors.gray[2]}`,
+    },
+    [u.dark]: {
+      borderBottom: `${rem(1)} solid ${theme.colors.dark[4]}`,
+    },
+  },
+  body: {
+    background: 'red',
+  },
 
-//     '&:hover': {
-//       backgroundColor:
-//         theme.colorScheme === 'dark'
-//           ? theme.colors.dark[6]
-//           : theme.colors.gray[0],
-//       color: theme.colorScheme === 'dark' ? theme.white : theme.black,
+  footer: {
+    paddingTop: theme.spacing.md,
+    marginTop: theme.spacing.md,
+    [u.light]: {
+      borderTop: `${rem(1)} solid ${theme.colors.gray[2]}`,
+    },
+    [u.dark]: {
+      borderTop: `${rem(1)} solid ${theme.colors.dark[4]}`,
+    },
+  },
 
-//       [`& .${getStylesRef('icon')}`]: {
-//         color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-//       },
-//     },
-//   },
+  link: {
+    // ...theme.fn.focusStyles(),
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    fontSize: theme.fontSizes.sm,
+    [u.light]: {
+      color: theme.colors.gray[7],
+      '&:hover': {
+        backgroundColor: theme.colors.gray[0],
+        color: theme.black,
+        [`& .${getStylesRef('icon')}`]: {
+          color: theme.black,
+        },
+      },
+    },
+    [u.dark]: {
+      color: theme.colors.dark[1],
+      '&:hover': {
+        backgroundColor: theme.colors.dark[6],
+        color: theme.white,
+        [`& .${getStylesRef('icon')}`]: {
+          color: theme.white,
+        },
+      },
+    },
+    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+    borderRadius: theme.radius.sm,
+    fontWeight: 500,
+  },
 
-//   linkIcon: {
-//     ref: getStylesRef('icon'),
-//     color:
-//       theme.colorScheme === 'dark'
-//         ? theme.colors.dark[2]
-//         : theme.colors.gray[6],
-//     marginRight: theme.spacing.sm,
-//   },
+  linkIcon: {
+    ref: getStylesRef('icon'),
+    [u.light]: {
+      color: theme.colors.gray[6],
+    },
+    [u.dark]: {
+      color: theme.colors.dark[2],
+    },
+    marginRight: theme.spacing.sm,
+  },
 
-//   linkActive: {
-//     '&, &:hover': {
-//       backgroundColor: theme.fn.variant({
-//         variant: 'light',
-//         color: theme.primaryColor,
-//       }).background,
-//       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-//         .color,
-//       [`& .${getStylesRef('icon')}`]: {
-//         color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-//           .color,
-//       },
-//     },
-//   },
-// }));
-export {};
+  //   linkActive: {
+  //     '&, &:hover': {
+  //       backgroundColor: theme.fn.variant({
+  //         variant: 'light',
+  //         color: theme.primaryColor,
+  //       }).background,
+  //       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+  //         .color,
+  //       [`& .${getStylesRef('icon')}`]: {
+  //         color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+  //           .color,
+  //       },
+  //     },
+  //   },
+}));

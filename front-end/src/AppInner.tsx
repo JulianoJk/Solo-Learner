@@ -31,7 +31,7 @@ import { AccountSettingsContextProvider } from './context/AccountSettingsContext
 import { AppContextProvider } from './context/AppContext';
 import { UserContextProvider } from './context/UserContext';
 
-import './GlobalStyles.modules.css';
+// import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';

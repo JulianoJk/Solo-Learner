@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 
 import App from './App';
-import './GlobalStyles.modules.css'; // Import the global stylesheet
+// import './GlobalStyles.modules.css'; // Import the global stylesheet
 import '@mantine/notifications/styles.css';
 import '@mantine/nprogress/styles.css';
 import '@mantine/tiptap/styles.css';

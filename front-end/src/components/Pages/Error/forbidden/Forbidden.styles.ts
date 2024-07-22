@@ -1,6 +1,6 @@
 // import { createStyles, rem } from '@mantine/core';
 
-// export const useStyles = createStyles((theme) => ({
+// export const useStyles = createStyles((theme, _, u) => ({
 //   root: {
 //     paddingTop: rem(80),
 //     paddingBottom: rem(80),
@@ -12,25 +12,25 @@
 //     marginBottom: theme.spacing.md,
 //     fontFamily: `Greycliff CF, ${theme.fontFamily}`,
 
-//     [theme.fn.smallerThan('sm')]: {
+//     [u.smallerThan('sm')]: {
 //       fontSize: rem(32),
 //     },
 //   },
 
 //   control: {
-//     [theme.fn.smallerThan('sm')]: {
+//     [u.smallerThan('sm')]: {
 //       width: '100%',
 //     },
 //   },
 
 //   mobileImage: {
-//     [theme.fn.largerThan('sm')]: {
+//     [u.largerThan('sm')]: {
 //       display: 'none',
 //     },
 //   },
 
 //   desktopImage: {
-//     [theme.fn.smallerThan('sm')]: {
+//     [u.smallerThan('sm')]: {
 //       display: 'none',
 //     },
 //   },
