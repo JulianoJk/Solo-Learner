@@ -12,8 +12,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      TZ: "Europe/Athens" # Timezone for the db
-
+      TZ: "Europe/Athens"
     volumes:
       - ./back-end/database/data:/var/lib/mysql
       - ./back-end/database:/docker-entrypoint-initdb.d
@@ -38,7 +37,7 @@ services:
       TEACHER_EMAIL: ${TEACHER_EMAIL}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-      TZ: "Europe/Athens" # Set the timezone for the backend service
+      TZ: "Europe/Athens"
     depends_on:
       - db
     networks:
@@ -56,6 +55,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     networks:
       - my-network
+
   front-end:
     build: ./front-end
     container_name: front_end_c
@@ -65,5 +65,6 @@ services:
     tty: true
     volumes:
       - ./front-end:/usr/src/app/front_end
-      - /usr/src/app/front-end/node_modules
-# delDocker docker-compose down && docker rmi solo-learner-backend && docker-compose up -d
+      - /usr/src/app/front_end/node_modules
+    networks:
+      - my-network

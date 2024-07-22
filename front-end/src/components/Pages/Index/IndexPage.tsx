@@ -12,10 +12,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
 import { indexPage } from '../../api/api';
-import classes from './IndexPage.module.css';
+
 import { useMediaQuery } from '@mantine/hooks';
+import React from 'react';
+import { useStyles } from './Index.styles';
 const IndexPage = () => {
   const navigate = useNavigate();
+  const { classes } = useStyles();
   const [loading, setLoading] = useState(true);
   const matches = useMediaQuery('(min-width: 56.25em)');
 

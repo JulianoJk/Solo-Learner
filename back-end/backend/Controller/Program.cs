@@ -221,12 +221,30 @@ app.MapGet(
     }
 );
 
+// app.MapPost(
+//     "/signin-google",
+//     async (HttpContext context) =>
+//     {
+//         GoogleAuthService googleAuthService = new GoogleAuthService();
+//         await googleAuthService.HandleGoogleAuthRequest(context);
+//     }
+// );
 app.MapPost(
     "/signin-google",
     async (HttpContext context) =>
     {
-        GoogleAuthService googleAuthService = new GoogleAuthService();
-        await googleAuthService.HandleGoogleAuthRequest(context);
+        try
+        {
+            // Call the HandleGoogleAuthRequest method
+            var authService = new GoogleAuthService();
+            await authService.HandleGoogleAuthRequest(context);
+        }
+        catch (Exception ex)
+        {
+            // Return an error response
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
     }
 );
 
@@ -415,6 +433,42 @@ app.MapPut(
     {
         AuthenticationManager authenticationManager = new AuthenticationManager();
         await authenticationManager.Logout(context);
+    }
+);
+app.MapPost(
+    "/upload",
+    async (HttpContext context, GoogleDriveService googleDriveService) =>
+    {
+        var file = context.Request.Form.Files.FirstOrDefault();
+
+        if (file != null && file.Length > 0)
+        {
+            // Specify the file path, name, and content type
+            var filePath = Path.GetTempFileName(); // Save the file temporarily
+            var fileName = file.FileName;
+            var contentType = file.ContentType;
+
+            // Save the uploaded file to a temporary location
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Upload the file to Google Drive
+            var fileId = await googleDriveService.UploadFileAsync(filePath, fileName, contentType);
+
+            // Return the fileId or any other response as needed
+            await context.Response.WriteAsync($"File uploaded successfully. File ID: {fileId}");
+
+            // Clean up the temporary file
+            File.Delete(filePath);
+        }
+        else
+        {
+            // No file found in the request
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsync("No file found in the request.");
+        }
     }
 );
 

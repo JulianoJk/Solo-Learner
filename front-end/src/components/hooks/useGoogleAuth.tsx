@@ -7,6 +7,7 @@ import { isUndefinedOrNullString } from '../../utils/utils';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { postGoogleLogin } from '../api/api';
+import React from 'react';
 
 export function useGoogleAuth() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export function useGoogleAuth() {
   };
 
   const handleGoogleAuthSuccess = (token: string, data: any) => {
-    window.location.reload();
+    // window.location.reload();
     appDispatch({
       type: 'SET_AUTH_IS_LOADING',
       isAuthLoading: false,

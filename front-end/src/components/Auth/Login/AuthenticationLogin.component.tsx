@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
 import { useForm } from '@mantine/form';
 import {
   TextInput,
   PasswordInput,
+  Text,
   Paper,
   Group,
   Button,
@@ -10,17 +10,16 @@ import {
   Anchor,
   Stack,
   Center,
-  Text,
 } from '@mantine/core';
+import React, { useEffect } from 'react';
+
+import Preloader from '../../Loader/Preloader.component';
+import { useAppState } from '../../../context/AppContext';
 import { useLogin } from '../../hooks/useLogin';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { AlertComponent } from '../../AlertComponent/AlertComponent';
-import { SocialButtons } from '../../SocialButtons/SocialButtons';
-import { useAppState } from '../../../context/AppContext';
 import { indexPage } from '../../api/api';
-import classes from '../Auth.module.css';
-import Preloader from '../../Loader/Preloader.component';
-
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
+import { AlertComponent } from '../../AlertComponent/AlertComponent';
 interface ILoginProps {
   children?: React.ReactNode;
   switchToRegister?: boolean;
@@ -31,7 +30,10 @@ interface ILoginProps {
   sessionExpiredAuth?: boolean;
 }
 
-const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
+const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
+  const { isAuthLoading } = useAppState();
+  const navigate: NavigateFunction = useNavigate();
+
   const {
     hasBorder,
     switchToRegister,
@@ -39,21 +41,15 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     loginTitle,
     sessionExpiredAuth,
   } = props;
-  const { isAuthLoading } = useAppState();
-
   const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
   });
-
-  const navigate: NavigateFunction = useNavigate();
-
   const form = useForm({
     initialValues: {
       email: '',
       name: '',
       password: '',
-      confirmPassword: '',
     },
 
     validate: {
@@ -65,7 +61,6 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     },
     validateInputOnChange: true,
   });
-
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
@@ -95,7 +90,13 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
       {isAuthLoading || isLoading ? (
         <Preloader></Preloader>
       ) : (
-        <Paper radius="md" p="xl" withBorder={hasBorder}>
+        <Paper
+          radius="md"
+          p="xl"
+          withBorder={hasBorder}
+          {...props}
+          sx={{ width: '60em' }}
+        >
           <Text size="lg" fw={500} ta="center">
             {loginTitle === undefined ||
             (typeof loginTitle === 'string' && loginTitle.length === 0)
@@ -112,7 +113,6 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
           />
 
           <form
-            className={classes.form}
             onSubmit={form.onSubmit((value) => {
               const { email, password } = value;
               login(email, password);
@@ -148,6 +148,7 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
                 radius="md"
               />
             </Stack>
+
             <Group justify="space-between" mt="xl">
               {switchToRegister ? (
                 <Anchor
@@ -184,4 +185,4 @@ const AuthenticationLoginForm: React.FC<ILoginProps> = (props) => {
     </Center>
   );
 };
-export default AuthenticationLoginForm;
+export default AuthenticationLogin;

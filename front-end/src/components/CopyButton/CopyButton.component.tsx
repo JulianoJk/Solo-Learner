@@ -1,7 +1,7 @@
 import React from 'react';
 import { CopyButton, ActionIcon, Tooltip, Group } from '@mantine/core';
 import { IconCopy, IconCheck } from '@tabler/icons-react';
-import classes from './CopyButton.modules.css';
+import useStyles from './CopyButton.styles';
 
 interface ICopyButtonComponentProps {
   value: string;
@@ -12,6 +12,7 @@ export const CopyButtonComponent: React.FC<ICopyButtonComponentProps> = (
   props,
 ) => {
   const { value, isHovered } = props;
+  const { classes } = useStyles();
 
   return (
     <div className={classes.wrapper} style={{ opacity: isHovered ? 1 : 0 }}>

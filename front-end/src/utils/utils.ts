@@ -2,10 +2,10 @@ import { DefaultMantineColor } from '@mantine/core';
 import { usersDispatchContext } from '../Model/UserModels';
 import jwtDecode from 'jwt-decode';
 
-export const isUndefinedOrNullString = (object: string | undefined | null) => {
-  return object === undefined || object === null || object.trim() === ''
-    ? true
-    : false;
+export const isUndefinedOrNullString = (
+  str: string | undefined | null,
+): boolean => {
+  return !str || str.trim() === '';
 };
 
 export const checkIfPageIsReload = () => {

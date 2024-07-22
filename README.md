@@ -91,7 +91,7 @@ If you find a bug or have a suggestion for a new feature, feel free to open an i
 - [Tabler Icons for React](https://tabler.io/docs/icons/react)
 
 - [react-easy-crop](https://www.npmjs.com/package/react-easy-crop?activeTab=readme)
-- [DiceBear - Random avatars](https://www.dicebear.com/styles/adventurer/)
+- [DragNDrop](https://www.npmjs.com/package/@hello-pangea/dnd)
 
 ```
 

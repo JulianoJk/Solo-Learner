@@ -7,6 +7,7 @@ import { isUndefinedOrNullString } from '../../utils/utils';
 import { IApiError, IUserInfoContext } from '../../Model/UserModels';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck } from '@tabler/icons-react';
+import React from 'react';
 
 interface RegisterApiProps {
   email: string;

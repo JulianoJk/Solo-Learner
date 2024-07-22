@@ -18,8 +18,7 @@ import Admin from './components/admin/Admin.component';
 import { getGoogleClientIdAPI } from './components/api/api';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Exercises from './components/Pages/LearningUnits/Exercises/Exercises';
-import AuthenticationLoginForm from './components/Auth/Login/AuthenticationLoginForm';
-import AuthenticationRegisterForm from './components/Auth/Login/AuthenticationRegisterForm';
+
 import IndexPage from './components/Pages/Index/IndexPage';
 import Grammar from './components/Pages/LearningUnits/Grammar/Grammar';
 import Theory from './components/Pages/LearningUnits/Theory/Theory';
@@ -32,11 +31,14 @@ import { AccountSettingsContextProvider } from './context/AccountSettingsContext
 import { AppContextProvider } from './context/AppContext';
 import { UserContextProvider } from './context/UserContext';
 
-import './GlobalStyles.modules.css';
+// import './GlobalStyles.modules.css';
 import Home from './components/Pages/Home/Home';
 
 import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
+import AuthenticationForm from './components/Auth/Login/AuthenticationLogin.component';
+import AuthenticationRegister from './components/Auth/Register/AuthenticationRegister.component';
+// import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
 
 const AppInner = () => {
   const { colorScheme } = useMantineColorScheme();
@@ -72,11 +74,7 @@ const AppInner = () => {
         isGoogleClientIdLoading ? (
           <Preloader />
         ) : (
-          <AuthenticationLoginForm
-            hasBorder
-            switchToRegister
-            showNotification
-          />
+          <AuthenticationForm hasBorder switchToRegister showNotification />
         )
       }
     />,
@@ -84,7 +82,7 @@ const AppInner = () => {
       key="/register"
       path="/register"
       element={
-        <AuthenticationRegisterForm
+        <AuthenticationRegister
           displaySocialButtons
           hasBorder
           switchToLogin
@@ -93,7 +91,11 @@ const AppInner = () => {
         />
       }
     />,
-    <Route key="/*" path="/*" element={<NotFound navigationPath={'/home'} />} />,
+    <Route
+      key="/*"
+      path="/*"
+      element={<NotFound navigationPath={'/home'} />}
+    />,
   ];
 
   const ProtectedRoutes = [
@@ -134,6 +136,11 @@ const AppInner = () => {
       path="/admin/dashboard"
       element={<Admin />}
     />,
+    // <Route
+    //   key="/user/DragNDrops"
+    //   path="/user/DragNDrops"
+    //   element={<DragNDrop />}
+    // />,
   ];
 
   return (
@@ -207,3 +214,4 @@ const AppInner = () => {
 };
 
 export default AppInner;
+// https://wordwall.net/el/resource/14833090/english/can-and-cant-for-rules-2

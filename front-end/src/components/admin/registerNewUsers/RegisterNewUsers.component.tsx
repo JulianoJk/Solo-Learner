@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, Center } from '@mantine/core';
-import AuthenticationRegisterForm from '../../Auth/Login/AuthenticationRegisterForm';
+
+import AuthenticationRegister from '../../Auth/Register/AuthenticationRegister.component';
+import useStyles from './AdminAddUser.styles';
 
 interface IRegisterNewUserProps {
   refetchUserList: () => void;
@@ -9,19 +10,17 @@ interface IRegisterNewUserProps {
 const RegisterNewUser: React.FC<IRegisterNewUserProps> = ({
   refetchUserList,
 }) => {
+  const { classes } = useStyles();
   return (
-    <Center>
-      <Card style={{ width: 1100, border: '1px solid black' }}>
-        <AuthenticationRegisterForm
-          adminRefetchUserList={refetchUserList}
-          registerTitle={'Register new users'}
-          switchToLogin={false}
-          displaySocialButtons={false}
-          showNotification={true}
-          isAdminRegister={true}
-        />
-      </Card>
-    </Center>
+    <AuthenticationRegister
+      rootClassName={classes.root}
+      adminRefetchUserList={refetchUserList}
+      registerTitle={'Register new users'}
+      switchToLogin={false}
+      displaySocialButtons={false}
+      showNotification={true}
+      isAdminRegister={true}
+    />
   );
 };
 

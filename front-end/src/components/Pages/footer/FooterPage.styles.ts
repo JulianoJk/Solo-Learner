@@ -1,6 +1,6 @@
 // import { createStyles, rem } from '@mantine/core';
 
-// export const useStyles = createStyles((theme) => ({
+// export const useStyles = createStyles((theme, _, u) => ({
 //   footer: {
 //     marginTop: rem(120),
 //     borderTop: `${rem(1)} solid ${
@@ -15,13 +15,13 @@
 //     paddingTop: theme.spacing.xl,
 //     paddingBottom: theme.spacing.xl,
 
-//     [theme.fn.smallerThan('xs')]: {
+//     [u.smallerThan('xs')]: {
 //       flexDirection: 'column',
 //     },
 //   },
 
 //   links: {
-//     [theme.fn.smallerThan('xs')]: {
+//     [u.smallerThan('xs')]: {
 //       marginTop: theme.spacing.md,
 //     },
 //   },

@@ -14,7 +14,8 @@ RUN dotnet add package Microsoft.EntityFrameworkCore --version 6.0.0
 RUN dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.0
 RUN dotnet add package Microsoft.EntityFrameworkCore.Tools --version 6.0.0
 RUN dotnet add package Microsoft.IdentityModel.Tokens
-RUN dotnet add package Google.Apis.Auth --version 1.62.1
+RUN dotnet add package Google.Apis.Auth --version 1.67.0
+RUN dotnet add package Google.Apis.Drive.v3
 # RUN dotnet add package BCrypt.Net-Next
 
 COPY . ./

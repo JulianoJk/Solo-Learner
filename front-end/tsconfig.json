@@ -1,22 +1,30 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve"
+    "jsx": "react"
     // "noUnusedLocals": true,
     // "noUnusedParameters": true
   },
-  "include": ["src"]
+  "include": [
+    "src/**/*.ts", // Include all TypeScript files in src directory
+    "src/**/*.tsx" // Include all TypeScript files with JSX in src directory
+  ],
+  "exclude": [
+    "node_modules", // Exclude all files in the node_modules directory
+    "**/*.test.ts", // Optionally exclude test files
+    "**/*.spec.ts" // Optionally exclude spec files
+  ]
 }
