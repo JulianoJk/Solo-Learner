@@ -1,0 +1,9 @@
+.containerSmall {
+  display: block;
+  align-items: initial;
+}
+
+.containerLarge {
+  display: inline-flex;
+  align-items: center;
+}

@@ -1,29 +1,49 @@
-import React from 'react'
-import {Alert, Center, Text, Title} from '@mantine/core'
-import {IconAlertCircle} from '@tabler/icons'
+import React from 'react';
+import {
+  Alert,
+  Center,
+  Text,
+  useMantineTheme,
+  useMantineColorScheme,
+} from '@mantine/core';
+import { IconAlertCircleFilled } from '@tabler/icons-react';
 
-import {useStyles} from './Alert.styles'
-import {isUndefinedOrNullString} from '../../lib/dist'
+import classes from './Alert.module.css';
+import { isUndefinedOrNullString } from '../../utils/utils';
+import { useAppState } from '../../context/AppContext';
 
-interface IProps {
-  message: string | null | undefined
-}
-export const AlertComponent: React.FC<IProps> = ({message}) => {
-  const hasError: boolean = isUndefinedOrNullString(message)
+export const AlertComponent: React.FC = () => {
+  const { errorAlertMessage } = useAppState();
+  const hasError: boolean = isUndefinedOrNullString(errorAlertMessage);
+  const theme = useMantineTheme();
+  const { colorScheme } = useMantineColorScheme();
 
-  const {classes} = useStyles()
   return (
     <Center>
       {!hasError ? (
         <>
           <Alert
-            icon={<IconAlertCircle strokeWidth={3} />}
-            title={<Title order={4}>Oh no!</Title>}
             radius="lg"
-            className={classes.alertBox}
+            className={
+              colorScheme === 'light'
+                ? classes.alertBoxLight
+                : classes.alertBoxDark
+            }
           >
-            <Text weight={500} size="lg">
-              {message}
+            <Text
+              span
+              fw={600}
+              size="lg"
+              c={colorScheme === 'dark' ? '#FFFFFF' : theme.colors.red[9]}
+            >
+              <>
+                <IconAlertCircleFilled
+                  strokeWidth={1}
+                  className={classes.alertIcon}
+                  size={25}
+                />
+              </>
+              {errorAlertMessage}
             </Text>
           </Alert>
         </>
@@ -31,5 +51,5 @@ export const AlertComponent: React.FC<IProps> = ({message}) => {
         <></>
       )}
     </Center>
-  )
-}
+  );
+};

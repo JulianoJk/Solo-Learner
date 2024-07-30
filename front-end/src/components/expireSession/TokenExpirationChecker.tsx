@@ -1,59 +1,82 @@
-import React, {useEffect, useState} from 'react'
-import jwtDecode from 'jwt-decode'
-import {Modal} from '@mantine/core'
-import {useLocation} from 'react-router-dom'
-import {isUserLoggedIn} from '../../lib/dist'
-import Login from '../Auth/Login/Login'
-import {useDisclosure} from '@mantine/hooks'
+import { useEffect } from 'react';
+import jwtDecode from 'jwt-decode';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  checkIfPageIsReload,
+  checkTokenValidity,
+  isUndefinedOrNullString,
+  isUserLoggedIn,
+} from '../../utils/utils';
+import { useUserDispatch } from '../../context/UserContext';
+import { IUserInfoContext } from '../../Model/UserModels';
+import { useAppDispatch } from '../../context/AppContext';
+
+import { logoutUser } from '../Auth/LogoutUtils';
+// import useLogout from '../hooks/useLogout';
+
 const TokenExpirationChecker = () => {
-  const [isExpired, setIsExpired] = useState<boolean>(false)
-  const [openedModal, handlers] = useDisclosure(false)
-  const location = useLocation() // <-- get current location being accessed
+  const appDispatch = useAppDispatch();
+  const { pathname } = useLocation(); // <-- get current location being accessed
+  const userDispatch = useUserDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken')
+    const token = localStorage.getItem('jwtToken');
+    const userPicture = localStorage.getItem('userPicture');
     if (token) {
-      const decoded: any = jwtDecode(token)
-      const expirationTime = decoded.exp * 1000 // the exp claim is in hours, so convert it to milliseconds(for ms, remove the *60*60)
-      const currentTime = Date.now()
-      if (isUserLoggedIn() === true && currentTime > expirationTime) {
-        setIsExpired(true)
-        handlers.open()
-      } else if (isUserLoggedIn() === true && currentTime < expirationTime) {
-        handlers.close()
+      const decoded: any = jwtDecode(token);
+
+      const isExpired = decoded.exp < Date.now() / 1000;
+      // set the last visited path in local storage
+      localStorage.setItem('lastVisitedPath', location.pathname);
+
+      if (isUserLoggedIn() === true && isExpired) {
+        logoutUser(userDispatch, navigate);
       }
     }
-  }, [])
 
-  if (isExpired) {
-    return (
-      <Modal
-        transition="fade"
-        centered
-        transitionDuration={600}
-        transitionTimingFunction="ease"
-        opened={openedModal}
-        onClose={() => {
-          return
-        }}
-        overlayBlur={4}
-        withCloseButton={false}
-      >
-        <Center>
-          <Title size="md">
-            Session expired. Please log in again to continue!
-          </Title>
-        </Center>
+    if (checkIfPageIsReload()) {
+      const localStorageToken = localStorage.getItem('jwtToken');
+      const decoded: IUserInfoContext = jwtDecode(localStorageToken as string);
 
-        <Login
-          switchToRegister={false}
-          pathToNavigateAfterLogin={location.pathname}
-          refreshPageAfterLogin={true}
-        />
-      </Modal>
-    )
-  }
+      if (localStorageToken !== null) {
+        const decodedUser: IUserInfoContext = {
+          id: decoded.id,
+          username: decoded.username || decoded.name,
+          token: localStorageToken,
+          isTeacher: decoded.isTeacher,
+          email: decoded.email,
+          isAdmin: decoded.isAdmin,
+        };
+        userDispatch({ type: 'SET_USER', user: decodedUser });
+        userDispatch({ type: 'SET_USER_PICTURE', picture: userPicture ?? '' });
+      }
+    }
+    const userToken = isUndefinedOrNullString(token) ? token : true;
 
-  return null
-}
+    const isTokenExpired = userToken
+      ? checkTokenValidity(userToken as string)
+      : false;
 
-export default TokenExpirationChecker
+    const checkToken = () => {
+      if (token) {
+        localStorage.setItem('lastVisitedPath', location.pathname);
+
+        if (isUserLoggedIn() && isTokenExpired) {
+          handleExpiredSession();
+        }
+      }
+    };
+
+    const handleExpiredSession = () => {
+      appDispatch({
+        type: 'SET_SESSION_TOKEN_EXPIRED',
+        isSessionExpired: true,
+      });
+    };
+
+    checkToken();
+  }, [checkIfPageIsReload, pathname]);
+  return null;
+};
+export default TokenExpirationChecker;

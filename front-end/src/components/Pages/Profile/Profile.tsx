@@ -1,90 +1,73 @@
-import React from 'react'
-
-import {useQuery} from '@tanstack/react-query'
-import {useUserState} from '../../../context/UserContext'
-import {IUserInfoContext} from '../../../Model/UserModels'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {profileAPI, getProfileImageAPI} from '../../api/api'
-
-import PageNotFound from '../pageNotFound/PageNotFound'
-
-import {Avatar} from '@mantine/core'
-import {isUndefinedOrNullString} from '../../../lib/dist'
-
+import React from 'react';
+import { useUserState } from '../../../context/UserContext';
+import { UserInfoIcons } from './UserInfo.component';
+import { Box, Loader, Stack, Title } from '@mantine/core';
+import { upperFirst } from '@mantine/hooks';
+import NotFound from '../Error/pageNotFound/NotFound.component';
+import { useGetProfile } from '../../hooks/useGetProfile';
+import { useParams } from 'react-router-dom';
+import InstructorProfileCard from '../instructorProfileCard/InstructorProfileCard.component';
 const Profile: React.FC = () => {
-  const {user} = useUserState()
-  let userIsLoggedInLocal: any = localStorage.getItem('user')
-  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : undefined
-  const {data: userProfileData} = useQuery(
-    ['getProfileItems', hasToken],
-    async () => {
-      if (hasToken) {
-        const data: IUserInfoContext | undefined = await profileAPI(hasToken)
-        return data
-      }
-    },
-    {
-      // Fetch when token available
-      enabled: !!user.token,
-      staleTime: Infinity,
-    },
-  )
-  // var b;
-  // useEffect(() => {
-  //   if (user.id !== undefined) {
-  //     b = profileImageAPI(user.id);
-  //   }
-  // });
-  if (userIsLoggedInLocal) {
+  const { user } = useUserState();
+  const { username: UsernameFromPath } = useParams<{ username: string }>();
+  const {
+    data: userProfileData,
+    isLoading,
+    isError,
+    isFetched,
+  } = useGetProfile(UsernameFromPath as string, user.token);
+  if (isLoading) {
     return (
-      // <>
-      //   {isLoading ? (
-      //     <Stack align="center">
-      //       <div>
-      //         <Loader size={400} />
-      //       </div>
-      //       <Title>Loading...</Title>
-      //     </Stack>
-      //   ) : (
-      //     <div>
-      //       <Avatar
-      //         className={classes.profileImage}
-      //         radius={200}
-      //         size={300}
-      //         color={'cyan'}
-      //         variant="filled"
-      //         alt="profile-image"
-      //         src={
-      //           !isUndefinedOrNullString(userProfileImage)
-      //             ? userProfileImage
-      //             : ''
-      //         }
-      //       />
-      //       <h1> Welcome Back: {user.username}!</h1>
-      //       <h2>Date joined:{userProfileData}</h2>
-      //     </div>
-      //   )}
-      // </>
-      <div>
-        <Avatar radius="xl" color="indigo" />
-        {/* <Avatar radius="xl" color="indigo" src={
-            !isUndefinedOrNullString(userProfileImage) ? userProfileImage : ""
-          } /> */}
-        <h1> Welcome Back: {user.username}!</h1>
-        <h2>Date joined:{userProfileData}</h2>
-        {/* <img src={b} /> */}
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <PageNotFound
-          navText="No Account found. To proceed, you must be logged-in!"
-          navigationPath={'/login'}
-          btnText="Login"
-        />
-      </div>
-    )
+      <Stack align="center">
+        <Loader color="teal" size={400} />
+        <Title>Loading...</Title>
+      </Stack>
+    );
   }
-}
-export default Profile
+  if (
+    isFetched &&
+    (isError || !userProfileData || userProfileData.status !== 'success')
+  ) {
+    return <NotFound navigationPath={'/'} />;
+  }
+  const displayUsername = userProfileData?.user.username;
+  const displayDateJoined = userProfileData?.user.createdAt;
+  const userRole = userProfileData?.user.isTeacher ? 'Teacher' : 'Student';
+  const data = {
+    picture: userProfileData?.user.picture ?? '',
+    role: userRole,
+    userName: upperFirst(displayUsername as string),
+    displayDateJoined: displayDateJoined,
+  };
+  const instructionData = {
+    picture: '',
+    name: 'Jane Fingerlicker',
+    email: 'randomEmail@me.io',
+    job: 'Art director',
+  };
+  const hasTeacher = userProfileData?.user.isTeacher;
+
+  return (
+    <>
+      <UserInfoIcons {...data} />
+      {hasTeacher ? (
+        <Box style={{ border: '2px solid white', width: '17rem', margin: 10 }}>
+          {/* TODO!: Propably add a <Center> in here */}
+          <Title order={4}>
+            {/* <Title order={4} align="center"> */}
+            Your Amazing Instructor &#10024;
+          </Title>
+          <InstructorProfileCard
+            picture={instructionData.picture}
+            name={instructionData.name}
+            email={instructionData.email}
+            job={instructionData.job}
+          />
+        </Box>
+      ) : (
+        <></>
+      )}
+    </>
+  );
+};
+export default Profile;

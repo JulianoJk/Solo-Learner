@@ -1,90 +1,98 @@
-# **Solo-learner (M.E.R.N. Stack)**
+# Back-end
 
-Welcome to our Solo-learn project app, where you can learn foreign languages free! This project is a full-stack web application developed by a team of students from a variety of disciplines, including Computer Science, English Language & Literature, and Fine Arts.
+This is a simple API for managing a Todo list. It's built using .NET 6 and uses an in-memory database.
 
-## **Overview**
+## Environment Configuration
 
-Our Solo-learner platform is a language learning platform that allows users to practice their language skills through interactive exercises and games. Some of the key features of the platform include:
+To run this project, you'll need to configure environment variables using a `.env` file located in the root of the project. The `.env` file stores sensitive information and settings needed for your application to work properly. Below, you'll find instructions on how to set up the `.env` file for the back-end component.
 
-- A variety of exercises and games to practice reading, writing, speaking, and listening skills
-- Progress tracking to help users stay motivated and see their improvement over time
+### Back-End Configuration
 
-<h2><font color="#92D1C3"><strong><ins>Setting Up the Project</ins></strong></font></h2>
+1. If you don't already have an `.env` file in the root directory of the project, you can create one by copying the provided `.env_sample` file. Open a terminal and navigate to the root directory of the project: `$ cd /path/to/your/project`
+2. Copy the `.env_sample` file and rename it to `.env`: `$ cp .env_sample .env`
 
-<font color="#ADF7B6">**With Docker**</font>
+3. Open the `.env` file in a text editor and update the following variables:
 
-1. Install Docker on your machine. (Instructions for installing Docker can be found [here](https://docs.docker.com/engine/install/)).
-2. Create a .env file in the backend folder. (For instructions on how to do this, see the "Without Docker" section below.)
-3. Navigate to the front-end folder: `cd front-end` and run `npm i ` or `yarn`
-4. From the root directory of the project, run the command `docker-compose up`.
+- `MYSQL_ROOT_PASSWORD`: Set this to the root password for your MySQL database.
+- `CONNECTION_STRING`: Set this to your MySQL database connection string. For Docker Compose, it's typically `"server=db;port=3306;user=<your_database_user>;password=<your_database_password>;database=<your_database_name>"`.
+- `JWT_KEY`: Choose a secret key for JSON Web Token (JWT) encryption.
+- `JWT_EXPIRES_IN_MINUTES`: Set the expiration time for JWT tokens in minutes.
+- `TEACHER_EMAIL`: Provide one or more teacher email addresses in a comma-separated list.
 
-<font color="#ADF7B6"> **Without Docker**</font>
+Here's an example of how your `.env` file might look after configuration:
 
-You can also set up the project without using Docker. There are two options for installing the required packages: using `npm` or `yarn`.
+```
+env
+MYSQL_ROOT_PASSWORD=myrootpassword
+CONNECTION_STRING=server=db;port=3306;user=myuser;password=mypassword;database=mydatabase
+JWT_KEY=mysecretkey
+JWT_EXPIRES_IN_MINUTES=60
+TEACHER_EMAIL=teacher1@example.com,teacher2@example.com
+```
 
-<font color="#FFEE93"><ins>_Setup with npm_</ins></font>
+## Installation and Build
 
-<font color="#59A96A"><strong>**Front-End**</strong></font>
+### Option 1: Local machine
 
-1. Navigate to the <font color="#51A3A3"><ins>front-end</ins></font> folder: `cd front-end`
-2. Install the required packages: `npm install`
-3. Start the front-end server: `npm start`
+1. Clone this repository to your local machine.
+2. Install .NET 6 SDK if you haven't already. You can download it from [here](https://dotnet.microsoft.com/download/dotnet/6.0).
+3. Open a terminal in the root directory of the project.
+4. Run `dotnet build` to build the project.
+5. Run `dotnet run` to start the server.
 
-<font color="#59A96A"><strong>**Back-End(server)**</strong></font>
+### Option 2: Docker
 
-1. Create an <font color="#51A3A3">.env</font> file in the <font color="#51A3A3">server</font> folder. (For instructions on how to do this, see the next section.)
+#### Option 2.1: Using Docker Compose
 
-2. Install the required packages: `npm install`
+1. Open a terminal and navigate to the root directory of the project.
+2. Run the following command to start the Docker container: `docker-compose up`
 
-3. Start the front-end server: `npm start`
+## Usage
 
-<font color="#FFEE93"><ins>_Setup with yarn_</ins></font>
+The following routes are available:
 
-<font color="#59A96A"><strong>**Front-End**</strong></font>
+- `GET /`: Returns a string "Hello user".
+- `POST /users/login`: Authenticates a user and returns a message indicating success or failure.
+- `POST /users/register`: Registers a new user and returns a message indicating success or failure.
+- `GET /users/profile`: Returns user profile information if authenticated.
 
-1. Navigate to the <font color="#51A3A3"><ins>front-end</ins></font> folder: `cd front-end`
-2. Install the required packages: `yarn`
-3. Start the front-end server: `yarn start`
+For `POST` routes, the request body must be in JSON format.
 
-<font color="#59A96A"><strong>**Back-End(server)**</strong></font>
+## Dependencies
 
-1. Create an <font color="#51A3A3">.env</font> file in the <font color="#51A3A3">server</font> folder. (For instructions on how to do this, see the next section.)
+This project uses the following NuGet packages:
 
-2. Install the required packages: `yarn`
+- Microsoft.AspNetCore
+- dotenv.net
+- MySql.Data
+- MailKit
+- Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.0
+- Microsoft.EntityFrameworkCore
+- Microsoft.EntityFrameworkCore.Design
+- Microsoft.EntityFrameworkCore.Tools
+- Microsoft.IdentityModel.Tokens
+- Microsoft.AspNetCore.Cors
 
-3. Start the front-end server: `yarn start`
+You can install them using the following command:
 
-<h3><font color="#92D1C3"><strong><ins>Creating the .env File</ins></strong></font></h3>
+dotnet add package <package-name>
 
-In order to run the server, you need to create a <font color="#51A3A3">.env</font> file in the <font color="#51A3A3">server</font> folder. To create the file, open a terminal or command prompt and enter the following command:
+## Contributing
 
-- #### For Windows `echo > .env`
+If you find a bug or have a suggestion for a new feature, feel free to open an issue or submit a pull request.
 
-- #### For Mac/Linux `touch .env`
-
-Next, open the .env file in a text editor and add the following variables:
-
-- `PORT`: The port number for the server (e.g., <font color="#c3e991">3000</font>).
-- `MONGO_CONN`: The connection string for your MongoDB database (e.g., <font color="#c3e991">mongodb+srv://<username>:<password>@cluster0.jnw32.mongodb.net/<Database Name>?retryWrites=true&w=majority</font>).
-- `JWT_KEY`: A signature key for JSON web tokens (e.g., <font color="#c3e991">my_secret_key</font>). You can generate a random 256-bit key using a tool like [keygen.io](https://keygen.io).
-- `JWT_EXPIRES_IN`: Timing for the the JWT token that will expire (e.g., <font color="#c3e991">3h or 30s</font>).
-- `TEACHER_EMAIL`: Email address of the teacher that will be used to identify them and grant them administrative privileges(e.g., <font color="#c3e991">['teacher@info.com']</font>).
-
-Alternatively, you can check the <font color="#51A3A3">.env_sample</font>, copy all, then change the needed fields.
-
-<h2><font color="#92D1C3">📝 Note:</font></h2>
-
-If this is the first time running the app, make sure to create an empty folder named <font color="#51A3A3">uploads</font> in the <font color="#51A3A3">server</font> directory. This folder will be used to save any uploaded images.
-
----
-
-To generate a signature key for your JSON web tokens, you can use a tool like [keygen.io](https://keygen.io) or [randomkeygen.com](https://randomkeygen.com). These websites allow you to generate a random 256-bit key, which can be used as the `JWT_KEY` in your `.env` file.
-
----
+# FRONT_END:
 
 ## Libraries Used:
 
 - [Mantine UI](https://mantine.dev/)
 - [TanStack Query](https://tanstack.com/query/v4/?from=reactQueryV3&original=https://react-query-v3.tanstack.com/)
-- [Tabler Icons for React](https://tabler-icons-react.vercel.app/)
+<!-- - [Tabler Icons for React](https://tabler-icons-react.vercel.app/) -->
+- [Tabler Icons for React](https://tabler.io/docs/icons/react)
+
 - [react-easy-crop](https://www.npmjs.com/package/react-easy-crop?activeTab=readme)
+- [DragNDrop](https://www.npmjs.com/package/@hello-pangea/dnd)
+
+```
+
+```

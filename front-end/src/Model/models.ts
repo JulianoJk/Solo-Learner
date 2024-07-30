@@ -1,42 +1,38 @@
-import {ColorScheme} from '@mantine/core'
-import React from 'react'
+import React from 'react';
 
 // *** State ***
 export interface AccountSettingsInterface {
-  profileImage: string
+  profileImage: string;
 }
 
 export interface IAppStateContext {
-  isSmallWindow: boolean
-  appTheme: ColorScheme
-  handleModal: boolean
+  isSmallWindow: boolean;
+  appTheme: any;
+  handleModal: boolean;
 }
 
 export type TApplicationAction =
   | {
-      type: 'SET_MODAL_STATE'
-      handleModal: boolean
+      type: 'SET_MODAL_STATE';
+      handleModal: boolean;
     }
   | {
-      type: 'IS_SMALL_WINDOW'
-      isSmallWindow: boolean
+      type: 'IS_SMALL_WINDOW';
+      isSmallWindow: boolean;
     }
   | {
-      type: 'SET_APP_THEME'
-      appTheme: ColorScheme
-    }
+      type: 'SET_APP_THEME';
+      appTheme: any;
+    };
 
 // Interface for the ContextProvider children
 export interface IChildrenProvider {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export interface ISvgImages {
-  width?: number | string
-  height?: number | string
-  className?: string
-  radius?: number | string
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+  radius?: number | string;
 }
-
-// *** Dispatch ***
-export type ApplicationDispatchContext = (action: TApplicationAction) => void
