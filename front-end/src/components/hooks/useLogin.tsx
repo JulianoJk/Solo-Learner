@@ -3,13 +3,13 @@ import { useAppDispatch } from '../../context/AppContext';
 import { useUserDispatch } from '../../context/UserContext';
 import { loginAPI } from '../api/api';
 import { useNavigate } from 'react-router-dom';
-import { isUndefinedOrNullString } from '../../utils/utils';
 import { IApiError, IUserInfoContext } from '../../Model/UserModels';
 import { notificationAlert } from '../notifications/NotificationAlert';
 import { IconCheck } from '@tabler/icons-react';
+import React from 'react';
+import { isUndefinedOrNullString } from '../../utils/utils';
 
 interface ILoginMutationProps {
-  refreshPageAfterLogin?: boolean;
   showNotification?: boolean;
   navigateTo: string;
   sessionExpiredAuth?: boolean;
@@ -23,12 +23,9 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
-  const {
-    refreshPageAfterLogin,
-    navigateTo,
-    showNotification,
-    sessionExpiredAuth,
-  } = props;
+
+  const { showNotification } = props;
+
   const { mutate, isLoading } = useMutation<
     IUserInfoContext | IApiError,
     unknown,
@@ -36,41 +33,41 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
     unknown
   >(loginAPI, {
     onSuccess: (data: IUserInfoContext | IApiError) => {
-      if (typeof data === 'object' && 'error' in data) {
+      if ('error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
         });
       } else {
-        const hasToken = !isUndefinedOrNullString(data?.token);
-        if (!hasToken) {
+        if (!data.token) {
           appDispatch({
             type: 'SET_ERROR_ALERT_MESSAGE',
             errorAlertMessage: 'Something went wrong...',
           });
-        } else if (hasToken) {
+        } else {
           const user: IUserInfoContext = {
-            token: data?.token,
+            token: data.token,
           };
-          refreshPageAfterLogin === true ? window.location.reload() : '';
-          userDispatch({ type: 'SET_USER', user: user });
-          sessionExpiredAuth
-            ? appDispatch({
-                type: 'SET_USER_LOGGED_IN_AGAIN',
-                userReLoggedIn: true,
-              })
-            : '';
-          navigate(sessionExpiredAuth ? navigateTo : '/home');
-          showNotification === false ? (
-            <></>
-          ) : (
+
+          userDispatch({ type: 'SET_USER', user });
+          userDispatch({
+            type: 'SET_USER_PICTURE',
+            picture: data.picture ?? '',
+          });
+
+          // Show notification
+          if (showNotification !== false) {
             notificationAlert({
               title: 'Login Successful!',
               message: "Great to see you! You're all set to go.",
               icon: <IconCheck size={18} />,
               iconColor: 'teal',
-            })
-          );
+            });
+          }
+          const nav = isUndefinedOrNullString(data.navigateUser)
+            ? '/home'
+            : data.navigateUser;
+          navigate(nav as string);
         }
       }
     },
@@ -79,6 +76,7 @@ export const useLogin = (props: ILoginMutationProps): ILoginMutationState => {
   const login = (email: string, password: string) => {
     mutate({ email, password });
   };
+
   return {
     login,
     isLoading,

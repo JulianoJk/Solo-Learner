@@ -1,37 +1,24 @@
-import { createStyles, Avatar, Text, Group } from '@mantine/core';
+import { Avatar, Text, Group } from '@mantine/core';
 import { IconCalendarHeart } from '@tabler/icons-react';
-
-const useStyles = createStyles((theme) => ({
-  icon: {
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[3]
-        : theme.colors.gray[1],
-  },
-
-  name: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-  },
-}));
-
+import classes from './Profile.module.css';
+import React from 'react';
 interface UserInfoIconsProps {
-  avatar: string;
+  picture: string;
   userName: string;
   role: string;
   displayDateJoined: string | Date | null | undefined;
 }
 
 export function UserInfoIcons({
-  avatar,
+  picture,
   userName,
   role,
   displayDateJoined,
 }: UserInfoIconsProps) {
-  const { classes } = useStyles();
   return (
     <div>
-      <Group noWrap>
-        <Avatar src={avatar} size={94} radius="md" />
+      <Group wrap="nowrap">
+        <Avatar src={picture} size={94} radius="md" />
         <div>
           <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
             {role}
@@ -41,13 +28,13 @@ export function UserInfoIcons({
             {userName}
           </Text>
 
-          <Group noWrap spacing={10} mt={3}>
+          <Group wrap="nowrap" gap={10} mt={3}>
             <IconCalendarHeart
               stroke={1.5}
               size="1rem"
               className={classes.icon}
             />
-            <Text fz="sm" c="dimmed">
+            <Text fz="sm" fw={500} className={classes.description}>
               Member since: {displayDateJoined}!
             </Text>
           </Group>

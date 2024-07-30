@@ -7,12 +7,13 @@ import {
   AspectRatio,
   Skeleton,
 } from '@mantine/core';
-import { useStyles } from './Home.styles';
+import classes from './Home.module.css';
 import Theory from '../../../images/theory.jpeg';
 import GrammarIcon from '../../../images/grammar.jpeg';
 import TestImage from '../../../images/testsImage.jpg';
 import Dictionary from '../../../images/vocabulary.jpeg';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const mockdata = [
   {
@@ -40,8 +41,28 @@ interface DemoHomeProps {
   isLoading: boolean;
 }
 const Modules: React.FC<DemoHomeProps> = (props) => {
-  const { classes } = useStyles();
   const { isLoading } = props;
+  const navigate = useNavigate();
+
+  const navigateUser = (title: string) => {
+    switch (title) {
+      case 'Theory':
+        navigate('/learning-units/theory');
+        break;
+      case 'Grammar':
+        navigate('/learning-units/grammar');
+        break;
+      case 'Tests':
+        navigate('/learning-units/tests');
+        break;
+      case 'Vocabulary':
+        navigate('/learning-units/vocabulary');
+        break;
+      default:
+        navigate('/learning-units/grammar');
+    }
+  };
+
   const cards = mockdata.map((article) => (
     <Card
       key={article.title}
@@ -50,8 +71,8 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
       component="a"
       className={classes.cardLoaded}
       draggable={false}
-      sx={{ cursor: 'pointer' }}
-      onClick={() => console.log(article.title)}
+      style={{ cursor: 'pointer' }}
+      onClick={() => navigateUser(article.title)} // Apply navigateUser function here
     >
       <Skeleton visible={isLoading}>
         <AspectRatio ratio={1920 / 1080}>
@@ -59,7 +80,7 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
         </AspectRatio>
       </Skeleton>
       <Skeleton visible={isLoading} height={16} mt={6} radius="xl">
-        <Text color="dimmed" size="xs" transform="initial" weight={700} mt="md">
+        <Text c="dimmed" size="xs" fw={700} mt="md">
           {article.details}
         </Text>
       </Skeleton>
@@ -73,7 +94,11 @@ const Modules: React.FC<DemoHomeProps> = (props) => {
 
   return (
     <Container py="xl">
-      <SimpleGrid cols={2} breakpoints={[{ maxWidth: 'sm', cols: 1 }]}>
+      <SimpleGrid
+        cols={{ base: 1, sm: 2, lg: 2 }} // Adjust the responsive values for cols
+        spacing={{ base: 10, sm: 'xl' }} // Adjust the responsive values for spacing
+        verticalSpacing={{ base: 'md', sm: 'xl' }} // Adjust the responsive values for verticalSpacing
+      >
         {cards}
       </SimpleGrid>
     </Container>

@@ -22,11 +22,16 @@ public class AuthenticationUtils
 
     public (bool, string) AuthenticateUser(
         bool isRegister,
+        bool isGoogle,
         string? username,
+        string firstName,
+        string lastName,
+        string gender,
         string email,
         string password,
         byte[]? salt,
-        bool isTeacher
+        bool isTeacher,
+        string? picture
     )
     {
         // Retrieve the isAdmin flag from the database
@@ -35,12 +40,17 @@ public class AuthenticationUtils
         // Initialize the database connection
         db.InitializeDatabaseConnection(
             isRegister,
+            isGoogle,
             email,
+            firstName,
+            lastName,
+            gender,
             username,
             password,
             salt,
             isTeacher,
-            isAdmin
+            isAdmin,
+            picture
         );
 
         if (!isRegister)
@@ -83,16 +93,17 @@ public class AuthenticationUtils
     public (bool, string) CheckPasswordForLogin(string email, string password)
     {
         MySqlConnection connection = new MySqlConnection(connectionString);
-        byte[] salt = db.GetSaltFromDatabase(connection, email);
+        byte[]? salt = db.GetSaltFromDatabase(connection, email);
         bool found = false;
 
         if (salt == null)
         {
             MessageToUser = "Incorrect email or password.";
-
             return (found, MessageToUser);
         }
-        else
+
+        // If the authentication is done through Google, skip password checking
+        if (!string.IsNullOrWhiteSpace(password))
         {
             // Generate hash of the password using the retrieved salt
             byte[] hashedPassword = GenerateHash(password, salt);
@@ -105,17 +116,22 @@ public class AuthenticationUtils
             if (storedHashedPassword.SequenceEqual(hashedPassword))
             {
                 found = true;
-                MessageToUser = "Login Succesfull!";
-
-                return (found, MessageToUser);
+                MessageToUser = "Login Successful!";
             }
             else
             {
                 MessageToUser = "Incorrect email or password.";
-
-                return (false, MessageToUser);
             }
         }
+        else
+        {
+            // Handle Google authentication logic here, if needed
+            // You might want to set 'found' to true and customize the message
+            found = true;
+            MessageToUser = "Google Authentication Successful!";
+        }
+
+        return (found, MessageToUser);
     }
 
     public Tuple<bool, string> IsUsernameTaken(string username)
@@ -142,6 +158,7 @@ public class AuthenticationUtils
                 {
                     uniqueUsername = $"{username}{counter}"; // add counter to username
                     counter++; // increment counter for next possible iteration
+                    return Tuple.Create(true, uniqueUsername); // return the new username
                 }
                 else
                 {
@@ -164,5 +181,75 @@ public class AuthenticationUtils
             return Tuple.Create(false, "");
 
         return Tuple.Create(true, uniqueUsername); // username was taken, return the new one
+    }
+
+    public string? GetUserEmailFromGoogleId(string googleEmail)
+    {
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+
+            using (
+                var command = new MySqlCommand(
+                    "SELECT email FROM users WHERE email = @GoogleEmail",
+                    connection
+                )
+            )
+            {
+                command.Parameters.AddWithValue("@GoogleEmail", googleEmail);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return reader.GetString("email");
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public UserInfo GetAdditionalUserInfoFromDb(string userEmail)
+    {
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+
+            using (
+                var command = new MySqlCommand(
+                    "SELECT id, isTeacher, isAdmin, picture FROM users WHERE email = @Email",
+                    connection
+                )
+            )
+            {
+                command.Parameters.AddWithValue("@Email", userEmail);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return new UserInfo
+                        {
+                            Id = reader.GetInt32("id"),
+                            IsTeacher = reader.GetBoolean("isTeacher"),
+                            IsAdmin = reader.GetBoolean("isAdmin"),
+                            Picture = reader.GetString("picture")
+                        };
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public class UserInfo
+    {
+        public int Id { get; set; }
+        public bool IsTeacher { get; set; }
+        public bool IsAdmin { get; set; }
+        public string Picture { get; set; }
     }
 }

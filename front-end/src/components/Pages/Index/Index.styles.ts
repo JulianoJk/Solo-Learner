@@ -1,6 +1,7 @@
-import { createStyles, rem } from '@mantine/core';
+import { createStyles } from '@mantine/emotion';
+import { rem } from '@mantine/core';
 
-export const useStyles = createStyles((theme) => ({
+export const useStyles = createStyles((theme, _, u) => ({
   container: {
     height: rem(700),
     display: 'flex',
@@ -11,7 +12,7 @@ export const useStyles = createStyles((theme) => ({
     zIndex: 1,
     position: 'relative',
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       height: rem(500),
       paddingBottom: `calc(${theme.spacing.xl} * 3)`,
     },
@@ -23,12 +24,12 @@ export const useStyles = createStyles((theme) => ({
     fontWeight: 900,
     lineHeight: 1.1,
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       fontSize: rem(40),
       lineHeight: 1.2,
     },
 
-    [theme.fn.smallerThan('xs')]: {
+    [u.smallerThan('xs')]: {
       fontSize: rem(28),
       lineHeight: 1.3,
     },
@@ -38,7 +39,7 @@ export const useStyles = createStyles((theme) => ({
     color: theme.white,
     maxWidth: 600,
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       maxWidth: '100%',
       fontSize: theme.fontSizes.sm,
     },
@@ -47,7 +48,7 @@ export const useStyles = createStyles((theme) => ({
   control: {
     marginTop: `calc(${theme.spacing.xl} * 1.5)`,
 
-    [theme.fn.smallerThan('sm')]: {
+    [u.smallerThan('sm')]: {
       width: '100%',
     },
   },

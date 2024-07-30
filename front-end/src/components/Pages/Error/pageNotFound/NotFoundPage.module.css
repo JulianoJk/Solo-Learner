@@ -1,0 +1,43 @@
+/* YourComponent.module.css */
+
+.root {
+  padding-top: var(--padding-top);
+  padding-bottom: var(--padding-bottom);
+}
+
+.title {
+  font-weight: 900;
+  font-size: var(--font-size);
+  margin-bottom: var(--margin-bottom);
+  font-family: 'Greycliff CF', sans-serif;
+
+  @media (max-width: 600px) {
+    font-size: var(--font-size-sm);
+  }
+}
+
+.control {
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.mobileImage {
+  @media (min-width: 600px) {
+    display: none;
+  }
+}
+
+.desktopImage {
+  @media (max-width: 600px) {
+    display: none;
+  }
+}
+
+:local {
+  --padding-top: 80px;
+  --padding-bottom: 80px;
+  --font-size: 34px;
+  --margin-bottom: 16px;
+  --font-size-sm: 32px;
+}

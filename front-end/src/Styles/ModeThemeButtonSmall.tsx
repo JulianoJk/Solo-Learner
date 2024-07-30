@@ -1,58 +1,28 @@
-import {
-  useMantineColorScheme,
-  useMantineTheme,
-  ActionIcon,
-  Tooltip,
-  ColorScheme,
-} from '@mantine/core';
-import { IconSun, IconMoonStars } from '@tabler/icons-react';
-import { useLocalStorage } from '@mantine/hooks';
+import { ActionIcon, useMantineColorScheme } from '@mantine/core';
+import { IconSun, IconMoon } from '@tabler/icons-react';
+import cx from 'clsx';
+import classes from './ModeThemeButtonSmall.module.css';
+import React from 'react';
+function ModeThemeButtonSmall() {
+  const { colorScheme, setColorScheme } = useMantineColorScheme();
 
-const ModeThemeButtonSmall = () => {
-  const theme = useMantineTheme();
-
-  const { toggleColorScheme } = useMantineColorScheme();
-
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: 'app-theme',
-    defaultValue: 'light',
-    getInitialValueInEffect: true,
-  });
-  const dark = colorScheme === 'dark';
-
-  const handleOnClick = () => {
+  const toggleColorScheme = () => {
     setColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
-    toggleColorScheme(colorScheme === 'dark' ? 'light' : 'dark');
   };
-
-  const switchDescription = `${
-    theme.colorScheme === 'light' ? 'Dark' : 'Light'
-  } mode`;
-
   return (
-    <Tooltip
-      label={switchDescription}
-      openDelay={300}
-      closeDelay={80}
-      arrowSize={6}
-      withArrow
-      transitionProps={{
-        transition: 'fade',
-        duration: 100,
-        timingFunction: 'ease',
-      }}
+    <ActionIcon
+      onClick={() => toggleColorScheme()}
+      size="xl"
+      variant="outline"
+      color={colorScheme === 'dark' ? 'yellow' : '#0c8599'}
+      aria-label="Toggle color scheme"
     >
-      <ActionIcon
-        size="lg"
-        variant="outline"
-        color={dark ? 'yellow' : 'blue'}
-        onClick={() => handleOnClick()}
-        title="Toggle color scheme"
-      >
-        {dark ? <IconSun size={26} /> : <IconMoonStars size={26} />}
-      </ActionIcon>
-    </Tooltip>
+      {colorScheme === 'dark' ? (
+        <IconSun className={cx(classes.icon, classes.light)} stroke={1.5} />
+      ) : (
+        <IconMoon className={cx(classes.icon, classes.dark)} stroke={2} />
+      )}
+    </ActionIcon>
   );
-};
-
+}
 export default ModeThemeButtonSmall;

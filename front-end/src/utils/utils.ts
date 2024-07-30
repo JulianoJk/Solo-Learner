@@ -1,10 +1,11 @@
 import { DefaultMantineColor } from '@mantine/core';
 import { usersDispatchContext } from '../Model/UserModels';
+import jwtDecode from 'jwt-decode';
 
-export const isUndefinedOrNullString = (object: string | undefined | null) => {
-  return object === undefined || object === null || object.trim() === ''
-    ? true
-    : false;
+export const isUndefinedOrNullString = (
+  str: string | undefined | null,
+): boolean => {
+  return !str || str.trim() === '';
 };
 
 export const checkIfPageIsReload = () => {
@@ -86,4 +87,35 @@ export const getRandomColor = (): DefaultMantineColor => {
 
   const randomIndex = Math.floor(Math.random() * colors.length);
   return colors[randomIndex];
+};
+
+export const checkTokenValidity = (token: string | null): boolean => {
+  if (!token) {
+    // If token is falsy (null or undefined)
+    return false;
+  }
+  try {
+    const decoded: any = jwtDecode(token);
+    const isExpired = decoded.exp < Date.now() / 1000;
+    return isExpired;
+  } catch (error) {
+    return false;
+  }
+};
+export function getJob(isAdmin: boolean, isTeacher: boolean) {
+  if (isAdmin && isTeacher) {
+    return 'admin/teacher';
+  } else if (isAdmin) {
+    return 'admin';
+  } else if (isTeacher) {
+    return 'teacher';
+  } else {
+    return 'student';
+  }
+}
+export const roleColors: Record<string, string> = {
+  student: 'blue',
+  admin: 'pink',
+  teacher: 'cyan',
+  'admin/teacher': 'orange',
 };
