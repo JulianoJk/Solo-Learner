@@ -1,6 +1,27 @@
 # Solo Learner Backend & Frontend
 
-This project comprises a backend API for managing a Todo list and a frontend interface. The backend is built using .NET 6 with a MySQL database, while the frontend leverages various modern libraries and frameworks.
+## Project Overview
+
+This project is a comprehensive online web application designed to facilitate language learning for people of all ages. Developed by a diverse team of students from various fields, including Computer Science, English Language & Literature, Business Management, Fine Arts, Business & Management, and Eco-technology, the platform addresses common limitations found in existing language learning apps.
+
+### Description
+
+Our application is designed to provide a robust and accessible language learning experience. Unlike many existing platforms that require subscriptions, our project aims to offer a versatile solution with the following features:
+
+- **Inclusive Learning:** The platform is designed for users of all ages, from young learners to adults, making it a valuable resource for anyone interested in learning or improving their language skills.
+- **Teacher and Tutor Integration:** Educators and private tutors will have the ability to create, manage, and customize their own lessons and courses. This allows them to tailor their teaching materials to better meet their students' needs.
+- **Teacher Admin Tools:** Teachers will have admin-like capabilities within their own domains. They can manage their students, monitor progress, assign assignments and tests, and track student performance. This includes the ability to register and remove students from their classes.
+- **Subscription-Free Model:** Unlike many online learning apps that charge subscription fees, our platform is designed to be accessible without recurring costs. This ensures that learners and educators can use the platform without financial barriers.
+- **Enhanced Educational Tools:** Tutors will have access to a range of tools and features to create engaging lessons, including the ability to upload course materials, design tests, and provide comprehensive learning resources such as grammar theory and practical exercises.
+- **Admin Dashboard:** The platform will include an admin dashboard panel for comprehensive management of the system and user data, enabling oversight and operational control.
+
+### Purpose
+
+The primary goal of this project is to provide a free and user-friendly platform that supports effective language learning while overcoming the limitations of existing solutions. By focusing on accessibility and customization, the platform empowers both learners and educators to have a more tailored and engaging educational experience. The application is being developed with the belief that quality language education should be available to everyone, regardless of age or financial constraints. The project is still a work in progress, with ongoing updates and enhancements based on user feedback and evolving educational needs.
+
+Our vision is to create a collaborative and dynamic learning environment that benefits a diverse audience and fosters a more inclusive approach to education.
+
+**Note:** The project is still in progress. We are continuously working on adding new features, improving existing functionalities, and addressing feedback from users. Our vision is to create a collaborative and dynamic learning environment that benefits a diverse audience and fosters a more inclusive approach to education.
 
 ## Table of Contents
 
