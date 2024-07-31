@@ -147,6 +147,35 @@ The frontend utilizes several libraries and packages, including but not limited 
 
 For a full list of frontend dependencies, refer to the `package.json` file.
 
+
+## Frontend Setup
+
+To work with the frontend code, follow these steps:
+
+1. **Install Node.js and Yarn**: Ensure that Node.js and Yarn are installed on your system. You can download Node.js from [nodejs.org](https://nodejs.org/) and Yarn from [yarnpkg.com](https://yarnpkg.com/).
+
+2. **Navigate to the Frontend Directory**: Go to the `front_end` folder within the project directory:
+
+   ```bash
+   cd /path/to/your/project/front_end
+   ```
+
+3. **Install Dependencies**: Run the following command to install all necessary dependencies:
+
+   ```bash
+   yarn
+   ```
+
+4. **Start the Development Server**: Run the following command to start the frontend development server:
+
+   ```bash
+   yarn dev
+   ```
+
+   This will start the development server and make the frontend application available for local development.
+
+**Note:** If you simply want to run the entire application without making changes, running `docker-compose up` in the project root directory will start both the backend and frontend applications seamlessly.
+
 ## Contributing
 
 Contributions are welcome! If you find a bug or have a suggestion for a new feature, please open an issue or submit a pull request.
