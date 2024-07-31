@@ -70,12 +70,24 @@ TEACHER_EMAIL=teacher1@example.com,teacher2@example.com
 
 ## Usage
 
-The API provides the following endpoints:
+The following routes are available:
 
-- `GET /`: Returns a welcome message.
-- `POST /users/login`: Authenticates a user.
-- `POST /users/register`: Registers a new user.
-- `GET /users/profile`: Retrieves user profile information (requires authentication).
+- `GET /`: Returns a greeting message and indicates if the user is logged in.
+- `POST /users/login`: Authenticates a user and returns a message indicating success or failure.
+- `POST /users/register`: Registers a new user and returns a message indicating success or failure.
+- `GET /users/checkToken`: Checks the validity of a JWT token.
+- `DELETE /users/delete`: Deletes a user account if authenticated.
+- `PUT /users/update/username`: Updates a user's username if authenticated.
+- `GET /admin/dashboard`: Returns admin dashboard data if the user is authenticated and an admin.
+- `GET /admin/users/all/list`: Returns a list of all users if the user is authenticated and an admin.
+- `DELETE /admin/dashboard/delete_user`: Deletes a user account by an admin.
+- `GET /users/profile`: Returns profile information for a specific user.
+- `GET /username/{name}`: Returns a greeting message for the specified username.
+- `GET /profile/testme/{username}`: Returns test profile information for the specified username.
+- `GET /user/current_user`: Returns information about the current logged-in user.
+- `PUT /user/logout`: Logs out the current user.
+- `POST /upload`: Handles file upload to Google Drive.
+- `POST /signin-google`: Handles Google sign-in authentication.
 
 For `POST` routes, the request body should be in JSON format.
 
