@@ -57,7 +57,7 @@ import { IUserInfoContext, User, fetchUserList } from '../../Model/UserModels';
 import { useGetProfile } from '../hooks/useGetProfile';
 import jwtDecode from 'jwt-decode';
 import { useGetCurrentUser } from '../hooks/useGetCurrentUser';
-import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
+// import { CopyButtonComponent } from '../CopyButton/CopyButton.component';
 import { logoutUser } from '../Auth/LogoutUtils';
 
 import cx from 'clsx';

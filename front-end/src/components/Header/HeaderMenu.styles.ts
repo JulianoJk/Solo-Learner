@@ -5,7 +5,7 @@ export const useStyles = createStyles((theme, _, u) => ({
   link: {
     display: 'flex',
     alignItems: 'center',
-    height: '80%',
+    // height: '80%',
     paddingLeft: theme.spacing.md,
     paddingRight: theme.spacing.md,
     textDecoration: 'none',
