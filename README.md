@@ -70,16 +70,6 @@ TEACHER_EMAIL=teacher1@example.com,teacher2@example.com
 
 ## Installation and Build
 
-### Option 1: Local Machine
-
-1. Clone this repository to your local machine.
-2. Install the .NET 6 SDK if you haven't already. [Download .NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0).
-3. Navigate to the project root directory.
-4. Run `dotnet build` to build the project.
-5. Run `dotnet run` to start the server.
-
-### Option 2: Docker
-
 #### Using Docker Compose
 
 1. Navigate to the project root directory.
@@ -129,12 +119,6 @@ This project uses the following NuGet packages:
 - Microsoft.IdentityModel.Tokens
 - Microsoft.AspNetCore.Cors
 
-Install them using:
-
-```bash
-dotnet add package <package-name>
-```
-
 ### Frontend
 
 The frontend utilizes several libraries and packages, including but not limited to:
@@ -146,7 +130,6 @@ The frontend utilizes several libraries and packages, including but not limited 
 - [Tabler Icons for React](https://tabler.io/docs/icons/react)
 
 For a full list of frontend dependencies, refer to the `package.json` file.
-
 
 ## Frontend Setup
 
