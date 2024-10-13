@@ -12,6 +12,7 @@ const data = [
   { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
   { link: 'billing', label: 'billing', icon: IconSchool },
   { link: 'Assignent', label: 'Assign assigment', icon: IconPencil },
+  { link: 'TestIt', label: 'Testme', icon: IconPencil },
 ];
 
 const AdminDrawer = () => {
