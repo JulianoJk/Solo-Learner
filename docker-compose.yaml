@@ -38,6 +38,8 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       TZ: "Europe/Athens"
+      # Added IP_ADDRESS
+      IP_ADDRESS: ${IP_ADDRESS} # Pass the IP address to the backend
     depends_on:
       - db
     networks:
@@ -63,6 +65,10 @@ services:
       - "3000:3000"
     stdin_open: true
     tty: true
+    environment:
+      TZ: "Europe/Athens"
+      # Added IP_ADDRESS
+      VITE_IP_ADDRESS: ${IP_ADDRESS} # Pass the IP address to the frontend with VITE_ prefix
     volumes:
       - ./front-end:/usr/src/app/front_end
       - /usr/src/app/front_end/node_modules

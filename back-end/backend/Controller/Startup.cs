@@ -42,12 +42,12 @@ namespace backend
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.ASCII.GetBytes(Configuration[JwtKey.Value])
+                            Encoding.ASCII.GetBytes(JwtKey.Value)
                         ),
                         ValidateIssuer = true,
-                        ValidIssuer = "http://localhost:3001",
+                        ValidIssuer = ApiUrl.Value, // Use ApiUrl.Value for the ValidIssuer
                         ValidateAudience = true,
-                        ValidAudience = "http://localhost:3000",
+                        ValidAudience = ApiUrl.Value, // Use ApiUrl.Value for the ValidAudience
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.FromMinutes(5) // Set a reasonable clock skew
                     };

@@ -1,5 +1,21 @@
 # Solo Learner Backend & Frontend
 
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+   - [Description](#description)
+   - [Purpose](#purpose)
+2. [Environment Configuration](#environment-configuration)
+   - [Backend Configuration](#backend-configuration)
+3. [Installation and Build](#installation-and-build)
+   - [Using Docker Compose](#using-docker-compose)
+4. [Usage](#usage)
+5. [Dependencies](#dependencies)
+   - [Backend](#backend)
+   - [Frontend](#frontend)
+6. [Contributing](#contributing)
+7. [License](#license)
+
 ## Project Overview
 
 This project is a comprehensive online web application designed to facilitate language learning for people of all ages. Developed by a diverse team of students from various fields, including Computer Science, English Language & Literature, Business Management, Fine Arts, Business & Management, and Eco-technology, the platform addresses common limitations found in existing language learning apps.
@@ -23,20 +39,6 @@ Our vision is to create a collaborative and dynamic learning environment that be
 
 **Note:** The project is still in progress. We are continuously working on adding new features, improving existing functionalities, and addressing feedback from users. Our vision is to create a collaborative and dynamic learning environment that benefits a diverse audience and fosters a more inclusive approach to education.
 
-## Table of Contents
-
-1. [Environment Configuration](#environment-configuration)
-   - [Backend Configuration](#backend-configuration)
-2. [Installation and Build](#installation-and-build)
-   - [Option 1: Local Machine](#option-1-local-machine)
-   - [Option 2: Docker](#option-2-docker)
-3. [Usage](#usage)
-4. [Dependencies](#dependencies)
-   - [Backend](#backend)
-   - [Frontend](#frontend)
-5. [Contributing](#contributing)
-6. [License](#license)
-
 ## Environment Configuration
 
 To run this project, configure environment variables using a `.env` file located in the project's root directory. This file stores sensitive information and settings necessary for the application's functionality.
@@ -57,6 +59,9 @@ To run this project, configure environment variables using a `.env` file located
    - `JWT_KEY`: Choose a strong, random key for JSON Web Token (JWT) encryption.
    - `JWT_EXPIRES_IN_MINUTES`: Set the expiration time for JWT tokens in minutes.
    - `TEACHER_EMAIL`: Provide one or more teacher email addresses in a comma-separated list.
+   - `IP_ADDRESS`: Provide the IP address of the database server or any necessary external service (e.g., 192.168.1.100).
+
+Please ensure to check the `.env_sample` file for additional guidance on each setting.
 
 Example `.env` file:
 
@@ -66,6 +71,7 @@ CONNECTION_STRING=server=db;port=3306;user=myuser;password=mypassword;database=m
 JWT_KEY=mysecretkey
 JWT_EXPIRES_IN_MINUTES=60
 TEACHER_EMAIL=teacher1@example.com,teacher2@example.com
+IP_ADDRESS="192.168.1.100"
 ```
 
 ## Installation and Build
@@ -74,10 +80,7 @@ TEACHER_EMAIL=teacher1@example.com,teacher2@example.com
 
 1. Navigate to the project root directory.
 2. Start the Docker containers:
-
-   ```
-   docker-compose up
-   ```
+   `docker-compose up`
 
 ## Usage
 

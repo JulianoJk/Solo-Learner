@@ -13,6 +13,7 @@ import {
 } from '@tabler/icons-react';
 import React from 'react';
 import { useStyles } from './AdminNavBar.styles';
+// import { useAppState } from '../../../context/AppContext';
 
 const data = [
   { link: '', label: 'Notifications', icon: IconBellRinging },
@@ -26,6 +27,8 @@ const data = [
 
 export function NavbarSimpleColored() {
   const [active, setActive] = useState('Billing');
+  // const { selectedAdminNavbar } = useAppState();
+
   const { classes } = useStyles();
   const links = data.map((item) => (
     <a

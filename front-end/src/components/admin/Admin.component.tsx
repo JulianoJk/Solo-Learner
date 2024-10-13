@@ -15,7 +15,7 @@ import {
 } from '../../utils/formattedLastActive';
 // import UsersTable from './userManagment/AdminDashboard/UserTable.component';
 import AdminDrawer from '../navBar/AdminTabs.component';
-import Demo from '../Demo';
+
 import StudentmanagmenTable from './userManagment/AdminDashboard/StudentManagmentTable.component';
 import {
   IconChevronLeft,
@@ -91,7 +91,7 @@ const Admin = () => {
       case 'register_new_user':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       case 'Assignent':
-        return <Demo />;
+        return <StudentmanagmentTable />;
       case 'TestIt':
         return <NavbarSimpleColored />;
       default:
