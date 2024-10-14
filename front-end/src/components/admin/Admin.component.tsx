@@ -1,35 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+// Admin.js
+import React, { useState, useEffect } from 'react';
+import { Drawer, Button, Box } from '@mantine/core';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useUserDispatch, useUserState } from '../../context/UserContext';
+import { useAppState } from '../../context/AppContext';
+import { NavbarSimpleColored } from '../navBar/deleteAfter/AdminNavBar.component';
+import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
-import { Box, Button, Tooltip } from '@mantine/core';
-import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
-import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
-// import { AdminNavBar } from '../navBar/AdminNavBar.component';
-import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
-import { useAppState } from '../../context/AppContext';
-import {
-  LastActiveFormat,
-  formatLastActive,
-} from '../../utils/formattedLastActive';
-// import UsersTable from './userManagment/AdminDashboard/UserTable.component';
-import AdminDrawer from '../navBar/AdminTabs.component';
-
 import StudentmanagmenTable from './userManagment/AdminDashboard/StudentManagmentTable.component';
+import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
+import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconMinusVertical,
-} from '@tabler/icons-react';
-import { NavbarSimpleColored } from '../navBar/deleteAfter/AdminNavBar.component';
+  formatLastActive,
+  LastActiveFormat,
+} from '../../utils/formattedLastActive';
+import { useMediaQuery } from '@mantine/hooks';
+import AdminDrawer from '../navBar/AdminTabs.component';
 
 const Admin = () => {
   const { user } = useUserState();
   const { selectedAdminNavbar } = useAppState();
   const userDispatch = useUserDispatch();
-  const [isHovered, setIsHovered] = useState(false);
   const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
+  const [drawerOpened, setDrawerOpened] = useState(false);
+  const matches = useMediaQuery('(min-width: 56.25em)'); // Check for desktop
 
   const { data: adminDashboardData, isLoading: isAdminLoading } = useQuery(
     ['getAdminDashboardItems', user.token],
@@ -92,58 +87,65 @@ const Admin = () => {
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       case 'Assignent':
         return <StudentmanagmentTable />;
-      case 'TestIt':
-        return <NavbarSimpleColored />;
       default:
         return null;
     }
   };
 
   const ArrowButton = ({ onClick, isClosed }: any) => (
-    <span
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ display: 'flex', alignItems: 'center' }}
+    <Button
+      onClick={onClick}
+      style={{
+        position: 'absolute',
+        top: '20em',
+        right: '-2.6em', // Align on the right side
+        transform: 'translateY(-50%)',
+        zIndex: 999,
+        border: 'none',
+        background: 'transparent',
+      }}
+      size="lg"
     >
-      <Tooltip
-        label={isClosed ? 'Open sidebar' : 'Close sidebar'}
-        color="gray"
-        offset={-20}
-        position="right"
-        withArrow
-        arrowSize={10}
-      >
-        <Button
-          onClick={onClick}
-          style={{
-            position: 'absolute',
-            top: '20em',
-            left: '-2.6em',
-            transform: 'translateY(-50%)',
-            zIndex: 999,
-            border: 'none',
-            background: 'transparent',
-          }}
-          size="lg"
-        >
-          <div>
-            {!isHovered ? (
-              <IconMinusVertical size={30} stroke={4} color="gray" />
-            ) : isClosed ? (
-              <IconChevronLeft size={30} stroke={4} color="gray" />
-            ) : (
-              <IconChevronRight size={30} stroke={4} color="gray" />
-            )}
-          </div>
-        </Button>
-      </Tooltip>
-    </span>
+      <div>
+        {isClosed ? (
+          <IconChevronLeft size={30} stroke={4} color="gray" />
+        ) : (
+          <IconChevronRight size={30} stroke={4} color="gray" />
+        )}
+      </div>
+    </Button>
   );
 
   return (
     <Box style={{ position: 'relative' }}>
-      {/* {isNavbarVisible && <AdminNavBar />} */}
-      <AdminDrawer />
+      {/* Render Drawer only on mobile */}
+      {!matches && (
+        <Drawer
+          opened={drawerOpened}
+          onClose={() => setDrawerOpened(false)}
+          size="lg"
+          padding="md"
+          title="Solo Learner"
+          zIndex={1000000}
+        >
+          <NavbarSimpleColored
+            drawerOpened={drawerOpened}
+            setDrawerOpened={setDrawerOpened} // Pass the state and toggle function
+          />
+        </Drawer>
+      )}
+
+      {/* Render Arrow button on right side */}
+      {!matches && (
+        <ArrowButton
+          onClick={() => setDrawerOpened((prev) => !prev)}
+          isClosed={!drawerOpened}
+        />
+      )}
+
+      {/* Render AdminDrawer on desktop */}
+      {matches && <AdminDrawer />}
+
       {renderComponentToDisplay()}
     </Box>
   );

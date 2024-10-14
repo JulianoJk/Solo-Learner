@@ -3,12 +3,9 @@ import { createStyles } from '@mantine/emotion';
 
 export const useStyles = createStyles((theme) => ({
   navbar: {
-    height: rem(700),
-    width: rem(300),
     padding: theme.spacing.md,
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: theme.colors.dark[6],
     boxSizing: 'border-box',
   },
   navbarMain: {
@@ -33,27 +30,25 @@ export const useStyles = createStyles((theme) => ({
     alignItems: 'center',
     textDecoration: 'none',
     fontSize: theme.fontSizes.sm,
-    color: theme.colors.gray[6], // Change default link color to black
+    color: theme.colors.gray[6],
     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
     borderRadius: theme.radius.sm,
     fontWeight: 500,
-    userSelect: 'none', // Disable text selection
+    userSelect: 'none',
 
-    // Change color on hover
     '&:hover': {
       backgroundColor: theme.colors.blue[7],
-      color: theme.colors.yellow[5], // Change to your desired hover color
+      color: theme.colors.yellow[5],
       '& .linkIcon': {
-        color: theme.colors.yellow[5], // Change icon color on hover
+        color: theme.colors.yellow[5],
       },
     },
 
-    // Active link styles
     '&[data-active]': {
       '&, &:hover': {
         boxShadow: theme.shadows.sm,
         backgroundColor: theme.colors.blue[7],
-        color: theme.colors.yellow[5], // Change icon color on hover
+        color: theme.colors.yellow[5],
         '& .linkIcon': {
           color: theme.colors.blue[6],
         },
@@ -61,7 +56,7 @@ export const useStyles = createStyles((theme) => ({
     },
   },
   linkIcon: {
-    color: theme.colors.black, // Change icon color to match link
+    color: theme.colors.black,
     marginRight: theme.spacing.sm,
     width: rem(25),
     height: rem(25),

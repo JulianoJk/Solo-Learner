@@ -1,44 +1,57 @@
+// AdminNavBar.component.js
 import { useState } from 'react';
 import { Group, Code } from '@mantine/core';
 import {
-  IconBellRinging,
-  IconFingerprint,
-  IconKey,
-  IconSettings,
-  Icon2fa,
-  IconDatabaseImport,
-  IconReceipt2,
   IconSwitchHorizontal,
   IconLogout,
+  IconUserCog,
+  IconUserPlus,
+  IconSchool,
+  IconPencil,
 } from '@tabler/icons-react';
 import React from 'react';
 import { useStyles } from './AdminNavBar.styles';
-// import { useAppState } from '../../../context/AppContext';
+import { useAppDispatch, useAppState } from '../../../context/AppContext';
 
 const data = [
-  { link: '', label: 'Notifications', icon: IconBellRinging },
-  { link: '', label: 'Billing', icon: IconReceipt2 },
-  { link: '', label: 'Security', icon: IconFingerprint },
-  { link: '', label: 'SSH Keys', icon: IconKey },
-  { link: '', label: 'Databases', icon: IconDatabaseImport },
-  { link: '', label: 'Authentication', icon: Icon2fa },
-  { link: '', label: 'Other Settings', icon: IconSettings },
+  { link: 'userManagment', label: 'User Management', icon: IconUserCog },
+  { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
+  { link: 'billing', label: 'Billing', icon: IconSchool },
+  { link: 'Assignent', label: 'Assign Assignment', icon: IconPencil },
+  { link: 'TestIt', label: 'Test Me', icon: IconPencil },
 ];
 
-export function NavbarSimpleColored() {
-  const [active, setActive] = useState('Billing');
-  // const { selectedAdminNavbar } = useAppState();
+export function NavbarSimpleColored({
+  drawerOpened,
+  setDrawerOpened,
+}: {
+  drawerOpened: boolean;
+  setDrawerOpened: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const dispatch = useAppDispatch(); // Dispatch for handling active tab
+  const { selectedAdminNavbar } = useAppState(); // Get current selected navbar item
+  const [active, setActive] = useState(selectedAdminNavbar); // Set initial active from state
 
   const { classes } = useStyles();
+
+  const handleLinkClick = (label: string, link: string) => {
+    setActive(label);
+    dispatch({
+      type: 'SET_ACTIVE_ADMIN_NAV', // Update the context when clicked
+      selectedAdminNavbar: link,
+    });
+  };
+
   const links = data.map((item) => (
     <a
       className={classes.link}
       data-active={item.label === active || undefined}
-      href={item.link}
+      href={`#${item.link}`} // Ensure it has an href, if necessary
       key={item.label}
       onClick={(event) => {
         event.preventDefault();
-        setActive(item.label);
+        handleLinkClick(item.label, item.link);
+        if (drawerOpened) setDrawerOpened(false); // Close drawer on link click if opened
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />
