@@ -14,12 +14,12 @@
     "no-unused-vars": "off",
     "no-unexpected-multiline": "error",
     "@typescript-eslint/no-unused-vars": ["error"],
-
     "no-undef": "error"
   },
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "node": true // Add this line to recognize Node.js globals
   },
   "plugins": ["@typescript-eslint"]
 }

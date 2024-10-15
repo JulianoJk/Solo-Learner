@@ -1,72 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { profileAPI, updateUsernameAPI } from '../../../api/api';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { useMutation } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
-import { useAppDispatch, useAppState } from '../../../../context/AppContext';
-import {
-  IUserInfoContext,
-  UserContextState,
-} from '../../../../Model/UserModels';
-import { TextInput } from '@mantine/core';
+import { useAppDispatch } from '../../../../context/AppContext';
+import { IUserInfoContext } from '../../../../Model/UserModels';
+import { Button, TextInput } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
-import classes from '../Settings.modules.css';
-import { isUndefinedOrNullString } from '../../../../utils/utils';
-import { useLocation } from 'react-router-dom';
+import { updateUsernameAPI } from '../../../api/api';
+import { useStyles } from '../Settings.styles';
+
+interface IApiMessageResponse {
+  message: string;
+}
+
+interface IApiError {
+  error: {
+    message: string;
+  };
+}
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();
-  const { saveButtonClicked } = useAppState();
   const userDispatch = useUserDispatch();
   const { user } = useUserState();
+  const { classes } = useStyles();
 
-  const [newUsername, setNewUsername] = useState<string>('');
-
-  const email: string = user.email as string;
-  const hasToken = !isUndefinedOrNullString(user.token) ? user.token : ' ';
-  const { pathname } = useLocation();
-  const path = pathname;
-  const parts = path.split('/');
-  const usernameFromPath = parts[parts.length - 1];
-  useQuery(
-    ['getSettingsItems', hasToken],
-    async () => {
-      if (hasToken) {
-        const data: UserContextState | undefined = await profileAPI(
-          usernameFromPath,
-          hasToken,
-        );
-        return data;
-      }
+  const form = useForm({
+    initialValues: {
+      username: user.username || '',
     },
-    {
-      enabled: true,
-      onSuccess: (data) => {
-        const displayUsername: string = isUndefinedOrNullString(
-          data?.user.username,
-        )
-          ? (user.username as string)
-          : (data?.user.username as string);
-        setNewUsername(displayUsername);
+    validate: {
+      username: (value) => {
+        if (value.length < 3 || value.length > 20) {
+          return 'Username must be between 3 and 20 characters long.';
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+          return 'Username can only contain letters, numbers, and underscores.';
+        }
+        return null;
       },
     },
-  );
+  });
 
-  useEffect(() => {
-    if (saveButtonClicked) {
-      const userToken = user.token;
-      updateUsernameMutation({ token: userToken, email, newUsername });
-    }
-    appDispatch({
-      type: 'SETTINGS_SAVE_BUTTON_CLICKED',
-      saveButtonClicked: false,
-    });
-  }, [saveButtonClicked, user, email, newUsername]);
-
-  const { mutate: updateUsernameMutation } = useMutation(updateUsernameAPI, {
+  const { mutate: updateUsernameMutation } = useMutation<
+    IApiMessageResponse | IApiError,
+    unknown,
+    { token: string; email: string; username: string }
+  >((data) => updateUsernameAPI(data), {
     onSuccess: (data) => {
-      if (typeof data === 'object' && 'error' in data) {
-        // handle the error case
+      if ('error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
           errorAlertMessage: data.error.message,
@@ -74,11 +57,17 @@ export const ChangeUsernameSetting = () => {
       } else {
         const updatedUserInfo: IUserInfoContext = {
           ...user,
-          username: newUsername,
+          username: form.values.username,
         };
         userDispatch({ type: 'SET_USER', user: updatedUserInfo });
         noitificationAlert(data.message);
       }
+    },
+    onError: () => {
+      appDispatch({
+        type: 'SET_ERROR_ALERT_MESSAGE',
+        errorAlertMessage: 'An error occurred while updating the username.',
+      });
     },
   });
 
@@ -91,21 +80,30 @@ export const ChangeUsernameSetting = () => {
       icon: <IconMoodHappy color="black" size={18} />,
     });
   };
-  const onUsernameChange = (e: React.BaseSyntheticEvent): void => {
-    setNewUsername(e.target.value);
+
+  const handleSubmit = (values: { username: string }) => {
+    const userToken = user.token || '';
+    const email = user.email || '';
+    updateUsernameMutation({
+      token: userToken,
+      email,
+      username: values.username,
+    });
   };
 
   return (
     <>
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={form.onSubmit(handleSubmit)}>
         <TextInput
           leftSection={<IconMail />}
           type="text"
-          label={<span className={classes.inputLabels}>Your full name :</span>}
-          value={newUsername}
-          onChange={onUsernameChange}
-          autoComplete="on"
+          label={<span className={classes.inputLabels}>Your full name:</span>}
+          placeholder="Enter new username"
+          {...form.getInputProps('username')}
         />
+        <Button type="submit" mt="md">
+          Update Username
+        </Button>
       </form>
     </>
   );
