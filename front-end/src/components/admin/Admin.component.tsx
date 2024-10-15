@@ -9,7 +9,6 @@ import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
 
-
 import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 import {
   formatLastActive,

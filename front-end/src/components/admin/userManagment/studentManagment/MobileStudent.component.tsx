@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollArea,
   Group,
+  Anchor,
 } from '@mantine/core';
 import {
   IconDots,
@@ -23,9 +24,12 @@ import { keys } from '@mantine/utils';
 import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
 import { useUserState } from '../../../../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 export function StudentManagementCards() {
   const [search, setSearch] = useState('');
+  const navigate = useNavigate();
+
   const { allUsersAdminDashboard } = useUserState();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,15 +55,23 @@ export function StudentManagementCards() {
             radius={120}
             color={getRandomColor()}
             mx="auto"
+            key={row.username}
+            name={row.username}
           />
         </Card.Section>
-        <Text mt="md" size="lg">
-          {row.username}
+        <Text mt="md" size="lg" ta="center">
+          <Anchor
+            onClick={() => {
+              navigate(`/profile/${row.username}`);
+            }}
+          >
+            {row.username}
+          </Anchor>
         </Text>
-        <Text size="sm">
+        <Text size="sm" ta="center">
           <a href={`mailto:${row.email}`}>{row.email}</a>
         </Text>
-        <Text size="sm" color="dimmed">
+        <Text size="sm" c="dimmed" ta="center">
           Student since {row.createdAt}
         </Text>
         <Group mt="md">
@@ -93,7 +105,7 @@ export function StudentManagementCards() {
               </Menu.Item>
               <Menu.Item
                 rightSection={<IconTrash size="1rem" stroke={1.5} />}
-                color="red"
+                c="red"
               >
                 Terminate contract
               </Menu.Item>
