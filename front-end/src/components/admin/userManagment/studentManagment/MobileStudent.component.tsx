@@ -4,22 +4,12 @@ import {
   Grid,
   Card,
   Text,
-  ActionIcon,
-  Menu,
   TextInput,
   ScrollArea,
-  Group,
   Anchor,
+  Button,
 } from '@mantine/core';
-import {
-  IconDots,
-  IconMessages,
-  IconNote,
-  IconPencil,
-  IconReportAnalytics,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconPencil, IconSearch } from '@tabler/icons-react';
 import { keys } from '@mantine/utils';
 import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
@@ -46,15 +36,17 @@ export function StudentManagementCards() {
         padding="lg"
         radius="md"
         withBorder
-        sx={{ maxWidth: '20rem', margin: 'auto' }} // Center cards
+        sx={{ maxWidth: '20rem', margin: 'auto' }}
       >
         <Card.Section>
           <Avatar
+          variant='filled'
             size={120}
             src={row.picture}
             radius={120}
             color={getRandomColor()}
             mx="auto"
+            mt="sm"
             key={row.username}
             name={row.username}
           />
@@ -74,50 +66,28 @@ export function StudentManagementCards() {
         <Text size="sm" c="dimmed" ta="center">
           Student since {row.createdAt}
         </Text>
-        <Group mt="md">
-          <ActionIcon>
-            <IconPencil size="1rem" stroke={1.5} />
-          </ActionIcon>
-          <Menu
-            transitionProps={{ transition: 'pop' }}
-            withArrow
-            position="bottom-end"
-            withinPortal
-          >
-            <Menu.Target>
-              <ActionIcon>
-                <IconDots size="1rem" stroke={1.5} />
-              </ActionIcon>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                rightSection={<IconMessages size="1rem" stroke={1.5} />}
-              >
-                Send message
-              </Menu.Item>
-              <Menu.Item rightSection={<IconNote size="1rem" stroke={1.5} />}>
-                Add note
-              </Menu.Item>
-              <Menu.Item
-                rightSection={<IconReportAnalytics size="1rem" stroke={1.5} />}
-              >
-                Analytics
-              </Menu.Item>
-              <Menu.Item
-                rightSection={<IconTrash size="1rem" stroke={1.5} />}
-                c="red"
-              >
-                Terminate contract
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+        <Button
+          variant="outline"
+          fullWidth
+          mt="md"
+          leftSection={<IconPencil size="1.5rem" stroke={2} />}
+        >
+          Manage User
+        </Button>
       </Card>
     </Grid.Col>
   ));
 
   return (
-    <ScrollArea h={'88vh'}>
+    <ScrollArea
+      h={'88vh'}
+      offsetScrollbars={false}
+      styles={{
+        scrollbar: {
+          display: 'none',
+        },
+      }}
+    >
       <TextInput
         placeholder="Search by any field"
         mb="md"

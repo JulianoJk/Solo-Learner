@@ -99,7 +99,7 @@ const Admin = () => {
       style={{
         position: 'absolute',
         top: '20em',
-        right: '-2.6em', // Align on the right side
+        left: '-1.2em', // Align on the right side
         transform: 'translateY(-50%)',
         zIndex: 999,
         border: 'none',
@@ -108,7 +108,7 @@ const Admin = () => {
       size="lg"
     >
       <div>
-        {isClosed ? (
+        {!isClosed ? (
           <IconChevronLeft size={30} stroke={4} color="gray" />
         ) : (
           <IconChevronRight size={30} stroke={4} color="gray" />
