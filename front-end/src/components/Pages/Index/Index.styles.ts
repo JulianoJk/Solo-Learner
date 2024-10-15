@@ -25,7 +25,7 @@ export const useStyles = createStyles((theme, _, u) => ({
     lineHeight: 1.2,
     fontWeight: 900,
     color: 'white',
-    
+
     [u.smallerThan('xs')]: {
       fontSize: rem(28),
     },

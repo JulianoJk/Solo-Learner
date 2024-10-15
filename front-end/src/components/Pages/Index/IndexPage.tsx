@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { indexPage } from '../../api/api';
 import { useMediaQuery } from '@mantine/hooks';
 import { useStyles } from './Index.styles';
-import LangepageIllustration from './LangepageIllustration';
+import LandPageIllustration from './LandPageIllustration';
 
 const IndexPage = () => {
   const navigate = useNavigate();
@@ -118,7 +118,7 @@ const IndexPage = () => {
             </Button>
           </Group>
         </div>
-        <LangepageIllustration className={classes.image} />
+        <LandPageIllustration className={classes.image} />
       </div>
     </Container>
   );

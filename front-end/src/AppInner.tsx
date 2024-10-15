@@ -3,7 +3,6 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom';
 import {
   AppShell,
   Button,
-
   MantineThemeProvider,
   useMantineColorScheme,
 } from '@mantine/core';

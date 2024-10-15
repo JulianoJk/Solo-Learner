@@ -15,12 +15,16 @@ import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
 import { useUserState } from '../../../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../../context/AppContext';
+import MobileManageUserModal from './mobileManageUserModal/MobileManageUserModal.component';
+
 
 export function StudentManagementCards() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const { allUsersAdminDashboard } = useUserState();
+  const appDispatch = useAppDispatch();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -40,7 +44,7 @@ export function StudentManagementCards() {
       >
         <Card.Section>
           <Avatar
-          variant='filled'
+            variant="filled"
             size={120}
             src={row.picture}
             radius={120}
@@ -70,6 +74,12 @@ export function StudentManagementCards() {
           variant="outline"
           fullWidth
           mt="md"
+          onClick={() =>
+            appDispatch({
+              type: 'SET_ADMIN_MOBILE_MODAL_OPEN',
+              adminMobileModalOpen: true,
+            })
+          }
           leftSection={<IconPencil size="1.5rem" stroke={2} />}
         >
           Manage User
@@ -79,24 +89,27 @@ export function StudentManagementCards() {
   ));
 
   return (
-    <ScrollArea
-      h={'88vh'}
-      offsetScrollbars={false}
-      styles={{
-        scrollbar: {
-          display: 'none',
-        },
-      }}
-    >
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        rightSection={<IconSearch size="0.9rem" stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Grid gutter="md">{cards}</Grid>
-    </ScrollArea>
+    <>
+      <MobileManageUserModal />
+      <ScrollArea
+        h={'88vh'}
+        offsetScrollbars={false}
+        styles={{
+          scrollbar: {
+            display: 'none',
+          },
+        }}
+      >
+        <TextInput
+          placeholder="Search by any field"
+          mb="md"
+          rightSection={<IconSearch size="0.9rem" stroke={1.5} />}
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <Grid gutter="md">{cards}</Grid>
+      </ScrollArea>
+    </>
   );
 }
 
