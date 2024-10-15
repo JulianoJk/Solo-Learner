@@ -1,4 +1,10 @@
-import { hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
+import {
+  hasLength,
+  isEmail,
+  isNotEmpty,
+  matchesField,
+  useForm,
+} from '@mantine/form';
 import {
   TextInput,
   PasswordInput,
@@ -56,6 +62,8 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
   const form = useForm({
     initialValues: {
       email: '',
+      firstName: '',
+      lastName: '',
       username: '',
       gender: '',
       password: '',
@@ -65,8 +73,24 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
 
     validate: {
       email: isEmail('Invalid email'),
-      password: hasLength({ min: 6 }, 'Value must be 6 or more'),
-      confirmPassword: isNotEmpty('You must accept terms of use'),
+      firstName: isNotEmpty('First name is required'),
+      lastName: isNotEmpty('Last name is required'),
+      username: (value) => {
+        if (value.length < 3 || value.length > 20) {
+          return 'Username must be between 3 and 20 characters long';
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+          return 'Username can only contain letters, numbers, and underscores';
+        }
+        return null;
+      },
+      gender: isNotEmpty('Gender is required'),
+      password: hasLength(
+        { min: 6 },
+        'Password must be 6 or more characters long',
+      ),
+      confirmPassword: (value, values) =>
+        matchesField('password', 'Passwords do not match')(value, values),
       terms: isAdminRegister
         ? undefined
         : isNotEmpty('You must accept terms of use'),
@@ -77,7 +101,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
   return (
     <Center maw={600} mx="auto" style={{ marginTop: '1rem' }}>
       {isAuthLoading || isRegisterLoading ? (
-        <Preloader></Preloader>
+        <Preloader />
       ) : (
         <Paper
           className={rootClassName}
@@ -105,10 +129,12 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
             </>
           )}
           <form
-            onSubmit={form.onSubmit((value) => {
-              isAdminRegister && adminRefetchUserList && adminRefetchUserList();
+            onSubmit={form.onSubmit((values) => {
+              if (isAdminRegister && adminRefetchUserList) {
+                adminRefetchUserList();
+              }
               const { email, username, gender, password, confirmPassword } =
-                value;
+                values;
               register({ email, username, gender, password, confirmPassword });
             })}
           >
@@ -125,10 +151,37 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 error={form.errors.email && 'Invalid email'}
                 radius="md"
               />
+
+              {/* First Name and Last Name in the same row */}
+              <Group grow>
+                <TextInput
+                  withAsterisk
+                  label="First Name"
+                  placeholder="Your first name"
+                  value={form.values.firstName}
+                  onChange={(event) =>
+                    form.setFieldValue('firstName', event.currentTarget.value)
+                  }
+                  error={form.errors.firstName && 'First name is required'}
+                  radius="md"
+                />
+
+                <TextInput
+                  withAsterisk
+                  label="Last Name"
+                  placeholder="Your last name"
+                  value={form.values.lastName}
+                  onChange={(event) =>
+                    form.setFieldValue('lastName', event.currentTarget.value)
+                  }
+                  error={form.errors.lastName && 'Last name is required'}
+                  radius="md"
+                />
+              </Group>
+
               <TextInput
                 label="Username (optional)"
                 description="You can change it later"
-                // q: in css, how can I make a text to be italics?
                 descriptionProps={{ color: 'dimmed', size: 'xs' }}
                 placeholder="Username"
                 {...form.getInputProps('username')}
@@ -148,9 +201,10 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 }
                 radius="md"
               />
+
               <PasswordInput
                 withAsterisk
-                label="Confirm password"
+                label="Confirm Password"
                 placeholder="Confirm password"
                 value={form.values.confirmPassword}
                 onChange={(event) =>
@@ -162,9 +216,10 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 error={form.errors.confirmPassword && 'Passwords do not match'}
                 radius="md"
               />
+
               <Radio.Group
                 name="gender"
-                label="Select gender"
+                label="Select Gender"
                 withAsterisk
                 {...form.getInputProps('gender')}
               >
@@ -174,6 +229,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   <Radio value="other" label="Other" />
                 </Group>
               </Radio.Group>
+
               {!isAdminRegister && (
                 <Checkbox
                   label="I accept terms and conditions"
@@ -214,11 +270,13 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               </Button>
             </Group>
           </form>
-          {/*Display error message if any*/}
+
+          {/* Display error message if any */}
           <AlertComponent />
         </Paper>
       )}
     </Center>
   );
 };
+
 export default AuthenticationRegister;

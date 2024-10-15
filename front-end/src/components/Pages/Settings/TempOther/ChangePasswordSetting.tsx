@@ -8,9 +8,11 @@ import {
   IconEye,
 } from '@tabler/icons-react';
 import { hasLength, useForm } from '@mantine/form';
-import classes from '../Settings.modules.css';
+
 import { useDisclosure } from '@mantine/hooks';
+import { useStyles } from '../Settings.styles';
 const ChangePasswordSetting = () => {
+  const { classes } = useStyles();
   const [changePassVisible, setChangePassVisible] = useState<boolean>(true);
   const [opened, { toggle }] = useDisclosure(false, {
     onOpen: () => setChangePassVisible(false),

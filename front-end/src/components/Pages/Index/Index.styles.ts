@@ -1,62 +1,60 @@
-import { createStyles } from '@mantine/emotion';
 import { rem } from '@mantine/core';
+import { createStyles } from '@mantine/emotion';
 
 export const useStyles = createStyles((theme, _, u) => ({
-  container: {
-    height: rem(700),
+  inner: {
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    paddingBottom: `calc(${theme.spacing.xl} * 6)`,
-    zIndex: 1,
-    position: 'relative',
+    justifyContent: 'space-between',
+    paddingTop: `calc(${theme.spacing.xl} * 4)`,
+    paddingBottom: `calc(${theme.spacing.xl} * 4)`,
+  },
 
-    [u.smallerThan('sm')]: {
-      height: rem(500),
-      paddingBottom: `calc(${theme.spacing.xl} * 3)`,
+  content: {
+    maxWidth: rem(480),
+    marginRight: `calc(${theme.spacing.xl} * 3)`,
+
+    [u.smallerThan('md')]: {
+      maxWidth: '100%',
+      marginRight: 0,
     },
   },
 
   title: {
-    color: theme.white,
-    fontSize: rem(60),
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontSize: rem(44),
+    lineHeight: 1.2,
     fontWeight: 900,
-    lineHeight: 1.1,
-
-    [u.smallerThan('sm')]: {
-      fontSize: rem(40),
-      lineHeight: 1.2,
-    },
+    color: 'white',
 
     [u.smallerThan('xs')]: {
       fontSize: rem(28),
-      lineHeight: 1.3,
-    },
-  },
-
-  description: {
-    color: theme.white,
-    maxWidth: 600,
-
-    [u.smallerThan('sm')]: {
-      maxWidth: '100%',
-      fontSize: theme.fontSizes.sm,
     },
   },
 
   control: {
-    marginTop: `calc(${theme.spacing.xl} * 1.5)`,
-
-    [u.smallerThan('sm')]: {
-      width: '100%',
+    [u.smallerThan('xs')]: {
+      flex: 1,
     },
   },
-  wrapper: {
-    height: '90vh',
+
+  image: {
+    width: rem(376),
+    height: rem(356),
+
+    [u.smallerThan('md')]: {
+      display: 'none',
+    },
   },
-  overlay: {
-    width: '100%',
-    height: '100%',
+
+  highlight: {
+    position: 'relative',
+    [u.dark]: {
+      backgroundColor: '#00A6A6', // Vibrant cyan for dark mode
+    },
+    [u.light]: {
+      backgroundColor: '#4FD1C5', // Fresh turquoise for light mode
+    },
+    borderRadius: theme.radius.sm,
+    padding: `${rem(4)} ${rem(12)}`,
   },
 }));

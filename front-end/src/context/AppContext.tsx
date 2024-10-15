@@ -12,12 +12,13 @@ interface IAppStateContext {
   selectedAdminNavbar?: string;
   googleClientIsLoading?: boolean;
   isAuthLoading?: boolean;
+  adminMobileModalOpen?: boolean;
 }
 
 // Default state fot the Application context
 const defaultState: IAppStateContext = {
   isSmallWindow: false,
-  appTheme: 'light' ?? 'dark',
+  appTheme: 'light',
   errorAlertMessage: '',
   isUserSettingsOpen: false,
   isSessionExpired: false,
@@ -26,6 +27,7 @@ const defaultState: IAppStateContext = {
   selectedAdminNavbar: 'userManagment',
   googleClientIsLoading: false,
   isAuthLoading: false,
+  adminMobileModalOpen: false,
 };
 type TApplicationAction =
   | {
@@ -65,6 +67,10 @@ type TApplicationAction =
       isAuthLoading: boolean;
     }
   | {
+      type: 'SET_ADMIN_MOBILE_MODAL_OPEN';
+      adminMobileModalOpen: boolean;
+    }
+  | {
       type: 'RESET_ERROR_MESSAGE';
     };
 
@@ -100,6 +106,10 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, googleClientIsLoading: action.googleClientIsLoading };
     case 'SET_AUTH_IS_LOADING':
       return { ...state, isAuthLoading: action.isAuthLoading };
+    case 'SET_ADMIN_MOBILE_MODAL_OPEN':
+      console.log('action.adminMobileModalOpen', action.adminMobileModalOpen);
+      
+      return { ...state, adminMobileModalOpen: action.adminMobileModalOpen };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }

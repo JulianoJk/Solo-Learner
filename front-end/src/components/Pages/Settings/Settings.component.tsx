@@ -6,6 +6,7 @@ import { IconBellCog, IconUserCog } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import { useAppDispatch } from '../../../context/AppContext';
 import React from 'react';
+import { ChangeUsernameSetting } from './TempOther/ChangeUsernameSetting';
 // import { useStyles } from './Settings.styles';
 
 const data = [
@@ -70,6 +71,7 @@ const Settings = () => {
   //   >
   //     <Navbar.Section grow>{links}</Navbar.Section>
   //   </Navbar>
-  return <></>;
+  return <ChangeUsernameSetting></ChangeUsernameSetting>;
+  // return <></>;
 };
 export default Settings;
