@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import {
   Avatar,
-  Table,
-  Group,
+  Grid,
+  Card,
   Text,
   ActionIcon,
   Menu,
-  ScrollArea,
   TextInput,
+  ScrollArea,
+  Group,
 } from '@mantine/core';
 import {
   IconDots,
@@ -23,7 +24,7 @@ import { User } from '../../../../Model/UserModels';
 import { getRandomColor } from '../../../../utils/utils';
 import { useUserState } from '../../../../context/UserContext';
 
-export function StudentmanagmentTable() {
+export function StudentManagementCards() {
   const [search, setSearch] = useState('');
   const { allUsersAdminDashboard } = useUserState();
 
@@ -34,42 +35,34 @@ export function StudentmanagmentTable() {
 
   const filteredData = filterData(allUsersAdminDashboard, search);
 
-  const rows = filteredData.map((row) => (
-    <tr key={row.username}>
-      <td>
-        <Group gap="sm">
+  const cards = filteredData.map((row) => (
+    <Grid.Col key={row.username} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
+      <Card
+        shadow="sm"
+        padding="lg"
+        radius="md"
+        withBorder
+        sx={{ maxWidth: '20rem', margin: 'auto' }} // Center cards
+      >
+        <Card.Section>
           <Avatar
-            size={40}
+            size={120}
             src={row.picture}
-            radius={40}
+            radius={120}
             color={getRandomColor()}
+            mx="auto"
           />
-          <div>
-            <Text fz="sm" fw={500}>
-              {row.username}
-            </Text>
-            <Text c="dimmed" fz="xs">
-              {getJob(row.isAdmin, row.isTeacher)}
-            </Text>
-          </div>
-        </Group>
-      </td>
-      <td>
-        <Text fz="sm">
+        </Card.Section>
+        <Text mt="md" size="lg">
+          {row.username}
+        </Text>
+        <Text size="sm">
           <a href={`mailto:${row.email}`}>{row.email}</a>
         </Text>
-        <Text fz="xs" c="dimmed">
-          Email
+        <Text size="sm" color="dimmed">
+          Student since {row.createdAt}
         </Text>
-      </td>
-      <td>
-        <Text fz="sm">{row.createdAt}</Text>
-        <Text fz="xs" c="dimmed">
-          Student since
-        </Text>
-      </td>
-      <td>
-        <Group gap={0} justify="flex-end">
+        <Group mt="md">
           <ActionIcon>
             <IconPencil size="1rem" stroke={1.5} />
           </ActionIcon>
@@ -107,8 +100,8 @@ export function StudentmanagmentTable() {
             </Menu.Dropdown>
           </Menu>
         </Group>
-      </td>
-    </tr>
+      </Card>
+    </Grid.Col>
   ));
 
   return (
@@ -120,22 +113,7 @@ export function StudentmanagmentTable() {
         value={search}
         onChange={handleSearchChange}
       />
-      <Table
-        horizontalSpacing="md"
-        verticalSpacing="xs"
-        miw={700}
-        style={{ tableLayout: 'fixed' }}
-      >
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Student since</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </Table>
+      <Grid gutter="md">{cards}</Grid>
     </ScrollArea>
   );
 }
@@ -147,16 +125,4 @@ function filterData(data: User[], search: string) {
       item[key]?.toString().toLowerCase().includes(query),
     ),
   );
-}
-
-function getJob(isAdmin: boolean, isTeacher: boolean) {
-  if (isAdmin && isTeacher) {
-    return 'Admin/Teacher';
-  } else if (isAdmin) {
-    return 'Admin';
-  } else if (isTeacher) {
-    return 'Teacher';
-  } else {
-    return 'Student';
-  }
 }

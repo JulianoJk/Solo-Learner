@@ -8,8 +8,8 @@ import { NavbarSimpleColored } from '../navBar/deleteAfter/AdminNavBar.component
 import NotFound from '../Pages/Error/pageNotFound/NotFound.component';
 import { useQuery } from '@tanstack/react-query';
 import { adminDashboardAPI, adminGetAllUsersAPI } from '../api/api';
-import StudentmanagmenTable from './userManagment/AdminDashboard/StudentManagmentTable.component';
-import { StudentmanagmentTable } from './userManagment/studentManagment/StudentmanagmenTable';
+
+
 import RegisterNewUser from './registerNewUsers/RegisterNewUsers.component';
 import {
   formatLastActive,
@@ -17,6 +17,8 @@ import {
 } from '../../utils/formattedLastActive';
 import { useMediaQuery } from '@mantine/hooks';
 import AdminDrawer from '../navBar/AdminTabs.component';
+import { StudentManagementCards } from './userManagment/studentManagment/MobileStudent.component';
+import StudentmanagmenTable from './userManagment/studentManagment/StudentManagmentTable.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -80,13 +82,13 @@ const Admin = () => {
   const renderComponentToDisplay = () => {
     switch (selectedAdminNavbar) {
       case 'userManagment':
-        return <StudentmanagmenTable />;
+        return !matches ? <StudentManagementCards /> : <StudentmanagmenTable />;
       case 'billing':
-        return <StudentmanagmentTable />;
+        return <StudentmanagmenTable />;
       case 'register_new_user':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       case 'Assignent':
-        return <StudentmanagmentTable />;
+        return <StudentmanagmenTable />;
       default:
         return null;
     }
