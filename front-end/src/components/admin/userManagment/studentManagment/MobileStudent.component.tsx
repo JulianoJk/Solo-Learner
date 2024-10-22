@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../../context/AppContext';
 import MobileManageUserModal from './mobileManageUserModal/MobileManageUserModal.component';
 
-
 export function StudentManagementCards() {
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
