@@ -9,17 +9,30 @@ import {
   Anchor,
   rem,
   TextInput,
+  Menu,
 } from '@mantine/core';
-import { IconPencil, IconSearch, IconTrash } from '@tabler/icons-react';
+import {
+  IconPencil,
+  IconSearch,
+  IconTrash,
+  IconSettings,
+  IconPhoto,
+  IconArrowsLeftRight,
+} from '@tabler/icons-react';
 import { useUserState } from '../../../../context/UserContext';
 import { User } from '../../../../Model/UserModels';
 import { keys } from '@mantine/utils';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../../../context/AppContext';
+import MobileManageUserModal from './mobileManageUserModal/MobileManageUserModal.component';
 
 const StudentmanagmenTable = () => {
   const [search, setSearch] = useState('');
+
   const { allUsersAdminDashboard } = useUserState();
+
   const navigate = useNavigate();
+  const appDispatch = useAppDispatch();
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
@@ -58,12 +71,54 @@ const StudentmanagmenTable = () => {
       <Table.Td>{row.createdAt}</Table.Td>
       <Table.Td>
         <Group gap={0} justify="flex-end">
-          <ActionIcon variant="subtle" color="gray">
-            <IconPencil
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
+          {/* Using Menu Dropdown triggered by IconPencil */}
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <ActionIcon variant="subtle" color="gray">
+                <IconPencil
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Label>Manage User</Menu.Label>
+              <Menu.Item
+                onClick={() => {
+                  console.log('Edit User');
+                  appDispatch({
+                    type: 'SET_ADMIN_MOBILE_MODAL_OPEN',
+                    adminMobileModalOpen: true,
+                  });
+                }}
+                leftSection={
+                  <IconSettings style={{ width: rem(14), height: rem(14) }} />
+                }
+              >
+                Edit User
+              </Menu.Item>
+              <Menu.Item
+                disabled
+                leftSection={
+                  <IconPhoto style={{ width: rem(14), height: rem(14) }} />
+                }
+              >
+                View Profile
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item
+                disabled
+                leftSection={
+                  <IconArrowsLeftRight
+                    style={{ width: rem(14), height: rem(14) }}
+                  />
+                }
+              >
+                Transfer Data
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+
           <ActionIcon variant="subtle" color="red">
             <IconTrash
               style={{ width: rem(16), height: rem(16) }}
@@ -76,27 +131,30 @@ const StudentmanagmenTable = () => {
   ));
 
   return (
-    <Table.ScrollContainer minWidth={800}>
-      <TextInput
-        placeholder="Search by name or email"
-        mb="md"
-        rightSection={<IconSearch size="0.9rem" stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Table verticalSpacing="sm">
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th>Name</Table.Th>
-            <Table.Th>Email</Table.Th>
-            <Table.Th>Role</Table.Th>
-            <Table.Th>Student Since</Table.Th>
-            <Table.Th />
-          </Table.Tr>
-        </Table.Thead>
-        <Table.Tbody>{rows}</Table.Tbody>
-      </Table>
-    </Table.ScrollContainer>
+    <>
+      <Table.ScrollContainer minWidth={800}>
+        <TextInput
+          placeholder="Search by name or email"
+          mb="md"
+          rightSection={<IconSearch size="0.9rem" stroke={1.5} />}
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <Table verticalSpacing="sm">
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th>Name</Table.Th>
+              <Table.Th>Email</Table.Th>
+              <Table.Th>Role</Table.Th>
+              <Table.Th>Student Since</Table.Th>
+              <Table.Th />
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>{rows}</Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
+      <MobileManageUserModal />
+    </>
   );
 };
 
