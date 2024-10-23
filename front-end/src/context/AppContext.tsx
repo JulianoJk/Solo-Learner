@@ -108,7 +108,6 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
       return { ...state, isAuthLoading: action.isAuthLoading };
     case 'SET_ADMIN_MOBILE_MODAL_OPEN':
       console.log('action.adminMobileModalOpen', action.adminMobileModalOpen);
-
       return { ...state, adminMobileModalOpen: action.adminMobileModalOpen };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
