@@ -5,6 +5,7 @@ public class GoogleAuthService
 {
     private readonly AuthenticationUtils _authenticator;
 
+
     public GoogleAuthService()
     {
         _authenticator = new AuthenticationUtils();
@@ -39,9 +40,15 @@ public class GoogleAuthService
                 string isUserRegistered = _authenticator.GetUserEmailFromGoogleId(userEmail);
                 if (isUserRegistered != null)
                 {
-                    // Retrieve additional user information from the database
                     var additionalUserInfo = _authenticator.GetAdditionalUserInfoFromDb(userEmail);
+                    string token = JwtUtils.GenerateJwt(userEmail, additionalUserInfo?.Id.ToString(), additionalUserInfo.IsTeacher, additionalUserInfo.IsAdmin);
 
+                    if (responseDict.TryGetValue("id_token", out string idToken))
+                    {
+                        responseDict["id_token"] = idToken;
+                    }
+
+                    responseDict["jwt_token"] = token;
                     responseDict["messageToUser"] = "Great to see you! You're all set to go! :)";
                     responseDict["authMethod"] = "Login successful!";
                     responseDict["id"] = additionalUserInfo?.Id.ToString();
@@ -50,17 +57,15 @@ public class GoogleAuthService
                     responseDict["picture"] = additionalUserInfo?.Picture;
 
                     await userRepository.UpdateUserIsLoggedIn(true, userEmail);
-
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsJsonAsync(responseDict);
                 }
                 else
                 {
                     RegisterGoogleUser registerGoogleUser = new RegisterGoogleUser(responseDict);
-                    // Pass the 'picture' from jwtData to HandleRegistrationRequest
                     await registerGoogleUser.HandleRegistrationRequest(
                         context,
-                        responseDict, // Pass the responseDict directly
+                        responseDict,
                         responseDict["picture"]
                     );
                 }
@@ -119,6 +124,12 @@ public class GoogleAuthService
             var userInfoResponse = await client.SendAsync(userInfoRequest);
             var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
             var userInfoDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfoContent);
+
+            // Optionally add id_token if present in responseDict
+            if (responseDict.TryGetValue("id_token", out string idToken))
+            {
+                userInfoDict["id_token"] = idToken;
+            }
 
             return userInfoDict;
         }

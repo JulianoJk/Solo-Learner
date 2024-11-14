@@ -36,7 +36,6 @@ export function useGoogleAuth() {
   };
 
   const handleGoogleAuthSuccess = (token: string, data: any) => {
-    // window.location.reload();
     appDispatch({
       type: 'SET_AUTH_IS_LOADING',
       isAuthLoading: false,
@@ -58,7 +57,7 @@ export function useGoogleAuth() {
       navigate('/home');
       notificationAlert({
         title: data.authMethod ?? 'Welcome!',
-        message: 'Congratulations! Your account has been created. ',
+        message: 'Congratulations! Your account has been created.',
         icon: <IconCheck size={18} />,
         iconColor: 'teal',
       });
@@ -80,7 +79,7 @@ export function useGoogleAuth() {
           googleUserInfo.response.status === 200
         ) {
           handleGoogleAuthSuccess(
-            googleUserInfo?.data?.id_token,
+            googleUserInfo?.data?.token || googleUserInfo?.data?.id_token,
             googleUserInfo.data,
           );
         } else {
