@@ -3,6 +3,7 @@ import { Modal, Button, Grid, Divider, Text, Stack } from '@mantine/core';
 import React from 'react';
 import { useAppDispatch, useAppState } from '../../../../../context/AppContext';
 import { useDeleteUser } from '../../../../hooks/useDeleteUser';
+import ConfirmationModal from '../../../../ConfirmationModal/ConfirmationModal.component';
 
 const MobileManageUserModal = () => {
   const { adminMobileModalOpen } = useAppState();
@@ -105,11 +106,13 @@ const MobileManageUserModal = () => {
           color="red"
           // TODO!: Add id for the handleDeleteUser
           // onClick={() => handleDeleteUser(row.id.toString())}
+
           disabled={isLoading} // Disable button while deletion is happening
         >
           Delete User
         </Button>
       </Stack>
+      <ConfirmationModal />
     </Modal>
   );
 };

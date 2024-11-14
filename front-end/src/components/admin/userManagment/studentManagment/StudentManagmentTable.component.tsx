@@ -11,7 +11,6 @@ import {
   TextInput,
   Menu,
   Checkbox,
-  Button,
 } from '@mantine/core';
 import {
   IconPencil,
@@ -29,6 +28,7 @@ import { useAppDispatch } from '../../../../context/AppContext';
 import MobileManageUserModal from './mobileManageUserModal/MobileManageUserModal.component';
 import { getBadgeColor, getJob } from '../../../../utils/utils';
 import { useDeleteUser } from '../../../hooks/useDeleteUser';
+import ConfirmationModal from '../../../ConfirmationModal/ConfirmationModal.component';
 
 const StudentManagementTable = () => {
   const [search, setSearch] = useState('');
@@ -99,7 +99,6 @@ const StudentManagementTable = () => {
       <Table.Td>{row.createdAt}</Table.Td>
       <Table.Td>
         <Group gap={0} justify="flex-end">
-          {/* Using Menu Dropdown triggered by IconPencil */}
           <Menu shadow="md" width={200}>
             <Menu.Target>
               <ActionIcon variant="subtle" color="gray">
@@ -113,7 +112,6 @@ const StudentManagementTable = () => {
               <Menu.Label>Manage User</Menu.Label>
               <Menu.Item
                 onClick={() => {
-                  console.log('Edit User');
                   appDispatch({
                     type: 'SET_ADMIN_MOBILE_MODAL_OPEN',
                     adminMobileModalOpen: true,
@@ -197,9 +195,6 @@ const StudentManagementTable = () => {
                         <ActionIcon
                           color="gray"
                           variant="filled"
-                          onClick={() => {
-                            console.log('Maximize action for selected users');
-                          }}
                           title="Maximize selection"
                         >
                           <IconSettings
@@ -223,13 +218,25 @@ const StudentManagementTable = () => {
                       Send all message
                     </Menu.Item>
                     <Menu.Item
-                      disabled
                       leftSection={
                         <IconTrash
                           style={{ width: rem(14), height: rem(14) }}
                         />
                       }
                       color="red"
+                      onClick={() => {
+                        const selectedUsers = filteredData.filter((user) =>
+                          selection.includes(user.id.toString()),
+                        );
+                        appDispatch({
+                          type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+                          isAdminDeleteModalOpen: true,
+                        });
+                        appDispatch({
+                          type: 'SET_USERS_TO_DELETE',
+                          users: selectedUsers,
+                        });
+                      }}
                     >
                       Delete Selected
                     </Menu.Item>
@@ -241,18 +248,8 @@ const StudentManagementTable = () => {
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      {selection.length > 0 && (
-        <Button
-          variant="outline"
-          onClick={() => {
-            console.log('Action for selected users');
-          }}
-          mt="md"
-        >
-          Action for Selected Users
-        </Button>
-      )}
       <MobileManageUserModal />
+      <ConfirmationModal />
     </>
   );
 };
