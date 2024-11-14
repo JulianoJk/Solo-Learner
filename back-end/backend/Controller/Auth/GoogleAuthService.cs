@@ -103,10 +103,27 @@ public class GoogleAuthService
 
         var response = await client.SendAsync(request);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<
-            Dictionary<string, string>
-        >(responseContent);
+        Console.WriteLine("Response from Google Token Exchange: " + responseContent);
+
+        var responseDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(responseContent);
+
+        if (responseDict.TryGetValue("access_token", out string accessToken))
+        {
+            // Use the access token to fetch the user's profile
+            var userInfoRequest = new HttpRequestMessage(
+                HttpMethod.Get,
+                "https://www.googleapis.com/oauth2/v1/userinfo?alt=json"
+            );
+            userInfoRequest.Headers.Add("Authorization", $"Bearer {accessToken}");
+
+            var userInfoResponse = await client.SendAsync(userInfoRequest);
+            var userInfoContent = await userInfoResponse.Content.ReadAsStringAsync();
+            var userInfoDict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(userInfoContent);
+
+            return userInfoDict;
+        }
 
         return responseDict;
     }
+
 }
