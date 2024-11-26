@@ -13,6 +13,8 @@ interface IAppStateContext {
   googleClientIsLoading?: boolean;
   isAuthLoading?: boolean;
   adminMobileModalOpen?: boolean;
+  isAdminDeleteModalOpen?: boolean;
+  usersToDelete: { username: string; email: string }[];
 }
 
 // Default state fot the Application context
@@ -28,6 +30,8 @@ const defaultState: IAppStateContext = {
   googleClientIsLoading: false,
   isAuthLoading: false,
   adminMobileModalOpen: false,
+  isAdminDeleteModalOpen: false,
+  usersToDelete: [],
 };
 type TApplicationAction =
   | {
@@ -71,6 +75,15 @@ type TApplicationAction =
       adminMobileModalOpen: boolean;
     }
   | {
+      type: 'SET_ADMIN_DELETE_MODAL_OPEN';
+      isAdminDeleteModalOpen: boolean;
+    }
+  | {
+      type: 'SET_USERS_TO_DELETE';
+      users: { username: string; email: string }[];
+    }
+  | { type: 'CLEAR_USERS_TO_DELETE' }
+  | {
       type: 'RESET_ERROR_MESSAGE';
     };
 
@@ -107,9 +120,16 @@ const appReducer = (state: IAppStateContext, action: TApplicationAction) => {
     case 'SET_AUTH_IS_LOADING':
       return { ...state, isAuthLoading: action.isAuthLoading };
     case 'SET_ADMIN_MOBILE_MODAL_OPEN':
-      console.log('action.adminMobileModalOpen', action.adminMobileModalOpen);
-      
       return { ...state, adminMobileModalOpen: action.adminMobileModalOpen };
+    case 'SET_USERS_TO_DELETE':
+      return { ...state, usersToDelete: action.users };
+    case 'CLEAR_USERS_TO_DELETE':
+      return { ...state, usersToDelete: [] };
+    case 'SET_ADMIN_DELETE_MODAL_OPEN':
+      return {
+        ...state,
+        isAdminDeleteModalOpen: action.isAdminDeleteModalOpen,
+      };
     case 'RESET_ERROR_MESSAGE':
       return { ...state, errorAlertMessage: '' };
   }

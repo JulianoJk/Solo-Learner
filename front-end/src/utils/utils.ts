@@ -104,18 +104,23 @@ export const checkTokenValidity = (token: string | null): boolean => {
 };
 export function getJob(isAdmin: boolean, isTeacher: boolean) {
   if (isAdmin && isTeacher) {
-    return 'admin/teacher';
+    return 'Admin/Teacher';
   } else if (isAdmin) {
-    return 'admin';
+    return 'Admin';
   } else if (isTeacher) {
-    return 'teacher';
+    return 'Teacher';
   } else {
-    return 'student';
+    return 'Student';
   }
 }
-export const roleColors: Record<string, string> = {
-  student: 'blue',
-  admin: 'pink',
-  teacher: 'cyan',
-  'admin/teacher': 'orange',
-};
+export function getBadgeColor(isAdmin: boolean, isTeacher: boolean) {
+  if (isAdmin && isTeacher) {
+    return '#311B92'; // Dark Indigo
+  } else if (isAdmin) {
+    return '#3E2723'; // Dark Brown
+  } else if (isTeacher) {
+    return '#1B5E20'; // Dark Green
+  } else {
+    return '#F57C00'; // Dark Amber
+  }
+}

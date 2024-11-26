@@ -154,8 +154,8 @@ export const saveProfileImageAPI = async ({
   email,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(URL + `users/deleteAccount/${token}`, {
-      method: 'DELETE',
+    const response = await fetch(URL + `users/update/${token}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,
