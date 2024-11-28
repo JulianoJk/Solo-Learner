@@ -8,7 +8,6 @@ RUN dotnet add package Microsoft.AspNetCore.Cors
 RUN dotnet add package Microsoft.AspNetCore
 RUN dotnet add package dotenv.net
 RUN dotnet add package MySql.Data
-RUN dotnet add package MailKit
 RUN dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.0
 RUN dotnet add package Microsoft.EntityFrameworkCore --version 6.0.0
 RUN dotnet add package Microsoft.EntityFrameworkCore.Design --version 6.0.0
@@ -16,6 +15,7 @@ RUN dotnet add package Microsoft.EntityFrameworkCore.Tools --version 6.0.0
 RUN dotnet add package Microsoft.IdentityModel.Tokens
 RUN dotnet add package Google.Apis.Auth --version 1.67.0
 RUN dotnet add package Google.Apis.Drive.v3
+RUN dotnet add package SendGrid
 # RUN dotnet add package BCrypt.Net-Next
 
 COPY . ./

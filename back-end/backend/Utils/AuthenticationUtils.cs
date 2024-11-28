@@ -244,6 +244,31 @@ public class AuthenticationUtils
 
         return null;
     }
+    public string? GetAuthMethod(string email)
+    {
+        using (var connection = new MySqlConnection(ConnectionString.Value))
+        {
+            connection.Open();
+
+            using (var command = new MySqlCommand(
+                "SELECT authMethod FROM users WHERE email = @Email",
+                connection
+            ))
+            {
+                command.Parameters.AddWithValue("@Email", email);
+
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        return reader.GetString("authMethod");
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     public class UserInfo
     {

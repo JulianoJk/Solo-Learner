@@ -38,8 +38,11 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       TZ: "Europe/Athens"
-      # Added IP_ADDRESS
       IP_ADDRESS: ${IP_ADDRESS} # Pass the IP address to the backend
+      SMTP_HOST: ${SMTP_HOST} # Added for email sending
+      SMTP_PORT: ${SMTP_PORT} # Added for email sending
+      EMAIL_FROM: ${EMAIL_FROM} # Added for email sending
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD} # Added for email sending
     depends_on:
       - db
     networks:
