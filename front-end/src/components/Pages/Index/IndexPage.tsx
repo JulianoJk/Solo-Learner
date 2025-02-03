@@ -12,7 +12,6 @@ import {
 import { IconCheck } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { indexPage } from '../../api/api';
-import { useMediaQuery } from '@mantine/hooks';
 import { useStyles } from './Index.styles';
 import LandPageIllustration from './LandPageIllustration';
 
@@ -20,17 +19,17 @@ const IndexPage = () => {
   const navigate = useNavigate();
   const { classes } = useStyles();
   const [loading, setLoading] = useState(true);
-  const matches = useMediaQuery('(min-width: 56.25em)');
+  // const matches = useMediaQuery('(min-width: 56.25em)');
 
-  // Lock scrolling when desktop view is active
-  useEffect(() => {
-    if (matches) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = 'auto';
-      };
-    }
-  }, [matches]);
+  // // Lock scrolling when desktop view is active
+  // useEffect(() => {
+  //   if (matches) {
+  //     document.body.style.overflow = 'hidden';
+  //     return () => {
+  //       document.body.style.overflow = 'auto';
+  //     };
+  //   }
+  // }, [matches]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
