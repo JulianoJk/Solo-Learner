@@ -19,17 +19,6 @@ const IndexPage = () => {
   const navigate = useNavigate();
   const { classes } = useStyles();
   const [loading, setLoading] = useState(true);
-  // const matches = useMediaQuery('(min-width: 56.25em)');
-
-  // // Lock scrolling when desktop view is active
-  // useEffect(() => {
-  //   if (matches) {
-  //     document.body.style.overflow = 'hidden';
-  //     return () => {
-  //       document.body.style.overflow = 'auto';
-  //     };
-  //   }
-  // }, [matches]);
 
   useEffect(() => {
     const checkAuthentication = async () => {
