@@ -1,21 +1,20 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useEffect, useState } from 'react';
 import {
-  Overlay,
   Container,
   Title,
   Button,
+  Group,
   Text,
-  BackgroundImage,
+  List,
+  ThemeIcon,
+  rem,
 } from '@mantine/core';
-
+import { IconCheck } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-
-import { useEffect, useState } from 'react';
 import { indexPage } from '../../api/api';
-
-import { useMediaQuery } from '@mantine/hooks';
-import React from 'react';
 import { useStyles } from './Index.styles';
+import LandPageIllustration from './LandPageIllustration';
+
 const IndexPage = () => {
   const navigate = useNavigate();
   const { classes } = useStyles();
@@ -24,25 +23,18 @@ const IndexPage = () => {
   useEffect(() => {
     const checkAuthentication = async () => {
       try {
-        // Retrieve the JWT token from local storage
         const jwtToken = localStorage.getItem('jwtToken');
-
-        // If the token is present, pass it to the authentication function
         if (jwtToken) {
           const response: any = await indexPage(jwtToken);
-
-          // If the user is logged in, navigate to the specified path
           if (response && response.navigateUser) {
             navigate(response.navigateUser);
           }
         } else {
-          // Token is not present, continue with loading
           setLoading(false);
         }
       } catch (error) {
         console.error('Failed to check authentication:', error);
       } finally {
-        // Set loading to false once authentication check is complete
         setLoading(false);
       }
     };
@@ -50,34 +42,72 @@ const IndexPage = () => {
     checkAuthentication();
   }, [navigate]);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Container className={classes.container}>
-      {loading ? (
-        // Render a loading indicator
-        <div>Loading...</div>
-      ) : (
-        <>
-          <Title className={classes.title} c="white">
-            Welcome to Solo learner, your free English language learning
-            platform
+    <Container size="md">
+      <div className={classes.inner}>
+        <div className={classes.content}>
+          <Title className={classes.title}>
+            Welcome to <span className={classes.highlight}>Solo learner</span>
+            , your free <br /> multilingual platform for language learning
           </Title>
-          <Text className={classes.description} size="xl" mt="xl" c="white">
-            Master the English language faster than ever - Solo learner provides
-            comprehensive theory lessons, interactive exercises, and tests to
-            help you in every step of your learning journey.
+          <Text c="dimmed" mt="md">
+            Master foreign languages faster than ever – Solo learner provides
+            comprehensive lessons, interactive exercises, and tests to guide you
+            through every step, completely free for all users and teachers.
           </Text>
 
-          <Button
-            variant="gradient"
-            size="xl"
-            radius="xl"
-            className={classes.control}
-            onClick={() => navigate('/login')}
+          <List
+            mt={30}
+            spacing="sm"
+            size="sm"
+            icon={
+              <ThemeIcon size={20} radius="xl">
+                <IconCheck
+                  style={{ width: rem(12), height: rem(12) }}
+                  stroke={1.5}
+                />
+              </ThemeIcon>
+            }
           >
-            Start Learning
-          </Button>
-        </>
-      )}
+            <List.Item>
+              <b>Comprehensive theory lessons</b> – Get in-depth understanding
+              of key concepts across various languages.
+            </List.Item>
+            <List.Item>
+              <b>Interactive exercises</b> – Practice and enhance your skills in
+              a fun and engaging way.
+            </List.Item>
+            <List.Item>
+              <b>Personalized tests</b> – Receive tailored feedback to help you
+              improve.
+            </List.Item>
+          </List>
+
+          <Group mt={30}>
+            <Button
+              radius="xl"
+              size="md"
+              className={classes.control}
+              onClick={() => navigate('/login')}
+            >
+              Start Learning
+            </Button>
+            <Button
+              variant="default"
+              radius="xl"
+              size="md"
+              className={classes.control}
+            >
+              Learn More
+            </Button>
+          </Group>
+        </div>
+        <LandPageIllustration className={classes.image} />
+      </div>
     </Container>
   );
 };

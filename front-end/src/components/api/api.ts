@@ -5,7 +5,9 @@ import {
   IUserInfoContext,
   UserContextState,
 } from '../../Model/UserModels';
-const URL: string = 'http://localhost:3001/';
+
+const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
+
 export const loginAPI = async ({
   email,
   password,
@@ -152,8 +154,8 @@ export const saveProfileImageAPI = async ({
   email,
 }: any): Promise<IUserInfoContext | undefined> => {
   try {
-    const response = await fetch(URL + `users/deleteAccount/${token}`, {
-      method: 'DELETE',
+    const response = await fetch(URL + `users/update/${token}`, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: email,

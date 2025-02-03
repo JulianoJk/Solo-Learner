@@ -274,7 +274,7 @@ const HeaderMegaMenu = () => {
                           leftSection={<IconUser size="0.9rem" stroke={1.5} />}
                           onClick={() => navigateUserTo('/admin/dashboard')}
                         >
-                          Admin settings
+                          Admin Dashboard
                         </Menu.Item>
 
                         <Menu.Label>Main Navigation</Menu.Label>
