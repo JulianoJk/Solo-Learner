@@ -16,6 +16,8 @@ RUN dotnet add package Microsoft.IdentityModel.Tokens
 RUN dotnet add package Google.Apis.Auth --version 1.67.0
 RUN dotnet add package Google.Apis.Drive.v3
 RUN dotnet add package SendGrid
+RUN dotnet add package Microsoft.Graph
+
 # RUN dotnet add package BCrypt.Net-Next
 
 COPY . ./

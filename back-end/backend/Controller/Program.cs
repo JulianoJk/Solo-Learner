@@ -28,11 +28,11 @@ builder.Services
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtKey.Value)),
             ValidateIssuer = true,
-            ValidIssuer = "http://localhost:3001",
+            ValidIssuer = ApiUrl.Value,
             ValidateAudience = true,
-            ValidAudience = "http://localhost:3000",
+            ValidAudience = ApiUrl.Value,
             ValidateLifetime = true,
-            ClockSkew = TimeSpan.FromMinutes(5) // Set a reasonable clock skew
+            ClockSkew = TimeSpan.FromMinutes(5)
         };
     });
 
@@ -43,6 +43,7 @@ var app = builder.Build();
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapGet(
     "/",
