@@ -1,10 +1,16 @@
 import { Text, ScrollArea, List, Code } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import React, { useEffect } from 'react';
+import { useAppDispatch } from '../../context/AppContext';
 import { useAppState } from '../../context/AppContext';
+import { useDeleteUser } from '../hooks/useDeleteUser';
 
 const ConfirmationModal = () => {
   const { isAdminDeleteModalOpen, usersToDelete } = useAppState();
+  const appDispatch = useAppDispatch();
+
+  console.log(usersToDelete);
+  const { handleDeleteUser } = useDeleteUser();
 
   const userList = (
     <List>
@@ -21,12 +27,12 @@ const ConfirmationModal = () => {
       modals.openConfirmModal({
         title: 'Please confirm your action',
         closeOnConfirm: false,
-        labels: { confirm: 'Next modal', cancel: 'Close modal' },
+        labels: { confirm: 'Delete user(s)', cancel: 'Cancel' },
         children: (
           <>
             <Text size="sm">
-              Are you sure you want to delete the following user(s)? This action
-              cannot be undone.
+              Please confirm that you want to permanently delete the selected
+              user(s). This action cannot be undone.
             </Text>
 
             <ScrollArea
@@ -40,20 +46,22 @@ const ConfirmationModal = () => {
             </ScrollArea>
           </>
         ),
-        onConfirm: () =>
-          modals.openConfirmModal({
-            title: 'This is modal at second layer',
-            labels: { confirm: 'Delete user(s)', cancel: 'Back' },
-            confirmProps: { color: 'red' },
-            closeOnConfirm: false,
-            children: (
-              <Text size="sm">
-                Please confirm that you want to permanently delete the selected
-                user(s). This action cannot be undone.
-              </Text>
-            ),
-            onConfirm: modals.closeAll,
-          }),
+        onConfirm: () => {
+          appDispatch({
+            type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+            isAdminDeleteModalOpen: false,
+          });
+          handleDeleteUser(usersToDelete.map((user) => user.id.toString()));
+          modals.closeAll();
+        },
+
+        onCancel: () => {
+          appDispatch({
+            type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+            isAdminDeleteModalOpen: false,
+          });
+          modals.closeAll();
+        },
       });
     }
   }, [isAdminDeleteModalOpen, usersToDelete]);

@@ -1,4 +1,5 @@
 import React, { useContext, useReducer } from 'react';
+import { User } from '../Model/UserModels';
 import { IChildrenProvider } from '../Model/models';
 // import { ColorScheme } from '@mantine/core';
 interface IAppStateContext {
@@ -14,7 +15,7 @@ interface IAppStateContext {
   isAuthLoading?: boolean;
   adminMobileModalOpen?: boolean;
   isAdminDeleteModalOpen?: boolean;
-  usersToDelete: { username: string; email: string }[];
+  usersToDelete: User[]; // Use the user type here
 }
 
 // Default state fot the Application context
@@ -80,7 +81,7 @@ type TApplicationAction =
     }
   | {
       type: 'SET_USERS_TO_DELETE';
-      users: { username: string; email: string }[];
+      users: User[];
     }
   | { type: 'CLEAR_USERS_TO_DELETE' }
   | {

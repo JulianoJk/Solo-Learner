@@ -5,7 +5,7 @@ export interface IUserInfoContext {
   name?: string;
   username?: string;
   token: string;
-  id?: string | undefined;
+  id?: string;
   createdAt?: Date | string;
   isTeacher?: boolean;
   email?: string;
@@ -13,6 +13,7 @@ export interface IUserInfoContext {
   picture?: string;
   navigateUser?: string;
 }
+
 export interface IApiMessageResponse {
   message: string;
 }

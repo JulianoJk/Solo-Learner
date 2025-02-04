@@ -29,15 +29,19 @@ import MobileManageUserModal from './mobileManageUserModal/MobileManageUserModal
 import { getBadgeColor, getJob } from '../../../../utils/utils';
 import { useDeleteUser } from '../../../hooks/useDeleteUser';
 import ConfirmationModal from '../../../ConfirmationModal/ConfirmationModal.component';
+import { useMediaQuery } from '@mantine/hooks';
 
 const StudentManagementTable = () => {
   const [search, setSearch] = useState('');
   const [selection, setSelection] = useState<string[]>([]);
   const { allUsersAdminDashboard } = useUserState();
 
+  // Mobile screen size check
+  const isMobile = useMediaQuery('(max-width: 768px)'); // Change breakpoint if needed
+
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
-  const { handleDeleteUser, isLoading } = useDeleteUser();
+  const { isLoading } = useDeleteUser();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
@@ -108,6 +112,7 @@ const StudentManagementTable = () => {
                 />
               </ActionIcon>
             </Menu.Target>
+
             <Menu.Dropdown>
               <Menu.Label>Manage User</Menu.Label>
               <Menu.Item
@@ -142,19 +147,30 @@ const StudentManagementTable = () => {
               >
                 Transfer Data
               </Menu.Item>
+              <Menu.Item
+                color="red"
+                onClick={() => {
+                  appDispatch({
+                    type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+                    isAdminDeleteModalOpen: true,
+                  });
+                  appDispatch({
+                    type: 'SET_USERS_TO_DELETE',
+                    users: [row],
+                  });
+                }}
+                disabled={isLoading}
+                leftSection={
+                  <IconTrash
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+              >
+                Delete User
+              </Menu.Item>
             </Menu.Dropdown>
           </Menu>
-          <ActionIcon
-            variant="subtle"
-            color="red"
-            onClick={() => handleDeleteUser(row.id.toString())}
-            disabled={isLoading}
-          >
-            <IconTrash
-              style={{ width: rem(16), height: rem(16) }}
-              stroke={1.5}
-            />
-          </ActionIcon>
         </Group>
       </Table.Td>
     </Table.Tr>
@@ -225,8 +241,8 @@ const StudentManagementTable = () => {
                       }
                       color="red"
                       onClick={() => {
-                        const selectedUsers = filteredData.filter((user) =>
-                          selection.includes(user.id.toString()),
+                        const selectedUsers: User[] = filteredData.filter(
+                          (user) => selection.includes(user.id.toString()),
                         );
                         appDispatch({
                           type: 'SET_ADMIN_DELETE_MODAL_OPEN',
@@ -248,7 +264,10 @@ const StudentManagementTable = () => {
           <Table.Tbody>{rows}</Table.Tbody>
         </Table>
       </Table.ScrollContainer>
-      <MobileManageUserModal />
+
+      {/* Conditionally render mobile modal */}
+      {isMobile && <MobileManageUserModal />}
+
       <ConfirmationModal />
     </>
   );

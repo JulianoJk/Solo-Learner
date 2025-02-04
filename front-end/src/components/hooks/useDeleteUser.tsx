@@ -11,45 +11,41 @@ export const useDeleteUser = () => {
   const userDispatch = useUserDispatch();
 
   const deleteUserMutation = useMutation(
-    async (userId: string) => {
-      // Delete user API request
-      return await adminDeleteUserAccount({ token: user.token, Id: userId });
+    async (userIds: string[]) => {
+      // Delete users one by one
+      return Promise.all(
+        userIds.map((id) => adminDeleteUserAccount({ token: user.token, Id: id }))
+      );
     },
     {
-      onSuccess: (response, userId) => {
-        // Find and remove the deleted user from the state
-        const userToDelete = allUsersAdminDashboard.find(
-          (u: User) => u.id.toString() === userId,
+      onSuccess: (_, userIds) => {
+        // Remove all deleted users from the state
+        const updatedUsers = allUsersAdminDashboard.filter(
+          (u: User) => !userIds.includes(u.id.toString()),
         );
 
-        if (userToDelete) {
-          const updatedUsers = allUsersAdminDashboard.filter(
-            (u: User) => u.id.toString() !== userId,
-          );
-          userDispatch({
-            type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
-            allUsersAdminDashboard: updatedUsers,
-          });
+        userDispatch({
+          type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
+          allUsersAdminDashboard: updatedUsers,
+        });
 
-          // Show success notification
-          notificationAlert({
-            title: `User "${userToDelete.username}" Deleted`,
-            message: `The account for ${userToDelete.username} has been successfully deleted.`,
-            iconColor: 'red',
-            closeAfter: 5000,
-            icon: <IconTrash size={18} />,
-          });
-        }
+        // Show success notification
+        notificationAlert({
+          title: 'Users Deleted',
+          message: 'The selected users have been successfully deleted.',
+          iconColor: 'red',
+          closeAfter: 5000,
+          icon: <IconTrash size={18} />,
+        });
       },
       onError: (error) => {
-        console.error('Error deleting user:', error);
+        console.error('Error deleting users:', error);
       },
     },
   );
 
-  // Expose the mutation function and isLoading state
   return {
-    handleDeleteUser: (userId: string) => deleteUserMutation.mutate(userId),
-    isLoading: deleteUserMutation.isLoading, // Return isLoading state
+    handleDeleteUser: (userIds: string[]) => deleteUserMutation.mutate(userIds),
+    isLoading: deleteUserMutation.isLoading,
   };
 };

@@ -498,7 +498,7 @@ const HeaderMegaMenu = () => {
                       navigateUserTo('/login');
                     }}
                   >
-                    <Text fz="md" color="white">
+                    <Text fz="md" c="white">
                       Log in
                     </Text>
                   </Button>
