@@ -15,6 +15,9 @@ import {
   Title,
   Text,
   Select,
+  useCombobox,
+  Combobox,
+  ScrollArea,
 } from '@mantine/core';
 import {
   hasLength,
@@ -27,16 +30,48 @@ import { IconSchool, IconUser, IconUserCog } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
+interface Country {
+  name: {
+    common: string;
+  };
+  flags: {
+    svg: string;
+  };
+}
 
 const RegisterUser = () => {
-  const [selectedCountry, setSelectedCountry] = useState('Select Role');
-  const { data: allCoutrniesMenu, isLoading } = useQuery(
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+  const { data: countries, isLoading } = useQuery<Country[]>(
     ['getCountries'],
-    async () => {
-      const data = await getCountriesAPI();
-      return data.map((country: any) => country.name.common);
-    },
+    getCountriesAPI,
   );
+
+  // Process countries into formatted options
+  const countryOptions = countries
+    ? countries.map((country) => ({
+        name: { common: country.name.common }, // Correctly format 'name'
+        flags: { svg: country.flags.svg }, // Correctly format 'flags'
+      }))
+    : [];
+
+  // Filter options based on user input
+  const filteredOptions = countryOptions.filter((country) =>
+    country.name.common
+      .toLowerCase()
+      .includes(selectedCountry?.name.common.toLowerCase().trim() || ''),
+  );
+
+  const options = filteredOptions.map((country) => (
+    <Combobox.Option value={country.name.common} key={country.name.common}>
+      <Group>
+        <Avatar src={country.flags.svg} size={20} />
+        {country.name.common} {/* Render the name correctly */}
+      </Group>
+    </Combobox.Option>
+  ));
 
   const form = useForm({
     initialValues: {
@@ -143,19 +178,61 @@ const RegisterUser = () => {
           />
 
           <Group grow>
-            <Autocomplete
-              disabled={isLoading}
-              label="Select country"
-              placeholder="Type to search or select a country"
-              data={allCoutrniesMenu}
-            />
+            <Combobox
+              onOptionSubmit={(optionValue) => {
+                const selected = countryOptions.find(
+                  (c) => c.name.common === optionValue,
+                );
+
+                if (selected) setSelectedCountry(selected);
+                combobox.closeDropdown();
+              }}
+              store={combobox}
+            >
+              <Combobox.Target>
+                <TextInput
+                  label="Select Country"
+                  placeholder="Type to search"
+                  value={selectedCountry ? selectedCountry.name.common : ''}
+                  onChange={(event) => {
+                    setSelectedCountry({
+                      name: { common: event.currentTarget.value },
+                      flags: { svg: '' },
+                    });
+
+                    combobox.openDropdown();
+                    combobox.updateSelectedOptionIndex();
+                  }}
+                  onClick={() => combobox.openDropdown()}
+                  onFocus={() => combobox.openDropdown()}
+                  onBlur={() => combobox.closeDropdown()}
+                  disabled={isLoading}
+                  leftSection={
+                    selectedCountry ? (
+                      <Avatar src={selectedCountry.flags.svg} size={20} />
+                    ) : null
+                  }
+                />
+              </Combobox.Target>
+
+              <Combobox.Dropdown>
+                <Combobox.Options>
+                  <ScrollArea.Autosize mah={200} type="auto">
+                    {options.length === 0 ? (
+                      <Combobox.Empty>No country found</Combobox.Empty>
+                    ) : (
+                      options
+                    )}
+                  </ScrollArea.Autosize>
+                </Combobox.Options>
+              </Combobox.Dropdown>
+            </Combobox>
             <Select
               label="Select a role"
               placeholder="Pick a role"
               data={['Student', 'Teacher', 'Admin']}
               clearable
-                      />
-                    
+            />
           </Group>
 
           <Radio.Group
