@@ -16,7 +16,7 @@ import { useAppDispatch, useAppState } from '../../../context/AppContext';
 const data = [
   { link: 'userManagment', label: 'User Management', icon: IconUserCog },
   { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
-  { link: 'billing', label: 'Billing', icon: IconSchool },
+  { link: 'RegisterUser', label: 'RegisterUser', icon: IconSchool },
   { link: 'Assignent', label: 'Assign Assignment', icon: IconPencil },
   { link: 'TestIt', label: 'Test Me', icon: IconPencil },
 ];

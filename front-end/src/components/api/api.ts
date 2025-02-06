@@ -513,3 +513,23 @@ export const logoutAPI = async (
     } as IApiError;
   }
 };
+
+export const getCountriesAPI = async () => {
+  try {
+    const response = await fetch(`https://restcountries.com/v3.1/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch countries');
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
