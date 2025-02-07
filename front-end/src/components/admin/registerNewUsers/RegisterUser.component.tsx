@@ -10,6 +10,8 @@ import {
   useCombobox,
   Combobox,
   ScrollArea,
+  useMantineColorScheme,
+  CloseButton,
 } from '@mantine/core';
 import {
   hasLength,
@@ -18,7 +20,7 @@ import {
   matchesField,
   useForm,
 } from '@mantine/form';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
 import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
@@ -35,6 +37,8 @@ interface Country {
   };
 }
 const RegisterUser = () => {
+  const { colorScheme } = useMantineColorScheme();
+
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
@@ -46,7 +50,7 @@ const RegisterUser = () => {
 
   const countryOptions = countries
     ? countries.map((country) => ({
-        name: { common: country.name.common }, 
+        name: { common: country.name.common },
         flags: { svg: country.flags.svg },
       }))
     : [];
@@ -56,9 +60,20 @@ const RegisterUser = () => {
       .toLowerCase()
       .includes(selectedCountry?.name.common.toLowerCase().trim() || ''),
   );
-
+  useEffect(() => {
+    // we need to wait for options to render before we can select first one
+    combobox.selectFirstOption();
+  }, [filteredOptions]);
   const options = filteredOptions.map((country) => (
-    <Combobox.Option value={country.name.common} key={country.name.common}>
+    <Combobox.Option
+      value={country.name.common}
+      key={country.name.common}
+      sx={{
+        ':hover': {
+          backgroundColor: colorScheme === 'dark' ? '#3f3d3d ' : 'whitesmoke',
+        },
+      }}
+    >
       <Group>
         <Avatar src={country.flags.svg} size={20} />
         {country.name.common}
@@ -204,6 +219,22 @@ const RegisterUser = () => {
                   onFocus={() => combobox.openDropdown()}
                   onBlur={() => combobox.closeDropdown()}
                   disabled={isLoading}
+                  rightSection={
+                    selectedCountry && selectedCountry.name.common !== '' && (
+                      <CloseButton
+                        size="sm"
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={() =>
+                          setSelectedCountry({
+                            name: { common: '' },
+                            flags: { svg: '' },
+                            idd: { root: '', suffixes: [] },
+                          })
+                        }
+                        aria-label="Clear value"
+                      />
+                    )
+                  }
                   leftSection={
                     selectedCountry ? (
                       <Avatar src={selectedCountry.flags.svg} size={20} />

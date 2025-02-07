@@ -17,13 +17,14 @@ const PhoneSelector = () => {
           '--react-international-phone-background-color':
             colorScheme === 'dark' ? '#2c2c2c' : '#fff',
           '--react-international-phone-text-color':
-            colorScheme === 'dark' ? 'white' : '#e9e9e9',
+            colorScheme === 'dark' ? 'white' : '#2c2c2c',
           '--react-international-phone-box-shadow':
             '0 4px 8px rgba(0, 0, 0, 0.2)',
           '--react-international-phone-selected-dropdown-item-background-color':
-            '#3f3d3d',
+            colorScheme === 'dark' ? '#3f3d3d' : 'whitesmoke',
           '--react-international-phone-country-selector-background-color-hover':
-            '#3f3d3d',
+            colorScheme === 'dark' ? '#3f3d3d' : 'whitesmoke',
+
           top: '12px',
           position: 'relative',
         } as React.CSSProperties
