@@ -6,7 +6,8 @@ import {
   UserContextState,
 } from '../../Model/UserModels';
 
-const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
+const URL: string = `http://localhost:3001/`;
+// const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
 
 export const loginAPI = async ({
   email,

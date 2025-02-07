@@ -59,6 +59,7 @@
     "react-dom": "^18.2.0",
     "react-easy-crop": "^4.6.3",
     "react-image-file-resizer": "^0.4.8",
+    "react-international-phone": "^4.5.0",
     "react-router-dom": "^6.2.2",
     "react-svg": "^16.1.15",
     "recharts": "2",

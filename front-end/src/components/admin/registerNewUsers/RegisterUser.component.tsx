@@ -1,19 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  Autocomplete,
-  AutocompleteProps,
   Avatar,
-  Button,
   Container,
   Group,
-  Menu,
-  PasswordInput,
   Radio,
   SimpleGrid,
   Stack,
   TextInput,
-  Title,
-  Text,
   Select,
   useCombobox,
   Combobox,
@@ -26,10 +18,10 @@ import {
   matchesField,
   useForm,
 } from '@mantine/form';
-import { IconSchool, IconUser, IconUserCog } from '@tabler/icons-react';
 import React, { useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
+import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
 interface Country {
   name: {
     common: string;
@@ -37,8 +29,11 @@ interface Country {
   flags: {
     svg: string;
   };
+  idd: {
+    root: string;
+    suffixes: string[];
+  };
 }
-
 const RegisterUser = () => {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -49,15 +44,13 @@ const RegisterUser = () => {
     getCountriesAPI,
   );
 
-  // Process countries into formatted options
   const countryOptions = countries
     ? countries.map((country) => ({
-        name: { common: country.name.common }, // Correctly format 'name'
-        flags: { svg: country.flags.svg }, // Correctly format 'flags'
+        name: { common: country.name.common }, 
+        flags: { svg: country.flags.svg },
       }))
     : [];
 
-  // Filter options based on user input
   const filteredOptions = countryOptions.filter((country) =>
     country.name.common
       .toLowerCase()
@@ -68,7 +61,7 @@ const RegisterUser = () => {
     <Combobox.Option value={country.name.common} key={country.name.common}>
       <Group>
         <Avatar src={country.flags.svg} size={20} />
-        {country.name.common} {/* Render the name correctly */}
+        {country.name.common}
       </Group>
     </Combobox.Option>
   ));
@@ -122,7 +115,6 @@ const RegisterUser = () => {
         />
 
         <Stack>
-          {/* First Name and Last Name in the same row */}
           <Group grow>
             <TextInput
               withAsterisk
@@ -184,7 +176,12 @@ const RegisterUser = () => {
                   (c) => c.name.common === optionValue,
                 );
 
-                if (selected) setSelectedCountry(selected);
+                if (selected)
+                  setSelectedCountry({
+                    name: selected.name,
+                    flags: selected.flags,
+                    idd: { root: '', suffixes: [] },
+                  });
                 combobox.closeDropdown();
               }}
               store={combobox}
@@ -198,8 +195,8 @@ const RegisterUser = () => {
                     setSelectedCountry({
                       name: { common: event.currentTarget.value },
                       flags: { svg: '' },
+                      idd: { root: '', suffixes: [] },
                     });
-
                     combobox.openDropdown();
                     combobox.updateSelectedOptionIndex();
                   }}
@@ -233,8 +230,12 @@ const RegisterUser = () => {
               data={['Student', 'Teacher', 'Admin']}
               clearable
             />
+            <div
+              style={{ display: 'flex', alignItems: 'center', width: '100%' }}
+            >
+              <PhoneSelector />
+            </div>
           </Group>
-
           <Radio.Group
             name="gender"
             label="Select Gender"
