@@ -96,6 +96,7 @@ export interface User {
   isAdmin: boolean;
   password: null;
   isTeacher: boolean;
+  isStudent: boolean;
   createdAt: string;
   updatedAt: string;
   picture?: string;

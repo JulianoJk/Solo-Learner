@@ -12,6 +12,11 @@ import {
   ScrollArea,
   useMantineColorScheme,
   CloseButton,
+  Collapse,
+  Text,
+  Checkbox,
+  MultiSelectProps,
+  MultiSelect,
 } from '@mantine/core';
 import {
   hasLength,
@@ -24,6 +29,9 @@ import React, { useEffect, useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
 import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
+import { useDisclosure } from '@mantine/hooks';
+import useStyles from './AdminAddUser.styles';
+import { useUserState } from '../../../context/UserContext';
 interface Country {
   name: {
     common: string;
@@ -37,7 +45,13 @@ interface Country {
   };
 }
 const RegisterUser = () => {
+  const { classes } = useStyles();
   const { colorScheme } = useMantineColorScheme();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [checked, setChecked] = useState(false);
+  const { allUsersAdminDashboard } = useUserState();
+  const [selectedRole, setSelectedRole] = useState('');
+  console.log(allUsersAdminDashboard);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -80,6 +94,31 @@ const RegisterUser = () => {
       </Group>
     </Combobox.Option>
   ));
+  const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
+    option,
+  }) => {
+    const user = allUsersAdminDashboard.find(
+      (u) => u.id.toString() === option.value,
+    );
+
+    if (!user) return null;
+
+    return (
+      <Group gap="sm">
+        {user.picture ? (
+          <Avatar src={user.picture} size={36} radius="xl" />
+        ) : (
+          <Avatar size={36} radius="xl" />
+        )}
+        <div>
+          <Text size="sm">{user.username}</Text>
+          <Text size="xs" opacity={0.5}>
+            {user.email}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
 
   const form = useForm({
     initialValues: {
@@ -220,7 +259,8 @@ const RegisterUser = () => {
                   onBlur={() => combobox.closeDropdown()}
                   disabled={isLoading}
                   rightSection={
-                    selectedCountry && selectedCountry.name.common !== '' && (
+                    selectedCountry &&
+                    selectedCountry.name.common !== '' && (
                       <CloseButton
                         size="sm"
                         onMouseDown={(event) => event.preventDefault()}
@@ -256,17 +296,52 @@ const RegisterUser = () => {
               </Combobox.Dropdown>
             </Combobox>
             <Select
+              onChange={(value: string | null) => {
+                setSelectedRole(value || '');
+                setChecked(false);
+                value === 'Teacher' || value === 'Student' ? open() : close();
+              }}
               label="Select a role"
               placeholder="Pick a role"
               data={['Student', 'Teacher', 'Admin']}
               clearable
             />
+
             <div
               style={{ display: 'flex', alignItems: 'center', width: '100%' }}
             >
               <PhoneSelector />
             </div>
           </Group>
+          <Collapse
+            in={opened}
+            transitionDuration={330}
+            transitionTimingFunction="linear"
+          >
+            <Checkbox
+              className={classes.checkbox}
+              label={
+                selectedRole === 'Teacher'
+                  ? 'Assign student(s)?'
+                  : 'Assign teacher(s)?'
+              }
+              checked={checked}
+              onChange={(event) => setChecked(event.currentTarget.checked)}
+              wrapperProps={{
+                onClick: () => setChecked((c) => !c),
+              }}
+            />
+            <MultiSelect
+              data={allUsersAdminDashboard.map((user) => ({
+                value: user.id.toString(),
+                label: user.username,
+              }))}
+              renderOption={renderMultiSelectOption}
+              maxDropdownHeight={300}
+              label="Employees of the month"
+              placeholder="Search for employee"
+            />
+          </Collapse>
           <Radio.Group
             name="gender"
             label="Select Gender"
