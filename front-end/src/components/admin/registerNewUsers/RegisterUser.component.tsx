@@ -17,6 +17,7 @@ import {
   Checkbox,
   MultiSelectProps,
   MultiSelect,
+  Flex,
 } from '@mantine/core';
 import {
   hasLength,
@@ -25,7 +26,7 @@ import {
   matchesField,
   useForm,
 } from '@mantine/form';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
 import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
@@ -47,11 +48,19 @@ interface Country {
 const RegisterUser = () => {
   const { classes } = useStyles();
   const { colorScheme } = useMantineColorScheme();
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+
   const [opened, { open, close }] = useDisclosure(false);
   const [checked, setChecked] = useState(false);
   const { allUsersAdminDashboard } = useUserState();
   const [selectedRole, setSelectedRole] = useState('');
-  console.log(allUsersAdminDashboard);
+  const filteredUsers = useMemo(() => {
+    return selectedRole === 'Teacher'
+      ? allUsersAdminDashboard.filter((user) => user.isStudent === true)
+      : selectedRole === 'Student'
+      ? allUsersAdminDashboard.filter((user) => user.isTeacher === true)
+      : allUsersAdminDashboard;
+  }, [selectedRole, allUsersAdminDashboard]);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -75,7 +84,6 @@ const RegisterUser = () => {
       .includes(selectedCountry?.name.common.toLowerCase().trim() || ''),
   );
   useEffect(() => {
-    // we need to wait for options to render before we can select first one
     combobox.selectFirstOption();
   }, [filteredOptions]);
   const options = filteredOptions.map((country) => (
@@ -94,12 +102,11 @@ const RegisterUser = () => {
       </Group>
     </Combobox.Option>
   ));
+
   const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
     option,
   }) => {
-    const user = allUsersAdminDashboard.find(
-      (u) => u.id.toString() === option.value,
-    );
+    const user = filteredUsers.find((u) => u.id.toString() === option.value);
 
     if (!user) return null;
 
@@ -299,6 +306,7 @@ const RegisterUser = () => {
               onChange={(value: string | null) => {
                 setSelectedRole(value || '');
                 setChecked(false);
+                setSelectedValues([]);
                 value === 'Teacher' || value === 'Student' ? open() : close();
               }}
               label="Select a role"
@@ -318,30 +326,43 @@ const RegisterUser = () => {
             transitionDuration={330}
             transitionTimingFunction="linear"
           >
-            <Checkbox
-              className={classes.checkbox}
-              label={
-                selectedRole === 'Teacher'
-                  ? 'Assign student(s)?'
-                  : 'Assign teacher(s)?'
-              }
-              checked={checked}
-              onChange={(event) => setChecked(event.currentTarget.checked)}
-              wrapperProps={{
-                onClick: () => setChecked((c) => !c),
-              }}
-            />
-            <MultiSelect
-              data={allUsersAdminDashboard.map((user) => ({
-                value: user.id.toString(),
-                label: user.username,
-              }))}
-              renderOption={renderMultiSelectOption}
-              maxDropdownHeight={300}
-              label="Employees of the month"
-              placeholder="Search for employee"
-            />
+            <Flex gap="md" align="center">
+              <Checkbox
+                className={classes.checkbox}
+                label={
+                  selectedRole === 'Teacher'
+                    ? 'Assign student(s)?'
+                    : 'Assign teacher(s)?'
+                }
+                checked={checked}
+                onChange={(event) => {
+                  setChecked(event.currentTarget.checked);
+                }}
+                wrapperProps={{
+                  onClick: () => {
+                    setChecked((c) => !c);
+                    setSelectedValues([]);
+                  },
+                }}
+              />
+              <MultiSelect
+                maxDropdownHeight={300}
+                sx={{ width: '25em' }}
+                disabled={!checked}
+                data={filteredUsers.map((user) => ({
+                  value: user.id.toString(),
+                  label: user.username,
+                }))}
+                value={selectedValues}
+                onChange={setSelectedValues}
+                renderOption={renderMultiSelectOption}
+                clearable
+                
+                hidePickedOptions
+              />
+            </Flex>
           </Collapse>
+
           <Radio.Group
             name="gender"
             label="Select Gender"
