@@ -34,6 +34,7 @@ namespace backend
             string? password,
             byte[]? salt,
             bool isTeacher,
+            bool isStudent,
             bool isAdmin,
             string? picture
         )
@@ -66,6 +67,7 @@ namespace backend
                                     password,
                                     salt,
                                     isTeacher,
+                                    isStudent,
                                     isAdmin,
                                     null
                                 );
@@ -84,6 +86,7 @@ namespace backend
                                     "",
                                     null,
                                     isTeacher,
+                                    isStudent,
                                     isAdmin,
                                     picture
                                 );
@@ -114,39 +117,44 @@ namespace backend
         }
 
         // Method to save user data to the database
-        public void saveToDatabase(
-            MySqlConnection connection,
-            string email,
-            string firstName,
-            string lastName,
-            string gender,
-            string username,
-            string password,
-            byte[]? salt,
-            bool isTeacher,
-            bool isAdmin,
-            string? picture
-        )
-        {
-            MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email,firstName, lastName, gender, username, password, salt, isTeacher, isAdmin, picture) VALUES (@email,@firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isAdmin, @picture)",
-                connection
-            );
-            command.Parameters.AddWithValue("@email", email);
-            command.Parameters.AddWithValue("@firstName", firstName);
-            command.Parameters.AddWithValue("@lastName", lastName);
-            command.Parameters.AddWithValue("@gender", gender);
-            command.Parameters.AddWithValue("@username", username);
-            command.Parameters.AddWithValue("@password", password);
-            command.Parameters.AddWithValue("@salt", salt);
-            command.Parameters.AddWithValue("@isTeacher", isTeacher);
-            command.Parameters.AddWithValue("@isAdmin", isAdmin);
-            command.Parameters.AddWithValue("@picture", picture);
-            MySqlDataReader reader = command.ExecuteReader();
-            reader.Close();
-            // Set AreCredentialsCorrect to true if the data was successfully saved to the database
-            AreCredentialsCorrect = true;
-        }
+// Method to save user data to the database
+public void saveToDatabase(
+    MySqlConnection connection,
+    string email,
+    string firstName,
+    string lastName,
+    string gender,
+    string username,
+    string password,
+    byte[]? salt,
+    bool isTeacher,
+    bool isStudent,
+    bool isAdmin,
+    string? picture
+)
+{
+    MySqlCommand command = new MySqlCommand(
+        "INSERT INTO users (email, firstName, lastName, gender, username, password, salt, isTeacher, isStudent, isAdmin, picture) " + 
+        "VALUES (@email, @firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isStudent, @isAdmin, @picture)",
+        connection
+    );
+    command.Parameters.AddWithValue("@email", email);
+    command.Parameters.AddWithValue("@firstName", firstName);
+    command.Parameters.AddWithValue("@lastName", lastName);
+    command.Parameters.AddWithValue("@gender", gender);
+    command.Parameters.AddWithValue("@username", username);
+    command.Parameters.AddWithValue("@password", password);
+    command.Parameters.AddWithValue("@salt", salt);
+    command.Parameters.AddWithValue("@isTeacher", isTeacher);
+    command.Parameters.AddWithValue("@isStudent", isStudent);
+    command.Parameters.AddWithValue("@isAdmin", isAdmin);
+    command.Parameters.AddWithValue("@picture", picture);
+    MySqlDataReader reader = command.ExecuteReader();
+    reader.Close();
+    // Set AreCredentialsCorrect to true if the data was successfully saved to the database
+    AreCredentialsCorrect = true;
+}
+
 
         // Method to check if an email exists in the database
         public bool CheckIfEmailExists(MySqlConnection connection, string email)

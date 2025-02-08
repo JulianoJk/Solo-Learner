@@ -12,4 +12,5 @@ public class RegisterModel
     public string? ConfirmPassword { get; set; }
     public byte[]? Salt { get; set; }
     public bool isTeacher { get; set; }
+    public bool isStudent { get; set; }
 }

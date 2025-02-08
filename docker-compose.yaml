@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   my-network:
     driver: bridge
@@ -41,11 +39,11 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       TZ: "Europe/Athens"
-      IP_ADDRESS: ${IP_ADDRESS} 
-      SMTP_HOST: ${SMTP_HOST} 
-      SMTP_PORT: ${SMTP_PORT} 
-      EMAIL_FROM: ${EMAIL_FROM} 
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD} 
+      IP_ADDRESS: ${IP_ADDRESS}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     depends_on:
       - db
     networks:

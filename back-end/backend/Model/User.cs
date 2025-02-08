@@ -10,6 +10,7 @@ namespace backend.Models
         public bool IsAdmin { get; set; }
         public string Password { get; set; }
         public bool IsTeacher { get; set; }
+        public bool IsStudent { get; set; }
         public string CreatedAt { get; set; }
         public string UpdatedAt { get; set; }
         public DateTime LastActive { get; set; }

@@ -357,7 +357,6 @@ const RegisterUser = () => {
                 onChange={setSelectedValues}
                 renderOption={renderMultiSelectOption}
                 clearable
-                
                 hidePickedOptions
               />
             </Flex>
