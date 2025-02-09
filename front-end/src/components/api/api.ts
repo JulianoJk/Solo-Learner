@@ -6,7 +6,8 @@ import {
   UserContextState,
 } from '../../Model/UserModels';
 
-const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
+const URL: string = `http://localhost:3001/`;
+// const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
 
 export const loginAPI = async ({
   email,
@@ -511,5 +512,25 @@ export const logoutAPI = async (
         message: 'Something went wrong. Please try again later.',
       },
     } as IApiError;
+  }
+};
+
+export const getCountriesAPI = async () => {
+  try {
+    const response = await fetch(`https://restcountries.com/v3.1/all`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch countries');
+    }
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    console.error(error);
+    return;
   }
 };

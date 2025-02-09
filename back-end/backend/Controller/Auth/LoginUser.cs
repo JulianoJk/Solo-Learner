@@ -29,6 +29,7 @@ public class LoginUser
             string email = loginModel.Email;
             string password = loginModel.Password;
             bool isTeacher = IsTeacherEnv.Value.Contains(email);
+            bool isStudent = !isTeacher;
 
             // Call AuthenticateUser method on the AuthenticationUtils instance with register=false
             var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
@@ -42,6 +43,7 @@ public class LoginUser
                 password,
                 null,
                 isTeacher,
+                isStudent,
                 null
             );
 
@@ -56,7 +58,7 @@ public class LoginUser
                 bool isAdmin = db.GetIsAdminFromDatabase(email);
 
                 // Generate a JWT token
-                string token = JwtUtils.GenerateJwt(username, email, isTeacher, isAdmin);
+                string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent, isAdmin);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
                     // Update user status in the database (isUserLoggedIn = true)

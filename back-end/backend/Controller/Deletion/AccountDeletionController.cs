@@ -43,7 +43,7 @@ public class AccountDeletionController
         var id = JwtUtils.GetUserId(email);
         var userEmailFromJWT = JwtUtils.GetUserEmailFromJwt(context);
         var isTeacher = JwtUtils.GetIsTeacher(context);
-
+        var isStudent = !isTeacher;
         // Authenticate the user with the provided email and password
         var (areCredentialsCorrect, messageToUser) = _authenticationUtils.AuthenticateUser(
             false,
@@ -56,6 +56,7 @@ public class AccountDeletionController
             password,
             null,
             isTeacher,
+            isStudent,
             null
         );
 

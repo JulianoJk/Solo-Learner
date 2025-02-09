@@ -1,5 +1,3 @@
-version: "3.9"
-
 networks:
   my-network:
     driver: bridge
@@ -41,28 +39,28 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       TZ: "Europe/Athens"
-      IP_ADDRESS: ${IP_ADDRESS} 
-      SMTP_HOST: ${SMTP_HOST} 
-      SMTP_PORT: ${SMTP_PORT} 
-      EMAIL_FROM: ${EMAIL_FROM} 
-      EMAIL_PASSWORD: ${EMAIL_PASSWORD} 
+      IP_ADDRESS: ${IP_ADDRESS}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     depends_on:
       - db
     networks:
       - my-network
 
-  front-end:
-    build: ./front-end
-    container_name: front_end_c
-    ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
-    environment:
-      TZ: "Europe/Athens"
-      VITE_IP_ADDRESS: ${IP_ADDRESS}
-    volumes:
-      - ./front-end:/usr/src/app/front_end
-      - /usr/src/app/front_end/node_modules
-    networks:
-      - my-network
+  # front-end:
+  #   build: ./front-end
+  #   container_name: front_end_c
+  #   ports:
+  #     - "3000:3000"
+  #   stdin_open: true
+  #   tty: true
+  #   environment:
+  #     TZ: "Europe/Athens"
+  #     VITE_IP_ADDRESS: ${IP_ADDRESS}
+  #   volumes:
+  #     - ./front-end:/usr/src/app/front_end
+  #     - /usr/src/app/front_end/node_modules
+  #   networks:
+  #     - my-network

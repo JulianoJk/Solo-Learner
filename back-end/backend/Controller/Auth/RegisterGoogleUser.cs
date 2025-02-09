@@ -26,6 +26,7 @@ public class RegisterGoogleUser
         string lastName = jwtData.TryGetValue("family_name", out string familyName) ? familyName : null;
         string username = jwtData["name"];
         bool isTeacher = IsTeacherEnv.Value.Contains(email);
+        bool isStudent = !isTeacher;
         var (isTaken, newUsername) = _authenticator.IsUsernameTaken(username);
         if (isTaken)
         {
@@ -44,6 +45,7 @@ public class RegisterGoogleUser
             null,
             null,
             isTeacher,
+            isStudent,
             picture // Pass the picture parameter
         );
 
@@ -57,6 +59,7 @@ public class RegisterGoogleUser
             _responseDict["authMethod"] = "Successful registration!";
             _responseDict["id"] = additionalUserInfo?.Id.ToString();
             _responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
+            _responseDict["isStudent"] = additionalUserInfo?.isStudent.ToString().ToLower();
             _responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
             _responseDict["picture"] = additionalUserInfo?.Picture.ToString();
 

@@ -31,6 +31,7 @@ public class AuthenticationUtils
         string password,
         byte[]? salt,
         bool isTeacher,
+        bool isStudent,
         string? picture
     )
     {
@@ -49,6 +50,7 @@ public class AuthenticationUtils
             password,
             salt,
             isTeacher,
+            isStudent,
             isAdmin,
             picture
         );
@@ -219,7 +221,7 @@ public class AuthenticationUtils
 
             using (
                 var command = new MySqlCommand(
-                    "SELECT id, isTeacher, isAdmin, picture FROM users WHERE email = @Email",
+                    "SELECT id, isTeacher, isStudent, isAdmin, picture FROM users WHERE email = @Email",
                     connection
                 )
             )
@@ -234,6 +236,7 @@ public class AuthenticationUtils
                         {
                             Id = reader.GetInt32("id"),
                             IsTeacher = reader.GetBoolean("isTeacher"),
+                            isStudent = reader.GetBoolean("isStudent"),
                             IsAdmin = reader.GetBoolean("isAdmin"),
                             Picture = reader.GetString("picture")
                         };
@@ -274,6 +277,7 @@ public class AuthenticationUtils
     {
         public int Id { get; set; }
         public bool IsTeacher { get; set; }
+        public bool isStudent { get; set; }
         public bool IsAdmin { get; set; }
         public string Picture { get; set; }
     }

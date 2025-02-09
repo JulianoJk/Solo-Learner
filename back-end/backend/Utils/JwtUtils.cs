@@ -154,7 +154,7 @@ public static class JwtUtils
         return true;
     }
 
-    public static string GenerateJwt(string username, string email, bool isTeacher, bool isAdmin)
+    public static string GenerateJwt(string username, string email, bool isTeacher, bool isStudent, bool isAdmin)
     {
         // Implement your user authentication logic here
         // ...
@@ -162,6 +162,7 @@ public static class JwtUtils
             username,
             email,
             isTeacher.ToString().ToLower(),
+            isStudent.ToString().ToLower(),
             isAdmin.ToString().ToLower()
         );
     }
@@ -170,6 +171,7 @@ public static class JwtUtils
         string username,
         string email,
         string isTeacher,
+        string isStudent,
         string isAdmin
     )
     {
@@ -188,6 +190,7 @@ public static class JwtUtils
                     new Claim("username", username),
                     new Claim(ClaimTypes.Email, email),
                     new Claim("isTeacher", isTeacher), // Pass the lowercase string here
+                    new Claim("isStudent", isStudent), // Pass the lowercase string here
                     new Claim("isAdmin", isAdmin), // Pass the lowercase string here
                     new Claim("id", id.ToString()),
                     new Claim(ClaimTypes.Role, "admin"),

@@ -37,7 +37,7 @@ public class RegisterUser
         string password = registerModel.Password;
         string confirmPassword = registerModel.ConfirmPassword;
         bool isTeacher = IsTeacherEnv.Value.Contains(email);
-
+        bool isStudent = !isTeacher;
         if (IsValidEmail(email) && ArePasswordsEqual(password, confirmPassword))
         {
             if (string.IsNullOrWhiteSpace(username))
@@ -160,12 +160,13 @@ public class RegisterUser
                     Convert.ToBase64String(hash),
                     salt,
                     isTeacher,
+                    isStudent,
                     null
                 );
                 if (AreCredentialsCorrect)
                 {
                     // Generate a JWT token
-                    string token = JwtUtils.GenerateJwt(username, email, isTeacher, false);
+                    string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent,false);
 
                     // Check if the token was generated
                     if (!string.IsNullOrWhiteSpace(token))
