@@ -28,6 +28,7 @@ import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import useStyles from './AdminAddUser.styles';
 import { useUserState } from '../../../context/UserContext';
+import { RegisterFormValues } from '../../../Model/models';
 interface Country {
   name: {
     common: string;
@@ -40,18 +41,6 @@ interface Country {
     suffixes: string[];
   };
 }
-type RegisterFormValues = {
-  email: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  username: string;
-  gender: string;
-  role: string;
-  phoneNumber: string;
-  country: { flag: string; name: string };
-  assignedUsers: string[];
-};
 
 const RegisterUser = () => {
   const { classes } = useStyles();

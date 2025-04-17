@@ -1,3 +1,4 @@
+import { RegisterFormValues } from '../../Model/models';
 import {
   GetUsersListResponse,
   IApiError,
@@ -532,5 +533,50 @@ export const getCountriesAPI = async () => {
   } catch (error) {
     console.error(error);
     return;
+  }
+};
+
+export const adminRegistersUser = async ({
+  token,
+  userData,
+}: {
+  token: string;
+  userData: RegisterFormValues;
+}): Promise<IApiMessageResponse | IApiError> => {
+  try {
+    const response = await fetch(`${URL}admin/register-user`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        email: userData.email,
+        firstName: userData.firstName,
+        middleName: userData.middleName,
+        lastName: userData.lastName,
+        username: userData.username,
+        gender: userData.gender,
+        role: userData.role,
+        phoneNumber: userData.phoneNumber,
+        country: userData.country,
+        assignedUsers: userData.assignedUsers,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
+
+    const data: IApiMessageResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
   }
 };

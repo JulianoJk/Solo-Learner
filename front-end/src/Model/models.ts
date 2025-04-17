@@ -36,3 +36,15 @@ export interface ISvgImages {
   className?: string;
   radius?: number | string;
 }
+export interface RegisterFormValues {
+  email: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  username: string;
+  gender: string;
+  role: string;
+  phoneNumber: string;
+  country: { flag: string; name: string };
+  assignedUsers: string[];
+}
