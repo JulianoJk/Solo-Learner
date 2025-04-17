@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client", "node"], // Add "node" here
     "allowJs": false,

@@ -18,14 +18,9 @@ import {
   MultiSelectProps,
   MultiSelect,
   Flex,
+  Button,
 } from '@mantine/core';
-import {
-  hasLength,
-  isEmail,
-  isNotEmpty,
-  matchesField,
-  useForm,
-} from '@mantine/form';
+import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import React, { useEffect, useMemo, useState } from 'react';
 import { getCountriesAPI } from '../../api/api';
 import { useQuery } from '@tanstack/react-query';
@@ -45,6 +40,19 @@ interface Country {
     suffixes: string[];
   };
 }
+type RegisterFormValues = {
+  email: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  username: string;
+  gender: string;
+  role: string;
+  phoneNumber: string;
+  country: { flag: string; name: string };
+  assignedUsers: string[];
+};
+
 const RegisterUser = () => {
   const { classes } = useStyles();
   const { colorScheme } = useMantineColorScheme();
@@ -127,15 +135,18 @@ const RegisterUser = () => {
     );
   };
 
-  const form = useForm({
+  const form = useForm<RegisterFormValues>({
     initialValues: {
       email: '',
       firstName: '',
+      middleName: '',
       lastName: '',
       username: '',
       gender: '',
-      password: '',
-      confirmPassword: '',
+      role: '',
+      phoneNumber: '',
+      country: { flag: '', name: '' },
+      assignedUsers: [],
     },
 
     validate: {
@@ -144,7 +155,7 @@ const RegisterUser = () => {
       lastName: isNotEmpty('Last name is required'),
       username: (value) => {
         if (value.length < 3 || value.length > 20) {
-          return 'Username must be between 3 and 20 characters long';
+          return 'Username must be between 2 and 20 characters long';
         }
         if (!/^[a-zA-Z0-9_]+$/.test(value)) {
           return 'Username can only contain letters, numbers, and underscores';
@@ -152,12 +163,13 @@ const RegisterUser = () => {
         return null;
       },
       gender: isNotEmpty('Gender is required'),
-      password: hasLength(
-        { min: 6 },
-        'Password must be 6 or more characters long',
-      ),
-      confirmPassword: (value, values) =>
-        matchesField('password', 'Passwords do not match')(value, values),
+      role: isNotEmpty('Role is required'),
+      country: (value) => {
+        if (!value.name) {
+          return 'Country is required';
+        }
+        return null;
+      },
     },
     validateInputOnChange: true,
   });
@@ -191,11 +203,10 @@ const RegisterUser = () => {
             <TextInput
               label="Middle Name"
               placeholder="Your middle name"
-              value={form.values.lastName}
+              value={form.values.middleName}
               onChange={(event) =>
-                form.setFieldValue('lastName', event.currentTarget.value)
+                form.setFieldValue('middleName', event.currentTarget.value)
               }
-              error={form.errors.lastName && 'Last name is required'}
               radius="md"
             />
             <TextInput
@@ -237,12 +248,18 @@ const RegisterUser = () => {
                   (c) => c.name.common === optionValue,
                 );
 
-                if (selected)
+                if (selected) {
                   setSelectedCountry({
                     name: selected.name,
                     flags: selected.flags,
                     idd: { root: '', suffixes: [] },
                   });
+
+                  form.setFieldValue('country', {
+                    flag: selected.flags.svg,
+                    name: selected.name.common,
+                  });
+                }
                 combobox.closeDropdown();
               }}
               store={combobox}
@@ -305,6 +322,7 @@ const RegisterUser = () => {
             <Select
               onChange={(value: string | null) => {
                 setSelectedRole(value || '');
+                form.setFieldValue('role', value || '');
                 setChecked(false);
                 setSelectedValues([]);
                 value === 'Teacher' || value === 'Student' ? open() : close();
@@ -318,7 +336,10 @@ const RegisterUser = () => {
             <div
               style={{ display: 'flex', alignItems: 'center', width: '100%' }}
             >
-              <PhoneSelector />
+              <PhoneSelector
+                value={form.values.phoneNumber}
+                onChange={(val) => form.setFieldValue('phoneNumber', val)}
+              />
             </div>
           </Group>
           <Collapse
@@ -375,6 +396,13 @@ const RegisterUser = () => {
             </Group>
           </Radio.Group>
         </Stack>
+        <Button
+          onClick={() => {
+            console.log(form.values);
+          }}
+        >
+          Submit
+        </Button>
       </SimpleGrid>
     </Container>
   );
