@@ -117,25 +117,24 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
       assignedUsers: [],
       terms: isAdminRegister ? true : false,
     },
-
-    validate: {
-      email: isEmail('Invalid email'),
-      firstName: isNotEmpty('First name is required'),
-      lastName: isNotEmpty('Last name is required'),
-      gender: isNotEmpty('Gender is required'),
-      password: hasLength(
-        { min: 6 },
-        'Password must be 6 or more characters long',
-      ),
-      confirmPassword: (value, values) =>
-        matchesField('password', 'Passwords do not match')(value, values),
-      role: isAdminRegister ? isNotEmpty('Role is required') : undefined,
-      country: isNotEmpty('Country is required'),
-      terms: isAdminRegister
-        ? undefined
-        : isNotEmpty('You must accept terms of use'),
-    },
+    validate: isAdminRegister
+      ? {}
+      : {
+          email: isEmail('Invalid email'),
+          firstName: isNotEmpty('First name is required'),
+          lastName: isNotEmpty('Last name is required'),
+          gender: isNotEmpty('Gender is required'),
+          password: hasLength(
+            { min: 6 },
+            'Password must be 6 or more characters long',
+          ),
+          confirmPassword: (value, values) =>
+            matchesField('password', 'Passwords do not match')(value, values),
+          country: isNotEmpty('Country is required'),
+          terms: isNotEmpty('You must accept terms of use'),
+        },
     validateInputOnChange: true,
+    // clearInputErrorOnChange: true,
   });
 
   return (
@@ -184,6 +183,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 confirmPassword,
                 country,
                 phoneNumber,
+                role,
               } = values;
               register({
                 email,
@@ -196,6 +196,8 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 confirmPassword,
                 country,
                 phoneNumber,
+                role,
+                assignedUsers: checked ? selectedValues : [],
               });
             })}
           >

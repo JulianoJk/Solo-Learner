@@ -118,8 +118,6 @@ namespace backend
         )",
                 connection
             );
-            System.Console.WriteLine(countryName);
-            System.Console.WriteLine(countryFlag);
             command.Parameters.AddWithValue("@Email", email);
             command.Parameters.AddWithValue("@FirstName", firstName);
             command.Parameters.AddWithValue("@MiddleName", middleName);
@@ -136,10 +134,8 @@ namespace backend
             command.Parameters.AddWithValue("@CountryName", countryName);
             command.Parameters.AddWithValue("@CountryFlag", countryFlag);
 
-            // ✅ this must be ExecuteNonQuery, not ExecuteReader!
             command.ExecuteNonQuery();
         }
-
 
         public bool CheckIfEmailExists(MySqlConnection connection, string email)
         {
@@ -201,6 +197,48 @@ namespace backend
                 Console.WriteLine("Error: " + ex.Message);
                 return false;
             }
+        }
+
+        public async Task AssignStudentsToTeacher(int teacherId, List<int> studentIds)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync();
+            foreach (var studentId in studentIds)
+            {
+                var cmd = new MySqlCommand(
+                    "INSERT IGNORE INTO teacher_student_assignments (teacherId, studentId) VALUES (@teacherId, @studentId)",
+                    connection
+                );
+                cmd.Parameters.AddWithValue("@teacherId", teacherId);
+                cmd.Parameters.AddWithValue("@studentId", studentId);
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public async Task AssignTeachersToStudent(int studentId, List<int> teacherIds)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync();
+            foreach (var teacherId in teacherIds)
+            {
+                var cmd = new MySqlCommand(
+                    "INSERT IGNORE INTO teacher_student_assignments (teacherId, studentId) VALUES (@teacherId, @studentId)",
+                    connection
+                );
+                cmd.Parameters.AddWithValue("@teacherId", teacherId);
+                cmd.Parameters.AddWithValue("@studentId", studentId);
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public int GetUserIdByEmail(string email)
+        {
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+            var command = new MySqlCommand("SELECT id FROM users WHERE email = @Email", connection);
+            command.Parameters.AddWithValue("@Email", email);
+            object result = command.ExecuteScalar();
+            return result != null ? Convert.ToInt32(result) : -1;
         }
 
         public async Task<bool> AdminDeleteUserByIdAsync(int userId)

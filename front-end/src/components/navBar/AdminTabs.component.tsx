@@ -1,9 +1,5 @@
 import { Tabs, useMantineColorScheme } from '@mantine/core';
-import {
-  IconPencil,
-  IconUserCog,
-  IconUserPlus,
-} from '@tabler/icons-react';
+import { IconPencil, IconUserCog, IconUserPlus } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
 import React from 'react';
 const data = [

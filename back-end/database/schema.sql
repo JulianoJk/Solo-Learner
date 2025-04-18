@@ -24,7 +24,7 @@ CREATE TABLE
         `countryFlag` VARCHAR(255),
         `phoneNumber` VARCHAR(30),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `lastActive` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`),
         UNIQUE KEY `email` (`email`)
@@ -45,15 +45,25 @@ CREATE TABLE
     IF NOT EXISTS `students` (
         `id` INT (11) NOT NULL AUTO_INCREMENT,
         `userId` INT (11) NOT NULL,
-        `teacherId` INT (11),
         PRIMARY KEY (`id`),
-        FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-        FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
+        FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- TRIGGERS
+-- TEACHER-STUDENT ASSIGNMENTS TABLE (Many-to-many)
+CREATE TABLE
+    IF NOT EXISTS `teacher_student_assignments` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `studentId` INT NOT NULL,
+        `teacherId` INT NOT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`studentId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+        UNIQUE KEY `unique_assignment` (`studentId`, `teacherId`)
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- TRIGGERS TO AUTO-ADD TEACHERS & STUDENTS
 DELIMITER / /
--- Add teacher after insert
+-- Automatically add to teachers table on insert
 CREATE TRIGGER `add_teacher_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE THEN
 INSERT INTO
     `teachers` (teacherId)
@@ -65,7 +75,7 @@ END IF;
 END;
 
 / /
--- Update teacher record on user update
+-- Automatically remove or add teacher record on update
 CREATE TRIGGER `update_teacher_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE
 AND OLD.isTeacher = FALSE THEN
@@ -78,33 +88,26 @@ ELSEIF NEW.isTeacher = FALSE
 AND OLD.isTeacher = TRUE THEN
 DELETE FROM `teachers`
 WHERE
-    `teacherId` = NEW.id;
+    teacherId = NEW.id;
 
 END IF;
 
 END;
 
 / /
--- Add student after insert
+-- Automatically add to students table on insert
 CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE THEN
 INSERT INTO
     `students` (userId)
 VALUES
     (NEW.id);
 
--- Optional: This will only increment if user is also teacher (same id)
-UPDATE `teachers`
-SET
-    `studentCount` = `studentCount` + 1
-WHERE
-    `teacherId` = NEW.id;
-
 END IF;
 
 END;
 
 / /
--- Update student status on user update
+-- Automatically add or remove from students table on update
 CREATE TRIGGER `update_student_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE
 AND OLD.isStudent = FALSE THEN
@@ -113,47 +116,13 @@ INSERT INTO
 VALUES
     (NEW.id);
 
-UPDATE `teachers`
-SET
-    `studentCount` = `studentCount` + 1
-WHERE
-    `teacherId` = NEW.id;
-
 ELSEIF NEW.isStudent = FALSE
 AND OLD.isStudent = TRUE THEN
 DELETE FROM `students`
 WHERE
-    `userId` = NEW.id;
-
-UPDATE `teachers`
-SET
-    `studentCount` = `studentCount` - 1
-WHERE
-    `teacherId` = NEW.id;
+    userId = NEW.id;
 
 END IF;
-
-END;
-
-/ /
--- Increment studentCount when student is linked to teacher
-CREATE TRIGGER `update_student_count_trigger` AFTER INSERT ON `students` FOR EACH ROW BEGIN
-UPDATE `teachers`
-SET
-    `studentCount` = `studentCount` + 1
-WHERE
-    `teacherId` = NEW.teacherId;
-
-END;
-
-/ /
--- Decrement studentCount when student is unlinked
-CREATE TRIGGER `decrement_student_count_trigger` AFTER DELETE ON `students` FOR EACH ROW BEGIN
-UPDATE `teachers`
-SET
-    `studentCount` = `studentCount` - 1
-WHERE
-    `teacherId` = OLD.teacherId;
 
 END;
 

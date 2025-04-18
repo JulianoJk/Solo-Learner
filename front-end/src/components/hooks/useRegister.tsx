@@ -21,12 +21,12 @@ interface RegisterApiProps {
   country: { flag: string; name: string };
   phoneNumber: string;
   assignedUsers?: any;
+  role?: string;
 }
 interface IRegisterMutationState {
   register: (props: RegisterApiProps) => void;
   isLoading: boolean;
 }
-
 export const useRegister = (
   isAdminRegister?: boolean,
   adminRefetchUserList?: () => void,
@@ -34,85 +34,99 @@ export const useRegister = (
   const appDispatch = useAppDispatch();
   const userDispatch = useUserDispatch();
   const navigate = useNavigate();
-  const { mutate, isLoading } = useMutation(
-    isAdminRegister ? adminRegisterUserAPI : registerAPI,
-    {
-      onSuccess: (data: IUserInfoContext | IApiError) => {
-        if (typeof data === 'object' && 'error' in data) {
-          appDispatch({
-            type: 'SET_ERROR_ALERT_MESSAGE',
-            errorAlertMessage: data.error.message,
-          });
-        } else if (isAdminRegister) {
-          userDispatch({
-            type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING',
-            isAllUsersAdminDashboardLoading: isLoading,
-          });
-          adminRefetchUserList && adminRefetchUserList();
-          notificationAlert({
-            title: 'Successful registration!',
-            message: 'Congratulations! User was registered! ',
-            icon: <IconCheck size={18} />,
-            iconColor: 'teal',
-          });
-        } else {
-          const hasToken = isUndefinedOrNullString(data?.token);
-          if (hasToken) {
-            appDispatch({
-              type: 'SET_ERROR_ALERT_MESSAGE',
-              errorAlertMessage: 'Something went wrong...',
-            });
-          } else if (!hasToken) {
-            const user: IUserInfoContext = {
-              token: data?.token,
-            };
-            userDispatch({ type: 'SET_USER', user: user });
-            userDispatch({
-              type: 'SET_USER_PICTURE',
-              picture: data.picture ?? '',
-            });
-            navigate('/home');
-            window.location.reload();
 
-            notificationAlert({
-              title: 'Successful registration!',
-              message: 'Congratulations! Your account has been created. ',
-              icon: <IconCheck size={18} />,
-              iconColor: 'teal',
-            });
-          }
-        }
-      },
-    },
-  );
+  const mutationFn = async (
+    data: RegisterApiProps,
+  ): Promise<IUserInfoContext | IApiError> => {
+    if (isAdminRegister) {
+      const {
+        email,
+        username,
+        gender,
+        firstName,
+        middleName,
+        lastName,
+        country,
+        phoneNumber,
+        role,
+        assignedUsers,
+      } = data;
 
-  const register = ({
-    email,
-    firstName,
-    middleName,
-    lastName,
-    username,
-    gender,
-    password,
-    confirmPassword,
-    country,
-    phoneNumber,
-    assignedUsers,
-  }: RegisterApiProps) => {
-    mutate({
-      email,
-      firstName,
-      middleName,
-      lastName,
-      username,
-      password,
-      gender,
-      confirmPassword,
-      country,
-      phoneNumber,
-      assignedUsers,
-    });
+      const isTeacher = role === 'Teacher';
+      const isStudent = role === 'Student';
+
+      return await adminRegisterUserAPI({
+        email,
+        username,
+        gender,
+        firstName,
+        middleName,
+        lastName,
+        country,
+        phoneNumber,
+        picture: '', // or provide real picture if needed
+        isTeacher,
+        isStudent,
+        assignedUsers: assignedUsers ?? [],
+        role: role || '',
+      });
+    } else {
+      return await registerAPI({
+        ...data,
+        assignedUsers: data.assignedUsers ?? [],
+      });
+    }
   };
+
+  const { mutate, isLoading } = useMutation(mutationFn, {
+    onSuccess: (data) => {
+      if ('error' in data) {
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: data.error.message,
+        });
+        return;
+      }
+
+      if (isAdminRegister) {
+        userDispatch({
+          type: 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING',
+          isAllUsersAdminDashboardLoading: isLoading,
+        });
+        adminRefetchUserList?.();
+        notificationAlert({
+          title: 'Successful registration!',
+          message: 'Congratulations! User was registered!',
+          icon: <IconCheck size={18} />,
+          iconColor: 'teal',
+        });
+        return;
+      }
+
+      const hasToken = isUndefinedOrNullString(data?.token);
+      if (hasToken) {
+        appDispatch({
+          type: 'SET_ERROR_ALERT_MESSAGE',
+          errorAlertMessage: 'Something went wrong...',
+        });
+        return;
+      }
+
+      userDispatch({ type: 'SET_USER', user: data });
+      userDispatch({ type: 'SET_USER_PICTURE', picture: data.picture ?? '' });
+      navigate('/home');
+      window.location.reload();
+
+      notificationAlert({
+        title: 'Successful registration!',
+        message: 'Congratulations! Your account has been created.',
+        icon: <IconCheck size={18} />,
+        iconColor: 'teal',
+      });
+    },
+  });
+
+  const register = (props: RegisterApiProps) => mutate(props);
 
   return {
     register,
