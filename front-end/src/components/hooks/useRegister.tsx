@@ -11,10 +11,16 @@ import React from 'react';
 
 interface RegisterApiProps {
   email: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   username: string;
   gender: string;
   password: string;
   confirmPassword: string;
+  country: { flag: string; name: string };
+  phoneNumber: string;
+  assignedUsers?: any;
 }
 interface IRegisterMutationState {
   register: (props: RegisterApiProps) => void;
@@ -82,12 +88,30 @@ export const useRegister = (
 
   const register = ({
     email,
+    firstName,
+    middleName,
+    lastName,
     username,
     gender,
     password,
     confirmPassword,
+    country,
+    phoneNumber,
+    assignedUsers,
   }: RegisterApiProps) => {
-    mutate({ email, username, password, gender, confirmPassword });
+    mutate({
+      email,
+      firstName,
+      middleName,
+      lastName,
+      username,
+      password,
+      gender,
+      confirmPassword,
+      country,
+      phoneNumber,
+      assignedUsers,
+    });
   };
 
   return {

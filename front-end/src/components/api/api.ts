@@ -48,12 +48,24 @@ export const loginAPI = async ({
 
 export const registerAPI = async ({
   email,
+  firstName,
+  middleName,
+  lastName,
   username,
   gender,
   password,
   confirmPassword,
+  country,
+  phoneNumber,
+  assignedUsers,
 }: {
   email: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  country: { flag: string; name: string };
+  phoneNumber: string;
+  assignedUsers: string[];
   username: string;
   gender: string;
   password: string;
@@ -68,9 +80,15 @@ export const registerAPI = async ({
       body: JSON.stringify({
         email,
         username,
+        firstName,
+        middleName,
+        lastName,
         gender,
         password,
         confirmPassword,
+        country,
+        phoneNumber,
+        assignedUsers,
       }),
     });
 

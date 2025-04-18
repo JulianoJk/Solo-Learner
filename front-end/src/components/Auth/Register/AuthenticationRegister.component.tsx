@@ -147,9 +147,30 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               if (isAdminRegister && adminRefetchUserList) {
                 adminRefetchUserList();
               }
-              const { email, username, gender, password, confirmPassword } =
-                values;
-              register({ email, username, gender, password, confirmPassword });
+              const {
+                email,
+                firstName,
+                middleName,
+                lastName,
+                username,
+                gender,
+                password,
+                confirmPassword,
+                country,
+                phoneNumber,
+              } = values;
+              register({
+                email,
+                firstName,
+                middleName,
+                lastName,
+                username,
+                gender,
+                password,
+                confirmPassword,
+                country,
+                phoneNumber,
+              });
             })}
           >
             <Stack>
