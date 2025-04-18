@@ -78,6 +78,7 @@ const CountrySelector = ({ value, onChange, error, disabled }: Props) => {
       <Combobox.Target>
         <TextInput
           withAsterisk
+          required
           label="Select Country"
           placeholder="Type to search"
           value={input}

@@ -82,15 +82,6 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
       email: isEmail('Invalid email'),
       firstName: isNotEmpty('First name is required'),
       lastName: isNotEmpty('Last name is required'),
-      username: (value) => {
-        if (value.length < 3 || value.length > 20) {
-          return 'Username must be between 3 and 20 characters long';
-        }
-        if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-          return 'Username can only contain letters, numbers, and underscores';
-        }
-        return null;
-      },
       gender: isNotEmpty('Gender is required'),
       password: hasLength(
         { min: 6 },
@@ -99,12 +90,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
       confirmPassword: (value, values) =>
         matchesField('password', 'Passwords do not match')(value, values),
       role: isAdminRegister ? isNotEmpty('Role is required') : undefined,
-      country: (value) => {
-        if (!value.name) {
-          return 'Country is required';
-        }
-        return null;
-      },
+      country: isNotEmpty('Country is required'),
       terms: isAdminRegister
         ? undefined
         : isNotEmpty('You must accept terms of use'),

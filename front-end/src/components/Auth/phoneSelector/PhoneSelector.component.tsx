@@ -37,7 +37,7 @@ const PhoneSelector: React.FC<PhoneSelectorProps> = ({
     // TODO!: Add maxWidth to the input
     <Box>
       <Text size="sm" fw={600}>
-        Phone number <span style={{ color: '#e03131' }}>&#42;</span>
+        Phone number
       </Text>
       <PhoneInput
         style={phoneInputStyle}
