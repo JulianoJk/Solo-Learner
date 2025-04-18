@@ -16,8 +16,7 @@ const RegisterNewUser: React.FC<IRegisterNewUserProps> = ({
       rootClassName={classes.root}
       adminRefetchUserList={refetchUserList}
       registerTitle={'Register new users'}
-      switchToLogin={false}
-      displaySocialButtons={false}
+      hideSocialButtons={false}
       showNotification={true}
       isAdminRegister={true}
     />

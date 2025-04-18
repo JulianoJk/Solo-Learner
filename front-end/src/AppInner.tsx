@@ -37,6 +37,7 @@ import Preloader from './components/Loader/Preloader.component';
 import NotFound from './components/Pages/Error/pageNotFound/NotFound.component';
 import AuthenticationForm from './components/Auth/Login/AuthenticationLogin.component';
 import AuthenticationRegister from './components/Auth/Register/AuthenticationRegister.component';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 // import DragNDrop from './components/Pages/LearningUnits/DragNDrop/DragNDrop.component';
 
 const AppInner = () => {
@@ -69,26 +70,12 @@ const AppInner = () => {
     <Route
       key="/login"
       path="/login"
-      element={
-        isGoogleClientIdLoading ? (
-          <Preloader />
-        ) : (
-          <AuthenticationForm hasBorder switchToRegister showNotification />
-        )
-      }
+      element={isGoogleClientIdLoading ? <Preloader /> : <AuthenticationForm />}
     />,
     <Route
       key="/register"
       path="/register"
-      element={
-        <AuthenticationRegister
-          displaySocialButtons
-          hasBorder
-          switchToLogin
-          showNotification
-          isAdminRegister={false}
-        />
-      }
+      element={<AuthenticationRegister />}
     />,
     <Route
       key="/*"
@@ -183,6 +170,7 @@ const AppInner = () => {
         <AppContextProvider>
           <ModalsProvider>
             <BrowserRouter>
+              <ScrollToTop />
               <Notifications />
               <UserContextProvider>
                 <AccountSettingsContextProvider>
@@ -196,9 +184,15 @@ const AppInner = () => {
                       <HeaderMenu />
                     </AppShell.Header>
                     <AppShell.Main style={{ marginTop: '6rem' }}>
-                      <GoogleOAuthProvider clientId={googleClientId ?? ''}>
-                        <Routes>{[...CommonRoutes, ...ProtectedRoutes]}</Routes>
-                      </GoogleOAuthProvider>
+                      {isGoogleClientIdLoading ? (
+                        <Preloader />
+                      ) : (
+                        <GoogleOAuthProvider clientId={googleClientId}>
+                          <Routes>
+                            {[...CommonRoutes, ...ProtectedRoutes]}
+                          </Routes>
+                        </GoogleOAuthProvider>
+                      )}
                     </AppShell.Main>
                   </AppShell>
                 </AccountSettingsContextProvider>

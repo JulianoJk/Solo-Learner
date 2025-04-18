@@ -32,11 +32,9 @@ import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 
 interface IRegisterProps {
   children?: React.ReactNode;
-  switchToLogin?: boolean;
-  hasBorder?: boolean;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
-  displaySocialButtons?: boolean;
+  hideSocialButtons?: boolean;
   adminRefetchUserList?: () => void;
   isAdminRegister?: boolean;
   rootClassName?: string;
@@ -47,11 +45,9 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
   const navigate: NavigateFunction = useNavigate();
 
   const {
-    hasBorder,
-    switchToLogin,
     children,
     registerTitle,
-    displaySocialButtons,
+    hideSocialButtons,
     adminRefetchUserList,
     isAdminRegister,
     rootClassName,
@@ -107,7 +103,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
           className={rootClassName}
           radius="md"
           p="xl"
-          withBorder={hasBorder}
+          withBorder
           {...props}
           sx={{ width: '60em' }}
         >
@@ -118,7 +114,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               : registerTitle}
           </Text>
 
-          {displaySocialButtons && (
+          {!hideSocialButtons && (
             <>
               <SocialButtons disableFacebook />
               <Divider
@@ -289,7 +285,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
             </Stack>
 
             <Group justify="space-between" mt="xl">
-              {switchToLogin ? (
+              {isAdminRegister ? (
                 <Anchor
                   component="button"
                   type="button"
