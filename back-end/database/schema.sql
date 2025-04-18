@@ -2,6 +2,7 @@ CREATE DATABASE IF NOT EXISTS solo_learner;
 
 USE solo_learner;
 
+-- USERS TABLE
 CREATE TABLE
     IF NOT EXISTS `users` (
         `id` INT (11) NOT NULL AUTO_INCREMENT,
@@ -19,7 +20,8 @@ CREATE TABLE
         `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
         `isUserLoggedIn` BOOLEAN NOT NULL DEFAULT FALSE,
         `lastVisitedPath` VARCHAR(255),
-        `country` VARCHAR(100),
+        `countryName` VARCHAR(100),
+        `countryFlag` VARCHAR(255),
         `phoneNumber` VARCHAR(30),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -28,6 +30,7 @@ CREATE TABLE
         UNIQUE KEY `email` (`email`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+-- TEACHERS TABLE
 CREATE TABLE
     IF NOT EXISTS `teachers` (
         `id` INT (11) NOT NULL AUTO_INCREMENT,
@@ -37,6 +40,7 @@ CREATE TABLE
         FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
+-- STUDENTS TABLE
 CREATE TABLE
     IF NOT EXISTS `students` (
         `id` INT (11) NOT NULL AUTO_INCREMENT,
@@ -47,8 +51,10 @@ CREATE TABLE
         FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- Triggers
-DELIMITER / / CREATE TRIGGER `add_teacher_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE THEN
+-- TRIGGERS
+DELIMITER / /
+-- Add teacher after insert
+CREATE TRIGGER `add_teacher_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE THEN
 INSERT INTO
     `teachers` (teacherId)
 VALUES
@@ -58,7 +64,9 @@ END IF;
 
 END;
 
-/ / CREATE TRIGGER `update_teacher_trigger` AFTER
+/ /
+-- Update teacher record on user update
+CREATE TRIGGER `update_teacher_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE
 AND OLD.isTeacher = FALSE THEN
 INSERT INTO
@@ -76,12 +84,15 @@ END IF;
 
 END;
 
-/ / CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE THEN
+/ /
+-- Add student after insert
+CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE THEN
 INSERT INTO
     `students` (userId)
 VALUES
     (NEW.id);
 
+-- Optional: This will only increment if user is also teacher (same id)
 UPDATE `teachers`
 SET
     `studentCount` = `studentCount` + 1
@@ -92,7 +103,9 @@ END IF;
 
 END;
 
-/ / CREATE TRIGGER `update_student_trigger` AFTER
+/ /
+-- Update student status on user update
+CREATE TRIGGER `update_student_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE
 AND OLD.isStudent = FALSE THEN
 INSERT INTO
@@ -122,7 +135,9 @@ END IF;
 
 END;
 
-/ / CREATE TRIGGER `update_student_count_trigger` AFTER INSERT ON `students` FOR EACH ROW BEGIN
+/ /
+-- Increment studentCount when student is linked to teacher
+CREATE TRIGGER `update_student_count_trigger` AFTER INSERT ON `students` FOR EACH ROW BEGIN
 UPDATE `teachers`
 SET
     `studentCount` = `studentCount` + 1
@@ -131,7 +146,9 @@ WHERE
 
 END;
 
-/ / CREATE TRIGGER `decrement_student_count_trigger` AFTER DELETE ON `students` FOR EACH ROW BEGIN
+/ /
+-- Decrement studentCount when student is unlinked
+CREATE TRIGGER `decrement_student_count_trigger` AFTER DELETE ON `students` FOR EACH ROW BEGIN
 UPDATE `teachers`
 SET
     `studentCount` = `studentCount` - 1

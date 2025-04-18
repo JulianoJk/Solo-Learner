@@ -1,11 +1,9 @@
 using System;
 using backend;
 using MySql.Data.MySqlClient;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
+using System.Linq;
 
 public class AuthenticationUtils
 {
@@ -25,6 +23,7 @@ public class AuthenticationUtils
         bool isGoogle,
         string? username,
         string firstName,
+        string middleName,
         string lastName,
         string gender,
         string email,
@@ -32,69 +31,60 @@ public class AuthenticationUtils
         byte[]? salt,
         bool isTeacher,
         bool isStudent,
-        string? picture
+        string? picture,
+        string? phoneNumber,
+        string? countryName,
+        string? countryFlag
     )
     {
-        // Retrieve the isAdmin flag from the database
         bool isAdmin = db.GetIsAdminFromDatabase(email);
 
-        // Initialize the database connection
         db.InitializeDatabaseConnection(
             isRegister,
             isGoogle,
             email,
             firstName,
+            middleName,
             lastName,
             gender,
-            username,
-            password,
+            username ?? "",
+            password ?? "",
             salt,
             isTeacher,
             isStudent,
             isAdmin,
-            picture
+            picture,
+            phoneNumber,
+            countryName,
+            countryFlag
         );
 
         if (!isRegister)
         {
-            CheckPasswordForLogin(email, password);
-            return CheckPasswordForLogin(email, password);
+            return CheckPasswordForLogin(email, password ?? "");
         }
-        else
-        {
-            // Get the login status from the database
-            return db.GetRegisterStatus();
-        }
+
+        return db.GetRegisterStatus();
     }
 
     public byte[] GenerateHash(string password, byte[] salt)
     {
-        byte[] hash = null;
-
         try
         {
-            // Concatenate the password and salt
-            byte[] passwordAndSalt = Encoding.UTF8.GetBytes(
-                password + Convert.ToBase64String(salt)
-            );
-
-            // Generate a SHA256 hash of the password and salt
-            using (var sha256 = SHA256.Create())
-            {
-                hash = sha256.ComputeHash(passwordAndSalt);
-            }
+            byte[] passwordAndSalt = Encoding.UTF8.GetBytes(password + Convert.ToBase64String(salt));
+            using var sha256 = SHA256.Create();
+            return sha256.ComputeHash(passwordAndSalt);
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error generating hash: {ex.Message}");
+            return Array.Empty<byte>();
         }
-
-        return hash;
     }
 
     public (bool, string) CheckPasswordForLogin(string email, string password)
     {
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        using var connection = new MySqlConnection(connectionString);
         byte[]? salt = db.GetSaltFromDatabase(connection, email);
         bool found = false;
 
@@ -104,17 +94,12 @@ public class AuthenticationUtils
             return (found, MessageToUser);
         }
 
-        // If the authentication is done through Google, skip password checking
         if (!string.IsNullOrWhiteSpace(password))
         {
-            // Generate hash of the password using the retrieved salt
             byte[] hashedPassword = GenerateHash(password, salt);
-
-            // Retrieve the stored hashed password for the user from the database
             string hashedPasswordString = db.GetHashedPasswordFromDatabase(connection, email);
             byte[] storedHashedPassword = Convert.FromBase64String(hashedPasswordString);
 
-            // Compare the generated hash with the stored hashed password
             if (storedHashedPassword.SequenceEqual(hashedPassword))
             {
                 found = true;
@@ -127,8 +112,6 @@ public class AuthenticationUtils
         }
         else
         {
-            // Handle Google authentication logic here, if needed
-            // You might want to set 'found' to true and customize the message
             found = true;
             MessageToUser = "Google Authentication Successful!";
         }
@@ -138,139 +121,88 @@ public class AuthenticationUtils
 
     public Tuple<bool, string> IsUsernameTaken(string username)
     {
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        using var connection = new MySqlConnection(connectionString);
         string uniqueUsername = username;
         int counter = 1;
 
         try
         {
             connection.Open();
-
-            while (true) // we will break this loop from inside
+            while (true)
             {
-                MySqlCommand command = new MySqlCommand(
-                    $"SELECT COUNT(*) FROM users WHERE username = @username",
-                    connection
-                );
-
+                using var command = new MySqlCommand("SELECT COUNT(*) FROM users WHERE username = @username", connection);
                 command.Parameters.AddWithValue("@username", uniqueUsername);
                 int count = Convert.ToInt32(command.ExecuteScalar());
 
-                if (count > 0) // if username is taken
+                if (count > 0)
                 {
-                    uniqueUsername = $"{username}{counter}"; // add counter to username
-                    counter++; // increment counter for next possible iteration
-                    return Tuple.Create(true, uniqueUsername); // return the new username
+                    uniqueUsername = $"{username}{counter}";
+                    counter++;
+                    return Tuple.Create(true, uniqueUsername);
                 }
                 else
                 {
-                    break; // if username is not taken, break the loop
+                    break;
                 }
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex.Message);
-            // Here, you might want to do error handling,
-            // e.g., throw an exception or return a value indicating an error
-        }
-        finally
-        {
-            connection.Close();
         }
 
-        if (counter == 1) // original username was not taken
-            return Tuple.Create(false, "");
-
-        return Tuple.Create(true, uniqueUsername); // username was taken, return the new one
+        return counter == 1 ? Tuple.Create(false, "") : Tuple.Create(true, uniqueUsername);
     }
 
     public string? GetUserEmailFromGoogleId(string googleEmail)
     {
-        using (var connection = new MySqlConnection(ConnectionString.Value))
-        {
-            connection.Open();
+        using var connection = new MySqlConnection(ConnectionString.Value);
+        connection.Open();
 
-            using (
-                var command = new MySqlCommand(
-                    "SELECT email FROM users WHERE email = @GoogleEmail",
-                    connection
-                )
-            )
-            {
-                command.Parameters.AddWithValue("@GoogleEmail", googleEmail);
+        using var command = new MySqlCommand("SELECT email FROM users WHERE email = @GoogleEmail", connection);
+        command.Parameters.AddWithValue("@GoogleEmail", googleEmail);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return reader.GetString("email");
-                    }
-                }
-            }
-        }
-
-        return null;
+        using var reader = command.ExecuteReader();
+        return reader.Read() ? reader.GetString("email") : null;
     }
 
-    public UserInfo GetAdditionalUserInfoFromDb(string userEmail)
+    public UserInfo? GetAdditionalUserInfoFromDb(string userEmail)
     {
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using var connection = new MySqlConnection(ConnectionString.Value);
+        connection.Open();
+
+        using var command = new MySqlCommand(
+            "SELECT id, isTeacher, isStudent, isAdmin, picture FROM users WHERE email = @Email",
+            connection
+        );
+        command.Parameters.AddWithValue("@Email", userEmail);
+
+        using var reader = command.ExecuteReader();
+        if (reader.Read())
         {
-            connection.Open();
-
-            using (
-                var command = new MySqlCommand(
-                    "SELECT id, isTeacher, isStudent, isAdmin, picture FROM users WHERE email = @Email",
-                    connection
-                )
-            )
+            return new UserInfo
             {
-                command.Parameters.AddWithValue("@Email", userEmail);
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return new UserInfo
-                        {
-                            Id = reader.GetInt32("id"),
-                            IsTeacher = reader.GetBoolean("isTeacher"),
-                            isStudent = reader.GetBoolean("isStudent"),
-                            IsAdmin = reader.GetBoolean("isAdmin"),
-                            Picture = reader.GetString("picture")
-                        };
-                    }
-                }
-            }
+                Id = reader.GetInt32("id"),
+                IsTeacher = reader.GetBoolean("isTeacher"),
+                isStudent = reader.GetBoolean("isStudent"),
+                IsAdmin = reader.GetBoolean("isAdmin"),
+                Picture = reader.GetString("picture")
+            };
         }
 
         return null;
     }
+
     public string? GetAuthMethod(string email)
     {
-        using (var connection = new MySqlConnection(ConnectionString.Value))
-        {
-            connection.Open();
+        using var connection = new MySqlConnection(ConnectionString.Value);
+        connection.Open();
 
-            using (var command = new MySqlCommand(
-                "SELECT authMethod FROM users WHERE email = @Email",
-                connection
-            ))
-            {
-                command.Parameters.AddWithValue("@Email", email);
+        using var command = new MySqlCommand("SELECT authMethod FROM users WHERE email = @Email", connection);
+        command.Parameters.AddWithValue("@Email", email);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        return reader.GetString("authMethod");
-                    }
-                }
-            }
-        }
-
-        return null;
+        using var reader = command.ExecuteReader();
+        return reader.Read() ? reader.GetString("authMethod") : null;
     }
 
     public class UserInfo
@@ -279,6 +211,6 @@ public class AuthenticationUtils
         public bool IsTeacher { get; set; }
         public bool isStudent { get; set; }
         public bool IsAdmin { get; set; }
-        public string Picture { get; set; }
+        public string Picture { get; set; } = string.Empty;
     }
 }

@@ -8,13 +8,9 @@ namespace backend
     {
         private readonly string connectionString;
 
-        // Getter and setter for areCredentialsCorrect
         public bool AreCredentialsCorrect { get; set; }
-
-        // Getter and setter for messageToUser
         public string MessageToUser { get; set; }
 
-        // Constructor to set the initial state of the properties and load the connection string from .env file
         public Database()
         {
             connectionString = ConnectionString.Value;
@@ -22,12 +18,12 @@ namespace backend
             MessageToUser = "";
         }
 
-        // Method to initialize the database connection and perform registration or login based on 'isRegister' parameter
         public void InitializeDatabaseConnection(
             bool isRegister,
             bool isGoogle,
             string email,
             string firstName,
+            string middleName,
             string lastName,
             string gender,
             string? username,
@@ -36,10 +32,14 @@ namespace backend
             bool isTeacher,
             bool isStudent,
             bool isAdmin,
-            string? picture
+            string? picture,
+            string? phoneNumber,
+            string? countryName,
+            string? countryFlag
         )
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            using MySqlConnection connection = new MySqlConnection(connectionString);
+
             try
             {
                 connection.Open();
@@ -48,60 +48,37 @@ namespace backend
                     Console.WriteLine("Connection to MySQL server successful!");
                     if (isRegister)
                     {
-                        try
+                        if (CheckIfEmailExists(connection, email))
                         {
-                            if (CheckIfEmailExists(connection, email))
-                            {
-                                AreCredentialsCorrect = false;
-                                MessageToUser = "Invalid email address or password.";
-                            }
-                            else if (!isGoogle)
-                            {
-                                saveToDatabase(
-                                    connection,
-                                    email,
-                                    firstName,
-                                    lastName,
-                                    gender,
-                                    username,
-                                    password,
-                                    salt,
-                                    isTeacher,
-                                    isStudent,
-                                    isAdmin,
-                                    null
-                                );
-                                AreCredentialsCorrect = true;
-                                MessageToUser = "Registration successful!";
-                            }
-                            else
-                            {
-                                saveToDatabase(
-                                    connection,
-                                    email,
-                                    firstName,
-                                    lastName,
-                                    gender,
-                                    username,
-                                    "",
-                                    null,
-                                    isTeacher,
-                                    isStudent,
-                                    isAdmin,
-                                    picture
-                                );
-                                AreCredentialsCorrect = true;
-                                MessageToUser = "Registration successful!";
-                            }
+                            AreCredentialsCorrect = false;
+                            MessageToUser = "Invalid email address or password.";
                         }
-                        catch (MySqlException ex)
+                        else
                         {
-                            Console.WriteLine("Error: " + ex.Message);
+                            saveToDatabase(
+                                connection,
+                                email,
+                                firstName,
+                                middleName,
+                                lastName,
+                                gender,
+                                username,
+                                isGoogle ? "" : password,
+                                isGoogle ? null : salt,
+                                isTeacher,
+                                isStudent,
+                                isAdmin,
+                                picture,
+                                phoneNumber,
+                                countryName,
+                                countryFlag
+                            );
+                            AreCredentialsCorrect = true;
+                            MessageToUser = "Registration successful!";
                         }
                     }
                     else
                     {
-                        // Call VerifyEmailAndPassword method to check email and password
                         CheckIfEmailExists(connection, email);
                     }
                 }
@@ -110,163 +87,133 @@ namespace backend
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-            finally
-            {
-                connection.Close();
-            }
         }
 
-        // Method to save user data to the database
-// Method to save user data to the database
-public void saveToDatabase(
-    MySqlConnection connection,
-    string email,
-    string firstName,
-    string lastName,
-    string gender,
-    string username,
-    string password,
-    byte[]? salt,
-    bool isTeacher,
-    bool isStudent,
-    bool isAdmin,
-    string? picture
-)
-{
-    MySqlCommand command = new MySqlCommand(
-        "INSERT INTO users (email, firstName, lastName, gender, username, password, salt, isTeacher, isStudent, isAdmin, picture) " + 
-        "VALUES (@email, @firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isStudent, @isAdmin, @picture)",
-        connection
-    );
-    command.Parameters.AddWithValue("@email", email);
-    command.Parameters.AddWithValue("@firstName", firstName);
-    command.Parameters.AddWithValue("@lastName", lastName);
-    command.Parameters.AddWithValue("@gender", gender);
-    command.Parameters.AddWithValue("@username", username);
-    command.Parameters.AddWithValue("@password", password);
-    command.Parameters.AddWithValue("@salt", salt);
-    command.Parameters.AddWithValue("@isTeacher", isTeacher);
-    command.Parameters.AddWithValue("@isStudent", isStudent);
-    command.Parameters.AddWithValue("@isAdmin", isAdmin);
-    command.Parameters.AddWithValue("@picture", picture);
-    MySqlDataReader reader = command.ExecuteReader();
-    reader.Close();
-    // Set AreCredentialsCorrect to true if the data was successfully saved to the database
-    AreCredentialsCorrect = true;
-}
+        public void saveToDatabase(
+            MySqlConnection connection,
+            string email,
+            string firstName,
+            string middleName,
+            string lastName,
+            string gender,
+            string username,
+            string password,
+            byte[]? salt,
+            bool isTeacher,
+            bool isStudent,
+            bool isAdmin,
+            string? picture,
+            string? phoneNumber,
+            string? countryName,
+            string? countryFlag
+        )
+        {
+            MySqlCommand command = new MySqlCommand(
+                @"INSERT INTO users (
+            email, firstName, middleName, lastName, gender, username, password, salt, 
+            isTeacher, isStudent, isAdmin, picture, phoneNumber, countryName, countryFlag
+        ) VALUES (
+            @Email, @FirstName, @MiddleName, @LastName, @Gender, @Username, @Password, @Salt, 
+            @IsTeacher, @IsStudent, @IsAdmin, @Picture, @PhoneNumber, @CountryName, @CountryFlag
+        )",
+                connection
+            );
+            System.Console.WriteLine(countryName);
+            System.Console.WriteLine(countryFlag);
+            command.Parameters.AddWithValue("@Email", email);
+            command.Parameters.AddWithValue("@FirstName", firstName);
+            command.Parameters.AddWithValue("@MiddleName", middleName);
+            command.Parameters.AddWithValue("@LastName", lastName);
+            command.Parameters.AddWithValue("@Gender", gender);
+            command.Parameters.AddWithValue("@Username", username);
+            command.Parameters.AddWithValue("@Password", password);
+            command.Parameters.AddWithValue("@Salt", salt);
+            command.Parameters.AddWithValue("@IsTeacher", isTeacher);
+            command.Parameters.AddWithValue("@IsStudent", isStudent);
+            command.Parameters.AddWithValue("@IsAdmin", isAdmin);
+            command.Parameters.AddWithValue("@Picture", picture);
+            command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
+            command.Parameters.AddWithValue("@CountryName", countryName);
+            command.Parameters.AddWithValue("@CountryFlag", countryFlag);
+
+            // ✅ this must be ExecuteNonQuery, not ExecuteReader!
+            command.ExecuteNonQuery();
+        }
 
 
-        // Method to check if an email exists in the database
         public bool CheckIfEmailExists(MySqlConnection connection, string email)
         {
             MySqlCommand command = new MySqlCommand(
-                $"SELECT COUNT(*) FROM users WHERE email = '{email}'",
+                "SELECT COUNT(*) FROM users WHERE email = @email",
                 connection
             );
+            command.Parameters.AddWithValue("@email", email);
             int count = Convert.ToInt32(command.ExecuteScalar());
             return count > 0;
         }
 
-        // Method to return both AreCredentialsCorrect and MessageToUser
         public (bool, string) GetRegisterStatus()
         {
             return (AreCredentialsCorrect, MessageToUser);
         }
 
-        // Method to retrieve a user's salt value from the database
         public byte[] GetSaltFromDatabase(MySqlConnection connection, string email)
         {
             connection.Open();
             MySqlCommand command = new MySqlCommand(
-                $"SELECT salt FROM users WHERE email = '{email}'",
+                "SELECT salt FROM users WHERE email = @email",
                 connection
             );
+            command.Parameters.AddWithValue("@email", email);
             object salt = command.ExecuteScalar();
-            if (salt == null || salt == DBNull.Value)
-            {
-                connection.Close();
-                return null;
-            }
-            else
-            {
-                connection.Close();
-                return (byte[])salt;
-            }
+            connection.Close();
+            return salt == null || salt == DBNull.Value ? null : (byte[])salt;
         }
 
-        // Method to retrieve a user's hashedPassword value from the database
         public string GetHashedPasswordFromDatabase(MySqlConnection connection, string email)
         {
             connection.Open();
             MySqlCommand command = new MySqlCommand(
-                $"SELECT password FROM users WHERE email = '{email}'",
+                "SELECT password FROM users WHERE email = @email",
                 connection
             );
+            command.Parameters.AddWithValue("@email", email);
             object password = command.ExecuteScalar();
-            if (password == null || password == DBNull.Value)
-            {
-                connection.Close();
-                return null;
-            }
-            else
-            {
-                connection.Close();
-                return (string)password;
-            }
+            connection.Close();
+            return password == null || password == DBNull.Value ? null : (string)password;
         }
 
         public async Task<bool> DeleteUserByIdAsync(int? id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid user ID");
-            }
+            if (id <= 0) throw new ArgumentException("Invalid user ID");
 
-            MySqlConnection connection = new(connectionString);
-
+            using MySqlConnection connection = new(connectionString);
             try
             {
                 await connection.OpenAsync();
-
                 MySqlCommand command = new("DELETE FROM users WHERE id=@id", connection);
                 command.Parameters.AddWithValue("@id", id);
-
                 int rowsAffected = await command.ExecuteNonQueryAsync();
-
                 return rowsAffected > 0;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
                 return false;
-            }
-            finally
-            {
-                await connection.CloseAsync();
             }
         }
 
         public async Task<bool> AdminDeleteUserByIdAsync(int userId)
         {
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Invalid user ID");
-            }
+            if (userId <= 0) throw new ArgumentException("Invalid user ID");
 
-            using MySqlConnection connection = new MySqlConnection(connectionString);
-
+            using MySqlConnection connection = new(connectionString);
             try
             {
                 await connection.OpenAsync();
-
-                MySqlCommand command = new MySqlCommand(
-                    "DELETE FROM users WHERE id=@userId",
-                    connection
-                );
+                MySqlCommand command = new("DELETE FROM users WHERE id=@userId", connection);
                 command.Parameters.AddWithValue("@userId", userId);
-
                 int rowsAffected = await command.ExecuteNonQueryAsync();
-
                 return rowsAffected > 0;
             }
             catch (Exception ex)
@@ -274,25 +221,16 @@ public void saveToDatabase(
                 Console.WriteLine("Error: " + ex.Message);
                 return false;
             }
-            finally
-            {
-                await connection.CloseAsync();
-            }
         }
 
         public bool GetIsAdminFromDatabase(string email)
         {
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = new MySqlCommand(
-                    "SELECT isAdmin FROM users WHERE email = @email",
-                    connection
-                );
-                command.Parameters.AddWithValue("@email", email);
-                var isAdmin = command.ExecuteScalar();
-                return isAdmin != null && Convert.ToBoolean(isAdmin);
-            }
+            using var connection = new MySqlConnection(connectionString);
+            connection.Open();
+            var command = new MySqlCommand("SELECT isAdmin FROM users WHERE email = @email", connection);
+            command.Parameters.AddWithValue("@email", email);
+            var isAdmin = command.ExecuteScalar();
+            return isAdmin != null && Convert.ToBoolean(isAdmin);
         }
     }
 }

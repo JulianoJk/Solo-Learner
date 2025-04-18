@@ -16,35 +16,44 @@ public class LoginUser
     {
         try
         {
-            // Read the request body
             string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
-            // Deserialize the request body into a LoginModel object
             var loginModel = JsonSerializer.Deserialize<LoginModel>(
                 requestBody,
                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
             );
 
-            // Extract the email and password from the LoginModel object
+            if (loginModel == null || string.IsNullOrWhiteSpace(loginModel.Email) || string.IsNullOrWhiteSpace(loginModel.Password))
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(new { error = new { message = "Email and password are required." } });
+                return;
+            }
+
             string email = loginModel.Email;
             string password = loginModel.Password;
+
             bool isTeacher = IsTeacherEnv.Value.Contains(email);
             bool isStudent = !isTeacher;
 
-            // Call AuthenticateUser method on the AuthenticationUtils instance with register=false
+            // Call AuthenticateUser with updated parameters (only login-required fields provided)
             var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
-                false,
-                false,
-                null,
-                null,
-                null,
-                null,
-                email,
-                password,
-                null,
-                isTeacher,
-                isStudent,
-                null
+                isRegister: false,
+                isGoogle: false,
+                username: null,
+                firstName: "",
+                middleName: "",
+                lastName: "",
+                gender: "",
+                email: email,
+                password: password,
+                salt: null,
+                isTeacher: isTeacher,
+                isStudent: isStudent,
+                picture: null,
+                phoneNumber: null,
+                countryName: null,
+                countryFlag: null
             );
 
             if (AreCredentialsCorrect)
@@ -53,47 +62,45 @@ public class LoginUser
                 UserRepository userRepository = new UserRepository();
                 string username = usernameDataAccess.GetUsername(email);
 
-                // Get the isAdmin value from the database for this user
                 var db = new Database();
                 bool isAdmin = db.GetIsAdminFromDatabase(email);
 
-                // Generate a JWT token
                 string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent, isAdmin);
                 if (!string.IsNullOrWhiteSpace(token))
                 {
-                    // Update user status in the database (isUserLoggedIn = true)
                     await userRepository.UpdateUserIsLoggedIn(true, email);
-                    // Return a successful response with a 200 status code
+
                     var response = new
                     {
                         messageToUser,
                         token,
                         navigateUser = JwtUtils.GetUserLastVisitedPath(email)
                     };
+
                     context.Response.StatusCode = StatusCodes.Status200OK;
                     await context.Response.WriteAsJsonAsync(response);
                 }
                 else
                 {
-                    // Return an error response with a 500(Internal Server Error) status code
                     context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                    await context.Response.WriteAsJsonAsync(
-                        "Internal Server Error. JWT token not generated."
-                    );
+                    await context.Response.WriteAsJsonAsync(new
+                    {
+                        error = "Internal Server Error. JWT token not generated."
+                    });
                 }
             }
             else
             {
-                // Return an error response with a 401 status code
-                var response = new { error = new { message = messageToUser } };
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(response);
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = new { message = messageToUser }
+                });
             }
         }
         catch (Exception ex)
         {
-            // Send an error message to the client
-            context.Response.StatusCode = 500;
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(JsonSerializer.Serialize(new { error = ex.Message }));
         }
