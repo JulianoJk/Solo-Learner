@@ -18,7 +18,6 @@ import { useMediaQuery } from '@mantine/hooks';
 import AdminDrawer from '../navBar/AdminTabs.component';
 import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 import StudentmanagmenTable from './userManagment/studentManagment/StudentManagmentTable.component';
-import RegisterUser from './registerNewUsers/RegisterUser.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -83,8 +82,6 @@ const Admin = () => {
     switch (selectedAdminNavbar) {
       case 'userManagment':
         return !matches ? <MobileStudent /> : <StudentmanagmenTable />;
-      case 'RegisterUser':
-        return <RegisterUser />;
       case 'register_new_user':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       case 'Assignent':

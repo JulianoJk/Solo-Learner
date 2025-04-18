@@ -18,8 +18,14 @@ import {
   Center,
   Radio,
   Checkbox,
+  Collapse,
+  Flex,
+  MultiSelect,
+  Avatar,
+  MultiSelectProps,
+  Select,
 } from '@mantine/core';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
 import Preloader from '../../Loader/Preloader.component';
 import { useAppState } from '../../../context/AppContext';
@@ -29,12 +35,14 @@ import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
 import CountrySelector from '../../countrySelect/CountrySelect';
 import PhoneSelector from '../phoneSelector/PhoneSelector.component';
+import { useDisclosure } from '@mantine/hooks';
+import { useUserState } from '../../../context/UserContext';
+import { useStyles } from '../../admin/registerNewUsers/AdminAddUser.styles';
 
 interface IRegisterProps {
   children?: React.ReactNode;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
-  hideSocialButtons?: boolean;
   adminRefetchUserList?: () => void;
   isAdminRegister?: boolean;
   rootClassName?: string;
@@ -42,12 +50,48 @@ interface IRegisterProps {
 
 const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
   const { isAuthLoading } = useAppState();
+  const { classes } = useStyles();
+
   const navigate: NavigateFunction = useNavigate();
+  const [opened, { open, close }] = useDisclosure(false);
+  const [checked, setChecked] = useState(false);
+  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const [selectedRole, setSelectedRole] = useState('');
+  const { allUsersAdminDashboard } = useUserState();
+  const filteredUsers = useMemo(() => {
+    return selectedRole === 'Teacher'
+      ? allUsersAdminDashboard.filter((user) => user.isStudent === true)
+      : selectedRole === 'Student'
+      ? allUsersAdminDashboard.filter((user) => user.isTeacher === true)
+      : allUsersAdminDashboard;
+  }, [selectedRole, allUsersAdminDashboard]);
+  const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
+    option,
+  }) => {
+    const user = filteredUsers.find((u) => u.id.toString() === option.value);
+
+    if (!user) return null;
+
+    return (
+      <Group gap="sm">
+        {user.picture ? (
+          <Avatar src={user.picture} size={36} radius="xl" />
+        ) : (
+          <Avatar size={36} radius="xl" />
+        )}
+        <div>
+          <Text size="sm">{user.username}</Text>
+          <Text size="xs" opacity={0.5}>
+            {user.email}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
 
   const {
     children,
     registerTitle,
-    hideSocialButtons,
     adminRefetchUserList,
     isAdminRegister,
     rootClassName,
@@ -114,7 +158,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               : registerTitle}
           </Text>
 
-          {!hideSocialButtons && (
+          {!isAdminRegister && (
             <>
               <SocialButtons disableFacebook />
               <Divider
@@ -212,40 +256,104 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 placeholder="Username"
                 {...form.getInputProps('username')}
               />
-              <Group grow wrap="wrap" gap="md">
-                <PasswordInput
-                  withAsterisk
-                  label="Password"
-                  placeholder="Your password"
-                  value={form.values.password}
-                  onChange={(event) =>
-                    form.setFieldValue('password', event.currentTarget.value)
-                  }
-                  error={
-                    form.errors.password &&
-                    'Password should include at least 6 characters'
-                  }
-                  radius="md"
-                  w={{ base: '100%', sm: '48%' }}
-                />
-                <PasswordInput
-                  withAsterisk
-                  label="Confirm Password"
-                  placeholder="Confirm password"
-                  value={form.values.confirmPassword}
-                  onChange={(event) =>
-                    form.setFieldValue(
-                      'confirmPassword',
-                      event.currentTarget.value,
-                    )
-                  }
-                  error={
-                    form.errors.confirmPassword && 'Passwords do not match'
-                  }
-                  radius="md"
-                  w={{ base: '100%', sm: '48%' }}
-                />
-              </Group>
+              {isAdminRegister && (
+                <>
+                  <Group grow>
+                    <Select
+                      onChange={(value: string | null) => {
+                        setSelectedRole(value || '');
+                        form.setFieldValue('role', value || '');
+                        setChecked(false);
+                        setSelectedValues([]);
+                        value === 'Teacher' || value === 'Student'
+                          ? open()
+                          : close();
+                      }}
+                      label="Select a role"
+                      placeholder="Pick a role"
+                      data={['Student', 'Teacher', 'Admin']}
+                      clearable
+                    />
+                  </Group>
+                  <Collapse
+                    in={opened}
+                    transitionDuration={330}
+                    transitionTimingFunction="linear"
+                  >
+                    <Flex gap="md" align="center">
+                      <Checkbox
+                        className={classes.checkbox}
+                        label={
+                          selectedRole === 'Teacher'
+                            ? 'Assign student(s)?'
+                            : 'Assign teacher(s)?'
+                        }
+                        checked={checked}
+                        onChange={(event) => {
+                          setChecked(event.currentTarget.checked);
+                        }}
+                        wrapperProps={{
+                          onClick: () => {
+                            setChecked((c) => !c);
+                            setSelectedValues([]);
+                          },
+                        }}
+                      />
+                      <MultiSelect
+                        maxDropdownHeight={300}
+                        sx={{ width: '25em' }}
+                        disabled={!checked}
+                        data={filteredUsers.map((user) => ({
+                          value: user.id.toString(),
+                          label: user.username,
+                        }))}
+                        value={selectedValues}
+                        onChange={setSelectedValues}
+                        renderOption={renderMultiSelectOption}
+                        clearable
+                        hidePickedOptions
+                      />
+                    </Flex>
+                  </Collapse>
+                </>
+              )}
+              {!isAdminRegister && (
+                <Group grow wrap="wrap" gap="md">
+                  <PasswordInput
+                    withAsterisk
+                    description="Minimum 6 characters"
+                    label="Password"
+                    placeholder="Your password"
+                    value={form.values.password}
+                    onChange={(event) =>
+                      form.setFieldValue('password', event.currentTarget.value)
+                    }
+                    error={
+                      form.errors.password &&
+                      'Password should include at least 6 characters'
+                    }
+                    radius="md"
+                    w={{ base: '100%', sm: '48%' }}
+                  />
+                  <PasswordInput
+                    withAsterisk
+                    label="Confirm Password"
+                    placeholder="Confirm password"
+                    value={form.values.confirmPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        'confirmPassword',
+                        event.currentTarget.value,
+                      )
+                    }
+                    error={
+                      form.errors.confirmPassword && 'Passwords do not match'
+                    }
+                    radius="md"
+                    w={{ base: '100%', sm: '48%' }}
+                  />
+                </Group>
+              )}
 
               <CountrySelector
                 value={form.values.country}
@@ -256,6 +364,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   })
                 }
               />
+
               <PhoneSelector
                 value={form.values.phoneNumber}
                 onChange={(val) => form.setFieldValue('phoneNumber', val)}
@@ -285,7 +394,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
             </Stack>
 
             <Group justify="space-between" mt="xl">
-              {isAdminRegister ? (
+              {!isAdminRegister ? (
                 <Anchor
                   component="button"
                   type="button"
