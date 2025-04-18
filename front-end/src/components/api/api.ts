@@ -544,25 +544,28 @@ export const adminRegistersUser = async ({
   userData: RegisterFormValues;
 }): Promise<IApiMessageResponse | IApiError> => {
   try {
-    const response = await fetch(`${URL}admin/dashboard/register-new-user/test`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+    const response = await fetch(
+      `${URL}admin/dashboard/register-new-user/test`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          firstName: userData.firstName,
+          middleName: userData.middleName,
+          lastName: userData.lastName,
+          username: userData.username,
+          gender: userData.gender,
+          role: userData.role,
+          phoneNumber: userData.phoneNumber,
+          country: userData.country,
+          assignedUsers: userData.assignedUsers,
+        }),
       },
-      body: JSON.stringify({
-        email: userData.email,
-        firstName: userData.firstName,
-        middleName: userData.middleName,
-        lastName: userData.lastName,
-        username: userData.username,
-        gender: userData.gender,
-        role: userData.role,
-        phoneNumber: userData.phoneNumber,
-        country: userData.country,
-        assignedUsers: userData.assignedUsers,
-      }),
-    });
+    );
 
     if (!response.ok) {
       const errorData: IApiError = await response.json();

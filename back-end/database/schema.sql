@@ -1,13 +1,12 @@
--- Create the db you need
 CREATE DATABASE IF NOT EXISTS solo_learner;
 
--- Use the db you created
 USE solo_learner;
 
 CREATE TABLE
     IF NOT EXISTS `users` (
         `id` INT (11) NOT NULL AUTO_INCREMENT,
         `firstName` VARCHAR(50),
+        `middleName` VARCHAR(50),
         `lastName` VARCHAR(50),
         `email` VARCHAR(70) NOT NULL,
         `username` VARCHAR(70) UNIQUE NOT NULL,
@@ -18,8 +17,10 @@ CREATE TABLE
         `picture` VARCHAR(255),
         `isTeacher` BOOLEAN NOT NULL DEFAULT FALSE,
         `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
-        `isUserLoggedIn` BOOLEAN NOT NULL DEFAULT FALSE, -- Added field
-        `lastVisitedPath` VARCHAR(255), -- Added field
+        `isUserLoggedIn` BOOLEAN NOT NULL DEFAULT FALSE,
+        `lastVisitedPath` VARCHAR(255),
+        `country` VARCHAR(100),
+        `phoneNumber` VARCHAR(30),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `lastActive` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -46,7 +47,7 @@ CREATE TABLE
         FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- Trigger to automatically add teacher to teachers table
+-- Triggers
 DELIMITER / / CREATE TRIGGER `add_teacher_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE THEN
 INSERT INTO
     `teachers` (teacherId)
@@ -55,10 +56,9 @@ VALUES
 
 END IF;
 
-END / / DELIMITER;
+END;
 
--- Trigger to automatically update teacher in teachers table
-DELIMITER / / CREATE TRIGGER `update_teacher_trigger` AFTER
+/ / CREATE TRIGGER `update_teacher_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isTeacher = TRUE
 AND OLD.isTeacher = FALSE THEN
 INSERT INTO
@@ -74,10 +74,9 @@ WHERE
 
 END IF;
 
-END / / DELIMITER;
+END;
 
--- Trigger to automatically add student to students table
-DELIMITER / / CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE THEN
+/ / CREATE TRIGGER `add_student_trigger` AFTER INSERT ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE THEN
 INSERT INTO
     `students` (userId)
 VALUES
@@ -91,10 +90,9 @@ WHERE
 
 END IF;
 
-END / / DELIMITER;
+END;
 
--- Trigger to automatically update student in students table
-DELIMITER / / CREATE TRIGGER `update_student_trigger` AFTER
+/ / CREATE TRIGGER `update_student_trigger` AFTER
 UPDATE ON `users` FOR EACH ROW BEGIN IF NEW.isStudent = TRUE
 AND OLD.isStudent = FALSE THEN
 INSERT INTO
@@ -122,24 +120,24 @@ WHERE
 
 END IF;
 
-END / / DELIMITER;
+END;
 
--- Trigger to automatically update studentCount in teachers table
-DELIMITER / / CREATE TRIGGER `update_student_count_trigger` AFTER INSERT ON `students` FOR EACH ROW BEGIN
+/ / CREATE TRIGGER `update_student_count_trigger` AFTER INSERT ON `students` FOR EACH ROW BEGIN
 UPDATE `teachers`
 SET
     `studentCount` = `studentCount` + 1
 WHERE
     `teacherId` = NEW.teacherId;
 
-END / / DELIMITER;
+END;
 
--- Trigger to automatically decrement studentCount in teachers table on student deletion
-DELIMITER / / CREATE TRIGGER `decrement_student_count_trigger` AFTER DELETE ON `students` FOR EACH ROW BEGIN
+/ / CREATE TRIGGER `decrement_student_count_trigger` AFTER DELETE ON `students` FOR EACH ROW BEGIN
 UPDATE `teachers`
 SET
     `studentCount` = `studentCount` - 1
 WHERE
     `teacherId` = OLD.teacherId;
 
-END / / DELIMITER;
+END;
+
+/ / DELIMITER;
