@@ -30,12 +30,14 @@ const PhoneSelector: React.FC<PhoneSelectorProps> = ({
     '--react-international-phone-country-selector-background-color-hover':
       colorScheme === 'dark' ? '#3f3d3d' : 'whitesmoke',
     position: 'relative',
+    maxWidth: '10px',
   } as React.CSSProperties;
 
   return (
+    // TODO!: Add maxWidth to the input
     <Box>
       <Text size="sm" fw={600}>
-        Phone number
+        Phone number <span style={{ color: '#e03131' }}>&#42;</span>
       </Text>
       <PhoneInput
         style={phoneInputStyle}

@@ -27,6 +27,8 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
+import CountrySelector from '../../countrySelect/CountrySelect';
+import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 
 interface IRegisterProps {
   children?: React.ReactNode;
@@ -63,11 +65,16 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
     initialValues: {
       email: '',
       firstName: '',
+      middleName: '',
       lastName: '',
       username: '',
       gender: '',
       password: '',
       confirmPassword: '',
+      country: { name: '', flag: '' },
+      phoneNumber: '',
+      role: '',
+      assignedUsers: [],
       terms: isAdminRegister ? true : false,
     },
 
@@ -91,6 +98,13 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
       ),
       confirmPassword: (value, values) =>
         matchesField('password', 'Passwords do not match')(value, values),
+      role: isAdminRegister ? isNotEmpty('Role is required') : undefined,
+      country: (value) => {
+        if (!value.name) {
+          return 'Country is required';
+        }
+        return null;
+      },
       terms: isAdminRegister
         ? undefined
         : isNotEmpty('You must accept terms of use'),
@@ -99,7 +113,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
   });
 
   return (
-    <Center maw={600} mx="auto" style={{ marginTop: '1rem' }}>
+    <Center maw={900} mx="auto" style={{ marginTop: '1rem' }}>
       {isAuthLoading || isRegisterLoading ? (
         <Preloader />
       ) : (
@@ -151,9 +165,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 error={form.errors.email && 'Invalid email'}
                 radius="md"
               />
-
-              {/* First Name and Last Name in the same row */}
-              <Group grow>
+              <Group wrap="wrap" grow gap="md">
                 <TextInput
                   withAsterisk
                   label="First Name"
@@ -164,8 +176,18 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   }
                   error={form.errors.firstName && 'First name is required'}
                   radius="md"
+                  w={{ base: '100%', sm: '33%' }}
                 />
-
+                <TextInput
+                  label="Middle Name"
+                  placeholder="Your middle name"
+                  value={form.values.middleName}
+                  onChange={(event) =>
+                    form.setFieldValue('middleName', event.currentTarget.value)
+                  }
+                  radius="md"
+                  w={{ base: '100%', sm: '33%' }}
+                />
                 <TextInput
                   withAsterisk
                   label="Last Name"
@@ -176,6 +198,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   }
                   error={form.errors.lastName && 'Last name is required'}
                   radius="md"
+                  w={{ base: '100%', sm: '33%' }}
                 />
               </Group>
 
@@ -186,37 +209,54 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 placeholder="Username"
                 {...form.getInputProps('username')}
               />
+              <Group grow wrap="wrap" gap="md">
+                <PasswordInput
+                  withAsterisk
+                  label="Password"
+                  placeholder="Your password"
+                  value={form.values.password}
+                  onChange={(event) =>
+                    form.setFieldValue('password', event.currentTarget.value)
+                  }
+                  error={
+                    form.errors.password &&
+                    'Password should include at least 6 characters'
+                  }
+                  radius="md"
+                  w={{ base: '100%', sm: '48%' }}
+                />
+                <PasswordInput
+                  withAsterisk
+                  label="Confirm Password"
+                  placeholder="Confirm password"
+                  value={form.values.confirmPassword}
+                  onChange={(event) =>
+                    form.setFieldValue(
+                      'confirmPassword',
+                      event.currentTarget.value,
+                    )
+                  }
+                  error={
+                    form.errors.confirmPassword && 'Passwords do not match'
+                  }
+                  radius="md"
+                  w={{ base: '100%', sm: '48%' }}
+                />
+              </Group>
 
-              <PasswordInput
-                withAsterisk
-                label="Password"
-                placeholder="Your password"
-                value={form.values.password}
-                onChange={(event) =>
-                  form.setFieldValue('password', event.currentTarget.value)
+              <CountrySelector
+                value={form.values.country}
+                onChange={(val) =>
+                  form.setFieldValue('country', {
+                    name: val.name,
+                    flag: val.flag,
+                  })
                 }
-                error={
-                  form.errors.password &&
-                  'Password should include at least 6 characters'
-                }
-                radius="md"
               />
-
-              <PasswordInput
-                withAsterisk
-                label="Confirm Password"
-                placeholder="Confirm password"
-                value={form.values.confirmPassword}
-                onChange={(event) =>
-                  form.setFieldValue(
-                    'confirmPassword',
-                    event.currentTarget.value,
-                  )
-                }
-                error={form.errors.confirmPassword && 'Passwords do not match'}
-                radius="md"
+              <PhoneSelector
+                value={form.values.phoneNumber}
+                onChange={(val) => form.setFieldValue('phoneNumber', val)}
               />
-
               <Radio.Group
                 name="gender"
                 label="Select Gender"
@@ -229,7 +269,6 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   <Radio value="other" label="Other" />
                 </Group>
               </Radio.Group>
-
               {!isAdminRegister && (
                 <Checkbox
                   label="I accept terms and conditions"
@@ -271,7 +310,6 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
             </Group>
           </form>
 
-          {/* Display error message if any */}
           <AlertComponent />
         </Paper>
       )}

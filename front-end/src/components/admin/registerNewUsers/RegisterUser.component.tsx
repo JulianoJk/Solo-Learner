@@ -8,10 +8,6 @@ import {
   TextInput,
   Select,
   useCombobox,
-  Combobox,
-  ScrollArea,
-  useMantineColorScheme,
-  CloseButton,
   Collapse,
   Text,
   Checkbox,
@@ -21,30 +17,16 @@ import {
   Button,
 } from '@mantine/core';
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
-import React, { useEffect, useMemo, useState } from 'react';
-import { getCountriesAPI } from '../../api/api';
-import { useQuery } from '@tanstack/react-query';
+import React, { useMemo, useState } from 'react';
 import PhoneSelector from '../../Auth/phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import useStyles from './AdminAddUser.styles';
 import { useUserState } from '../../../context/UserContext';
 import { RegisterFormValues } from '../../../Model/models';
-interface Country {
-  name: {
-    common: string;
-  };
-  flags: {
-    svg: string;
-  };
-  idd: {
-    root: string;
-    suffixes: string[];
-  };
-}
+import CountrySelector from '../../countrySelect/CountrySelect';
 
 const RegisterUser = () => {
   const { classes } = useStyles();
-  const { colorScheme } = useMantineColorScheme();
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -62,43 +44,6 @@ const RegisterUser = () => {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
-  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const { data: countries, isLoading } = useQuery<Country[]>(
-    ['getCountries'],
-    getCountriesAPI,
-  );
-
-  const countryOptions = countries
-    ? countries.map((country) => ({
-        name: { common: country.name.common },
-        flags: { svg: country.flags.svg },
-      }))
-    : [];
-
-  const filteredOptions = countryOptions.filter((country) =>
-    country.name.common
-      .toLowerCase()
-      .includes(selectedCountry?.name.common.toLowerCase().trim() || ''),
-  );
-  useEffect(() => {
-    combobox.selectFirstOption();
-  }, [filteredOptions]);
-  const options = filteredOptions.map((country) => (
-    <Combobox.Option
-      value={country.name.common}
-      key={country.name.common}
-      sx={{
-        ':hover': {
-          backgroundColor: colorScheme === 'dark' ? '#3f3d3d ' : 'whitesmoke',
-        },
-      }}
-    >
-      <Group>
-        <Avatar src={country.flags.svg} size={20} />
-        {country.name.common}
-      </Group>
-    </Combobox.Option>
-  ));
 
   const renderMultiSelectOption: MultiSelectProps['renderOption'] = ({
     option,
@@ -231,83 +176,11 @@ const RegisterUser = () => {
           />
 
           <Group grow>
-            <Combobox
-              onOptionSubmit={(optionValue) => {
-                const selected = countryOptions.find(
-                  (c) => c.name.common === optionValue,
-                );
+            <CountrySelector
+              value={form.values.country}
+              onChange={(val) => form.setFieldValue('country', val)}
+            />
 
-                if (selected) {
-                  setSelectedCountry({
-                    name: selected.name,
-                    flags: selected.flags,
-                    idd: { root: '', suffixes: [] },
-                  });
-
-                  form.setFieldValue('country', {
-                    flag: selected.flags.svg,
-                    name: selected.name.common,
-                  });
-                }
-                combobox.closeDropdown();
-              }}
-              store={combobox}
-            >
-              <Combobox.Target>
-                <TextInput
-                  label="Select Country"
-                  placeholder="Type to search"
-                  value={selectedCountry ? selectedCountry.name.common : ''}
-                  onChange={(event) => {
-                    setSelectedCountry({
-                      name: { common: event.currentTarget.value },
-                      flags: { svg: '' },
-                      idd: { root: '', suffixes: [] },
-                    });
-                    combobox.openDropdown();
-                    combobox.updateSelectedOptionIndex();
-                  }}
-                  onClick={() => combobox.openDropdown()}
-                  onFocus={() => combobox.openDropdown()}
-                  onBlur={() => combobox.closeDropdown()}
-                  disabled={isLoading}
-                  rightSection={
-                    selectedCountry &&
-                    selectedCountry.name.common !== '' && (
-                      <CloseButton
-                        size="sm"
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={() =>
-                          setSelectedCountry({
-                            name: { common: '' },
-                            flags: { svg: '' },
-                            idd: { root: '', suffixes: [] },
-                          })
-                        }
-                        aria-label="Clear value"
-                      />
-                    )
-                  }
-                  leftSection={
-                    selectedCountry ? (
-                      <Avatar src={selectedCountry.flags.svg} size={20} />
-                    ) : null
-                  }
-                />
-              </Combobox.Target>
-
-              <Combobox.Dropdown>
-                <Combobox.Options>
-                  <ScrollArea.Autosize mah={200} type="auto">
-                    {options.length === 0 ? (
-                      <Combobox.Empty>No country found</Combobox.Empty>
-                    ) : (
-                      options
-                    )}
-                  </ScrollArea.Autosize>
-                </Combobox.Options>
-              </Combobox.Dropdown>
-            </Combobox>
             <Select
               onChange={(value: string | null) => {
                 setSelectedRole(value || '');

@@ -544,7 +544,7 @@ export const adminRegistersUser = async ({
   userData: RegisterFormValues;
 }): Promise<IApiMessageResponse | IApiError> => {
   try {
-    const response = await fetch(`${URL}admin/register-user`, {
+    const response = await fetch(`${URL}admin/dashboard/register-new-user/test`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
