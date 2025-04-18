@@ -115,6 +115,8 @@ export const adminRegisterUserAPI = async ({
   firstName,
   middleName,
   lastName,
+  password,
+  confirmPassword,
   country,
   phoneNumber,
   picture,
@@ -129,6 +131,8 @@ export const adminRegisterUserAPI = async ({
   firstName: string;
   middleName?: string;
   lastName: string;
+  password?: string;
+  confirmPassword?: string;
   country: { name: string; flag: string };
   phoneNumber: string;
   picture?: string;
@@ -150,6 +154,8 @@ export const adminRegisterUserAPI = async ({
         firstName,
         middleName,
         lastName,
+        password,
+        confirmPassword,
         country,
         phoneNumber,
         picture,

@@ -204,6 +204,16 @@ public class AuthenticationUtils
         using var reader = command.ExecuteReader();
         return reader.Read() ? reader.GetString("authMethod") : null;
     }
+    public int GetUserIdByEmail(string email)
+    {
+        using var connection = Database.Connect(); // assuming you have a static method like this
+        var command = connection.CreateCommand();
+        command.CommandText = "SELECT id FROM users WHERE email = @email LIMIT 1";
+        command.Parameters.AddWithValue("@email", email);
+
+        var result = command.ExecuteScalar();
+        return result != null ? Convert.ToInt32(result) : -1;
+    }
 
     public class UserInfo
     {

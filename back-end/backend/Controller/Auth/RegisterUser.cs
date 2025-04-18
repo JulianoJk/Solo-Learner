@@ -18,6 +18,7 @@ public class RegisterUser
     public async Task HandleRegistrationRequest(HttpContext context)
     {
         UserRepository userRepository = new UserRepository();
+        Database database = new Database();
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
         var registerModel = JsonSerializer.Deserialize<RegisterModel>(
@@ -36,6 +37,8 @@ public class RegisterUser
             return;
         }
 
+        bool isAdminRegister = context.Request.Path.Value?.Contains("/admin/dashboard") == true;
+
         string email = registerModel.Email ?? "";
         string firstName = registerModel.FirstName ?? "";
         string middleName = registerModel.MiddleName ?? "";
@@ -48,114 +51,14 @@ public class RegisterUser
         string countryName = registerModel.Country?.Name ?? "";
         string countryFlag = registerModel.Country?.Flag ?? "";
         string picture = registerModel.Picture ?? "";
+        string role = registerModel.Role ?? "";
+        var assignedUsers = registerModel.AssignedUsers ?? new List<int>();
 
-        bool isTeacher = IsTeacherEnv.Value.Contains(email);
-        bool isStudent = !isTeacher;
+        bool isTeacher = role == "Teacher";
+        bool isStudent = role == "Student";
+        bool isAdmin = role == "Admin";
 
-        if (IsValidEmail(email) && ArePasswordsEqual(password, confirmPassword))
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                if (registerModel.IsTeacher)
-                    isTeacher = true;
-
-                username = GetDefaultUsername(email);
-
-                if (string.IsNullOrWhiteSpace(username))
-                {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        error = new { message = "Unable to generate a unique username." },
-                        status = "error"
-                    });
-                    return;
-                }
-
-                var (isTaken, _) = _authenticator.IsUsernameTaken(username);
-                for (int counter = 1; isTaken; counter++)
-                {
-                    username = $"{username}{counter}";
-                    (isTaken, _) = _authenticator.IsUsernameTaken(username);
-                }
-            }
-            else
-            {
-                var (isTaken, _) = _authenticator.IsUsernameTaken(username);
-                if (isTaken)
-                {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        error = new { message = "Username is already taken." },
-                        status = "error"
-                    });
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(gender))
-                {
-                    context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        error = new { message = "Gender cannot be empty" },
-                        status = "error"
-                    });
-                    return;
-                }
-            }
-
-            byte[]? salt = GenerateSalt();
-            if (salt?.Length > 0)
-            {
-                byte[] hash = _authenticator.GenerateHash(password, salt);
-
-                var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
-                    true,
-                    false,
-                    username,
-                    firstName,
-                    middleName,
-                    lastName,
-                    gender,
-                    email,
-                    Convert.ToBase64String(hash),
-                    salt,
-                    isTeacher,
-                    isStudent,
-                    picture,
-                    phoneNumber,
-                    countryName,
-                    countryFlag
-                );
-
-                if (AreCredentialsCorrect)
-                {
-                    string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent, false);
-                    await userRepository.UpdateUserIsLoggedIn(true, email);
-                    context.Response.StatusCode = StatusCodes.Status200OK;
-                    await context.Response.WriteAsJsonAsync(new { messageToUser, token });
-                }
-                else
-                {
-                    context.Response.StatusCode = StatusCodes.Status409Conflict;
-                    await context.Response.WriteAsJsonAsync(new
-                    {
-                        error = new { message = messageToUser }
-                    });
-                }
-            }
-            else
-            {
-                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    status = "error",
-                    data = new { message = "Internal Server Error. Salt not generated." }
-                });
-            }
-        }
-        else if (!IsValidEmail(email))
+        if (!IsValidEmail(email))
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new
@@ -164,8 +67,21 @@ public class RegisterUser
                 data = new { message = "Invalid email address" },
                 issue = new { issue = "email" }
             });
+            return;
         }
-        else if (!ArePasswordsEqual(password, confirmPassword))
+
+        if (string.IsNullOrWhiteSpace(gender))
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = new { message = "Gender cannot be empty" },
+                status = "error"
+            });
+            return;
+        }
+
+        if (!isAdminRegister && !ArePasswordsEqual(password, confirmPassword))
         {
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new
@@ -173,6 +89,94 @@ public class RegisterUser
                 status = "error",
                 data = new { message = "The passwords do not match." },
                 issue = new { issue = "confirmPassword" }
+            });
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            username = GetDefaultUsername(email);
+
+            var (isTaken, _) = _authenticator.IsUsernameTaken(username);
+            for (int counter = 1; isTaken; counter++)
+            {
+                username = $"{username}{counter}";
+                (isTaken, _) = _authenticator.IsUsernameTaken(username);
+            }
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = new { message = "Unable to generate a unique username." },
+                    status = "error"
+                });
+                return;
+            }
+        }
+        else
+        {
+            var (isTaken, _) = _authenticator.IsUsernameTaken(username);
+            if (isTaken)
+            {
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = new { message = "Username is already taken." },
+                    status = "error"
+                });
+                return;
+            }
+        }
+
+        byte[]? salt = null;
+        byte[]? hash = null;
+
+        if (!isAdminRegister)
+        {
+            salt = GenerateSalt();
+            hash = _authenticator.GenerateHash(password, salt);
+        }
+
+        var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
+            true,
+            false,
+            username,
+            firstName,
+            middleName,
+            lastName,
+            gender,
+            email,
+            hash != null ? Convert.ToBase64String(hash) : "",
+            salt,
+            isTeacher,
+            isStudent,
+            picture,
+            phoneNumber,
+            countryName,
+            countryFlag
+        );
+
+        if (AreCredentialsCorrect)
+        {
+            if (isAdminRegister && assignedUsers.Count > 0)
+            {
+                int userId = _authenticator.GetUserIdByEmail(email);
+                await database.AssignStudentsToTeacher(userId, assignedUsers);
+            }
+
+            string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent, isAdmin);
+            await userRepository.UpdateUserIsLoggedIn(true, email);
+            context.Response.StatusCode = StatusCodes.Status200OK;
+            await context.Response.WriteAsJsonAsync(new { messageToUser, token });
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                error = new { message = messageToUser }
             });
         }
     }

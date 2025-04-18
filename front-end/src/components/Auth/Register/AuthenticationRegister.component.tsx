@@ -319,43 +319,53 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   </Collapse>
                 </>
               )}
-              {!isAdminRegister && (
-                <Group grow wrap="wrap" gap="md">
-                  <PasswordInput
-                    withAsterisk
-                    description="Minimum 6 characters"
-                    label="Password"
-                    placeholder="Your password"
-                    value={form.values.password}
-                    onChange={(event) =>
-                      form.setFieldValue('password', event.currentTarget.value)
-                    }
-                    error={
-                      form.errors.password &&
-                      'Password should include at least 6 characters'
-                    }
-                    radius="md"
-                    w={{ base: '100%', sm: '48%' }}
-                  />
-                  <PasswordInput
-                    withAsterisk
-                    label="Confirm Password"
-                    placeholder="Confirm password"
-                    value={form.values.confirmPassword}
-                    onChange={(event) =>
-                      form.setFieldValue(
-                        'confirmPassword',
-                        event.currentTarget.value,
-                      )
-                    }
-                    error={
-                      form.errors.confirmPassword && 'Passwords do not match'
-                    }
-                    radius="md"
-                    w={{ base: '100%', sm: '48%' }}
-                  />
-                </Group>
-              )}
+              {/* {!isAdminRegister && ( */}
+              <Group grow wrap="wrap" gap="md">
+                <PasswordInput
+                  withAsterisk
+                  description="Minimum 6 characters"
+                  // TODO!: Remove the isAdminRegister check
+                  label={
+                    isAdminRegister
+                      ? 'Confirm Temp Password'
+                      : 'Confirm Password'
+                  }
+                  placeholder="Your password"
+                  value={form.values.password}
+                  onChange={(event) =>
+                    form.setFieldValue('password', event.currentTarget.value)
+                  }
+                  error={
+                    form.errors.password &&
+                    'Password should include at least 6 characters'
+                  }
+                  radius="md"
+                  w={{ base: '100%', sm: '48%' }}
+                />
+                <PasswordInput
+                  withAsterisk
+                  // TODO!: Remove the isAdminRegister check
+                  label={
+                    isAdminRegister
+                      ? 'Confirm Temp Password'
+                      : 'Confirm Password'
+                  }
+                  placeholder="Confirm password"
+                  value={form.values.confirmPassword}
+                  onChange={(event) =>
+                    form.setFieldValue(
+                      'confirmPassword',
+                      event.currentTarget.value,
+                    )
+                  }
+                  error={
+                    form.errors.confirmPassword && 'Passwords do not match'
+                  }
+                  radius="md"
+                  w={{ base: '100%', sm: '48%' }}
+                />
+              </Group>
+              {/* )} */}
 
               <CountrySelector
                 value={form.values.country}

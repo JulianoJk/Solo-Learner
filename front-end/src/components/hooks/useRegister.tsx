@@ -46,6 +46,8 @@ export const useRegister = (
         firstName,
         middleName,
         lastName,
+        password,
+        confirmPassword,
         country,
         phoneNumber,
         role,
@@ -62,6 +64,8 @@ export const useRegister = (
         firstName,
         middleName,
         lastName,
+        password,
+        confirmPassword,
         country,
         phoneNumber,
         picture: '', // or provide real picture if needed

@@ -270,5 +270,13 @@ namespace backend
             var isAdmin = command.ExecuteScalar();
             return isAdmin != null && Convert.ToBoolean(isAdmin);
         }
+        public static MySqlConnection Connect()
+        {
+            var connection = new MySqlConnection(ConnectionString.Value);
+            connection.Open();
+            return connection;
+        }
+
     }
+
 }
