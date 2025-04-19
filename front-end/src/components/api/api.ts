@@ -165,7 +165,7 @@ export const adminRegisterUserAPI = async ({
         isStudent,
         assignedUsers,
         role,
-        mustChangePassword
+        mustChangePassword,
       }),
     });
 
