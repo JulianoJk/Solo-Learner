@@ -124,6 +124,7 @@ export const adminRegisterUserAPI = async ({
   isStudent,
   assignedUsers,
   role,
+  mustChangePassword,
 }: {
   email: string;
   username: string;
@@ -140,6 +141,7 @@ export const adminRegisterUserAPI = async ({
   isStudent: boolean;
   assignedUsers: number[]; // array of user IDs
   role: string; // "Admin" | "Teacher" | "Student"
+  mustChangePassword: boolean;
 }): Promise<IUserInfoContext | IApiError> => {
   try {
     const response = await fetch(`${URL}admin/dashboard/register-new-user`, {
@@ -163,6 +165,7 @@ export const adminRegisterUserAPI = async ({
         isStudent,
         assignedUsers,
         role,
+        mustChangePassword
       }),
     });
 

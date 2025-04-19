@@ -22,6 +22,7 @@ interface RegisterApiProps {
   phoneNumber: string;
   assignedUsers?: any;
   role?: string;
+  mustChangePassword: boolean;
 }
 interface IRegisterMutationState {
   register: (props: RegisterApiProps) => void;
@@ -52,6 +53,7 @@ export const useRegister = (
         phoneNumber,
         role,
         assignedUsers,
+        mustChangePassword,
       } = data;
 
       const isTeacher = role === 'Teacher';
@@ -73,6 +75,7 @@ export const useRegister = (
         isStudent,
         assignedUsers: assignedUsers ?? [],
         role: role || '',
+        mustChangePassword,
       });
     } else {
       return await registerAPI({

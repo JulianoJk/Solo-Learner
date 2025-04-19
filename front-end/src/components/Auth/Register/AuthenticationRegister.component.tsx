@@ -198,6 +198,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 phoneNumber,
                 role,
                 assignedUsers: checked ? selectedValues : [],
+                mustChangePassword: !!isAdminRegister,
               });
             })}
           >
@@ -319,12 +320,9 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   </Collapse>
                 </>
               )}
-              {/* {!isAdminRegister && ( */}
               <Group grow wrap="wrap" gap="md">
                 <PasswordInput
                   withAsterisk
-                  description="Minimum 6 characters"
-                  // TODO!: Remove the isAdminRegister check
                   label={
                     isAdminRegister
                       ? 'Confirm Temp Password'
@@ -342,28 +340,25 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                   radius="md"
                   w={{ base: '100%', sm: '48%' }}
                 />
-                <PasswordInput
-                  withAsterisk
-                  // TODO!: Remove the isAdminRegister check
-                  label={
-                    isAdminRegister
-                      ? 'Confirm Temp Password'
-                      : 'Confirm Password'
-                  }
-                  placeholder="Confirm password"
-                  value={form.values.confirmPassword}
-                  onChange={(event) =>
-                    form.setFieldValue(
-                      'confirmPassword',
-                      event.currentTarget.value,
-                    )
-                  }
-                  error={
-                    form.errors.confirmPassword && 'Passwords do not match'
-                  }
-                  radius="md"
-                  w={{ base: '100%', sm: '48%' }}
-                />
+                {!isAdminRegister && (
+                  <PasswordInput
+                    withAsterisk
+                    label={'Confirm Password'}
+                    placeholder="Confirm password"
+                    value={form.values.confirmPassword}
+                    onChange={(event) =>
+                      form.setFieldValue(
+                        'confirmPassword',
+                        event.currentTarget.value,
+                      )
+                    }
+                    error={
+                      form.errors.confirmPassword && 'Passwords do not match'
+                    }
+                    radius="md"
+                    w={{ base: '100%', sm: '48%' }}
+                  />
+                )}
               </Group>
               {/* )} */}
 
