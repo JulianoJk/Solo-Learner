@@ -38,6 +38,7 @@ public class RegisterUser
         }
 
         bool isAdminRegister = context.Request.Path.Value?.Contains("/admin/dashboard") == true;
+        bool mustChangePassword = registerModel.MustChangePassword;
 
         string email = registerModel.Email ?? "";
         string firstName = registerModel.FirstName ?? "";
@@ -130,14 +131,8 @@ public class RegisterUser
             }
         }
 
-        byte[]? salt = null;
-        byte[]? hash = null;
-
-        if (!isAdminRegister)
-        {
-            salt = GenerateSalt();
-            hash = _authenticator.GenerateHash(password, salt);
-        }
+        byte[]? salt = GenerateSalt();
+        byte[]? hash = _authenticator.GenerateHash(password, salt);
 
         var (AreCredentialsCorrect, messageToUser) = _authenticator.AuthenticateUser(
             true,
@@ -155,7 +150,8 @@ public class RegisterUser
             picture,
             phoneNumber,
             countryName,
-            countryFlag
+            countryFlag,
+            mustChangePassword
         );
 
         if (AreCredentialsCorrect)
@@ -168,6 +164,7 @@ public class RegisterUser
 
             string token = JwtUtils.GenerateJwt(username, email, isTeacher, isStudent, isAdmin);
             await userRepository.UpdateUserIsLoggedIn(true, email);
+
             context.Response.StatusCode = StatusCodes.Status200OK;
             await context.Response.WriteAsJsonAsync(new { messageToUser, token });
         }

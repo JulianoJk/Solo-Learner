@@ -53,7 +53,8 @@ public class LoginUser
                 picture: null,
                 phoneNumber: null,
                 countryName: null,
-                countryFlag: null
+                countryFlag: null,
+                mustChangePassword: false
             );
 
             if (AreCredentialsCorrect)

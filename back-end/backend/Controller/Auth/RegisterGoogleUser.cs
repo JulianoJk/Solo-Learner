@@ -29,7 +29,8 @@ public class RegisterGoogleUser
         string phoneNumber = null;
         string countryName = null;
         string countryFlag = null;
-
+        bool mustChangePassword = false;
+        
         bool isTeacher = IsTeacherEnv.Value.Contains(email);
         bool isStudent = !isTeacher;
 
@@ -56,7 +57,8 @@ public class RegisterGoogleUser
             picture: picture,
             phoneNumber: phoneNumber,
             countryName: countryName,
-            countryFlag: countryFlag
+            countryFlag: countryFlag,
+            mustChangePassword: false
         );
 
         if (AreCredentialsCorrect)

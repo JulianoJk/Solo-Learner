@@ -34,7 +34,8 @@ public class AuthenticationUtils
         string? picture,
         string? phoneNumber,
         string? countryName,
-        string? countryFlag
+        string? countryFlag, 
+        bool mustChangePassword
     )
     {
         bool isAdmin = db.GetIsAdminFromDatabase(email);
@@ -56,7 +57,8 @@ public class AuthenticationUtils
             picture,
             phoneNumber,
             countryName,
-            countryFlag
+            countryFlag,
+            mustChangePassword
         );
 
         if (!isRegister)

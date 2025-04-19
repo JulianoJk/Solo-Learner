@@ -57,7 +57,8 @@ public class AccountDeletionController
             picture: null,
             phoneNumber: null,
             countryName: null,
-            countryFlag: null
+            countryFlag: null,
+            mustChangePassword: false
         );
 
         if (!areCredentialsCorrect || userEmailFromJWT != email)

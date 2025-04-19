@@ -13,18 +13,19 @@ CREATE TABLE
         `username` VARCHAR(70) UNIQUE NOT NULL,
         `gender` VARCHAR(30) NOT NULL,
         `isAdmin` BOOLEAN NOT NULL DEFAULT FALSE,
-        `password` VARCHAR(50),
+        `password` VARCHAR(255),
         `salt` VARBINARY(255),
         `picture` VARCHAR(255),
         `isTeacher` BOOLEAN NOT NULL DEFAULT FALSE,
         `isStudent` BOOLEAN NOT NULL DEFAULT TRUE,
         `isUserLoggedIn` BOOLEAN NOT NULL DEFAULT FALSE,
+        `mustChangePassword` BOOLEAN NOT NULL DEFAULT FALSE,
         `lastVisitedPath` VARCHAR(255),
         `countryName` VARCHAR(100),
         `countryFlag` VARCHAR(255),
         `phoneNumber` VARCHAR(30),
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         `lastActive` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         PRIMARY KEY (`id`),
         UNIQUE KEY `email` (`email`)
@@ -51,7 +52,7 @@ CREATE TABLE
         FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
--- ASSIGNMENT TABLE
+-- ASSIGNMENTS TABLE
 CREATE TABLE
     IF NOT EXISTS `teacher_student_assignments` (
         `id` INT AUTO_INCREMENT PRIMARY KEY,

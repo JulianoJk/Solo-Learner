@@ -35,7 +35,8 @@ namespace backend
             string? picture,
             string? phoneNumber,
             string? countryName,
-            string? countryFlag
+            string? countryFlag,
+            bool mustChangePassword
         )
         {
             using MySqlConnection connection = new MySqlConnection(connectionString);
@@ -71,7 +72,8 @@ namespace backend
                                 picture,
                                 phoneNumber,
                                 countryName,
-                                countryFlag
+                                countryFlag,
+                                mustChangePassword 
                             );
                             AreCredentialsCorrect = true;
                             MessageToUser = "Registration successful!";
@@ -105,19 +107,21 @@ namespace backend
             string? picture,
             string? phoneNumber,
             string? countryName,
-            string? countryFlag
+            string? countryFlag,
+            bool mustChangePassword 
         )
         {
             MySqlCommand command = new MySqlCommand(
                 @"INSERT INTO users (
-            email, firstName, middleName, lastName, gender, username, password, salt, 
-            isTeacher, isStudent, isAdmin, picture, phoneNumber, countryName, countryFlag
-        ) VALUES (
-            @Email, @FirstName, @MiddleName, @LastName, @Gender, @Username, @Password, @Salt, 
-            @IsTeacher, @IsStudent, @IsAdmin, @Picture, @PhoneNumber, @CountryName, @CountryFlag
-        )",
+                    email, firstName, middleName, lastName, gender, username, password, salt,
+                    isTeacher, isStudent, isAdmin, picture, phoneNumber, countryName, countryFlag, mustChangePassword
+                ) VALUES (
+                    @Email, @FirstName, @MiddleName, @LastName, @Gender, @Username, @Password, @Salt,
+                    @IsTeacher, @IsStudent, @IsAdmin, @Picture, @PhoneNumber, @CountryName, @CountryFlag, @MustChangePassword
+                )",
                 connection
             );
+
             command.Parameters.AddWithValue("@Email", email);
             command.Parameters.AddWithValue("@FirstName", firstName);
             command.Parameters.AddWithValue("@MiddleName", middleName);
@@ -133,7 +137,7 @@ namespace backend
             command.Parameters.AddWithValue("@PhoneNumber", phoneNumber);
             command.Parameters.AddWithValue("@CountryName", countryName);
             command.Parameters.AddWithValue("@CountryFlag", countryFlag);
-
+            command.Parameters.AddWithValue("@MustChangePassword", mustChangePassword); 
             command.ExecuteNonQuery();
         }
 
@@ -270,13 +274,12 @@ namespace backend
             var isAdmin = command.ExecuteScalar();
             return isAdmin != null && Convert.ToBoolean(isAdmin);
         }
+
         public static MySqlConnection Connect()
         {
             var connection = new MySqlConnection(ConnectionString.Value);
             connection.Open();
             return connection;
         }
-
     }
-
 }

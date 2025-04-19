@@ -23,5 +23,6 @@ public class RegisterModel
     public Country? Country { get; set; }
     public List<int>? AssignedUsers { get; set; }
     public bool IsAdminRegister { get; set; }
+    public bool MustChangePassword { get; set; }
 
 }
