@@ -52,12 +52,25 @@ public class RegisterUser
         string countryName = registerModel.Country?.Name ?? "";
         string countryFlag = registerModel.Country?.Flag ?? "";
         string picture = registerModel.Picture ?? "";
-        string role = registerModel.Role ?? "";
+        string role = registerModel.Role;
         var assignedUsers = registerModel.AssignedUsers ?? new List<int>();
 
-        bool isTeacher = role == "Teacher";
-        bool isStudent = role == "Student";
-        bool isAdmin = role == "Admin";
+
+        bool isTeacher = false;
+        bool isStudent = false;
+        bool isAdmin = false;
+
+        if (isAdminRegister)
+        {
+            isTeacher = role == "Teacher";
+            isStudent = role == "Student";
+            isAdmin = role == "Admin";
+        }
+        else
+        {
+            // Self-registered user defaults
+            isStudent = true;
+        }
 
         if (!IsValidEmail(email))
         {
