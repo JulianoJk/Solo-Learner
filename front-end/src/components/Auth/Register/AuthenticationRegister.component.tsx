@@ -197,9 +197,10 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 country,
                 phoneNumber,
                 role,
-                assignedUsers: checked ? selectedValues : [],
+                assignedUsers: checked ? selectedValues.map(Number) : [],
                 mustChangePassword: !!isAdminRegister,
               });
+              form.reset();
             })}
           >
             <Stack>
