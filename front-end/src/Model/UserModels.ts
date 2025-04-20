@@ -89,23 +89,30 @@ export interface IAuthCredentials {
   password?: string | undefined;
   passwordRepeat?: string | undefined;
 }
+
 export interface User {
   id: number;
-  email: string;
   username: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  email: string;
   isAdmin: boolean;
-  password: null;
   isTeacher: boolean;
   isStudent: boolean;
-  createdAt: string;
-  updatedAt: string;
+  countryName?: string;
+  phoneNumber?: string;
   picture?: string;
   lastActive: string;
   lastActiveDate?: string;
   lastActiveTime?: string;
   formattedLastActive?: string;
   isUserLoggedIn?: boolean;
+  createdAt: string;
+  students?: User[];
+  teachers?: User[];
 }
+
 export interface fetchUserList {
   status: string;
   data: User;

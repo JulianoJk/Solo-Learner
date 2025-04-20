@@ -4,10 +4,14 @@ import {
   Badge,
   Group,
   ActionIcon,
-  Anchor,
   TextInput,
   Menu,
   Select,
+  Text,
+  Stack,
+  Divider,
+  Button,
+  Box,
 } from '@mantine/core';
 import {
   IconPencil,
@@ -54,7 +58,7 @@ const StudentManagementTable = () => {
     <>
       <Group justify="space-between" mb="md">
         <TextInput
-          sx={{ width: '15em' }}
+          sx={{ width: '20em' }}
           placeholder="Search by username or email"
           value={search}
           onChange={handleSearchChange}
@@ -91,11 +95,7 @@ const StudentManagementTable = () => {
           {
             accessor: 'username',
             title: 'Username',
-            render: (user) => (
-              <Anchor onClick={() => navigate(`/profile/${user.username}`)}>
-                {user.username}
-              </Anchor>
-            ),
+            render: (user) => user.username,
           },
           { accessor: 'firstName', title: 'First Name' },
           { accessor: 'middleName', title: 'Middle Name' },
@@ -118,9 +118,13 @@ const StudentManagementTable = () => {
             title: 'Actions',
             textAlign: 'right',
             render: (user) => (
-              <Menu shadow="md" width={200} position="bottom-end">
+              <Menu shadow="md" width={200} position="bottom-end" withinPortal>
                 <Menu.Target>
-                  <ActionIcon variant="subtle" color="gray">
+                  <ActionIcon
+                    variant="subtle"
+                    color="gray"
+                    onClick={(e) => e.stopPropagation()} // prevents rowExpansion
+                  >
                     <IconSettings size={16} />
                   </ActionIcon>
                 </Menu.Target>
@@ -128,7 +132,8 @@ const StudentManagementTable = () => {
                   <Menu.Label>Manage User</Menu.Label>
                   <Menu.Item
                     leftSection={<IconPencil size={14} />}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       appDispatch({
                         type: 'SET_ADMIN_MOBILE_MODAL_OPEN',
                         adminMobileModalOpen: true,
@@ -149,7 +154,8 @@ const StudentManagementTable = () => {
                   <Menu.Item
                     color="red"
                     leftSection={<IconTrash size={14} />}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       appDispatch({
                         type: 'SET_ADMIN_DELETE_MODAL_OPEN',
                         isAdminDeleteModalOpen: true,
@@ -170,6 +176,53 @@ const StudentManagementTable = () => {
         ]}
         selectedRecords={selectedRecords}
         onSelectedRecordsChange={setSelectedRecords}
+        rowExpansion={{
+          content: ({ record }) => (
+            <Box p="sm">
+              <Group align="flex-start">
+                <Avatar src={record.picture} size={50} radius="xl" />
+                <Stack gap={4}>
+                  <Text size="sm" fw={500}>
+                    Username: {record.username}
+                  </Text>
+                  <Text size="sm">
+                    Name: {record.firstName} {record.middleName}{' '}
+                    {record.lastName}
+                  </Text>
+                  <Text size="sm">Email: {record.email}</Text>
+                  <Text size="sm">Phone: {record.phoneNumber}</Text>
+                  <Text size="sm">Country: {record.countryName}</Text>
+                  <Text size="sm">Joined: {record.createdAt}</Text>
+                  {record.students?.length > 0 && (
+                    <Text size="xs" c="dimmed">
+                      Students:{' '}
+                      {record.students
+                        .map((s: { username: any }) => s.username)
+                        .join(', ')}
+                    </Text>
+                  )}
+                  {record.teachers?.length > 0 && (
+                    <Text size="xs" c="dimmed">
+                      Teachers:{' '}
+                      {record.teachers
+                        .map((t: { username: any }) => t.username)
+                        .join(', ')}
+                    </Text>
+                  )}
+                  <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => navigate(`/profile/${record.username}`)}
+                    mt="xs"
+                  >
+                    View Full Profile
+                  </Button>
+                </Stack>
+              </Group>
+              <Divider my="sm" />
+            </Box>
+          ),
+        }}
       />
 
       <ConfirmationModal />
