@@ -25,7 +25,7 @@ const IndexPage = () => {
   // Lock scrolling when desktop view is active
   useEffect(() => {
     if (matches) {
-      document.body.style.overflow = 'hidden';
+      // document.body.style.overflow = 'hidden';
       return () => {
         document.body.style.overflow = 'auto';
       };

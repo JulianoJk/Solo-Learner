@@ -4148,6 +4148,11 @@ make-dir@^2.1.0:
     pify "^4.0.1"
     semver "^5.6.0"
 
+mantine-datatable@^7.17.1:
+  version "7.17.1"
+  resolved "https://registry.yarnpkg.com/mantine-datatable/-/mantine-datatable-7.17.1.tgz#155373bfa318d5463f1aa8468b8117f97b033a2e"
+  integrity sha512-5GBpSTZyvVGqe2TqEaBYrZQyQjLgHuMqkb2wry+wPvwalRY0oFKG1kdFd43bxch9FOG0K0CREEa6+cYIDby55Q==
+
 mantine-flagpack@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/mantine-flagpack/-/mantine-flagpack-1.0.1.tgz#26b45e36912754286edc69182d1ce085102c6920"
