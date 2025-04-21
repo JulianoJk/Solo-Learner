@@ -12,6 +12,7 @@ import {
   Divider,
   Button,
   Box,
+  Modal,
 } from '@mantine/core';
 import {
   IconPencil,
@@ -28,6 +29,7 @@ import { useAppDispatch } from '../../../../context/AppContext';
 import { getBadgeColor, getJob } from '../../../../utils/utils';
 import ConfirmationModal from '../../../ConfirmationModal/ConfirmationModal.component';
 import { useDeleteUser } from '../../../hooks/useDeleteUser';
+import EditUserForm from './EditUserForm';
 
 const StudentManagementTable = () => {
   const [search, setSearch] = useState('');
@@ -37,7 +39,7 @@ const StudentManagementTable = () => {
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
-  console.log(allUsersAdminDashboard);
+  const [editUser, setEditUser] = useState<any | null>(null);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.currentTarget.value);
@@ -167,6 +169,15 @@ const StudentManagementTable = () => {
                   >
                     Delete User
                   </Menu.Item>
+                  <Menu.Item
+                    leftSection={<IconPencil size={14} />}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditUser(user); // Set user for edit
+                    }}
+                  >
+                    Edit User
+                  </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
             ),
@@ -237,7 +248,15 @@ const StudentManagementTable = () => {
           ),
         }}
       />
-
+      <Modal
+        opened={!!editUser}
+        onClose={() => setEditUser(null)}
+        title="Edit User"
+        size="lg"
+        centered
+      >
+        <EditUserForm user={editUser} onClose={() => setEditUser(null)} />
+      </Modal>
       <ConfirmationModal />
     </>
   );
