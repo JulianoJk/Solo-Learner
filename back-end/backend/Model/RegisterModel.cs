@@ -1,8 +1,5 @@
-public class Country
-{
-    public string? Name { get; set; }
-    public string? Flag { get; set; }
-}
+using backend.Models;
+
 public class RegisterModel
 {
     public string? Email { get; set; }

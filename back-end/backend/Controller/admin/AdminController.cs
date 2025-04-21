@@ -1,5 +1,6 @@
 using backend.Models;
 using MySql.Data.MySqlClient;
+using backend.Models;
 
 public class AdminController
 {
@@ -19,7 +20,7 @@ public class AdminController
             await connection.OpenAsync();
 
             MySqlCommand command = new MySqlCommand(
-                "SELECT id, email, username, isAdmin, isTeacher, isStudent, created_at, updated_at, lastActive, picture, isUserLoggedIn FROM users",
+                "SELECT id, email, username, firstName, middleName, lastName, countryName, countryFlag, phoneNumber, isAdmin, isTeacher, isStudent, created_at, updated_at, lastActive, picture, isUserLoggedIn FROM users",
                 connection
             );
             MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
@@ -33,9 +34,18 @@ public class AdminController
                     Id = reader.GetInt32("id"),
                     Email = reader.GetString("email"),
                     Username = reader.GetString("username"),
+                     FirstName = reader["firstName"] == DBNull.Value ? null : reader.GetString("firstName"),
+                    MiddleName = reader["middleName"] == DBNull.Value ? null : reader.GetString("middleName"),
+                    LastName = reader["lastName"] == DBNull.Value ? null : reader.GetString("lastName"),
+                    Phone = reader["phoneNumber"] == DBNull.Value ? null : reader.GetString("phoneNumber"),
+                    Country = new Country
+                    {
+                        Name = reader["countryName"] == DBNull.Value ? null : reader.GetString("countryName"),
+                        Flag = reader["countryFlag"] == DBNull.Value ? null : reader.GetString("countryFlag")
+                    },
                     IsAdmin = reader.GetBoolean("isAdmin"),
                     IsTeacher = reader.GetBoolean("isTeacher"),
-                    IsStudent = reader.GetBoolean("isStudent"),
+                    IsStudent = reader.GetBoolean("isStudent"),      
                     Picture =
                         reader["picture"] == DBNull.Value ? null : reader.GetString("picture"),
                     CreatedAt = reader.GetDateTime("created_at").ToString("yyyy-MM-dd"),

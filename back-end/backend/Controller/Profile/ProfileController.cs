@@ -16,8 +16,8 @@ public class ProfileController
     public async Task<User?> GetUserFromDatabaseByUsername(string username)
     {
         MySqlConnection connection = new(ConnectionString.Value);
-        MySqlCommand command =
-            new($"SELECT * FROM users WHERE username = '{username}'", connection);
+        MySqlCommand command = new("SELECT * FROM users WHERE username = @username", connection);
+        command.Parameters.AddWithValue("@username", username);
         await connection.OpenAsync();
         MySqlDataReader reader = command.ExecuteReader();
         if (reader.HasRows)
@@ -38,11 +38,29 @@ public class ProfileController
                 {
                     Id = (int)reader["id"],
                     Username = (string)reader["username"],
+                    FirstName = (string)reader["firstName"],
+                    MiddleName = reader["middleName"] == DBNull.Value
+                        ? null
+                        : (string)reader["middleName"],
+                    LastName = (string)reader["lastName"],
+                    Email = (string)reader["email"],
+                    Phone = reader["phoneNumber"] == DBNull.Value
+                        ? null
+                        : (string)reader["phoneNumber"],
+                    Country = new Country
+                    {
+                        Name = reader["countryName"] == DBNull.Value
+                            ? null
+                            : (string)reader["countryName"],
+                        Flag = reader["countryFlag"] == DBNull.Value
+                            ? null
+                            : (string)reader["countryFlag"]
+                    },
                     IsTeacher = isTeacher,
                     IsStudent = (bool)reader["isStudent"],
                     IsAdmin = isAdmin,
-                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
-                    Picture = picture
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")).ToString("dd-MM-yyyy"),
+                    Picture = picture,
                 };
             reader.Close();
             return user;
@@ -119,6 +137,7 @@ public class ProfileController
             // Return an error response with a 400(Bad Request) status code
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync("Request body cannot be empty.");
+            return;
         }
 
         // Deserialize the request body into a RegisterModel object
@@ -167,6 +186,7 @@ public class ProfileController
                 // Return an error response with a 404(Not Found) status code
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsJsonAsync("Email does not exist.");
+                return;
             }
 
             // Update the username for the email in the database
@@ -184,6 +204,7 @@ public class ProfileController
                 var response = new { message = $"Name successfully changed to '{newUsername}'" };
                 context.Response.StatusCode = StatusCodes.Status200OK;
                 await context.Response.WriteAsJsonAsync(response);
+                return;
             }
             else
             {
@@ -192,6 +213,7 @@ public class ProfileController
                 await context.Response.WriteAsJsonAsync(
                     "An error occurred while updating the username."
                 );
+                return;
             }
         }
         catch (Exception ex)
@@ -294,14 +316,34 @@ public class ProfileController
                 IsTeacher = (bool)reader["isTeacher"],
                 IsStudent = (bool)reader["isStudent"],
                 IsAdmin = (bool)reader["isAdmin"],
-                CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
-                UpdatedAt = ((DateTime)reader["updated_at"]).ToString("yy-MM-dd"),
+                CreatedAt = reader.GetDateTime(reader.GetOrdinal("created_at")).ToString("dd-MM-yyyy"),
+                UpdatedAt = reader.GetDateTime(reader.GetOrdinal("updated_at")).ToString("dd-MM-yyyy"),
                 LastActive = (DateTime)reader["lastActive"]
             };
+
             teachers.Add(teacher);
         }
 
         reader.Close();
         return teachers;
     }
+    // public async Task GetAdminOrTeacherProfileView(HttpContext context, string username)
+    // {
+    //     var userRepo = new UserRepository();
+    //     var user = await userRepo.GetFullProfileByUsername(username);
+
+    //     if (user == null)
+    //     {
+    //         context.Response.StatusCode = 404;
+    //         await context.Response.WriteAsJsonAsync(new { error = "User not found" });
+    //         return;
+    //     }
+
+    //     await context.Response.WriteAsJsonAsync(new
+    //     {
+    //         profile = user,
+    //         message = "Profile fetched successfully"
+    //     });
+    // }
+
 }
