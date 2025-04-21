@@ -23,6 +23,8 @@ const defaultState: UserContextState = {
     lastActiveDate: '',
     lastActiveTime: '',
     formattedLastActive: '',
+    country: { name: '', flag: '' },
+    phoneNumber: '',
   } as IUserInfoContext, // user slice follows a separate structure
   status: '',
   picture: '',

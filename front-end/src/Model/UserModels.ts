@@ -12,6 +12,11 @@ export interface IUserInfoContext {
   isAdmin?: any;
   picture?: string;
   navigateUser?: string;
+  country?: {
+    name: string;
+    flag: string;
+  };
+  phoneNumber?: string;
 }
 
 export interface IApiMessageResponse {
@@ -100,7 +105,7 @@ export interface User {
   isAdmin: boolean;
   isTeacher: boolean;
   isStudent: boolean;
-  countryName?: string;
+  country: { name: string; flag: string };
   phoneNumber?: string;
   picture?: string;
   lastActive: string;

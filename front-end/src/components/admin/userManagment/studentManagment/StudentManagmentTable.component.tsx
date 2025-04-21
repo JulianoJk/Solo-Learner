@@ -37,6 +37,7 @@ const StudentManagementTable = () => {
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
+  console.log(allUsersAdminDashboard);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.currentTarget.value);
@@ -78,7 +79,7 @@ const StudentManagementTable = () => {
 
       <DataTable
         withTableBorder
-        borderRadius="sm"
+        borderRadius="md"
         withColumnBorders
         striped
         highlightOnHover
@@ -110,9 +111,6 @@ const StudentManagementTable = () => {
               </Badge>
             ),
           },
-          { accessor: 'countryName', title: 'Country' },
-          { accessor: 'phoneNumber', title: 'Phone' },
-          { accessor: 'createdAt', title: 'Joined' },
           {
             accessor: 'actions',
             title: 'Actions',
@@ -185,13 +183,28 @@ const StudentManagementTable = () => {
                   <Text size="sm" fw={500}>
                     Username: {record.username}
                   </Text>
+                  <Text size="sm" fw={500}>
+                    ID: {record.id}
+                  </Text>
                   <Text size="sm">
-                    Name: {record.firstName} {record.middleName}{' '}
+                    Full Name: {record.firstName} {record.middleName}{' '}
                     {record.lastName}
                   </Text>
                   <Text size="sm">Email: {record.email}</Text>
-                  <Text size="sm">Phone: {record.phoneNumber}</Text>
-                  <Text size="sm">Country: {record.countryName}</Text>
+                  <Text size="sm">Phone: {record.phone}</Text>
+                  <Text size="sm">
+                    Country:{' '}
+                    <Group
+                      gap={6}
+                      align="center"
+                      component="span"
+                      display="inline-flex"
+                    >
+                      <Avatar src={record.country.flag} size={16} radius="xl" />
+                      <Text span>{record.country.name}</Text>
+                    </Group>
+                  </Text>
+
                   <Text size="sm">Joined: {record.createdAt}</Text>
                   {record.students?.length > 0 && (
                     <Text size="xs" c="dimmed">
