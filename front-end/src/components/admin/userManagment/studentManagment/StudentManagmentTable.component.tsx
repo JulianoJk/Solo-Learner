@@ -134,10 +134,7 @@ const StudentManagementTable = () => {
                     leftSection={<IconPencil size={14} />}
                     onClick={(e) => {
                       e.stopPropagation();
-                      appDispatch({
-                        type: 'SET_ADMIN_MOBILE_MODAL_OPEN',
-                        adminMobileModalOpen: true,
-                      });
+                      setEditUser(user);
                     }}
                   >
                     Edit User
@@ -169,15 +166,6 @@ const StudentManagementTable = () => {
                   >
                     Delete User
                   </Menu.Item>
-                  <Menu.Item
-                    leftSection={<IconPencil size={14} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditUser(user); // Set user for edit
-                    }}
-                  >
-                    Edit User
-                  </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
             ),
@@ -203,18 +191,11 @@ const StudentManagementTable = () => {
                   </Text>
                   <Text size="sm">Email: {record.email}</Text>
                   <Text size="sm">Phone: {record.phone}</Text>
-                  <Text size="sm">
-                    Country:{' '}
-                    <Group
-                      gap={6}
-                      align="center"
-                      component="span"
-                      display="inline-flex"
-                    >
-                      <Avatar src={record.country.flag} size={16} radius="xl" />
-                      <Text span>{record.country.name}</Text>
-                    </Group>
-                  </Text>
+                  <Group gap={6} align="center">
+                    <Text size="sm">Country:</Text>
+                    <Avatar src={record.country.flag} size={16} radius="xl" />
+                    <Text size="sm">{record.country.name}</Text>
+                  </Group>
 
                   <Text size="sm">Joined: {record.createdAt}</Text>
                   {record.students?.length > 0 && (

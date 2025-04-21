@@ -64,7 +64,7 @@ const ConfirmationModal = () => {
         },
       });
     }
-  }, [isAdminDeleteModalOpen, usersToDelete]);
+  }, [usersToDelete]);
 
   return null;
 };

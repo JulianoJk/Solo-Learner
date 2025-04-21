@@ -324,7 +324,7 @@ export const sendImageToServerAPI = async (
 export const updateUsernameAPI = async ({
   token,
   email,
-  newUsername,
+  username,
 }: any): Promise<IApiMessageResponse | IApiError> => {
   try {
     const response = await fetch(URL + `users/update/username`, {
@@ -335,7 +335,7 @@ export const updateUsernameAPI = async ({
       },
       body: JSON.stringify({
         email: email,
-        username: newUsername,
+        username,
       }),
     });
     if (!response.ok) {
