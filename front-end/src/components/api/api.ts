@@ -569,12 +569,15 @@ export const logoutAPI = async (
 
 export const getCountriesAPI = async () => {
   try {
-    const response = await fetch(`https://restcountries.com/v3.1/all`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `https://restcountries.com/v3.1/all?fields=name,flags`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     if (!response.ok) {
       throw new Error('Failed to fetch countries');
     }

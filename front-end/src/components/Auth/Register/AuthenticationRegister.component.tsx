@@ -12,7 +12,6 @@ import {
   Paper,
   Group,
   Button,
-  Divider,
   Anchor,
   Stack,
   Center,
@@ -30,7 +29,6 @@ import React, { useMemo, useState } from 'react';
 import Preloader from '../../Loader/Preloader.component';
 import { useAppState } from '../../../context/AppContext';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
 import CountrySelector from '../../countrySelect/CountrySelect';
@@ -157,7 +155,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               : registerTitle}
           </Text>
 
-          {!isAdminRegister && (
+          {/* {!isAdminRegister && (
             <>
               <SocialButtons disableFacebook />
               <Divider
@@ -166,7 +164,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 my="lg"
               />
             </>
-          )}
+          )} */}
           <form
             onSubmit={form.onSubmit((values) => {
               if (isAdminRegister && adminRefetchUserList) {

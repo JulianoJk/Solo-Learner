@@ -18,7 +18,7 @@ import { useAppState } from '../../../context/AppContext';
 import { useLogin } from '../../hooks/useLogin';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { indexPage } from '../../api/api';
-import { SocialButtons } from '../../SocialButtons/SocialButtons';
+// import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 interface ILoginProps {
   children?: React.ReactNode;
@@ -104,7 +104,7 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
               : loginTitle}
           </Text>
 
-          <SocialButtons disableFacebook={true} disableGoogle={isLoading} />
+          {/* <SocialButtons disableFacebook={true} disableGoogle={isLoading} /> */}
 
           <Divider
             label="Or continue with email"
