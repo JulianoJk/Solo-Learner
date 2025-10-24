@@ -23,6 +23,7 @@ import {
   Avatar,
   MultiSelectProps,
   Select,
+  Divider,
 } from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 
@@ -36,6 +37,7 @@ import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserState } from '../../../context/UserContext';
 import { useStyles } from '../../admin/registerNewUsers/AdminAddUser.styles';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
 
 interface IRegisterProps {
   children?: React.ReactNode;
@@ -155,7 +157,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               : registerTitle}
           </Text>
 
-          {/* {!isAdminRegister && (
+          {!isAdminRegister && (
             <>
               <SocialButtons disableFacebook />
               <Divider
@@ -164,7 +166,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                 my="lg"
               />
             </>
-          )} */}
+          )}
           <form
             onSubmit={form.onSubmit((values) => {
               if (isAdminRegister && adminRefetchUserList) {
