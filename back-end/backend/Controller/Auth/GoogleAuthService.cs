@@ -58,13 +58,14 @@ public class GoogleAuthService
 
                     // Generate JWT token and proceed with login
                     var additionalUserInfo = _authenticator.GetAdditionalUserInfoFromDb(userEmail);
-                    string token = JwtUtils.GenerateJwt(userEmail, additionalUserInfo?.Id.ToString(), additionalUserInfo.IsTeacher, additionalUserInfo.IsAdmin);
+                    string token = JwtUtils.GenerateJwt(userEmail, additionalUserInfo?.Id.ToString(), additionalUserInfo.IsTeacher,additionalUserInfo.isStudent, additionalUserInfo.IsAdmin);
 
                     responseDict["jwt_token"] = token;
                     responseDict["messageToUser"] = "Great to see you! You're all set to go! :)";
                     responseDict["authMethod"] = "Login successful!";
                     responseDict["id"] = additionalUserInfo?.Id.ToString();
                     responseDict["isTeacher"] = additionalUserInfo?.IsTeacher.ToString().ToLower();
+                    responseDict["isStudent"] = additionalUserInfo?.isStudent.ToString().ToLower();
                     responseDict["isAdmin"] = additionalUserInfo?.IsAdmin.ToString().ToLower();
                     responseDict["picture"] = additionalUserInfo?.Picture;
 

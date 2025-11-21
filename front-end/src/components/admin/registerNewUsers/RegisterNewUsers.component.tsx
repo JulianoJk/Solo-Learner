@@ -13,13 +13,11 @@ const RegisterNewUser: React.FC<IRegisterNewUserProps> = ({
   const { classes } = useStyles();
   return (
     <AuthenticationRegister
+      isAdminRegister={true}
       rootClassName={classes.root}
       adminRefetchUserList={refetchUserList}
       registerTitle={'Register new users'}
-      switchToLogin={false}
-      displaySocialButtons={false}
       showNotification={true}
-      isAdminRegister={true}
     />
   );
 };

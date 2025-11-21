@@ -82,8 +82,6 @@ const Admin = () => {
     switch (selectedAdminNavbar) {
       case 'userManagment':
         return !matches ? <MobileStudent /> : <StudentmanagmenTable />;
-      case 'billing':
-        return <StudentmanagmenTable />;
       case 'register_new_user':
         return <RegisterNewUser refetchUserList={refetchAllUsers} />;
       case 'Assignent':

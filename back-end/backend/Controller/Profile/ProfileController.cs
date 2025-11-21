@@ -27,7 +27,7 @@ public class ProfileController
 
             // Check for DBNull before casting isAdmin
             bool isAdmin = DBNull.Value.Equals(reader["isAdmin"]) ? false : (bool)reader["isAdmin"];
-
+            bool isStudent = (bool)reader["isStudent"];
             // Check for DBNull before casting picture
             string picture = DBNull.Value.Equals(reader["picture"])
                 ? string.Empty
@@ -39,6 +39,7 @@ public class ProfileController
                     Id = (int)reader["id"],
                     Username = (string)reader["username"],
                     IsTeacher = isTeacher,
+                    IsStudent = (bool)reader["isStudent"],
                     IsAdmin = isAdmin,
                     CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
                     Picture = picture
@@ -291,6 +292,7 @@ public class ProfileController
                 Username = (string)reader["username"],
                 Email = (string)reader["email"],
                 IsTeacher = (bool)reader["isTeacher"],
+                IsStudent = (bool)reader["isStudent"],
                 IsAdmin = (bool)reader["isAdmin"],
                 CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd"),
                 UpdatedAt = ((DateTime)reader["updated_at"]).ToString("yy-MM-dd"),

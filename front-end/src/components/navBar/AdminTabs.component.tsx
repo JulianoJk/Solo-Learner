@@ -1,16 +1,10 @@
 import { Tabs, useMantineColorScheme } from '@mantine/core';
-import {
-  IconPencil,
-  IconUserCog,
-  IconUserPlus,
-  IconSchool,
-} from '@tabler/icons-react';
+import { IconPencil, IconUserCog, IconUserPlus } from '@tabler/icons-react';
 import { useAppDispatch } from '../../context/AppContext';
 import React from 'react';
 const data = [
   { link: 'userManagment', label: 'User Management', icon: IconUserCog },
   { link: 'register_new_user', label: 'Register New User', icon: IconUserPlus },
-  { link: 'billing', label: 'billing', icon: IconSchool },
   { link: 'Assignent', label: 'Assign assigment', icon: IconPencil },
   { link: 'TestIt', label: 'Testme', icon: IconPencil },
 ];

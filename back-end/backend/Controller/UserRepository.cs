@@ -93,7 +93,7 @@ namespace backend
         {
             MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
             MySqlCommand command = new MySqlCommand(
-                $"SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive FROM users WHERE email = '{email}'",
+                $"SELECT id, email, username, isAdmin, isTeacher,isStudent, created_at, updated_at, lastActive FROM users WHERE email = '{email}'",
                 connection
             );
 
@@ -103,6 +103,7 @@ namespace backend
             {
                 reader.Read();
                 bool isTeacher = (bool)reader["isTeacher"];
+                bool isStudent = (bool)reader["isStudent"];
                 bool IsAdmin = (bool)reader["isAdmin"];
 
                 CurrentUser currentUser = new CurrentUser
@@ -111,6 +112,7 @@ namespace backend
                     Email = (string)reader["email"],
                     Username = (string)reader["username"],
                     IsTeacher = isTeacher,
+                    IsStudent = isStudent,
                     IsAdmin = IsAdmin,
                     CreatedAt = ((DateTime)reader["created_at"]).ToString("yy-MM-dd")
                 };

@@ -131,6 +131,7 @@ The frontend utilizes several libraries and packages, including but not limited 
 - [Mantine UI](https://mantine.dev/)
 - [TanStack Query](https://tanstack.com/query/v4/?from=reactQueryV3&original=https://react-query-v3.tanstack.com/)
 - [Tabler Icons for React](https://tabler.io/docs/icons/react)
+- [react-international-phone](https://react-international-phone.vercel.app/)
 
 For a full list of frontend dependencies, refer to the `package.json` file.
 

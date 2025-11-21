@@ -14,7 +14,9 @@ export const useDeleteUser = () => {
     async (userIds: string[]) => {
       // Delete users one by one
       return Promise.all(
-        userIds.map((id) => adminDeleteUserAccount({ token: user.token, Id: id }))
+        userIds.map((id) =>
+          adminDeleteUserAccount({ token: user.token, Id: id }),
+        ),
       );
     },
     {
