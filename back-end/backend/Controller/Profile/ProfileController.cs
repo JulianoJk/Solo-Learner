@@ -1,5 +1,5 @@
 using backend;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using System.Text.Json;
 using backend.Models;
 
@@ -15,11 +15,12 @@ public class ProfileController
     // Method to retrieve a user's data from the database based on their email
     public async Task<User?> GetUserFromDatabaseByUsername(string username)
     {
-        MySqlConnection connection = new(ConnectionString.Value);
-        MySqlCommand command =
-            new($"SELECT * FROM users WHERE username = '{username}'", connection);
+        NpgsqlConnection connection = new(ConnectionString.Value);
+        NpgsqlCommand command =
+            new("SELECT * FROM users WHERE username = @username", connection);
+        command.Parameters.AddWithValue("@username", username);
         await connection.OpenAsync();
-        MySqlDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (reader.HasRows)
         {
             reader.Read();
@@ -108,7 +109,7 @@ public class ProfileController
 
     private async Task UpdateUsernameByEmailAsync(HttpContext context)
     {
-        MySqlConnection connection = new(ConnectionString.Value);
+        NpgsqlConnection connection = new(ConnectionString.Value);
 
         // Read the request body
         string requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
@@ -154,7 +155,7 @@ public class ProfileController
             await connection.OpenAsync();
 
             // Check if the email exists in the database
-            MySqlCommand checkEmailCommand = new MySqlCommand(
+            NpgsqlCommand checkEmailCommand = new NpgsqlCommand(
                 "SELECT COUNT(*) FROM users WHERE email = @email",
                 connection
             );
@@ -169,7 +170,7 @@ public class ProfileController
             }
 
             // Update the username for the email in the database
-            MySqlCommand command = new MySqlCommand(
+            NpgsqlCommand command = new NpgsqlCommand(
                 "UPDATE users SET username = @newUsername WHERE email = @email",
                 connection
             );
@@ -205,15 +206,15 @@ public class ProfileController
 
     public async Task GetTeacherInfoForStudentByUsernameAsync(HttpContext context, string username)
     {
-        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+        NpgsqlConnection connection = new NpgsqlConnection(ConnectionString.Value);
 
         await connection.OpenAsync();
 
-        MySqlCommand command = new MySqlCommand(
+        NpgsqlCommand command = new NpgsqlCommand(
             $"SELECT id, isStudent FROM users WHERE username = '{username}'",
             connection
         );
-        MySqlDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         if (!reader.HasRows)
         {
             context.Response.StatusCode = StatusCodes.Status404NotFound;
@@ -233,7 +234,7 @@ public class ProfileController
             return;
         }
 
-        command = new MySqlCommand(
+        command = new NpgsqlCommand(
             $"SELECT teacherId FROM students WHERE userId = {userId}",
             connection
         );
@@ -249,7 +250,7 @@ public class ProfileController
         int teacherId = (int)reader["teacherId"];
         reader.Close();
 
-        command = new MySqlCommand(
+        command = new NpgsqlCommand(
             $"SELECT username, email FROM users WHERE id = {teacherId}",
             connection
         );
@@ -274,14 +275,14 @@ public class ProfileController
 
     public async Task<List<User>> GetTeacherInfoByStudentId(int studentId)
     {
-        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
-        MySqlCommand command = new MySqlCommand(
-            "SELECT * FROM `users` WHERE isTeacher = 1",
+        NpgsqlConnection connection = new NpgsqlConnection(ConnectionString.Value);
+        NpgsqlCommand command = new NpgsqlCommand(
+            "SELECT * FROM users WHERE \"isTeacher\" = true",
             connection
         );
 
         await connection.OpenAsync();
-        MySqlDataReader reader = command.ExecuteReader();
+        NpgsqlDataReader reader = command.ExecuteReader();
         List<User> teachers = new List<User>();
         while (reader.Read())
         {

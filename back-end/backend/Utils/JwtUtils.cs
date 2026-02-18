@@ -4,7 +4,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using backend;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using Google.Apis.Auth;
 
 public static class JwtUtils
@@ -269,10 +269,10 @@ public static class JwtUtils
     private static int? GetUserIdFromDB(string email)
     {
         int? id = null;
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using (var connection = new NpgsqlConnection(ConnectionString.Value))
         {
             connection.Open();
-            using var command = new MySqlCommand(
+            using var command = new NpgsqlCommand(
                 "SELECT id FROM users WHERE email=@Email",
                 connection
             );
@@ -353,11 +353,11 @@ public static class JwtUtils
             return null; // Invalid email or unable to retrieve it
         }
 
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using (var connection = new NpgsqlConnection(ConnectionString.Value))
         {
             connection.Open();
-            using var command = new MySqlCommand(
-                "SELECT isAdmin FROM users WHERE email=@Email",
+            using var command = new NpgsqlCommand(
+                "SELECT \"isAdmin\" FROM users WHERE email = @Email",
                 connection
             );
             command.Parameters.AddWithValue("@Email", email);
@@ -418,11 +418,11 @@ public static class JwtUtils
     private static string? GetLastVisitedPath(string email)
     {
         string? lastVisitedPath = null;
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using (var connection = new NpgsqlConnection(ConnectionString.Value))
         {
             connection.Open();
-            using var command = new MySqlCommand(
-                "SELECT lastVisitedPath FROM users WHERE email=@Email",
+            using var command = new NpgsqlCommand(
+                "SELECT \"lastVisitedPath\" FROM users WHERE email = @Email",
                 connection
             );
             command.Parameters.AddWithValue("@Email", email);

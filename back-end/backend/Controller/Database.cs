@@ -1,4 +1,4 @@
-using MySql.Data.MySqlClient;
+using Npgsql;
 using backend;
 using backend.Models;
 
@@ -8,13 +8,9 @@ namespace backend
     {
         private readonly string connectionString;
 
-        // Getter and setter for areCredentialsCorrect
         public bool AreCredentialsCorrect { get; set; }
-
-        // Getter and setter for messageToUser
         public string MessageToUser { get; set; }
 
-        // Constructor to set the initial state of the properties and load the connection string from .env file
         public Database()
         {
             connectionString = ConnectionString.Value;
@@ -22,7 +18,6 @@ namespace backend
             MessageToUser = "";
         }
 
-        // Method to initialize the database connection and perform registration or login based on 'isRegister' parameter
         public void InitializeDatabaseConnection(
             bool isRegister,
             bool isGoogle,
@@ -38,13 +33,13 @@ namespace backend
             string? picture
         )
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            using var connection = new NpgsqlConnection(connectionString);
             try
             {
                 connection.Open();
                 if (connection.State == System.Data.ConnectionState.Open)
                 {
-                    Console.WriteLine("Connection to MySQL server successful!");
+                    Console.WriteLine("Connection to PostgreSQL server successful!");
                     if (isRegister)
                     {
                         try
@@ -62,8 +57,8 @@ namespace backend
                                     firstName,
                                     lastName,
                                     gender,
-                                    username,
-                                    password,
+                                    username ?? "",
+                                    password ?? "",
                                     salt,
                                     isTeacher,
                                     isAdmin,
@@ -80,7 +75,7 @@ namespace backend
                                     firstName,
                                     lastName,
                                     gender,
-                                    username,
+                                    username ?? "",
                                     "",
                                     null,
                                     isTeacher,
@@ -91,14 +86,13 @@ namespace backend
                                 MessageToUser = "Registration successful!";
                             }
                         }
-                        catch (MySqlException ex)
+                        catch (PostgresException ex)
                         {
                             Console.WriteLine("Error: " + ex.Message);
                         }
                     }
                     else
                     {
-                        // Call VerifyEmailAndPassword method to check email and password
                         CheckIfEmailExists(connection, email);
                     }
                 }
@@ -107,15 +101,10 @@ namespace backend
             {
                 Console.WriteLine("Error: " + ex.Message);
             }
-            finally
-            {
-                connection.Close();
-            }
         }
 
-        // Method to save user data to the database
         public void saveToDatabase(
-            MySqlConnection connection,
+            NpgsqlConnection connection,
             string email,
             string firstName,
             string lastName,
@@ -128,8 +117,8 @@ namespace backend
             string? picture
         )
         {
-            MySqlCommand command = new MySqlCommand(
-                "INSERT INTO users (email,firstName, lastName, gender, username, password, salt, isTeacher, isAdmin, picture) VALUES (@email,@firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isAdmin, @picture)",
+            using var command = new NpgsqlCommand(
+                "INSERT INTO users (email, \"firstName\", \"lastName\", gender, username, password, salt, \"isTeacher\", \"isAdmin\", picture) VALUES (@email, @firstName, @lastName, @gender, @username, @password, @salt, @isTeacher, @isAdmin, @picture)",
                 connection
             );
             command.Parameters.AddWithValue("@email", email);
@@ -138,153 +127,97 @@ namespace backend
             command.Parameters.AddWithValue("@gender", gender);
             command.Parameters.AddWithValue("@username", username);
             command.Parameters.AddWithValue("@password", password);
-            command.Parameters.AddWithValue("@salt", salt);
+            command.Parameters.AddWithValue("@salt", (object?)salt ?? DBNull.Value);
             command.Parameters.AddWithValue("@isTeacher", isTeacher);
             command.Parameters.AddWithValue("@isAdmin", isAdmin);
-            command.Parameters.AddWithValue("@picture", picture);
-            MySqlDataReader reader = command.ExecuteReader();
-            reader.Close();
-            // Set AreCredentialsCorrect to true if the data was successfully saved to the database
+            command.Parameters.AddWithValue("@picture", (object?)picture ?? DBNull.Value);
+            command.ExecuteNonQuery();
             AreCredentialsCorrect = true;
         }
 
-        // Method to check if an email exists in the database
-        public bool CheckIfEmailExists(MySqlConnection connection, string email)
+        public bool CheckIfEmailExists(NpgsqlConnection connection, string email)
         {
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT COUNT(*) FROM users WHERE email = '{email}'",
+            using var command = new NpgsqlCommand(
+                "SELECT COUNT(*) FROM users WHERE email = @email",
                 connection
             );
-            int count = Convert.ToInt32(command.ExecuteScalar());
+            command.Parameters.AddWithValue("@email", email);
+            var count = Convert.ToInt32(command.ExecuteScalar());
             return count > 0;
         }
 
-        // Method to return both AreCredentialsCorrect and MessageToUser
         public (bool, string) GetRegisterStatus()
         {
             return (AreCredentialsCorrect, MessageToUser);
         }
 
-        // Method to retrieve a user's salt value from the database
-        public byte[] GetSaltFromDatabase(MySqlConnection connection, string email)
+        public byte[]? GetSaltFromDatabase(NpgsqlConnection connection, string email)
         {
-            connection.Open();
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT salt FROM users WHERE email = '{email}'",
+            if (connection.State != System.Data.ConnectionState.Open)
+                connection.Open();
+            using var command = new NpgsqlCommand(
+                "SELECT salt FROM users WHERE email = @email",
                 connection
             );
-            object salt = command.ExecuteScalar();
+            command.Parameters.AddWithValue("@email", email);
+            var salt = command.ExecuteScalar();
             if (salt == null || salt == DBNull.Value)
-            {
-                connection.Close();
                 return null;
-            }
-            else
-            {
-                connection.Close();
-                return (byte[])salt;
-            }
+            return (byte[])salt;
         }
 
-        // Method to retrieve a user's hashedPassword value from the database
-        public string GetHashedPasswordFromDatabase(MySqlConnection connection, string email)
+        public string? GetHashedPasswordFromDatabase(NpgsqlConnection connection, string email)
         {
-            connection.Open();
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT password FROM users WHERE email = '{email}'",
+            if (connection.State != System.Data.ConnectionState.Open)
+                connection.Open();
+            using var command = new NpgsqlCommand(
+                "SELECT password FROM users WHERE email = @email",
                 connection
             );
-            object password = command.ExecuteScalar();
+            command.Parameters.AddWithValue("@email", email);
+            var password = command.ExecuteScalar();
             if (password == null || password == DBNull.Value)
-            {
-                connection.Close();
                 return null;
-            }
-            else
-            {
-                connection.Close();
-                return (string)password;
-            }
+            return (string)password;
         }
 
         public async Task<bool> DeleteUserByIdAsync(int? id)
         {
-            if (id <= 0)
-            {
+            if (id == null || id <= 0)
                 throw new ArgumentException("Invalid user ID");
-            }
 
-            MySqlConnection connection = new(connectionString);
-
-            try
-            {
-                await connection.OpenAsync();
-
-                MySqlCommand command = new("DELETE FROM users WHERE id=@id", connection);
-                command.Parameters.AddWithValue("@id", id);
-
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                return rowsAffected > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
+            using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var command = new NpgsqlCommand("DELETE FROM users WHERE id = @id", connection);
+            command.Parameters.AddWithValue("@id", id.Value);
+            var rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
         }
 
         public async Task<bool> AdminDeleteUserByIdAsync(int userId)
         {
             if (userId <= 0)
-            {
                 throw new ArgumentException("Invalid user ID");
-            }
 
-            using MySqlConnection connection = new MySqlConnection(connectionString);
-
-            try
-            {
-                await connection.OpenAsync();
-
-                MySqlCommand command = new MySqlCommand(
-                    "DELETE FROM users WHERE id=@userId",
-                    connection
-                );
-                command.Parameters.AddWithValue("@userId", userId);
-
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-
-                return rowsAffected > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
-                return false;
-            }
-            finally
-            {
-                await connection.CloseAsync();
-            }
+            using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+            using var command = new NpgsqlCommand("DELETE FROM users WHERE id = @userId", connection);
+            command.Parameters.AddWithValue("@userId", userId);
+            var rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
         }
 
         public bool GetIsAdminFromDatabase(string email)
         {
-            using (var connection = new MySqlConnection(connectionString))
-            {
-                connection.Open();
-                var command = new MySqlCommand(
-                    "SELECT isAdmin FROM users WHERE email = @email",
-                    connection
-                );
-                command.Parameters.AddWithValue("@email", email);
-                var isAdmin = command.ExecuteScalar();
-                return isAdmin != null && Convert.ToBoolean(isAdmin);
-            }
+            using var connection = new NpgsqlConnection(connectionString);
+            connection.Open();
+            using var command = new NpgsqlCommand(
+                "SELECT \"isAdmin\" FROM users WHERE email = @email",
+                connection
+            );
+            command.Parameters.AddWithValue("@email", email);
+            var isAdmin = command.ExecuteScalar();
+            return isAdmin != null && Convert.ToBoolean(isAdmin);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using backend;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -92,7 +92,7 @@ public class AuthenticationUtils
 
     public (bool, string) CheckPasswordForLogin(string email, string password)
     {
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        NpgsqlConnection connection = new NpgsqlConnection(connectionString);
         byte[]? salt = db.GetSaltFromDatabase(connection, email);
         bool found = false;
 
@@ -136,7 +136,7 @@ public class AuthenticationUtils
 
     public Tuple<bool, string> IsUsernameTaken(string username)
     {
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        NpgsqlConnection connection = new NpgsqlConnection(connectionString);
         string uniqueUsername = username;
         int counter = 1;
 
@@ -146,7 +146,7 @@ public class AuthenticationUtils
 
             while (true) // we will break this loop from inside
             {
-                MySqlCommand command = new MySqlCommand(
+                NpgsqlCommand command = new NpgsqlCommand(
                     $"SELECT COUNT(*) FROM users WHERE username = @username",
                     connection
                 );
@@ -185,12 +185,12 @@ public class AuthenticationUtils
 
     public string? GetUserEmailFromGoogleId(string googleEmail)
     {
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using (var connection = new NpgsqlConnection(ConnectionString.Value))
         {
             connection.Open();
 
             using (
-                var command = new MySqlCommand(
+                var command = new NpgsqlCommand(
                     "SELECT email FROM users WHERE email = @GoogleEmail",
                     connection
                 )
@@ -202,7 +202,7 @@ public class AuthenticationUtils
                 {
                     if (reader.Read())
                     {
-                        return reader.GetString("email");
+                        return (string)reader["email"];
                     }
                 }
             }
@@ -213,12 +213,12 @@ public class AuthenticationUtils
 
     public UserInfo GetAdditionalUserInfoFromDb(string userEmail)
     {
-        using (var connection = new MySqlConnection(ConnectionString.Value))
+        using (var connection = new NpgsqlConnection(ConnectionString.Value))
         {
             connection.Open();
 
             using (
-                var command = new MySqlCommand(
+                var command = new NpgsqlCommand(
                     "SELECT id, isTeacher, isAdmin, picture FROM users WHERE email = @Email",
                     connection
                 )
@@ -232,10 +232,10 @@ public class AuthenticationUtils
                     {
                         return new UserInfo
                         {
-                            Id = reader.GetInt32("id"),
-                            IsTeacher = reader.GetBoolean("isTeacher"),
-                            IsAdmin = reader.GetBoolean("isAdmin"),
-                            Picture = reader.GetString("picture")
+                            Id = (int)reader["id"],
+                            IsTeacher = (bool)reader["isTeacher"],
+                            IsAdmin = (bool)reader["isAdmin"],
+                            Picture = reader["picture"] == DBNull.Value ? null : (string)reader["picture"]
                         };
                     }
                 }

@@ -6,7 +6,9 @@ import {
   UserContextState,
 } from '../../Model/UserModels';
 
-const URL: string = `http://${import.meta.env.VITE_IP_ADDRESS}:3001/`;
+const base = import.meta.env.VITE_IP_ADDRESS ?? '';
+const URL: string =
+  base.startsWith('http') ? base.replace(/\/?$/, '/') : `http://${base}:3001/`;
 
 export const loginAPI = async ({
   email,
@@ -256,7 +258,7 @@ export const sendImageToServerAPI = async (
     const formData = new FormData();
     formData.append('file', data[0]);
     const res = await fetch(
-      `http://localhost:3001/users/profile-image/${userID}`,
+      `${URL}users/profile-image/${userID}`,
       {
         method: 'POST',
         body: formData,
@@ -430,7 +432,7 @@ export const postGoogleLogin = async (code: string) => {
     const formData = new FormData();
     formData.append('code', code);
 
-    const response = await fetch('http://localhost:3001/signin-google', {
+    const response = await fetch(`${URL}signin-google`, {
       method: 'POST',
       body: formData,
     });
