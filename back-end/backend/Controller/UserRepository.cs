@@ -3,7 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using backend.Models;
-using MySql.Data.MySqlClient;
+using Npgsql;
 
 namespace backend
 {
@@ -18,12 +18,12 @@ namespace backend
 
         private async Task UpdateLastActive(string email)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
             try
             {
                 await connection.OpenAsync();
-                MySqlCommand command = new MySqlCommand(
-                    $"UPDATE users SET lastActive = CONVERT_TZ(NOW(), @@session.time_zone, '+03:00') WHERE email = @email",
+                NpgsqlCommand command = new NpgsqlCommand(
+                    "UPDATE users SET \"lastActive\" = NOW() WHERE email = @email",
                     connection
                 );
                 command.Parameters.AddWithValue("@email", email);
@@ -41,12 +41,12 @@ namespace backend
 
         public async Task UpdateUserIsLoggedIn(bool isUserLoggedIn, string email)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            NpgsqlConnection connection = new NpgsqlConnection(connectionString);
             try
             {
                 await connection.OpenAsync();
-                MySqlCommand command = new MySqlCommand(
-                    $"UPDATE users SET isUserLoggedIn = @isUserLoggedIn WHERE email = @email",
+                NpgsqlCommand command = new NpgsqlCommand(
+                    "UPDATE users SET \"isUserLoggedIn\" = @isUserLoggedIn WHERE email = @email",
                     connection
                 );
                 command.Parameters.AddWithValue("@isUserLoggedIn", isUserLoggedIn);
@@ -91,14 +91,15 @@ namespace backend
 
         protected async Task<CurrentUser?> GetCurrentUserFromDatabase(string email)
         {
-            MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
-            MySqlCommand command = new MySqlCommand(
-                $"SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive FROM users WHERE email = '{email}'",
+            NpgsqlConnection connection = new NpgsqlConnection(ConnectionString.Value);
+            NpgsqlCommand command = new NpgsqlCommand(
+                "SELECT id, email, username, \"isAdmin\", \"isTeacher\", created_at, updated_at, \"lastActive\" FROM users WHERE email = @email",
                 connection
             );
+            command.Parameters.AddWithValue("@email", email);
 
             await connection.OpenAsync();
-            MySqlDataReader reader = command.ExecuteReader();
+            using var reader = command.ExecuteReader();
             if (reader.HasRows)
             {
                 reader.Read();

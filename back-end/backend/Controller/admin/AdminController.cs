@@ -1,5 +1,5 @@
 using backend.Models;
-using MySql.Data.MySqlClient;
+using Npgsql;
 
 public class AdminController
 {
@@ -12,17 +12,17 @@ public class AdminController
 
     public async Task GetUsers(HttpContext context)
     {
-        MySqlConnection connection = new MySqlConnection(ConnectionString.Value);
+        NpgsqlConnection connection = new NpgsqlConnection(ConnectionString.Value);
 
         try
         {
             await connection.OpenAsync();
 
-            MySqlCommand command = new MySqlCommand(
-                "SELECT id, email, username, isAdmin, isTeacher, created_at, updated_at, lastActive, picture, isUserLoggedIn FROM users",
+            NpgsqlCommand command = new NpgsqlCommand(
+                "SELECT id, email, username, \"isAdmin\", \"isTeacher\", created_at, updated_at, \"lastActive\", picture, \"isUserLoggedIn\" FROM users",
                 connection
             );
-            MySqlDataReader reader = (MySqlDataReader)await command.ExecuteReaderAsync();
+            await using var reader = await command.ExecuteReaderAsync();
 
             List<User> users = new List<User>();
 
@@ -30,17 +30,16 @@ public class AdminController
             {
                 User user = new User
                 {
-                    Id = reader.GetInt32("id"),
-                    Email = reader.GetString("email"),
-                    Username = reader.GetString("username"),
-                    IsAdmin = reader.GetBoolean("isAdmin"),
-                    IsTeacher = reader.GetBoolean("isTeacher"),
-                    Picture =
-                        reader["picture"] == DBNull.Value ? null : reader.GetString("picture"),
-                    CreatedAt = reader.GetDateTime("created_at").ToString("yyyy-MM-dd"),
-                    UpdatedAt = reader.GetDateTime("updated_at").ToString("yyyy-MM-dd"),
-                    LastActive = reader.GetDateTime("lastActive"),
-                    IsUserLoggedIn = reader.GetBoolean("isUserLoggedIn")
+                    Id = (int)reader["id"],
+                    Email = (string)reader["email"],
+                    Username = (string)reader["username"],
+                    IsAdmin = (bool)reader["isAdmin"],
+                    IsTeacher = (bool)reader["isTeacher"],
+                    Picture = reader["picture"] == DBNull.Value ? null : (string)reader["picture"],
+                    CreatedAt = ((DateTime)reader["created_at"]).ToString("yyyy-MM-dd"),
+                    UpdatedAt = ((DateTime)reader["updated_at"]).ToString("yyyy-MM-dd"),
+                    LastActive = (DateTime)reader["lastActive"],
+                    IsUserLoggedIn = (bool)reader["isUserLoggedIn"]
                 };
 
                 users.Add(user);

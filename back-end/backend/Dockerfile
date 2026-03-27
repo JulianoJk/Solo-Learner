@@ -7,7 +7,7 @@ RUN dotnet restore
 RUN dotnet add package Microsoft.AspNetCore.Cors
 RUN dotnet add package Microsoft.AspNetCore
 RUN dotnet add package dotenv.net
-RUN dotnet add package MySql.Data
+RUN dotnet add package Npgsql --version 6.0.10
 RUN dotnet add package MailKit
 RUN dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 6.0.0
 RUN dotnet add package Microsoft.EntityFrameworkCore --version 6.0.0

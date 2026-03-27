@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -50,12 +50,12 @@ public class AuthenticationManager
             var userId = JwtUtils.GetUserId(userEmail);
 
             // Update lastVisitedPath in the database
-            using (var connection = new MySqlConnection(ConnectionString.Value))
+            using (var connection = new NpgsqlConnection(ConnectionString.Value))
             {
                 await connection.OpenAsync();
                 using (
-                    var command = new MySqlCommand(
-                        "UPDATE users SET lastVisitedPath = @LastVisitedPath WHERE id = @UserId",
+                    var command = new NpgsqlCommand(
+                        "UPDATE users SET \"lastVisitedPath\" = @LastVisitedPath WHERE id = @UserId",
                         connection
                     )
                 )

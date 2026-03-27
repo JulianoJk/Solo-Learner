@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using backend;
 
 public class UserDataAccess
@@ -16,23 +16,23 @@ public class UserDataAccess
     {
         List<(string, bool)> users = new List<(string, bool)>();
 
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        NpgsqlConnection connection = new NpgsqlConnection(connectionString);
 
         try
         {
             connection.Open();
             if (connection.State == System.Data.ConnectionState.Open)
             {
-                MySqlCommand command = new MySqlCommand(
-                    "SELECT username, isTeacher FROM users",
+                NpgsqlCommand command = new NpgsqlCommand(
+                    "SELECT username, \"isTeacher\" FROM users",
                     connection
                 );
-                MySqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    string username = reader.GetString("username");
-                    bool isTeacher = reader.GetBoolean("isTeacher");
+                    string username = (string)reader["username"];
+                    bool isTeacher = (bool)reader["isTeacher"];
                     users.Add((username, isTeacher));
                 }
 
@@ -60,25 +60,25 @@ public class UserDataAccess
     {
         string username = null;
 
-        MySqlConnection connection = new MySqlConnection(connectionString);
+        NpgsqlConnection connection = new NpgsqlConnection(connectionString);
 
         try
         {
             connection.Open();
             if (connection.State == System.Data.ConnectionState.Open)
             {
-                MySqlCommand command = new MySqlCommand(
+                NpgsqlCommand command = new NpgsqlCommand(
                     "SELECT username FROM users WHERE email = @Email",
                     connection
                 );
 
                 command.Parameters.AddWithValue("@Email", email);
 
-                MySqlDataReader reader = command.ExecuteReader();
+                NpgsqlDataReader reader = command.ExecuteReader();
 
                 if (reader.Read())
                 {
-                    username = reader.GetString("username");
+                    username = (string)reader["username"];
                 }
 
                 reader.Close();
