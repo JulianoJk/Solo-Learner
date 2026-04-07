@@ -2,23 +2,17 @@ import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
 import { useAppDispatch } from '../../../../context/AppContext';
-import { IUserInfoContext } from '../../../../Model/UserModels';
+import type {
+  IApiError,
+  IApiMessageResponse,
+  IUserInfoContext,
+} from '../../../../Model/UserModels';
 import { Button, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
 import { updateUsernameAPI } from '../../../api/api';
 import { useStyles } from '../Settings.styles';
-
-interface IApiMessageResponse {
-  message: string;
-}
-
-interface IApiError {
-  error: {
-    message: string;
-  };
-}
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();

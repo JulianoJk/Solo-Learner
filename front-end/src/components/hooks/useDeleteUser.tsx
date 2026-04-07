@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { IconTrash } from '@tabler/icons-react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useUserState, useUserDispatch } from '../../context/UserContext';
 import { User } from '../../Model/UserModels';
 import { adminDeleteUserAccount } from '../api/api';
@@ -46,8 +46,15 @@ export const useDeleteUser = () => {
     },
   );
 
+  const handleDeleteUser = useCallback(
+    (userIds: string[]) => {
+      deleteUserMutation.mutate(userIds);
+    },
+    [deleteUserMutation],
+  );
+
   return {
-    handleDeleteUser: (userIds: string[]) => deleteUserMutation.mutate(userIds),
+    handleDeleteUser,
     isLoading: deleteUserMutation.isLoading,
   };
 };

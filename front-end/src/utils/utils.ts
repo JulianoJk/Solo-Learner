@@ -1,5 +1,5 @@
 import { DefaultMantineColor } from '@mantine/core';
-import { usersDispatchContext } from '../Model/UserModels';
+import { usersDispatchContext, type User } from '../Model/UserModels';
 import jwtDecode from 'jwt-decode';
 
 export const isUndefinedOrNullString = (
@@ -7,6 +7,13 @@ export const isUndefinedOrNullString = (
 ): boolean => {
   return !str || str.trim() === '';
 };
+
+/** Empty / whitespace-only optional strings as an em dash (e.g. admin tables). */
+export const formatOptional = (value?: string | null): string =>
+  value?.trim() || '—';
+
+export const fullUserDisplayName = (u: User): string =>
+  [u.firstName, u.middleName?.trim(), u.lastName].filter(Boolean).join(' ');
 
 export const checkIfPageIsReload = () => {
   if (document.cookie.indexOf('mycookie') == -1) {
@@ -102,25 +109,19 @@ export const checkTokenValidity = (token: string | null): boolean => {
     return false;
   }
 };
-export function getJob(isAdmin: boolean, isTeacher: boolean) {
-  if (isAdmin && isTeacher) {
-    return 'Admin/Teacher';
-  } else if (isAdmin) {
-    return 'Admin';
-  } else if (isTeacher) {
-    return 'Teacher';
-  } else {
-    return 'Student';
-  }
-}
-export function getBadgeColor(isAdmin: boolean, isTeacher: boolean) {
-  if (isAdmin && isTeacher) {
-    return '#311B92'; // Dark Indigo
-  } else if (isAdmin) {
-    return '#3E2723'; // Dark Brown
-  } else if (isTeacher) {
-    return '#1B5E20'; // Dark Green
-  } else {
-    return '#F57C00'; // Dark Amber
-  }
-}
+export const getJob = (isAdmin: boolean, isTeacher: boolean): string => {
+  if (isAdmin && isTeacher) return 'Admin/Teacher';
+  if (isAdmin) return 'Admin';
+  if (isTeacher) return 'Teacher';
+  return 'Student';
+};
+
+export const getBadgeColor = (
+  isAdmin: boolean,
+  isTeacher: boolean,
+): string => {
+  if (isAdmin && isTeacher) return '#311B92'; // Dark Purple
+  if (isAdmin) return '#3E2723'; // Dark Brown
+  if (isTeacher) return '#1B5E20'; // Dark Green
+  return '#F57C00'; // Dark Orange
+};

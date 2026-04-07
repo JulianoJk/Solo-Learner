@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -22,221 +22,302 @@ import {
   IconPhoto,
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
+import type { DataTableColumn } from 'mantine-datatable';
 import { DataTable } from 'mantine-datatable';
 import { useUserState } from '../../../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../../../context/AppContext';
-import { getBadgeColor, getJob } from '../../../../utils/utils';
+import {
+  formatOptional,
+  fullUserDisplayName,
+  getBadgeColor,
+  getJob,
+} from '../../../../utils/utils';
 import ConfirmationModal from '../../../ConfirmationModal/ConfirmationModal.component';
 import { useDeleteUser } from '../../../hooks/useDeleteUser';
 import EditUserForm from './EditUserForm';
+import type { User } from '../../../../Model/UserModels';
+
+const ROLE_FILTER_DATA = ['Admin', 'Teacher', 'Student'];
+
+const filterAdminUsers = (
+  users: User[],
+  search: string,
+  roleFilter: string | null,
+): User[] => {
+  const needle = search.trim().toLowerCase();
+  return users.filter((u) => {
+    const matchesText =
+      needle === '' ||
+      u.email.toLowerCase().includes(needle) ||
+      u.username.toLowerCase().includes(needle);
+    const matchesRole =
+      !roleFilter ||
+      (roleFilter === 'Admin' && u.isAdmin) ||
+      (roleFilter === 'Teacher' && u.isTeacher) ||
+      (roleFilter === 'Student' && u.isStudent);
+    return matchesText && matchesRole;
+  });
+};
+
+type UserActionsMenuProps = {
+  user: User;
+  deleteDisabled: boolean;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+};
+
+const UserActionsMenu = ({
+  user,
+  deleteDisabled,
+  onEdit,
+  onDelete,
+}: UserActionsMenuProps) => (
+  <Menu shadow="md" width={200} position="bottom-end" withinPortal>
+    <Menu.Target>
+      <ActionIcon
+        variant="subtle"
+        color="gray"
+        onClick={(e) => e.stopPropagation()}
+        aria-label="User actions"
+      >
+        <IconSettings size={16} />
+      </ActionIcon>
+    </Menu.Target>
+    <Menu.Dropdown>
+      <Menu.Label>Manage User</Menu.Label>
+      <Menu.Item
+        leftSection={<IconPencil size={14} />}
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit(user);
+        }}
+      >
+        Edit User
+      </Menu.Item>
+      <Menu.Item leftSection={<IconPhoto size={14} />} disabled>
+        View Profile
+      </Menu.Item>
+      <Menu.Item leftSection={<IconArrowsLeftRight size={14} />} disabled>
+        Transfer Data
+      </Menu.Item>
+      <Menu.Item
+        color="red"
+        leftSection={<IconTrash size={14} />}
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete(user);
+        }}
+        disabled={deleteDisabled}
+      >
+        Delete User
+      </Menu.Item>
+    </Menu.Dropdown>
+  </Menu>
+);
+
+type ExpandedUserPanelProps = {
+  user: User;
+  onViewProfile: (username: string) => void;
+};
+
+const ExpandedUserPanel = ({ user, onViewProfile }: ExpandedUserPanelProps) => {
+  const studentLine = user.students?.length
+    ? user.students.map((s) => s.username).join(', ')
+    : null;
+  const teacherLine = user.teachers?.length
+    ? user.teachers.map((t) => t.username).join(', ')
+    : null;
+
+  return (
+    <Box p="sm">
+      <Group align="flex-start">
+        <Avatar src={user.picture} size={50} radius="xl" />
+        <Stack gap={4}>
+          <Text size="sm" fw={500}>
+            Username: {user.username}
+          </Text>
+          <Text size="sm" fw={500}>
+            ID: {user.id}
+          </Text>
+          <Text size="sm">Full Name: {fullUserDisplayName(user)}</Text>
+          <Text size="sm">Email: {user.email}</Text>
+          <Text size="sm">Phone: {formatOptional(user.phoneNumber)}</Text>
+          <Group gap={6} align="center">
+            <Text size="sm">Country:</Text>
+            <Avatar src={user.country.flag} size={16} radius="xl" />
+            <Text size="sm">{user.country.name}</Text>
+          </Group>
+          <Text size="sm">Joined: {user.createdAt}</Text>
+          {studentLine && (
+            <Text size="xs" c="dimmed">
+              Students: {studentLine}
+            </Text>
+          )}
+          {teacherLine && (
+            <Text size="xs" c="dimmed">
+              Teachers: {teacherLine}
+            </Text>
+          )}
+          <Button
+            size="xs"
+            variant="light"
+            onClick={() => onViewProfile(user.username)}
+            mt="xs"
+          >
+            View Full Profile
+          </Button>
+        </Stack>
+      </Group>
+      <Divider my="sm" />
+    </Box>
+  );
+};
 
 const StudentManagementTable = () => {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
-  const [selectedRecords, setSelectedRecords] = useState<any[]>([]);
-  const { allUsersAdminDashboard } = useUserState();
+  const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
+  const [editUser, setEditUser] = useState<User | null>(null);
+
+  const { allUsersAdminDashboard, user: sessionUser } = useUserState();
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
-  const [editUser, setEditUser] = useState<any | null>(null);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.currentTarget.value);
-  };
+  const filteredRecords = useMemo(
+    () => filterAdminUsers(allUsersAdminDashboard, search, roleFilter),
+    [allUsersAdminDashboard, search, roleFilter],
+  );
 
-  const filteredData = allUsersAdminDashboard.filter((user) => {
-    const matchesSearch =
-      user.email.toLowerCase().includes(search.toLowerCase()) ||
-      user.username.toLowerCase().includes(search.toLowerCase());
-    const matchesRole =
-      !roleFilter ||
-      (roleFilter === 'Admin' && user.isAdmin) ||
-      (roleFilter === 'Teacher' && user.isTeacher) ||
-      (roleFilter === 'Student' && user.isStudent);
-    return matchesSearch && matchesRole;
-  });
+  const openDeleteModal = useCallback(
+    (user: User) => {
+      appDispatch({
+        type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+        isAdminDeleteModalOpen: true,
+      });
+      appDispatch({ type: 'SET_USERS_TO_DELETE', users: [user] });
+    },
+    [appDispatch],
+  );
+
+  const goToProfile = useCallback(
+    (username: string) => navigate(`/profile/${username}`),
+    [navigate],
+  );
+
+  const columns = useMemo<DataTableColumn<User>[]>(
+    () => [
+      {
+        accessor: 'avatar',
+        title: 'Img',
+        render: (u) => <Avatar src={u.picture} size={30} radius="xl" />,
+        width: 50,
+      },
+      {
+        accessor: 'username',
+        title: 'Username',
+        render: (u) => u.username,
+      },
+      { accessor: 'firstName', title: 'First Name' },
+      {
+        accessor: 'middleName',
+        title: 'Middle Name',
+        render: (u) => formatOptional(u.middleName),
+      },
+      { accessor: 'lastName', title: 'Last Name' },
+      { accessor: 'email', title: 'Email' },
+      {
+        accessor: 'role',
+        title: 'Role',
+        render: (u) => (
+          <Badge color={getBadgeColor(u.isAdmin, u.isTeacher)}>
+            {getJob(u.isAdmin, u.isTeacher)}
+          </Badge>
+        ),
+      },
+      {
+        accessor: 'actions',
+        title: 'Actions',
+        textAlign: 'right',
+        render: (u) => (
+          <UserActionsMenu
+            user={u}
+            deleteDisabled={isLoading}
+            onEdit={setEditUser}
+            onDelete={openDeleteModal}
+          />
+        ),
+      },
+    ],
+    [isLoading, openDeleteModal],
+  );
+
+  const rowExpansion = useMemo(
+    () => ({
+      content: ({
+        record,
+      }: {
+        record: User;
+        index: number;
+        collapse: () => void;
+      }) => (
+        <ExpandedUserPanel user={record} onViewProfile={goToProfile} />
+      ),
+    }),
+    [goToProfile],
+  );
+
+  const closeEditModal = useCallback(() => setEditUser(null), []);
 
   return (
     <>
       <Group justify="space-between" mb="md">
         <TextInput
-          sx={{ width: '20em' }}
+          w={320}
           placeholder="Search by username or email"
           value={search}
-          onChange={handleSearchChange}
+          onChange={(e) => setSearch(e.currentTarget.value)}
           rightSection={<IconSearch size={16} />}
         />
-
         <Select
-          sx={{ width: '15em' }}
+          w={240}
           placeholder="Filter by role"
           clearable
           value={roleFilter}
           onChange={setRoleFilter}
-          data={['Admin', 'Teacher', 'Student']}
+          data={ROLE_FILTER_DATA}
           searchable
         />
       </Group>
 
-      <DataTable
+      <DataTable<User>
         withTableBorder
         borderRadius="md"
         withColumnBorders
         striped
         highlightOnHover
-        records={filteredData}
-        columns={[
-          {
-            accessor: 'avatar',
-            title: 'Img',
-            render: (user) => (
-              <Avatar src={user.picture} size={30} radius="xl" />
-            ),
-            width: 50,
-          },
-          {
-            accessor: 'username',
-            title: 'Username',
-            render: (user) => user.username,
-          },
-          { accessor: 'firstName', title: 'First Name' },
-          { accessor: 'middleName', title: 'Middle Name' },
-          { accessor: 'lastName', title: 'Last Name' },
-          { accessor: 'email', title: 'Email' },
-          {
-            accessor: 'role',
-            title: 'Role',
-            render: (user) => (
-              <Badge color={getBadgeColor(user.isAdmin, user.isTeacher)}>
-                {getJob(user.isAdmin, user.isTeacher)}
-              </Badge>
-            ),
-          },
-          {
-            accessor: 'actions',
-            title: 'Actions',
-            textAlign: 'right',
-            render: (user) => (
-              <Menu shadow="md" width={200} position="bottom-end" withinPortal>
-                <Menu.Target>
-                  <ActionIcon
-                    variant="subtle"
-                    color="gray"
-                    onClick={(e) => e.stopPropagation()} // prevents rowExpansion
-                  >
-                    <IconSettings size={16} />
-                  </ActionIcon>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Label>Manage User</Menu.Label>
-                  <Menu.Item
-                    leftSection={<IconPencil size={14} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditUser(user);
-                    }}
-                  >
-                    Edit User
-                  </Menu.Item>
-                  <Menu.Item leftSection={<IconPhoto size={14} />} disabled>
-                    View Profile
-                  </Menu.Item>
-                  <Menu.Item
-                    leftSection={<IconArrowsLeftRight size={14} />}
-                    disabled
-                  >
-                    Transfer Data
-                  </Menu.Item>
-                  <Menu.Item
-                    color="red"
-                    leftSection={<IconTrash size={14} />}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      appDispatch({
-                        type: 'SET_ADMIN_DELETE_MODAL_OPEN',
-                        isAdminDeleteModalOpen: true,
-                      });
-                      appDispatch({
-                        type: 'SET_USERS_TO_DELETE',
-                        users: [user],
-                      });
-                    }}
-                    disabled={isLoading}
-                  >
-                    Delete User
-                  </Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            ),
-          },
-        ]}
+        records={filteredRecords}
+        columns={columns}
         selectedRecords={selectedRecords}
         onSelectedRecordsChange={setSelectedRecords}
-        rowExpansion={{
-          content: ({ record }) => (
-            <Box p="sm">
-              <Group align="flex-start">
-                <Avatar src={record.picture} size={50} radius="xl" />
-                <Stack gap={4}>
-                  <Text size="sm" fw={500}>
-                    Username: {record.username}
-                  </Text>
-                  <Text size="sm" fw={500}>
-                    ID: {record.id}
-                  </Text>
-                  <Text size="sm">
-                    Full Name: {record.firstName} {record.middleName}{' '}
-                    {record.lastName}
-                  </Text>
-                  <Text size="sm">Email: {record.email}</Text>
-                  <Text size="sm">Phone: {record.phone}</Text>
-                  <Group gap={6} align="center">
-                    <Text size="sm">Country:</Text>
-                    <Avatar src={record.country.flag} size={16} radius="xl" />
-                    <Text size="sm">{record.country.name}</Text>
-                  </Group>
-
-                  <Text size="sm">Joined: {record.createdAt}</Text>
-                  {record.students?.length > 0 && (
-                    <Text size="xs" c="dimmed">
-                      Students:{' '}
-                      {record.students
-                        .map((s: { username: any }) => s.username)
-                        .join(', ')}
-                    </Text>
-                  )}
-                  {record.teachers?.length > 0 && (
-                    <Text size="xs" c="dimmed">
-                      Teachers:{' '}
-                      {record.teachers
-                        .map((t: { username: any }) => t.username)
-                        .join(', ')}
-                    </Text>
-                  )}
-                  <Button
-                    size="xs"
-                    variant="light"
-                    onClick={() => navigate(`/profile/${record.username}`)}
-                    mt="xs"
-                  >
-                    View Full Profile
-                  </Button>
-                </Stack>
-              </Group>
-              <Divider my="sm" />
-            </Box>
-          ),
-        }}
+        rowExpansion={rowExpansion}
       />
+
       <Modal
         opened={!!editUser}
-        onClose={() => setEditUser(null)}
+        onClose={closeEditModal}
         title="Edit User"
         size="lg"
         centered
       >
-        <EditUserForm user={editUser} onClose={() => setEditUser(null)} />
+        {editUser && (
+          <EditUserForm
+            user={editUser}
+            adminToken={sessionUser.token}
+            onClose={closeEditModal}
+          />
+        )}
       </Modal>
       <ConfirmationModal />
     </>

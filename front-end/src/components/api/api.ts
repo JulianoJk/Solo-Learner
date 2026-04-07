@@ -325,7 +325,11 @@ export const updateUsernameAPI = async ({
   token,
   email,
   username,
-}: any): Promise<IApiMessageResponse | IApiError> => {
+}: {
+  token: string;
+  email: string;
+  username: string;
+}): Promise<IApiMessageResponse | IApiError> => {
   try {
     const response = await fetch(URL + `users/update/username`, {
       method: 'PUT',

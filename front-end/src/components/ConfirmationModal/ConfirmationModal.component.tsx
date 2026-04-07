@@ -8,63 +8,58 @@ import { useDeleteUser } from '../hooks/useDeleteUser';
 const ConfirmationModal = () => {
   const { isAdminDeleteModalOpen, usersToDelete } = useAppState();
   const appDispatch = useAppDispatch();
-
-  console.log(usersToDelete);
   const { handleDeleteUser } = useDeleteUser();
 
-  const userList = (
-    <List>
-      {usersToDelete.map((user, index) => (
-        <List.Item key={index}>
-          {user.username} - {user.email}
-        </List.Item>
-      ))}
-    </List>
-  );
-
   useEffect(() => {
-    if (isAdminDeleteModalOpen && usersToDelete.length > 0) {
-      modals.openConfirmModal({
-        title: 'Please confirm your action',
-        closeOnConfirm: false,
-        labels: { confirm: 'Delete user(s)', cancel: 'Cancel' },
-        children: (
-          <>
-            <Text size="sm">
-              Please confirm that you want to permanently delete the selected
-              user(s). This action cannot be undone.
-            </Text>
+    if (!isAdminDeleteModalOpen || usersToDelete.length === 0) return;
 
-            <ScrollArea
-              h={250}
-              type="auto"
-              offsetScrollbars
-              scrollbarSize={12}
-              mt="md"
-            >
-              <Code block>{userList}</Code>
-            </ScrollArea>
-          </>
-        ),
-        onConfirm: () => {
-          appDispatch({
-            type: 'SET_ADMIN_DELETE_MODAL_OPEN',
-            isAdminDeleteModalOpen: false,
-          });
-          handleDeleteUser(usersToDelete.map((user) => user.id.toString()));
-          modals.closeAll();
-        },
+    modals.openConfirmModal({
+      title: 'Please confirm your action',
+      closeOnConfirm: false,
+      labels: { confirm: 'Delete user(s)', cancel: 'Cancel' },
+      children: (
+        <>
+          <Text size="sm">
+            Please confirm that you want to permanently delete the selected
+            user(s). This action cannot be undone.
+          </Text>
 
-        onCancel: () => {
-          appDispatch({
-            type: 'SET_ADMIN_DELETE_MODAL_OPEN',
-            isAdminDeleteModalOpen: false,
-          });
-          modals.closeAll();
-        },
-      });
-    }
-  }, [usersToDelete]);
+          <ScrollArea
+            h={250}
+            type="auto"
+            offsetScrollbars
+            scrollbarSize={12}
+            mt="md"
+          >
+            <Code block>
+              <List>
+                {usersToDelete.map((user) => (
+                  <List.Item key={user.id}>
+                    {user.username} - {user.email}
+                  </List.Item>
+                ))}
+              </List>
+            </Code>
+          </ScrollArea>
+        </>
+      ),
+      onConfirm: () => {
+        appDispatch({
+          type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+          isAdminDeleteModalOpen: false,
+        });
+        handleDeleteUser(usersToDelete.map((u) => u.id.toString()));
+        modals.closeAll();
+      },
+      onCancel: () => {
+        appDispatch({
+          type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+          isAdminDeleteModalOpen: false,
+        });
+        modals.closeAll();
+      },
+    });
+  }, [isAdminDeleteModalOpen, usersToDelete, appDispatch, handleDeleteUser]);
 
   return null;
 };

@@ -5,24 +5,16 @@ import { useMutation } from '@tanstack/react-query';
 import { updateUsernameAPI } from '../../../api/api';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMoodHappy } from '@tabler/icons-react';
+import type { IApiError, IApiMessageResponse, User } from '../../../../Model/UserModels';
 
-interface IApiMessageResponse {
-  message: string;
-}
+type EditUserFormProps = {
+  user: User;
 
-interface IApiError {
-  error: {
-    message: string;
-  };
-}
-
-const EditUserForm = ({
-  user,
-  onClose,
-}: {
-  user: any;
+  adminToken: string;
   onClose: () => void;
-}) => {
+};
+
+const EditUserForm = ({ user, adminToken, onClose }: EditUserFormProps) => {
   const form = useForm({
     initialValues: {
       username: user.username || '',
@@ -73,7 +65,7 @@ const EditUserForm = ({
 
   const handleSubmit = (values: { username: string; email: string }) => {
     updateUsername({
-      token: user.token, // This must be passed correctly from the parent
+      token: adminToken,
       email: values.email,
       username: values.username,
     });
