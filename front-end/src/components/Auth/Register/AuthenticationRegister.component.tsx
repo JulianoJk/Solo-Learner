@@ -24,6 +24,7 @@ import {
   Avatar,
   MultiSelectProps,
   Select,
+  PaperProps,
 } from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 
@@ -39,7 +40,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useUserState } from '../../../context/UserContext';
 import { useStyles } from '../../admin/registerNewUsers/AdminAddUser.styles';
 
-interface IRegisterProps {
+interface IRegisterProps extends Omit<PaperProps, 'children'> {
   children?: React.ReactNode;
   registerTitle?: string | React.ReactNode;
   showNotification?: boolean;
@@ -96,6 +97,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
     isAdminRegister,
     rootClassName,
   } = props;
+
   const { register, isLoading: isRegisterLoading } = useRegister(
     isAdminRegister,
     adminRefetchUserList,
