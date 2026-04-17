@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -37,8 +37,10 @@ import ConfirmationModal from '../../../ConfirmationModal/ConfirmationModal.comp
 import { useDeleteUser } from '../../../hooks/useDeleteUser';
 import EditUserForm from './EditUserForm';
 import type { User } from '../../../../Model/UserModels';
-
-const ROLE_FILTER_DATA = ['Admin', 'Teacher', 'Student'];
+import {
+  ROLE_FILTER_DATA,
+  TABLE_PAGINATION_SIZE,
+} from '../../../Pages/LearningUnits/constants';
 
 const filterAdminUsers = (
   users: User[],
@@ -179,16 +181,25 @@ const StudentManagementTable = () => {
   const [roleFilter, setRoleFilter] = useState<string | null>(null);
   const [selectedRecords, setSelectedRecords] = useState<User[]>([]);
   const [editUser, setEditUser] = useState<User | null>(null);
-
+  const [page, setPage] = useState(1);
   const { allUsersAdminDashboard, user: sessionUser } = useUserState();
+  const [records, setRecords] = useState(
+    allUsersAdminDashboard.slice(0, TABLE_PAGINATION_SIZE),
+  );
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
 
-  const filteredRecords = useMemo(
+  const filteredData = useMemo(
     () => filterAdminUsers(allUsersAdminDashboard, search, roleFilter),
     [allUsersAdminDashboard, search, roleFilter],
   );
+
+  const filteredRecords = useMemo(() => {
+    const from = (page - 1) * TABLE_PAGINATION_SIZE;
+    const to = from + TABLE_PAGINATION_SIZE;
+    return filteredData.slice(from, to);
+  }, [filteredData, page]);
 
   const openDeleteModal = useCallback(
     (user: User) => {
@@ -261,15 +272,13 @@ const StudentManagementTable = () => {
         record: User;
         index: number;
         collapse: () => void;
-      }) => (
-        <ExpandedUserPanel user={record} onViewProfile={goToProfile} />
-      ),
+      }) => <ExpandedUserPanel user={record} onViewProfile={goToProfile} />,
     }),
     [goToProfile],
   );
 
   const closeEditModal = useCallback(() => setEditUser(null), []);
-
+  console.log(records.length);
   return (
     <>
       <Group justify="space-between" mb="md">
@@ -302,6 +311,10 @@ const StudentManagementTable = () => {
         selectedRecords={selectedRecords}
         onSelectedRecordsChange={setSelectedRecords}
         rowExpansion={rowExpansion}
+        page={page}
+        onPageChange={(p) => setPage(p)}
+        totalRecords={filteredData.length}
+        recordsPerPage={TABLE_PAGINATION_SIZE}
       />
 
       <Modal

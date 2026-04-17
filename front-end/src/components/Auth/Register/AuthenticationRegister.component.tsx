@@ -34,7 +34,7 @@ import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
-import CountrySelector from '../../countrySelect/CountrySelect';
+// import CountrySelector from '../../countrySelect/CountrySelect';
 import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserState } from '../../../context/UserContext';
@@ -365,7 +365,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               </Group>
               {/* )} */}
 
-              <CountrySelector
+              {/* <CountrySelector
                 value={form.values.country}
                 onChange={(val) =>
                   form.setFieldValue('country', {
@@ -373,7 +373,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                     flag: val.flag,
                   })
                 }
-              />
+              /> */}
 
               <PhoneSelector
                 value={form.values.phoneNumber}
