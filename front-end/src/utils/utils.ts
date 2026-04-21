@@ -116,10 +116,7 @@ export const getJob = (isAdmin: boolean, isTeacher: boolean): string => {
   return 'Student';
 };
 
-export const getBadgeColor = (
-  isAdmin: boolean,
-  isTeacher: boolean,
-): string => {
+export const getBadgeColor = (isAdmin: boolean, isTeacher: boolean): string => {
   if (isAdmin && isTeacher) return '#311B92'; // Dark Purple
   if (isAdmin) return '#3E2723'; // Dark Brown
   if (isTeacher) return '#1B5E20'; // Dark Green

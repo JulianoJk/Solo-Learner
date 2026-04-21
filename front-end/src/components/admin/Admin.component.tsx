@@ -18,12 +18,15 @@ import { useMediaQuery } from '@mantine/hooks';
 import AdminDrawer from '../navBar/AdminTabs.component';
 // import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 import StudentmanagmenTable from './userManagment/studentManagment/StudentManagmentTable.component';
+import Preloader from '../Loader/Preloader.component';
 
 const Admin = () => {
   const { user } = useUserState();
   const { selectedAdminNavbar } = useAppState();
   const userDispatch = useUserDispatch();
-  const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
+  const [isAllUsersSuccess, setIsAllUsersSuccess] = useState<boolean | null>(
+    null,
+  );
   const [drawerOpened, setDrawerOpened] = useState(false);
   const matches = useMediaQuery('(min-width: 56.25em)'); // Check for desktop
 
@@ -74,7 +77,10 @@ const Admin = () => {
 
   if (!user.token) return <NotFound navigationPath={'/'} />;
 
-  if (isAdminLoading || adminDashboardData?.isError || !isAllUsersSuccess) {
+  if (isAllUsersSuccess === null || isAdminLoading) {
+    return <Preloader />;
+  }
+  if (isAllUsersSuccess === false || adminDashboardData?.isError) {
     return <NotFound navigationPath={'/home'} />;
   }
 
