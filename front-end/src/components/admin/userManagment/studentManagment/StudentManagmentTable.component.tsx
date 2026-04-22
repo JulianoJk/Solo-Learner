@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   Avatar,
   Badge,
@@ -41,6 +41,7 @@ import {
   ROLE_FILTER_DATA,
   TABLE_PAGINATION_SIZE,
 } from '../../../Pages/LearningUnits/constants';
+import { ERROR_DARK_COLOR } from '../../../../Theme/Styles';
 
 const filterAdminUsers = (
   users: User[],
@@ -183,9 +184,10 @@ const StudentManagementTable = () => {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [page, setPage] = useState(1);
   const { allUsersAdminDashboard, user: sessionUser } = useUserState();
-  const [records, setRecords] = useState(
-    allUsersAdminDashboard.slice(0, TABLE_PAGINATION_SIZE),
-  );
+  // TODO!: Add const [records, setRecords] = useState(
+  // const [records] = useState(
+  //   allUsersAdminDashboard.slice(0, TABLE_PAGINATION_SIZE),
+  // );
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
@@ -278,7 +280,7 @@ const StudentManagementTable = () => {
   );
 
   const closeEditModal = useCallback(() => setEditUser(null), []);
-  console.log(records.length);
+
   return (
     <>
       <Group justify="space-between" mb="md">
@@ -289,15 +291,27 @@ const StudentManagementTable = () => {
           onChange={(e) => setSearch(e.currentTarget.value)}
           rightSection={<IconSearch size={16} />}
         />
-        <Select
-          w={240}
-          placeholder="Filter by role"
-          clearable
-          value={roleFilter}
-          onChange={setRoleFilter}
-          data={ROLE_FILTER_DATA}
-          searchable
-        />
+        <Group>
+          {selectedRecords.length !== 0 && (
+            <Button
+              onClick={() => {}}
+              variant="filled"
+              color={ERROR_DARK_COLOR}
+              size="xs"
+            >
+              Delete
+            </Button>
+          )}
+          <Select
+            w={240}
+            placeholder="Filter by role"
+            clearable
+            value={roleFilter}
+            onChange={setRoleFilter}
+            data={ROLE_FILTER_DATA}
+            searchable
+          />
+        </Group>
       </Group>
 
       <DataTable<User>
