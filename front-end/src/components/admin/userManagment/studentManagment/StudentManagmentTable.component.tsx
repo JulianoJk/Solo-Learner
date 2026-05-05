@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import {
   Avatar,
   Badge,
@@ -23,7 +23,7 @@ import {
   IconArrowsLeftRight,
   IconMoodSad2,
 } from '@tabler/icons-react';
-import type { DataTableColumn } from 'mantine-datatable';
+import type { DataTableColumn, DataTableSortStatus } from 'mantine-datatable';
 import { DataTable } from 'mantine-datatable';
 import { useUserState } from '../../../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -185,24 +185,45 @@ const StudentManagementTable = () => {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [page, setPage] = useState(1);
   const { allUsersAdminDashboard, user: sessionUser } = useUserState();
-  // TODO!: Add const [records, setRecords] = useState(
-  // const [records] = useState(
-  //   allUsersAdminDashboard.slice(0, TABLE_PAGINATION_SIZE),
-  // );
+  
+  const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
+    columnAccessor: 'username',
+    direction: 'asc',
+  });
+
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
   const { isLoading } = useDeleteUser();
 
-  const filteredData = useMemo(
-    () => filterAdminUsers(allUsersAdminDashboard, search, roleFilter),
-    [allUsersAdminDashboard, search, roleFilter],
-  );
+  const sortedAndFilteredData = useMemo(() => {
+    const data = filterAdminUsers(allUsersAdminDashboard, search, roleFilter);
+    
+    return [...data].sort((a, b) => {
+      const accessor = sortStatus.columnAccessor as keyof User;
+      let aValue: any = a[accessor];
+      let bValue: any = b[accessor];
+
+      if (typeof aValue === 'string') {
+        aValue = aValue.toLowerCase();
+        bValue = (bValue as string).toLowerCase();
+      }
+
+      if (sortStatus.direction === 'asc') {
+        return aValue > bValue ? 1 : -1;
+      }
+      return aValue < bValue ? 1 : -1;
+    });
+  }, [allUsersAdminDashboard, search, roleFilter, sortStatus]);
 
   const filteredRecords = useMemo(() => {
     const from = (page - 1) * TABLE_PAGINATION_SIZE;
     const to = from + TABLE_PAGINATION_SIZE;
-    return filteredData.slice(from, to);
-  }, [filteredData, page]);
+    return sortedAndFilteredData.slice(from, to);
+  }, [sortedAndFilteredData, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, roleFilter, sortStatus]);
 
   const openDeleteModal = useCallback(
     (user: User) => {
@@ -231,16 +252,18 @@ const StudentManagementTable = () => {
       {
         accessor: 'username',
         title: 'Username',
+        sortable: true,
         render: (u) => u.username,
       },
-      { accessor: 'firstName', title: 'First Name' },
+      { accessor: 'firstName', title: 'First Name', sortable: true },
       {
         accessor: 'middleName',
         title: 'Middle Name',
+        sortable: true,
         render: (u) => formatOptional(u.middleName),
       },
-      { accessor: 'lastName', title: 'Last Name' },
-      { accessor: 'email', title: 'Email' },
+      { accessor: 'lastName', title: 'Last Name', sortable: true },
+      { accessor: 'email', title: 'Email', sortable: true },
       {
         accessor: 'role',
         title: 'Role',
@@ -330,7 +353,7 @@ const StudentManagementTable = () => {
 
       <DataTable<User>
         withTableBorder
-        minHeight='9rem'
+        minHeight="10rem"
         borderRadius="md"
         withColumnBorders
         striped
@@ -342,8 +365,10 @@ const StudentManagementTable = () => {
         rowExpansion={rowExpansion}
         page={page}
         onPageChange={(p) => setPage(p)}
-        totalRecords={filteredData.length}
+        totalRecords={sortedAndFilteredData.length}
         recordsPerPage={TABLE_PAGINATION_SIZE}
+        sortStatus={sortStatus}
+        onSortStatusChange={setSortStatus}
         noRecordsIcon={
           <Box
             p={4}

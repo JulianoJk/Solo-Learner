@@ -54,6 +54,7 @@
     "eslint-config-prettier": "^8.6.0",
     "husky": "^8.0.3",
     "jwt-decode": "^3.1.2",
+    "lodash": "^4.18.1",
     "mantine-datatable": "^8.3.13",
     "mantine-flagpack": "^1.0.1",
     "prettier": "^2.8.4",
