@@ -21,6 +21,7 @@ import {
   IconSettings,
   IconPhoto,
   IconArrowsLeftRight,
+  IconMoodSad2,
 } from '@tabler/icons-react';
 import type { DataTableColumn } from 'mantine-datatable';
 import { DataTable } from 'mantine-datatable';
@@ -288,7 +289,10 @@ const StudentManagementTable = () => {
           w={320}
           placeholder="Search by username or email"
           value={search}
-          onChange={(e) => setSearch(e.currentTarget.value)}
+          onChange={(e) => {
+            setSearch(e.currentTarget.value);
+            setPage(1);
+          }}
           rightSection={<IconSearch size={16} />}
         />
         <Group>
@@ -326,6 +330,7 @@ const StudentManagementTable = () => {
 
       <DataTable<User>
         withTableBorder
+        minHeight='9rem'
         borderRadius="md"
         withColumnBorders
         striped
@@ -339,6 +344,25 @@ const StudentManagementTable = () => {
         onPageChange={(p) => setPage(p)}
         totalRecords={filteredData.length}
         recordsPerPage={TABLE_PAGINATION_SIZE}
+        noRecordsIcon={
+          <Box
+            p={4}
+            mb={4}
+            style={{
+              fontSize: 0,
+              color:
+                'light-dark(var(--mantine-colors-dark-3), var(--mantine-colors-gray-5))',
+              border:
+                '2px solid light-dark(var(--mantine-colors-gray-4), var(--mantine-colors-dark-5))',
+              borderRadius: 'var(--mantine-radius-md)',
+              background:
+                'light-dark(var(--mantine-colors-gray-1), var(--mantine-colors-dark-6))',
+            }}
+          >
+            <IconMoodSad2 size={26} strokeWidth={1.5} />
+          </Box>
+        }
+        noRecordsText="No users found"
       />
 
       <Modal
