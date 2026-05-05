@@ -1,53 +1,81 @@
 import { useMutation } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { IconTrash } from '@tabler/icons-react';
-import React, { useCallback } from 'react';
+
 import { useUserState, useUserDispatch } from '../../context/UserContext';
 import { User } from '../../Model/UserModels';
-import { adminDeleteUserAccount } from '../api/api';
+import {
+  adminDeleteUserAccount,
+  adminBulkDeleteUsersAccount,
+} from '../api/api';
 import { notificationAlert } from '../notifications/NotificationAlert';
+import React from 'react';
 
 export const useDeleteUser = () => {
   const { allUsersAdminDashboard, user } = useUserState();
   const userDispatch = useUserDispatch();
 
+  const deletedUserName = (userId: number) => {
+    const targetUser = allUsersAdminDashboard.find(
+      (u: User) => u.id === userId,
+    );
+    return targetUser?.username ? targetUser.username : 'User';
+  };
+
   const deleteUserMutation = useMutation(
-    async (userIds: string[]) => {
-      // Delete users one by one
-      return Promise.all(
-        userIds.map((id) =>
-          adminDeleteUserAccount({ token: user.token, Id: id }),
-        ),
-      );
+    async (userIds: number[]) => {
+      if (userIds.length === 1) {
+        // single delete
+        return adminDeleteUserAccount({
+          token: user.token,
+          Id: userIds[0],
+        });
+      }
+
+      // bulk delete
+      return adminBulkDeleteUsersAccount({
+        token: user.token,
+        Id: userIds,
+      });
     },
     {
       onSuccess: (_, userIds) => {
-        // Remove all deleted users from the state
+        // remove deleted users from state
         const updatedUsers = allUsersAdminDashboard.filter(
-          (u: User) => !userIds.includes(u.id.toString()),
+          (u: User) => !userIds.includes(u.id),
         );
+
+        notificationAlert({
+          title: userIds.length > 1 ? 'Users Deleted' : 'User Deleted',
+          message:
+            userIds.length > 1
+              ? 'Selected users have been deleted.'
+              : `${deletedUserName(userIds[0])} has been successfully deleted.`,
+          iconColor: 'red',
+          closeAfter: 5000,
+          icon: <IconTrash size={18} />,
+        });
 
         userDispatch({
           type: 'SET_ALL_ADMIN_DASHBOARD_USERS',
           allUsersAdminDashboard: updatedUsers,
         });
-
-        // Show success notification
+      },
+      onError: (error: any) => {
         notificationAlert({
-          title: 'Users Deleted',
-          message: 'The selected users have been successfully deleted.',
+          title: "Couldn't delete user(s)",
+          message:
+            error?.error?.message || 'Something went wrong. Please try again.',
           iconColor: 'red',
           closeAfter: 5000,
           icon: <IconTrash size={18} />,
         });
       },
-      onError: (error) => {
-        console.error('Error deleting users:', error);
-      },
     },
   );
 
   const handleDeleteUser = useCallback(
-    (userIds: string[]) => {
+    (userIds: number[]) => {
       deleteUserMutation.mutate(userIds);
     },
     [deleteUserMutation],

@@ -294,7 +294,17 @@ const StudentManagementTable = () => {
         <Group>
           {selectedRecords.length !== 0 && (
             <Button
-              onClick={() => {}}
+              onClick={() => {
+                appDispatch({
+                  type: 'SET_ADMIN_DELETE_MODAL_OPEN',
+                  isAdminDeleteModalOpen: true,
+                });
+
+                appDispatch({
+                  type: 'SET_USERS_TO_DELETE',
+                  users: selectedRecords,
+                });
+              }}
               variant="filled"
               color={ERROR_DARK_COLOR}
               size="xs"

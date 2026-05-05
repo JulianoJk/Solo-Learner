@@ -48,7 +48,7 @@ const ConfirmationModal = () => {
           type: 'SET_ADMIN_DELETE_MODAL_OPEN',
           isAdminDeleteModalOpen: false,
         });
-        handleDeleteUser(usersToDelete.map((u) => u.id.toString()));
+        handleDeleteUser(usersToDelete.map((u) => u.id));
         modals.closeAll();
       },
       onCancel: () => {

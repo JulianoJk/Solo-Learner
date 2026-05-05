@@ -253,21 +253,18 @@ export const deleteAccountAPI = async ({
     } as IApiError;
   }
 };
-export const adminDeleteUserAccount = async ({
+export const adminBulkDeleteUsersAccount = async ({
   token,
   Id,
 }: any): Promise<IApiMessageResponse | IApiError> => {
   try {
-    const response = await fetch(URL + `admin/dashboard/delete_user`, {
+    const response = await fetch(URL + `admin/users`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer ' + token,
       },
-      body: JSON.stringify({
-        token: token,
-        id: Id.toString(),
-      }),
+      body: JSON.stringify(Id),
     });
     if (!response.ok) {
       const errorData: IApiError = await response.json();
@@ -285,7 +282,34 @@ export const adminDeleteUserAccount = async ({
     } as IApiError;
   }
 };
+export const adminDeleteUserAccount = async ({
+  token,
+  Id,
+}: any): Promise<IApiMessageResponse | IApiError> => {
+  try {
+    const response = await fetch(URL + `admin/users/${Id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    });
+    if (!response.ok) {
+      const errorData: IApiError = await response.json();
+      return errorData;
+    }
 
+    const data: IApiMessageResponse = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    return {
+      error: {
+        message: 'Something went wrong. Please try again later.',
+      },
+    } as IApiError;
+  }
+};
 export const getProfileImageAPI = async (
   id: string,
 ): Promise<IUserInfoContext | undefined> => {
