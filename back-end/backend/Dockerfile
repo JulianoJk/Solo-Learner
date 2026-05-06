@@ -21,7 +21,9 @@ RUN dotnet add package Microsoft.Graph
 # RUN dotnet add package BCrypt.Net-Next
 
 COPY . ./
-RUN dotnet publish -c Release -o out
+# RUN dotnet publish -c Release -o out
+# TODO!: remove the no warnings - only for temp dev
+RUN dotnet publish -c Release -o out /p:WarningLevel=0 /p:TreatWarningsAsErrors=false
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
