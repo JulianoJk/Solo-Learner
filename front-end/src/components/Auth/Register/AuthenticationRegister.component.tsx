@@ -12,7 +12,6 @@ import {
   Paper,
   Group,
   Button,
-  Divider,
   Anchor,
   Stack,
   Center,
@@ -25,13 +24,13 @@ import {
   MultiSelectProps,
   Select,
   PaperProps,
+  Divider,
 } from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 
 import Preloader from '../../Loader/Preloader.component';
 import { useAppState } from '../../../context/AppContext';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { SocialButtons } from '../../SocialButtons/SocialButtons';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
 // import CountrySelector from '../../countrySelect/CountrySelect';
@@ -39,6 +38,7 @@ import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserState } from '../../../context/UserContext';
 import { useStyles } from '../../admin/registerNewUsers/AdminAddUser.styles';
+import { SocialButtons } from '../../SocialButtons/SocialButtons';
 
 interface IRegisterProps extends Omit<PaperProps, 'children'> {
   children?: React.ReactNode;

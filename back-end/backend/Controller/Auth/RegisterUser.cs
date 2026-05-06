@@ -62,18 +62,21 @@ public class RegisterUser
 
         if (isAdminRegister)
         {
+            Console.WriteLine(isAdminRegister);
             isTeacher = role == "Teacher";
             isStudent = role == "Student";
             isAdmin = role == "Admin";
         }
         else
         {
+            Console.WriteLine("Self-registered user defaults");
             // Self-registered user defaults
             isStudent = true;
         }
 
         if (!IsValidEmail(email))
         {
+            Console.WriteLine("Invalid email address");
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new
             {
@@ -86,6 +89,7 @@ public class RegisterUser
 
         if (string.IsNullOrWhiteSpace(gender))
         {
+            Console.WriteLine("Invalid gender");
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new
             {
@@ -97,6 +101,7 @@ public class RegisterUser
 
         if (!isAdminRegister && !ArePasswordsEqual(password, confirmPassword))
         {
+            Console.WriteLine("Is not admin register - passwords do not match");
             context.Response.StatusCode = StatusCodes.Status400BadRequest;
             await context.Response.WriteAsJsonAsync(new
             {
@@ -109,6 +114,7 @@ public class RegisterUser
 
         if (string.IsNullOrWhiteSpace(username))
         {
+            Console.WriteLine("Username is empty, generating a default one.");
             username = GetDefaultUsername(email);
 
             var (isTaken, _) = _authenticator.IsUsernameTaken(username);
@@ -131,9 +137,11 @@ public class RegisterUser
         }
         else
         {
+            Console.WriteLine("Checking if username is taken.");
             var (isTaken, _) = _authenticator.IsUsernameTaken(username);
             if (isTaken)
             {
+                Console.WriteLine("Username is already taken.");
                 context.Response.StatusCode = StatusCodes.Status409Conflict;
                 await context.Response.WriteAsJsonAsync(new
                 {
