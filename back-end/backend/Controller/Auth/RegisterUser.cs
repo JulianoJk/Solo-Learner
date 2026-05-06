@@ -160,6 +160,7 @@ public class RegisterUser
             salt,
             isTeacher,
             isStudent,
+            isAdmin,
             picture,
             phoneNumber,
             countryName,

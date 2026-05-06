@@ -54,6 +54,7 @@ public class AccountDeletionController
             salt: null,
             isTeacher: isTeacher,
             isStudent: isStudent,
+            isAdmin: false,
             picture: null,
             phoneNumber: null,
             countryName: null,
