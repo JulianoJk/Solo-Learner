@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn --cwd front-end validate
+yarn --cwd front-end lint-staged

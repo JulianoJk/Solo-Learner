@@ -82,8 +82,14 @@
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|tsx)\"",
     "format": "yarn prettier -- --write",
     "check-format": "yarn prettier -- --list-different",
+    "lint-staged": "lint-staged",
     "validate": "yarn format && yarn check-format && yarn check-types && yarn lint",
     "prepare": "cd .. && husky install front-end/.husky"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
   },
   "browserslist": {
     "production": [
@@ -99,5 +105,8 @@
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.6.1"
+  },
+  "devDependencies": {
+    "lint-staged": "^17.0.2"
   }
 }
