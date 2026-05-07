@@ -33,7 +33,7 @@ import { useAppState } from '../../../context/AppContext';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 import { useRegister } from '../../hooks/useRegister';
-// import CountrySelector from '../../countrySelect/CountrySelect';
+import CountrySelector from '../../countrySelect/CountrySelect';
 import PhoneSelector from '../phoneSelector/PhoneSelector.component';
 import { useDisclosure } from '@mantine/hooks';
 import { useUserState } from '../../../context/UserContext';
@@ -43,7 +43,6 @@ import { SocialButtons } from '../../SocialButtons/SocialButtons';
 interface IRegisterProps extends Omit<PaperProps, 'children'> {
   children?: React.ReactNode;
   registerTitle?: string | React.ReactNode;
-  showNotification?: boolean;
   adminRefetchUserList?: () => void;
   isAdminRegister?: boolean;
   rootClassName?: string;
@@ -96,6 +95,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
     adminRefetchUserList,
     isAdminRegister,
     rootClassName,
+    ...paperProps
   } = props;
 
   const { register, isLoading: isRegisterLoading } = useRegister(
@@ -145,12 +145,12 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
         <Preloader />
       ) : (
         <Paper
+          {...paperProps}
           className={rootClassName}
           radius="md"
           p="xl"
           withBorder
-          {...props}
-          sx={{ width: '60em' }}
+          style={{ width: '60em' }}
         >
           <Text size="lg" fw={500} ta="center">
             {registerTitle === undefined ||
@@ -365,7 +365,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
               </Group>
               {/* )} */}
 
-              {/* <CountrySelector
+              <CountrySelector
                 value={form.values.country}
                 onChange={(val) =>
                   form.setFieldValue('country', {
@@ -373,7 +373,7 @@ const AuthenticationRegister: React.FC<IRegisterProps> = (props) => {
                     flag: val.flag,
                   })
                 }
-              /> */}
+              />
 
               <PhoneSelector
                 value={form.values.phoneNumber}
