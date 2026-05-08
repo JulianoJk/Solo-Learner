@@ -42,7 +42,7 @@ export const ChangeUsernameSetting = () => {
     unknown,
     { token: string; email: string; username: string }
   >((data) => updateUsernameAPI(data), {
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if ('error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
@@ -51,7 +51,7 @@ export const ChangeUsernameSetting = () => {
       } else {
         const updatedUserInfo: IUserInfoContext = {
           ...user,
-          username: form.values.username,
+          username: variables.username,
         };
         userDispatch({ type: 'SET_USER', user: updatedUserInfo });
 
