@@ -16,9 +16,9 @@ import {
 } from '../../utils/formattedLastActive';
 import { useMediaQuery } from '@mantine/hooks';
 import AdminDrawer from '../navBar/AdminTabs.component';
-// import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 import StudentmanagmenTable from './userManagment/studentManagment/StudentManagmentTable.component';
 import Preloader from '../Loader/Preloader.component';
+import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 
 const Admin = () => {
   const { user } = useUserState();
@@ -87,8 +87,8 @@ const Admin = () => {
 
   const renderComponentToDisplay = () => {
     switch (selectedAdminNavbar) {
-      // case 'userManagment':
-      //   return !matches ? <MobileStudent /> : <StudentmanagmenTable />;
+      case 'userManagment':
+        return !matches ? <MobileStudent /> : <StudentmanagmenTable />;
       case 'userManagment':
         return <StudentmanagmenTable />;
       case 'register_new_user':
