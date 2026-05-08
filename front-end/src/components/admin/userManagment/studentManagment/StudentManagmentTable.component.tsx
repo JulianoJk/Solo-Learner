@@ -51,10 +51,16 @@ const filterAdminUsers = (
 ): User[] => {
   const needle = search.trim().toLowerCase();
   return users.filter((u) => {
+    const fullName = fullUserDisplayName(u).toLowerCase();
     const matchesText =
       needle === '' ||
       u.email.toLowerCase().includes(needle) ||
-      u.username.toLowerCase().includes(needle);
+      u.username.toLowerCase().includes(needle) ||
+      u.username.toLowerCase().includes(needle) ||
+      fullName.includes(needle) ||
+      u.firstName.toLowerCase().includes(needle) ||
+      (u.middleName?.toLowerCase().includes(needle) ?? false) ||
+      u.lastName.toLowerCase().includes(needle);
     const matchesRole =
       !roleFilter ||
       (roleFilter === 'Admin' && u.isAdmin) ||
@@ -185,7 +191,7 @@ const StudentManagementTable = () => {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [page, setPage] = useState(1);
   const { allUsersAdminDashboard, user: sessionUser } = useUserState();
-  
+
   const [sortStatus, setSortStatus] = useState<DataTableSortStatus<User>>({
     columnAccessor: 'username',
     direction: 'asc',
@@ -197,7 +203,7 @@ const StudentManagementTable = () => {
 
   const sortedAndFilteredData = useMemo(() => {
     const data = filterAdminUsers(allUsersAdminDashboard, search, roleFilter);
-    
+
     return [...data].sort((a, b) => {
       const accessor = sortStatus.columnAccessor as keyof User;
       let aValue: any = a[accessor];
@@ -310,7 +316,7 @@ const StudentManagementTable = () => {
       <Group justify="space-between" mb="md">
         <TextInput
           w={320}
-          placeholder="Search by username or email"
+          placeholder="Search by name, username, or email"
           value={search}
           onChange={(e) => {
             setSearch(e.currentTarget.value);
