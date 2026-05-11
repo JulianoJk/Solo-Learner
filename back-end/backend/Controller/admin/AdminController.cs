@@ -34,9 +34,9 @@ public class AdminController
                     Id = reader.GetInt32("id"),
                     Email = reader.GetString("email"),
                     Username = reader.GetString("username"),
-                     FirstName = reader["firstName"] == DBNull.Value ? null : reader.GetString("firstName"),
+                    FirstName = reader["firstName"] == DBNull.Value ? "" : reader.GetString("firstName"),
                     MiddleName = reader["middleName"] == DBNull.Value ? null : reader.GetString("middleName"),
-                    LastName = reader["lastName"] == DBNull.Value ? null : reader.GetString("lastName"),
+                    LastName = reader["lastName"] == DBNull.Value ? "" : reader.GetString("lastName"),
                     Phone = reader["phoneNumber"] == DBNull.Value ? null : reader.GetString("phoneNumber"),
                     Country = new Country
                     {
