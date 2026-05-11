@@ -13,8 +13,8 @@ export interface IUserInfoContext {
   picture?: string;
   navigateUser?: string;
   country?: {
-    name: string;
-    flag: string;
+    name: string | null;
+    flag: string | null;
   };
   phoneNumber?: string;
 }
@@ -105,7 +105,10 @@ export interface User {
   isAdmin: boolean;
   isTeacher: boolean;
   isStudent: boolean;
-  country: { name: string; flag: string };
+  country: {
+    name: string | null;
+    flag: string | null;
+  };
   phoneNumber?: string;
   picture?: string;
   lastActive: string;

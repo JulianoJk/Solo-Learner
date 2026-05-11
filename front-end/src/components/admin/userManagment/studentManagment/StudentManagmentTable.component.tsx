@@ -156,8 +156,10 @@ const ExpandedUserPanel = ({ user, onViewProfile }: ExpandedUserPanelProps) => {
           <Text size="sm">Phone: {formatOptional(user.phoneNumber)}</Text>
           <Group gap={6} align="center">
             <Text size="sm">Country:</Text>
-            <Avatar src={user.country.flag} size={16} radius="xl" />
-            <Text size="sm">{user.country.name}</Text>
+            {user.country.flag && (
+              <Avatar src={user.country.flag} size={16} radius="xl" />
+            )}
+            <Text size="sm">{user.country.name || '—'}</Text>
           </Group>
           <Text size="sm">Joined: {user.createdAt}</Text>
           {studentLine && (
