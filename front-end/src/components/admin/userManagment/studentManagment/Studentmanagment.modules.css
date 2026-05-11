@@ -1,9 +1,11 @@
 :root {
   --primary-color-7: var(--mantine-color-primary-7);
   --dark-7: var(--mantine-color-dark-7);
+  --dark-6: var(--mantine-color-dark-6);
   --white: var(--mantine-color-white);
   --gray-0: var(--mantine-color-gray-0);
   --gray-2: var(--mantine-color-gray-2);
+  --gray-3: var(--mantine-color-gray-3);
   --red-5: var(--mantine-color-red-5);
 }
 
@@ -25,7 +27,7 @@
 
 .control {
   width: 100%;
-  padding: var(--spacing-xs) var(--spacing-md);
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
 
   &:hover {
     background-color: var(--dark-6);
@@ -39,7 +41,7 @@
 }
 
 .scrolled {
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--mantine-shadow-sm);
 }
 
 .header {
