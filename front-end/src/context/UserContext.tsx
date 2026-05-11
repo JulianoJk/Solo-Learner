@@ -4,17 +4,23 @@ import {
   IChildrenProvider,
   UserContextState,
   TUserAction,
+  IUserInfoContext,
 } from '../Model/UserModels';
 
-// Default state fot the user context
+// Default state for the user context
 const defaultState: UserContextState = {
   user: {
-    username: undefined,
-    token: '',
     id: undefined,
+    username: undefined,
     email: undefined,
+    token: '',
     isAdmin: false,
-  },
+    isTeacher: false,
+    lastActiveTime: '',
+    formattedLastActive: '',
+    country: { name: '', flag: '' },
+    phoneNumber: '',
+  } as IUserInfoContext, // user slice follows a separate structure
   status: '',
   picture: '',
   allUsersAdminDashboard: [],
@@ -25,46 +31,51 @@ const UserStateContext = React.createContext<UserContextState | undefined>(
   undefined,
 );
 UserStateContext.displayName = 'UserStateContext';
+
 const UserDispatchContext = React.createContext<
   usersDispatchContext | undefined
 >(undefined);
 
-// Reducer function
-const appReducer = (state: UserContextState, action: TUserAction) => {
+const appReducer = (
+  state: UserContextState,
+  action: TUserAction,
+): UserContextState => {
   switch (action.type) {
     case 'SET_USER':
-      // Clear any previous data
       localStorage.removeItem('jwtToken');
-      // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem('jwtToken', action.user.token);
       return { ...state, user: action.user };
+
     case 'SET_USER_PICTURE':
       localStorage.removeItem('userPicture');
-      // Save user to localStorage to persist keeping logged after refreshing the page
       localStorage.setItem('userPicture', action.picture);
       return { ...state, picture: action.picture };
+
     case 'SET_ALL_ADMIN_DASHBOARD_USERS':
       return {
         ...state,
         allUsersAdminDashboard: action.allUsersAdminDashboard,
       };
+
     case 'REMOVE_ALL_ADMIN_DASHBOARD_USERS':
       return { ...state, allUsersAdminDashboard: [] };
+
     case 'SET_ALL_USERS_ADMIN_DASHBOARD_LOADING':
       return {
         ...state,
         isAllUsersAdminDashboardLoading: action.isAllUsersAdminDashboardLoading,
       };
+
     case 'RESET_STATE':
-      // Clear user from localStorage
       localStorage.removeItem('user');
       localStorage.removeItem('jwtToken');
       return { ...defaultState };
+
     default:
-      return { ...state };
+      return state;
   }
 };
-// Context Provider for the user
+
 const UserContextProvider = ({ children }: IChildrenProvider) => {
   const [userState, userDispatch] = useReducer(appReducer, defaultState);
 
@@ -76,20 +87,19 @@ const UserContextProvider = ({ children }: IChildrenProvider) => {
     </UserStateContext.Provider>
   );
 };
-// Pass the state of the user
+
 const useUserState = (): UserContextState => {
   const context = useContext(UserStateContext);
   if (context === undefined) {
-    throw new Error('useUserState must be used within UserDispatchContext');
+    throw new Error('useUserState must be used within UserContextProvider');
   }
   return context;
 };
 
-// Function to use the userDispatch
 const useUserDispatch = (): usersDispatchContext => {
   const context = useContext(UserDispatchContext);
   if (context === undefined) {
-    throw new Error('useUserDispatch must be used within UserDispatchContext');
+    throw new Error('useUserDispatch must be used within UserContextProvider');
   }
   return context;
 };

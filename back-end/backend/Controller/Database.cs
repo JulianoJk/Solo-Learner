@@ -245,26 +245,30 @@ namespace backend
             return result != null ? Convert.ToInt32(result) : -1;
         }
 
-        public async Task<bool> AdminDeleteUserByIdAsync(int userId)
+        public async Task<bool> AdminDeleteUserByIdAsync(List<int> userIds)
         {
-            if (userId <= 0) throw new ArgumentException("Invalid user ID");
-
-            using MySqlConnection connection = new(connectionString);
-            try
-            {
-                await connection.OpenAsync();
-                MySqlCommand command = new("DELETE FROM users WHERE id=@userId", connection);
-                command.Parameters.AddWithValue("@userId", userId);
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-                return rowsAffected > 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex.Message);
+            if (userIds == null || userIds.Count == 0)
                 return false;
-            }
-        }
 
+            await using var connection = new MySqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            var parameters = new List<string>();
+            var command = connection.CreateCommand();
+
+            for (int i = 0; i < userIds.Count; i++)
+            {
+                var paramName = $"@id{i}";
+                parameters.Add(paramName);
+                command.Parameters.AddWithValue(paramName, userIds[i]);
+            }
+
+            command.CommandText =
+                $"DELETE FROM users WHERE id IN ({string.Join(",", parameters)})";
+
+            var rowsAffected = await command.ExecuteNonQueryAsync();
+            return rowsAffected > 0;
+        }
         public bool GetIsAdminFromDatabase(string email)
         {
             using var connection = new MySqlConnection(connectionString);

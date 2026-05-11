@@ -22,7 +22,6 @@ import { indexPage } from '../../api/api';
 import { AlertComponent } from '../../AlertComponent/AlertComponent';
 interface ILoginProps {
   children?: React.ReactNode;
-  switchToRegister?: boolean;
   pathToNavigateAfterLogin?: string;
   hasBorder?: boolean;
   loginTitle?: string | React.ReactNode;
@@ -36,11 +35,14 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
 
   const {
     hasBorder,
-    switchToRegister,
-    children,
     loginTitle,
     sessionExpiredAuth,
+    pathToNavigateAfterLogin,
+    showNotification,
+    children,
+    ...paperProps
   } = props;
+
   const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
@@ -91,10 +93,10 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
         <Preloader></Preloader>
       ) : (
         <Paper
+          {...paperProps}
           radius="md"
           p="xl"
           withBorder={hasBorder}
-          {...props}
           sx={{ width: '60em' }}
         >
           <Text size="lg" fw={500} ta="center">
@@ -150,23 +152,19 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
             </Stack>
 
             <Group justify="space-between" mt="xl">
-              {switchToRegister ? (
-                <Anchor
-                  disabled={isLoading}
-                  component="button"
-                  type="button"
-                  c="dimmed"
-                  onClick={() => navigate('/register')}
-                  size="xs"
-                >
-                  Don't have an account?
-                  <Text c="blue" span>
-                    &nbsp;Register
-                  </Text>
-                </Anchor>
-              ) : (
-                children
-              )}
+              <Anchor
+                disabled={isLoading}
+                component="button"
+                type="button"
+                c="dimmed"
+                onClick={() => navigate('/register')}
+                size="xs"
+              >
+                Don't have an account?
+                <Text c="blue" span>
+                  &nbsp;Register
+                </Text>
+              </Anchor>
 
               <Button
                 type="submit"

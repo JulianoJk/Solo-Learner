@@ -54,6 +54,7 @@ public class RegisterGoogleUser
             salt: null,
             isTeacher: isTeacher,
             isStudent: isStudent,
+            isAdmin: false,
             picture: picture,
             phoneNumber: phoneNumber,
             countryName: countryName,

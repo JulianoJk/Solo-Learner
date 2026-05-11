@@ -2,23 +2,17 @@ import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useUserDispatch, useUserState } from '../../../../context/UserContext';
 import { useAppDispatch } from '../../../../context/AppContext';
-import { IUserInfoContext } from '../../../../Model/UserModels';
+import type {
+  IApiError,
+  IApiMessageResponse,
+  IUserInfoContext,
+} from '../../../../Model/UserModels';
 import { Button, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notificationAlert } from '../../../notifications/NotificationAlert';
 import { IconMail, IconMoodHappy } from '@tabler/icons-react';
 import { updateUsernameAPI } from '../../../api/api';
 import { useStyles } from '../Settings.styles';
-
-interface IApiMessageResponse {
-  message: string;
-}
-
-interface IApiError {
-  error: {
-    message: string;
-  };
-}
 
 export const ChangeUsernameSetting = () => {
   const appDispatch = useAppDispatch();
@@ -48,7 +42,7 @@ export const ChangeUsernameSetting = () => {
     unknown,
     { token: string; email: string; username: string }
   >((data) => updateUsernameAPI(data), {
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if ('error' in data) {
         appDispatch({
           type: 'SET_ERROR_ALERT_MESSAGE',
@@ -57,10 +51,17 @@ export const ChangeUsernameSetting = () => {
       } else {
         const updatedUserInfo: IUserInfoContext = {
           ...user,
-          username: form.values.username,
+          username: variables.username,
         };
         userDispatch({ type: 'SET_USER', user: updatedUserInfo });
-        noitificationAlert(data.message);
+
+        notificationAlert({
+          title: 'Username updated!',
+          message: data.message,
+          iconColor: 'yellow',
+          closeAfter: 4000,
+          icon: <IconMoodHappy color="black" size={18} />,
+        });
       }
     },
     onError: () => {
@@ -71,40 +72,30 @@ export const ChangeUsernameSetting = () => {
     },
   });
 
-  const noitificationAlert = (messageToUser: string) => {
-    notificationAlert({
-      title: 'Username updated!',
-      message: messageToUser,
-      iconColor: 'yellow',
-      closeAfter: 4000,
-      icon: <IconMoodHappy color="black" size={18} />,
-    });
-  };
-
   const handleSubmit = (values: { username: string }) => {
     const userToken = user.token || '';
     const email = user.email || '';
+    const username = values.username;
+
     updateUsernameMutation({
       token: userToken,
-      email,
-      username: values.username,
+      email: email,
+      username: username,
     });
   };
 
   return (
-    <>
-      <form onSubmit={form.onSubmit(handleSubmit)}>
-        <TextInput
-          leftSection={<IconMail />}
-          type="text"
-          label={<span className={classes.inputLabels}>Your full name:</span>}
-          placeholder="Enter new username"
-          {...form.getInputProps('username')}
-        />
-        <Button type="submit" mt="md">
-          Update Username
-        </Button>
-      </form>
-    </>
+    <form onSubmit={form.onSubmit(handleSubmit)}>
+      <TextInput
+        leftSection={<IconMail />}
+        type="text"
+        label={<span className={classes.inputLabels}>Your full name:</span>}
+        placeholder="Enter new username"
+        {...form.getInputProps('username')}
+      />
+      <Button type="submit" mt="md">
+        Update Username
+      </Button>
+    </form>
   );
 };

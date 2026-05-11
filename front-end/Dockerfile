@@ -1,28 +1,19 @@
-# Use Node.js 18-slim as the base image
-FROM node:alpine
+FROM node:22-slim
 
-# Sets the working directory
+# Set working directory
 WORKDIR /usr/src/app/front_end
 
-# Copy the package.json and yarn.lock files
+# Copy only package files first
 COPY package.json yarn.lock ./
 
 # Install dependencies
 RUN yarn install
 
-# Add @tabler/icons-react package
-RUN yarn add @tabler/icons-react
-
-# Ensure all packages are up to date
-RUN yarn 
-
-# Copy the rest of the application files
+# Copy the rest of the application
 COPY . .
 
-# Exposes port 3000
+# Expose dev port
 EXPOSE 3000
 
-# Runs the command yarn start
+# Start dev server
 CMD ["yarn", "start"]
-
-# cmd ["yarn", "dev", "--debug"]

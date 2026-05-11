@@ -31,15 +31,14 @@ public class AuthenticationUtils
         byte[]? salt,
         bool isTeacher,
         bool isStudent,
+        bool isAdmin,
         string? picture,
         string? phoneNumber,
         string? countryName,
-        string? countryFlag, 
+        string? countryFlag,
         bool mustChangePassword
     )
     {
-        bool isAdmin = db.GetIsAdminFromDatabase(email);
-
         db.InitializeDatabaseConnection(
             isRegister,
             isGoogle,

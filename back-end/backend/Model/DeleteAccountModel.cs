@@ -6,5 +6,5 @@ public class DeleteAccountModel
 
 public class AdminDeleteAccountModel
 {
-    public string Id { get; set; }
+    public List<int> UserIds { get; set; }
 }

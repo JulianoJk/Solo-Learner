@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using backend;
@@ -343,25 +344,52 @@ app.MapGet(
         }
     }
 );
+    /*
+     TODO!: // NOTE: Auth is checked outside this controller (route/middleware layer)
+    // to avoid duplication and keep controllers focused on business logic.
+    */
+app.MapDelete(
+    "/admin/users/{id}",
+    async (HttpContext context, string id) =>
+    {
+        bool isValidJwt = JwtUtils.AuthenticateJwt(context);
+
+        if (!isValidJwt || !JwtUtils.GetUserIsAdmin(context))
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(new { error = new { message = "Unauthorized" } });
+            return;
+        }
+
+        AdminAccountDeletionController controller = new AdminAccountDeletionController();
+        if (!int.TryParse(id, out int userId))
+        {
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new { message = "Invalid ID format" });
+            return;
+        }
+        await controller.AdminDeleteUserAsync(context, Convert.ToInt32(userId));
+    }
+);
 
 app.MapDelete(
-    "/admin/dashboard/delete_user",
+    "/admin/users",
     async (HttpContext context) =>
     {
         bool isValidJwt = JwtUtils.AuthenticateJwt(context);
 
-        if (isValidJwt && JwtUtils.GetUserIsAdmin(context))
+        if (!isValidJwt || !JwtUtils.GetUserIsAdmin(context))
         {
-            AdminAccountDeletionController adminAccountDeletion =
-                new AdminAccountDeletionController();
-            await adminAccountDeletion.InitAccountDeletion(context);
-        }
-        else
-        {
-            var response = new { error = new { message = "Unauthorized" } };
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsJsonAsync(response);
+            await context.Response.WriteAsJsonAsync(new { error = new { message = "Unauthorized" } });
+            return;
         }
+
+        AdminAccountDeletionController controller = new AdminAccountDeletionController();
+        var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
+
+        var ids = JsonSerializer.Deserialize<List<int>>(body) ?? new List<int>();
+        await controller.AdminDeleteUsersAsync(context, ids);
     }
 );
 app.MapGet(

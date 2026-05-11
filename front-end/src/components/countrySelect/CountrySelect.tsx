@@ -3,10 +3,9 @@ import {
   Combobox,
   ScrollArea,
   Group,
-  TextInput,
   Text,
   useCombobox,
-  CloseButton,
+  Select,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMantineColorScheme } from '@mantine/core';
@@ -76,38 +75,45 @@ const CountrySelector = ({ value, onChange, error, disabled }: Props) => {
   return (
     <Combobox onOptionSubmit={handleSelect} store={combobox}>
       <Combobox.Target>
-        <TextInput
+        <Select
+          searchable
           withAsterisk
           required
           label="Select Country"
           placeholder="Type to search"
-          value={input}
-          onChange={(e) => {
-            setInput(e.currentTarget.value);
-            combobox.openDropdown();
-            combobox.updateSelectedOptionIndex();
+          data={(countries ?? []).map((country) => ({
+            value: country.name.common,
+            label: country.name.common,
+            flag: country.flags.svg,
+          }))}
+          value={value?.name || null}
+          onChange={(selected) => {
+            const selectedCountry = countries?.find(
+              (c) => c.name.common === selected,
+            );
+
+            if (selectedCountry) {
+              onChange({
+                name: selectedCountry.name.common,
+                flag: selectedCountry.flags.svg,
+              });
+            } else {
+              onChange({ name: '', flag: '' });
+            }
           }}
-          onClick={() => combobox.openDropdown()}
-          onFocus={() => combobox.openDropdown()}
-          onBlur={() => combobox.closeDropdown()}
           disabled={isLoading || disabled}
           error={error}
+          nothingFoundMessage="No country found"
+          clearable
           leftSection={
             value?.flag ? <Avatar src={value.flag} size={20} /> : null
           }
-          rightSection={
-            value?.name ? (
-              <CloseButton
-                size="sm"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => {
-                  onChange({ name: '', flag: '' });
-                  setInput('');
-                }}
-                aria-label="Clear value"
-              />
-            ) : null
-          }
+          renderOption={({ option }) => (
+            <Group gap="sm">
+              <Avatar src={(option as any).flag} size={20} />
+              <Text size="sm">{option.label}</Text>
+            </Group>
+          )}
         />
       </Combobox.Target>
       <Combobox.Dropdown>

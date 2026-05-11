@@ -100,3 +100,9 @@ export const selectionQuestions = [
     correctAnswers: ['had'],
   },
 ];
+
+// Role filter data for the user management table - StudentManagmentTable.component.tsx
+export const ROLE_FILTER_DATA = ['Admin', 'Teacher', 'Student'];
+
+// Table pagination size for the user management table - StudentManagmentTable.component.tsx
+export const TABLE_PAGINATION_SIZE = 10;

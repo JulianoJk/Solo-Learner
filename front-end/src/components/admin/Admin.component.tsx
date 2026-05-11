@@ -16,33 +16,39 @@ import {
 } from '../../utils/formattedLastActive';
 import { useMediaQuery } from '@mantine/hooks';
 import AdminDrawer from '../navBar/AdminTabs.component';
-import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 import StudentmanagmenTable from './userManagment/studentManagment/StudentManagmentTable.component';
+import Preloader from '../Loader/Preloader.component';
+import { MobileStudent } from './userManagment/studentManagment/MobileStudent.component';
 
 const Admin = () => {
   const { user } = useUserState();
   const { selectedAdminNavbar } = useAppState();
   const userDispatch = useUserDispatch();
-  const [isAllUsersSuccess, setIsAllUsersSuccess] = useState(false);
+  const [isAllUsersSuccess, setIsAllUsersSuccess] = useState<boolean | null>(
+    null,
+  );
   const [drawerOpened, setDrawerOpened] = useState(false);
   const matches = useMediaQuery('(min-width: 56.25em)'); // Check for desktop
 
-  const { data: adminDashboardData, isLoading: isAdminLoading } = useQuery(
+  const {
+    data: adminDashboardData,
+    isLoading: isAdminLoading,
+    isError: isAdminError,
+  } = useQuery(
     ['getAdminDashboardItems', user.token],
     async () => {
       if (!user.token) throw new Error('No token found');
       const data = await adminDashboardAPI(user.token);
-      if (data?.status === 'success') {
-        setIsAllUsersSuccess(true);
-      } else {
-        setIsAllUsersSuccess(false);
-      }
       return data;
     },
     { enabled: !!user.token },
   );
 
-  const { refetch: refetchAllUsers } = useQuery(
+  const {
+    refetch: refetchAllUsers,
+    isLoading: isUsersLoading,
+    isError: isUsersError,
+  } = useQuery(
     ['adminGetAllUsersAPI', user.token],
     async () => {
       if (!user.token) throw new Error('No token found');
@@ -56,9 +62,6 @@ const Admin = () => {
             LastActiveFormat.CUSTOM,
           ),
         });
-        setIsAllUsersSuccess(true);
-      } else {
-        setIsAllUsersSuccess(false);
       }
       return data;
     },
@@ -74,7 +77,11 @@ const Admin = () => {
 
   if (!user.token) return <NotFound navigationPath={'/'} />;
 
-  if (isAdminLoading || adminDashboardData?.isError || !isAllUsersSuccess) {
+  if (isAdminLoading || isUsersLoading) {
+    return <Preloader />;
+  }
+
+  if (isAdminError || isUsersError || adminDashboardData?.isError) {
     return <NotFound navigationPath={'/home'} />;
   }
 
