@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Stack,
   TextInput,
@@ -58,7 +57,7 @@ const EditUserForm = ({ user, adminToken, onClose }: EditUserFormProps) => {
     },
   });
 
-  const { mutate: updateUsername } = useMutation<
+  const { mutate: updateUsername, isLoading: isUpdating } = useMutation<
     IApiMessageResponse | IApiError,
     unknown,
     { token: string; email: string; username: string }
@@ -140,7 +139,9 @@ const EditUserForm = ({ user, adminToken, onClose }: EditUserFormProps) => {
           <Button variant="default" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit">Save Username</Button>
+          <Button type="submit" loading={isUpdating} disabled={isUpdating}>
+            Save Username
+          </Button>
         </Group>
       </Stack>
     </form>
