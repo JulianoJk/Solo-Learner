@@ -9,7 +9,6 @@ import {
   adminBulkDeleteUsersAccount,
 } from '../api/api';
 import { notificationAlert } from '../notifications/NotificationAlert';
-import React from 'react';
 
 export const useDeleteUser = () => {
   const { allUsersAdminDashboard, user } = useUserState();
@@ -24,6 +23,9 @@ export const useDeleteUser = () => {
 
   const deleteUserMutation = useMutation(
     async (userIds: number[]) => {
+      if (!userIds || userIds.length === 0) {
+        return { error: { message: 'No users selected.' } };
+      }
       if (userIds.length === 1) {
         // single delete
         return adminDeleteUserAccount({
