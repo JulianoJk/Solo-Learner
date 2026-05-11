@@ -33,7 +33,16 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
   const { isAuthLoading } = useAppState();
   const navigate: NavigateFunction = useNavigate();
 
-  const { hasBorder, loginTitle, sessionExpiredAuth } = props;
+  const {
+    hasBorder,
+    loginTitle,
+    sessionExpiredAuth,
+    pathToNavigateAfterLogin,
+    showNotification,
+    children,
+    ...paperProps
+  } = props;
+
   const { login, isLoading } = useLogin({
     navigateTo: localStorage.getItem('lastVisitedPath') || '/home',
     sessionExpiredAuth,
@@ -84,10 +93,10 @@ const AuthenticationLogin: React.FC<ILoginProps> = (props) => {
         <Preloader></Preloader>
       ) : (
         <Paper
+          {...paperProps}
           radius="md"
           p="xl"
           withBorder={hasBorder}
-          {...props}
           sx={{ width: '60em' }}
         >
           <Text size="lg" fw={500} ta="center">
