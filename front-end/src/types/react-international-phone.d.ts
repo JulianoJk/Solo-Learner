@@ -5,6 +5,7 @@ declare module 'react-international-phone' {
     value: string;
     defaultCountry?: string;
     onChange: (value: string) => void;
+    thisForTest?: any;
     style?: React.CSSProperties;
   }
 
